@@ -32,21 +32,30 @@ class Target:
     def __init__(self):
         # ARM Core
         self.core = None
-        
+
         # Is the disk provided by the interface chip of this board virtual?
         self.is_disk_virtual = False
-        
+
         # list of toolchains that are supported by the mbed SDK for this target
         self.supported_toolchains = None
-        
+
         # list of extra specific labels
         self.extra_labels = []
-        
+
+        # list of macros (-D)
+        self.macros = []
+
+        # list of ignore folders
+        self.ignore_folders = []
+
+        # list of folders in cmsis hierarchy which gets copied with it's origin structure
+        self.copy_cmsis_folders = []
+
         self.name = self.__class__.__name__
-    
+
     def program_cycle_s(self):
         return 4 if self.is_disk_virtual else 1.5
-    
+
     def get_labels(self):
         return [self.name, CORE_LABELS[self.core]] + self.extra_labels
 
@@ -57,133 +66,156 @@ class Target:
 class LPC2368(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "ARM7TDMI-S"
-        
+
         self.extra_labels = ['NXP', 'LPC23XX']
-        
+
         self.supported_toolchains = ["ARM","GCC_ARM","GCC_CR"]
 
 
 class LPC1768(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M3"
-        
+
         self.extra_labels = ['NXP', 'LPC176X']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CS", "GCC_CR", "IAR"]
 
 
 class LPC11U24(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ['NXP', 'LPC11UXX', 'LPC11U24_401']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
 
 
 class LPC11U24_301(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ['NXP', 'LPC11UXX']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
 
 
 class KL05Z(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0+"
-        
+
         self.extra_labels = ['Freescale']
-        
+
         self.supported_toolchains = ["ARM", "GCC_ARM"]
-        
+
+        self.ignore_folders = ['KPSDK']
+
         self.is_disk_virtual = True
 
 
 class KL25Z(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0+"
-        
+
         self.extra_labels = ['Freescale']
-        
+
         self.supported_toolchains = ["ARM", "GCC_CW_EWL", "GCC_CW_NEWLIB", "GCC_ARM"]
-        
+
+        self.ignore_folders = ['KPSDK']
+
         self.is_disk_virtual = True
 
 class KL46Z(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0+"
-        
+
         self.extra_labels = ['Freescale']
 
         self.supported_toolchains = ["GCC_ARM", "ARM"]
+
+        self.ignore_folders = ['KPSDK']
 
         self.is_disk_virtual = True
 
 class K20D5M(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M4"
-        
+
         self.extra_labels = ['Freescale']
-        
+
         self.supported_toolchains = ["GCC_ARM", "ARM"]
-        
+
+        self.ignore_folders = ['KPSDK']
+
         self.is_disk_virtual = True
 
+class K64F(Target):
+    def __init__(self):
+        Target.__init__(self)
+
+        self.core = "Cortex-M4F"
+
+        self.extra_labels = ['Freescale', 'KPSDK']
+
+        self.macros = ["CPU_MK64FN1M0VMD12"]
+
+        self.copy_cmsis_folders = ['device']
+
+        self.supported_toolchains = ["ARM"]
+
+        self.is_disk_virtual = True
 
 class LPC812(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0+"
-        
+
         self.extra_labels = ['NXP', 'LPC81X']
-        
+
         self.supported_toolchains = ["uARM"]
-        
+
         self.is_disk_virtual = True
 
 
 class LPC810(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0+"
-        
+
         self.extra_labels = ['NXP', 'LPC81X']
-        
+
         self.supported_toolchains = ["uARM"]
-        
+
         self.is_disk_virtual = True
 
 
 class LPC4088(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M4F"
-        
+
         self.extra_labels = ['NXP', 'LPC408X']
-        
+
         self.supported_toolchains = ["ARM", "GCC_CR", "GCC_ARM"]
-    
+
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO']:
             hook.hook_add_binary("post", self.binary_hook)
@@ -220,121 +252,121 @@ class LPC4088(Target):
 class LPC4330_M4(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M4F"
-        
+
         self.extra_labels = ['NXP', 'LPC43XX']
-        
+
         self.supported_toolchains = ["ARM", "GCC_CR", "IAR", "GCC_ARM"]
 
 
 class LPC4330_M0(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ['NXP', 'LPC43XX']
-        
+
         self.supported_toolchains = ["ARM", "GCC_CR", "IAR"]
 
 
 class LPC1800(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M3"
-        
+
         self.extra_labels = ['NXP', 'LPC43XX']
-        
+
         self.supported_toolchains = ["ARM", "GCC_CR", "IAR"]
 
 
 class STM32F407(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M4F"
-        
+
         self.extra_labels = ['STM', 'STM32F4XX']
-        
+
         self.supported_toolchains = ["ARM", "GCC_ARM"]
 
-        
+
 class NUCLEO_F103RB(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M3"
-        
+
         self.extra_labels = ['STM', 'STM32F10X', 'STM32F103RB']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
-        
-        
+
+
 class MBED_MCU(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0+"
-        
+
         self.extra_labels = ['ARM']
-        
+
         self.supported_toolchains = ["ARM"]
 
 
 class LPC1347(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M3"
-        
+
         self.extra_labels = ['NXP', 'LPC13XX']
-        
+
         self.supported_toolchains = ["ARM", "GCC_ARM"]
 
 
 class LPC1114(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ['NXP', 'LPC11XX_11CXX', 'LPC11XX']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
 
 
 class LPC11C24(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ['NXP', 'LPC11XX_11CXX', 'LPC11CXX']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
 
 
 class LPC11U35_401(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ['NXP', 'LPC11UXX']
-        
+
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
 
 
 class nRF51822(Target):
     def __init__(self):
         Target.__init__(self)
-        
+
         self.core = "Cortex-M0"
-        
+
         self.extra_labels = ["NORDIC"]
-        
+
         self.supported_toolchains = ["ARM"]
 
 
@@ -359,7 +391,8 @@ TARGETS = [
     LPC1114(),
     LPC11C24(),
     LPC11U35_401(),
-    nRF51822()
+    nRF51822(),
+    K64F()
 ]
 
 # Map each target name to its unique instance
