@@ -57,21 +57,23 @@ void spi_frequency(spi_t *obj, int hz) {
 }
 
 static inline int spi_writeable(spi_t * obj) {
+    return 1;
 }
 
 static inline int spi_readable(spi_t * obj) {
+    return 1;
 }
 
 int spi_master_write(spi_t *obj, int value) {
-
+    return 1;
 }
 
 int spi_slave_receive(spi_t *obj) {
-
+    return 1;
 }
 
 int spi_slave_read(spi_t *obj) {
-
+    return 1;
 }
 
 void spi_slave_write(spi_t *obj, int value) {

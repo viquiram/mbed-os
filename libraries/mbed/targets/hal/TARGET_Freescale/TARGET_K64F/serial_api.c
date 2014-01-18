@@ -70,17 +70,18 @@ void serial_irq_set(serial_t *obj, SerialIrq irq, uint32_t enable) {
 }
 
 int serial_getc(serial_t *obj) {
+    return 1;
 }
 
 void serial_putc(serial_t *obj, int c) {
 }
 
 int serial_readable(serial_t *obj) {
-
+    return 1;
 }
 
 int serial_writable(serial_t *obj) {
-
+    return 1;
 }
 
 void serial_clear(serial_t *obj) {

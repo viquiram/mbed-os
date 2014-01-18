@@ -24,7 +24,7 @@ static void handle_interrupt_in(PORT_Type *port, int ch_base) {
 }
 
 int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32_t id) {
-
+    return 1;
 }
 
 void gpio_irq_free(gpio_irq_t *obj) {

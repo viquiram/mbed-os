@@ -36,6 +36,7 @@ void pwmout_write(pwmout_t* obj, float value) {
 }
 
 float pwmout_read(pwmout_t* obj) {
+    return 1;
 }
 
 void pwmout_period(pwmout_t* obj, float seconds) {

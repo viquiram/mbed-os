@@ -32,11 +32,11 @@ void rtc_free(void) {
  * 0 = Disabled, 1 = Enabled
  */
 int rtc_isenabled(void) {
-
+    return 1;
 }
 
 time_t rtc_read(void) {
-
+    return 1;
 }
 
 void rtc_write(time_t t) {

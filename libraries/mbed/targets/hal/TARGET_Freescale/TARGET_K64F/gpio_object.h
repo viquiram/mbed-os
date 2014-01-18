@@ -35,7 +35,7 @@ static inline void gpio_write(gpio_t *obj, int value) {
 }
 
 static inline int gpio_read(gpio_t *obj) {
-
+    return 1;
 }
 
 #ifdef __cplusplus

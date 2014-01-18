@@ -28,10 +28,10 @@ void analogin_init(analogin_t *obj, PinName pin) {
 }
 
 uint16_t analogin_read_u16(analogin_t *obj) {
-
+    return 1;
 }
 
 float analogin_read(analogin_t *obj) {
-
+    return 1;
 }
 

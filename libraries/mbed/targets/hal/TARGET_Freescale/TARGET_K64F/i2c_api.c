@@ -51,14 +51,15 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl) {
 }
 
 int i2c_start(i2c_t *obj) {
-
+    return 1;
 }
 
 int i2c_stop(i2c_t *obj) {
+    return 1;
 }
 
 static int timeout_status_poll(i2c_t *obj, uint32_t mask) {
-
+    return 1;
 }
 
 // this function waits the end of a tx transfer and return the status of the transaction:
@@ -73,7 +74,7 @@ static int i2c_wait_end_tx_transfer(i2c_t *obj) {
 //    0: OK
 //    1: failure
 static int i2c_wait_end_rx_transfer(i2c_t *obj) {
-
+    return 1;
 }
 
 static void i2c_send_nack(i2c_t *obj) {
@@ -85,11 +86,11 @@ static void i2c_send_ack(i2c_t *obj) {
 }
 
 static int i2c_do_write(i2c_t *obj, int value) {
-
+    return 1;
 }
 
 static int i2c_do_read(i2c_t *obj, char * data, int last) {
-
+    return 1;
 }
 
 void i2c_frequency(i2c_t *obj, int hz) {
@@ -97,10 +98,11 @@ void i2c_frequency(i2c_t *obj, int hz) {
 }
 
 int i2c_read(i2c_t *obj, int address, char *data, int length, int stop) {
-
+    return 1;
 }
-int i2c_write(i2c_t *obj, int address, const char *data, int length, int stop) {
 
+int i2c_write(i2c_t *obj, int address, const char *data, int length, int stop) {
+    return 1;
 }
 
 void i2c_reset(i2c_t *obj) {
@@ -108,11 +110,11 @@ void i2c_reset(i2c_t *obj) {
 }
 
 int i2c_byte_read(i2c_t *obj, int last) {
-
+    return 1;
 }
 
 int i2c_byte_write(i2c_t *obj, int data) {
-
+    return 1;
 }
 
 
@@ -122,15 +124,15 @@ void i2c_slave_mode(i2c_t *obj, int enable_slave) {
 }
 
 int i2c_slave_receive(i2c_t *obj) {
-
+    return 1;
 }
 
 int i2c_slave_read(i2c_t *obj, char *data, int length) {
-
+    return 1;
 }
 
 int i2c_slave_write(i2c_t *obj, const char *data, int length) {
-
+    return 1;
 }
 
 void i2c_slave_address(i2c_t *obj, int idx, uint32_t address, uint32_t mask) {

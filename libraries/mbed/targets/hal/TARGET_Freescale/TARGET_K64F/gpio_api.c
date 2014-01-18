@@ -15,13 +15,32 @@
  */
 #include "gpio_api.h"
 #include "pinmap.h"
+// #include "fsl_gpio_driver.h"
 
 uint32_t gpio_set(PinName pin) {
-
+    return 1;
 }
 
 void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
+    // if (direction) {
+    //     gpio_output_pin_t gpio_pin[2];
 
+    //     gpio_pin[0].pinName = pin;
+    //     gpio_pin[0].outputLogic = 1;
+    //     gpio_pin[1].pinName = GPIO_PINS_OUT_OF_RANGE;
+
+    //     gpio_init(NULL, (const gpio_output_pin_t *)&gpio_pin);
+    // } else {
+    //     gpio_input_pin_t gpio_pin[2];
+
+    //     gpio_pin[0].pinName = pin;
+    //     gpio_pin[0].config.interrupt = kPortIntDisabled;
+    //     gpio_pin[1].pinName = GPIO_PINS_OUT_OF_RANGE;
+
+    //     gpio_pin->config.isPullEnable = 1;
+    //     gpio_pin->config.pullSelect = kPortPullUp;
+    //     gpio_init((const gpio_input_pin_t *)&gpio_pin, NULL);
+    // }
 }
 
 void gpio_mode(gpio_t *obj, PinMode mode) {
