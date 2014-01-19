@@ -36,7 +36,7 @@
 #include "fsl_port_hal.h"
 #include "fsl_gpio_hal.h"
 
-/*! 
+/*!
  * @addtogroup gpio_driver
  * @{
  */
@@ -50,12 +50,12 @@
  * application files. These two variables will save all gpio pin information used
  * in your project.
  *
- * Here is an example demonstrating how to define these variables. 
+ * Here is an example demonstrating how to define these variables.
    @code
    // This is the enum to define virtual gpio pin names.
-   // These members will be used by "uint32_t pinName" in gpio_output_pin_t 
+   // These members will be used by "uint32_t pinName" in gpio_output_pin_t
    // and gpio_input_pin_t. Usually defined in a header file.
-   enum _gpio_pins 
+   enum _gpio_pins
    {
        kGpioLED1  = 0x0, // Orange LED.
        kGpioLED2  = 0x1, // Yellow LED.
@@ -72,7 +72,7 @@
        {HW_GPIOB, 8},  // kGpioLED4
    };
    @endcode
- */ 
+ */
 
 /*******************************************************************************
  * Definitions
@@ -80,14 +80,15 @@
 
 /*! @brief macro to indicate end of pin configuration structure.*/
 #define GPIO_PINS_OUT_OF_RANGE (0xFFFFFFFFU)
+#define GPIO_PORT_SHIFT 12
 
 /*!
  * @brief gpio pin lookup table defined by user.
  *
  * This array is a n*2 array to save actual port and pin number. Must be declared
  * exactly as "const uint8_t gpioPinLookupTable[][2]" in user's file.
- * Column 1 are port instances (eg, HW_GPIOA), column 2 are pin numbers between 
- * 0 to 31 in corresponding port instance. 
+ * Column 1 are port instances (eg, HW_GPIOA), column 2 are pin numbers between
+ * 0 to 31 in corresponding port instance.
  */
 extern const uint8_t gpioPinLookupTable[][2];
 
@@ -149,13 +150,20 @@ typedef struct gpioOutputPin {
     gpio_output_pin_config_t config;/*!< Input pin configuration structure.*/
 } gpio_output_pin_t;
 
+typedef struct gpioInputOutputPin {
+    uint32_t pinName;                    /*!< Virtual pin name from enum defined by user.*/
+    gpio_input_pin_config_t in_config;   /*!< Input pin configuration structure.*/
+    gpio_output_pin_config_t out_config; /*!< Input pin configuration structure.*/
+    bool isOutput;               /*!< Input/Output */
+} gpio_input_output_pin_t;
+
 /*! @brief gpio ISR callback function*/
 typedef void (*gpio_isr_callback_t)(void);
 
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -170,8 +178,8 @@ extern "C" {
  *
  * To initialize the GPIO driver, two arrays similar with gpio_input_pin_t
  * inputPin[] and gpio_output_pin_t outputPin[] should be defined in user's file.
- * Then call gpio_init() and pass into these two arrays. 
- * 
+ * Then call gpio_init() and pass into these two arrays.
+ *
  * Here is an example demonstrating how to define an input pin array:
    @code
    // Configure kGpioPTA2 as digital input.
@@ -193,11 +201,19 @@ extern "C" {
  * @param inputPins input gpio pins pointer.
  * @param outputPins output gpio pins pointer.
  */
-void gpio_init(const gpio_input_pin_t * inputPins, const gpio_output_pin_t * outputPins);
+void sdk_gpio_init(const gpio_input_pin_t * inputPins, const gpio_output_pin_t * outputPins);
+
+void sdk_gpio_input_pin_init(const gpio_input_pin_t *inputPin);
+
+void sdk_gpio_output_pin_init(const gpio_output_pin_t *outputPin);
+
+void sdk_gpio_inout_pin_init(const gpio_input_output_pin_t *pin);
+
+void sdk_gpio_set_pin_direction(uint32_t pinName, gpio_pin_direction_t direction);
 
 /* @} */
 
-/*! 
+/*!
  * @name Pin Direction
  * @{
  */
@@ -210,7 +226,7 @@ void gpio_init(const gpio_input_pin_t * inputPins, const gpio_output_pin_t * out
  *         - 0: corresponding pin is set as digital input.
  *         - 1: corresponding pin is set as digital output.
  */
-uint32_t gpio_get_pin_direction(uint32_t pinName);
+uint32_t sdk_gpio_get_pin_direction(uint32_t pinName);
 
 /* @} */
 
@@ -221,34 +237,34 @@ uint32_t gpio_get_pin_direction(uint32_t pinName);
 
 /*!
  * @brief Set output level of individual gpio pin to logic 1 or 0.
- * 
+ *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  * @param output  pin output logic level.
  *        - 0: corresponding pin output low logic level.
  *        - Non-0: corresponding pin output high logic level.
  */
-void gpio_write_pin_output(uint32_t pinName, uint32_t output);
+void sdk_gpio_write_pin_output(uint32_t pinName, uint32_t output);
 
 /*!
  * @brief Set output level of individual gpio pin to logic 1.
  *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  */
-void gpio_set_pin_output(uint32_t pinName); 
+void sdk_gpio_set_pin_output(uint32_t pinName);
 
 /*!
  * @brief Set output level of individual gpio pin to logic 0.
  *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  */
-void gpio_clear_pin_output(uint32_t pinName); 
+void sdk_gpio_clear_pin_output(uint32_t pinName);
 
 /*!
  * @brief Reverse current output logic of individual gpio pin.
  *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  */
-void gpio_toggle_pin_output(uint32_t pinName); 
+void sdk_gpio_toggle_pin_output(uint32_t pinName);
 
 /* @} */
 
@@ -259,26 +275,26 @@ void gpio_toggle_pin_output(uint32_t pinName);
 
 /*!
  * @brief Read current input value of individual gpio pin.
- * 
+ *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  * @return gpio port input value.
  *         - 0: Pin logic level is 0, or is not configured for use by digital function.
  *         - 1: Pin logic level is 1.
  */
-uint32_t gpio_read_pin_input(uint32_t pinName);
+uint32_t sdk_gpio_read_pin_input(uint32_t pinName);
 
 #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
 /*!
  * @brief Enable or disable digital filter in one single port.
  *
  * Each bit of the 32-bit register represents one pin.
- *  
+ *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  * @param isDigitalFilterEnabled  digital filter enable/disable.
  *        - false: digital filter is disabled on the corresponding pin.
  *        - true : digital filter is enabled on the corresponding pin.
  */
-void gpio_configure_digital_filter(uint32_t pinName, bool isDigitalFilterEnabled);
+void sdk_gpio_configure_digital_filter(uint32_t pinName, bool isDigitalFilterEnabled);
 #endif
 
 /* @} */
@@ -290,27 +306,27 @@ void gpio_configure_digital_filter(uint32_t pinName, bool isDigitalFilterEnabled
 
 /*!
  * @brief Clear individual gpio pin interrupt status flag.
- * 
+ *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  */
-void gpio_clear_pin_interrupt_flag(uint32_t pinName);
+void sdk_gpio_clear_pin_interrupt_flag(uint32_t pinName);
 
 /*!
- * @brief Register gpio isr callback function. 
+ * @brief Register gpio isr callback function.
  *
  * @param pinName gpio pin name defined by user in gpio pin enum list.
  * @param function Pointer to gpio isr callback function.
  */
-void gpio_register_isr_callback_function(uint32_t pinName, gpio_isr_callback_t function);
+void sdk_gpio_register_isr_callback_function(uint32_t pinName, gpio_isr_callback_t function);
 
 /* @} */
 
 #if defined(__cplusplus)
 }
 #endif
- 
+
 /*! @} */
- 
+
 #endif /* __FSL_GPIO_DRIVER_H__*/
 /*******************************************************************************
  * EOF

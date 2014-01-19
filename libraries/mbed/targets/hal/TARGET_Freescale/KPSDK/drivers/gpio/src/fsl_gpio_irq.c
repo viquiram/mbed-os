@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 #include <assert.h>
 #include "fsl_gpio_driver.h"
 
@@ -42,17 +42,17 @@
 #if defined (KL25Z4_SERIES)
 /*!
  * @brief Table to save gpio IRQ enum numbers defined in CMSIS files. They are
- *  used by gpio_init to enable or disable gpio interrupts. 
+ *  used by gpio_init to enable or disable gpio interrupts.
  */
-IRQn_Type gpio_irq_ids[HW_PORT_INSTANCE_COUNT] = 
+IRQn_Type gpio_irq_ids[HW_PORT_INSTANCE_COUNT] =
 {
     PORTA_IRQn, NULL, NULL, PORTD_IRQn, NULL
 };
 #elif defined (K64F12_SERIES) || defined (K70F12_SERIES) || defined (K22F51212_SERIES)
-IRQn_Type gpio_irq_ids[HW_PORT_INSTANCE_COUNT] = 
+IRQn_Type gpio_irq_ids[HW_PORT_INSTANCE_COUNT] =
 {
     PORTA_IRQn, PORTB_IRQn, PORTC_IRQn, PORTD_IRQn, PORTE_IRQn,
-#if defined (K70F12_SERIES) 
+#if defined (K70F12_SERIES)
     PORTF_IRQn
 #endif
 };
@@ -69,7 +69,7 @@ gpio_isr_callback_t gpio_isr_callback_table[HW_PORT_INSTANCE_COUNT] = {NULL};
  ******************************************************************************/
 #if defined (KL25Z4_SERIES) || defined (K64F12_SERIES) ||\
     defined (K70F12_SERIES) || defined (K22F51212_SERIES)
-/*! 
+/*!
  * @brief gpio IRQ handler with the same name in startup code
  */
 void PORTA_IRQHandler(void)
@@ -79,12 +79,12 @@ void PORTA_IRQHandler(void)
     {
         (*gpio_isr_callback_table[HW_PORTA])();
     }
-    
+
     /* Clear interrupt flag.*/
     port_hal_clear_port_interrupt_flag(HW_PORTA);
 }
 
-/*! 
+/*!
  * @brief gpio IRQ handler with the same name in startup code
  */
 void PORTD_IRQHandler(void)
@@ -101,7 +101,7 @@ void PORTD_IRQHandler(void)
 
 #if defined (K64F12_SERIES) || defined (K22F51212_SERIES) || defined (K70F12_SERIES)
 
-/*! 
+/*!
  * @brief gpio IRQ handler with the same name in startup code
  */
 void PORTB_IRQHandler(void)
@@ -116,7 +116,7 @@ void PORTB_IRQHandler(void)
     port_hal_clear_port_interrupt_flag(HW_PORTB);
 }
 
-/*! 
+/*!
  * @brief gpio IRQ handler with the same name in startup code
  */
 void PORTC_IRQHandler(void)
@@ -131,7 +131,7 @@ void PORTC_IRQHandler(void)
     port_hal_clear_port_interrupt_flag(HW_PORTC);
 }
 
-/*! 
+/*!
  * @brief gpio IRQ handler with the same name in startup code
  */
 void PORTE_IRQHandler(void)
@@ -147,7 +147,7 @@ void PORTE_IRQHandler(void)
 }
 
 #if defined (K70F12_SERIES)
-/*! 
+/*!
  * @brief gpio IRQ handler with the same name in startup code
  */
 void PORTF_IRQHandler(void)
@@ -171,15 +171,15 @@ void PORTF_IRQHandler(void)
 
 /*FUNCTION**********************************************************************
  *
- * Function Name : gpio_register_isr_callback_function 
- * Description   : Register gpio isr callback function. 
+ * Function Name : gpio_register_isr_callback_function
+ * Description   : Register gpio isr callback function.
  *
  *END**************************************************************************/
 void gpio_register_isr_callback_function(uint32_t pinName, gpio_isr_callback_t function)
 {
     assert(function != NULL);
-    
-    uint32_t gpioInstance = gpioPinLookupTable[pinName][0];    
+
+    uint32_t gpioInstance = pinName >> GPIO_PORT_SHIFT;
     gpio_isr_callback_table[gpioInstance] = function;
 }
 

@@ -16,26 +16,25 @@
 #ifndef MBED_GPIO_OBJECT_H
 #define MBED_GPIO_OBJECT_H
 
+#include "fsl_gpio_driver.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct {
-    PinName  pin;
-    uint32_t mask;
-
-    __IO uint32_t *reg_dir;
-    __IO uint32_t *reg_set;
-    __IO uint32_t *reg_clr;
-    __I  uint32_t *reg_in;
+    uint32_t pinName;                    /*!< Virtual pin name from enum defined by user.*/
+    gpio_input_pin_config_t in_config;   /*!< Input pin configuration structure.*/
+    gpio_output_pin_config_t out_config; /*!< Input pin configuration structure.*/
+    uint8_t isOutput;               /*!< Input/Output */
 } gpio_t;
 
 static inline void gpio_write(gpio_t *obj, int value) {
-
+    sdk_gpio_write_pin_output(obj->pinName, (uint32_t)value);
 }
 
 static inline int gpio_read(gpio_t *obj) {
-    return 1;
+    return (int)sdk_gpio_read_pin_input(obj->pinName);
 }
 
 #ifdef __cplusplus

@@ -12,28 +12,7 @@
 ; *****************************************************************************/
 
 
-; <h> Stack Configuration
-;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
-; </h>
-
-Stack_Size      EQU     0x00000400
-
-                AREA    STACK, NOINIT, READWRITE, ALIGN=3
-Stack_Mem       SPACE   Stack_Size
-__initial_sp
-
-
-; <h> Heap Configuration
-;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
-; </h>
-
-Heap_Size       EQU     0x00000000
-
-                AREA    HEAP, NOINIT, READWRITE, ALIGN=3
-__heap_base
-Heap_Mem        SPACE   Heap_Size
-__heap_limit
-
+__initial_sp        EQU     0x20030000  ; Top of RAM
 
                 PRESERVE8
                 THUMB
@@ -522,92 +501,92 @@ SysTick_Handler PROC
                 ENDP
 
 Default_Handler PROC
-                EXPORT     DMA0_IRQHandler  ; DMA Channel 0 Transfer Complete    [WEAK]
-                EXPORT     DMA1_IRQHandler  ; DMA Channel 1 Transfer Complete    [WEAK]
-                EXPORT     DMA2_IRQHandler  ; DMA Channel 2 Transfer Complete    [WEAK]
-                EXPORT     DMA3_IRQHandler  ; DMA Channel 3 Transfer Complete    [WEAK]
-                EXPORT     DMA4_IRQHandler  ; DMA Channel 4 Transfer Complete    [WEAK]
-                EXPORT     DMA5_IRQHandler  ; DMA Channel 5 Transfer Complete    [WEAK]
-                EXPORT     DMA6_IRQHandler  ; DMA Channel 6 Transfer Complete    [WEAK]
-                EXPORT     DMA7_IRQHandler  ; DMA Channel 7 Transfer Complete    [WEAK]
-                EXPORT     DMA8_IRQHandler  ; DMA Channel 8 Transfer Complete    [WEAK]
-                EXPORT     DMA9_IRQHandler  ; DMA Channel 9 Transfer Complete    [WEAK]
-                EXPORT     DMA10_IRQHandler  ; DMA Channel 10 Transfer Complete    [WEAK]
-                EXPORT     DMA11_IRQHandler  ; DMA Channel 11 Transfer Complete    [WEAK]
-                EXPORT     DMA12_IRQHandler  ; DMA Channel 12 Transfer Complete    [WEAK]
-                EXPORT     DMA13_IRQHandler  ; DMA Channel 13 Transfer Complete    [WEAK]
-                EXPORT     DMA14_IRQHandler  ; DMA Channel 14 Transfer Complete    [WEAK]
-                EXPORT     DMA15_IRQHandler  ; DMA Channel 15 Transfer Complete    [WEAK]
-                EXPORT     DMA_Error_IRQHandler  ; DMA Error Interrupt    [WEAK]
-                EXPORT     MCM_IRQHandler  ; Normal Interrupt    [WEAK]
-                EXPORT     FTFE_IRQHandler  ; FTFE Command complete interrupt    [WEAK]
-                EXPORT     Read_Collision_IRQHandler  ; Read Collision Interrupt    [WEAK]
-                EXPORT     LVD_LVW_IRQHandler  ; Low Voltage Detect, Low Voltage Warning     [WEAK]
-                EXPORT     LLW_IRQHandler  ; Low Leakage Wakeup     [WEAK]
-                EXPORT     Watchdog_IRQHandler  ; WDOG Interrupt    [WEAK]
-                EXPORT     RNG_IRQHandler  ; RNG Interrupt    [WEAK]
-                EXPORT     I2C0_IRQHandler  ; I2C0 interrupt    [WEAK]
-                EXPORT     I2C1_IRQHandler  ; I2C1 interrupt    [WEAK]
-                EXPORT     SPI0_IRQHandler  ; SPI0 Interrupt    [WEAK]
-                EXPORT     SPI1_IRQHandler  ; SPI1 Interrupt    [WEAK]
-                EXPORT     I2S0_Tx_IRQHandler  ; I2S0 transmit interrupt    [WEAK]
-                EXPORT     I2S0_Rx_IRQHandler  ; I2S0 receive interrupt    [WEAK]
-                EXPORT     UART0_LON_IRQHandler  ; UART0 LON interrupt    [WEAK]
-                EXPORT     UART0_RX_TX_IRQHandler  ; UART0 Receive/Transmit interrupt    [WEAK]
-                EXPORT     UART0_ERR_IRQHandler  ; UART0 Error interrupt    [WEAK]
-                EXPORT     UART1_RX_TX_IRQHandler  ; UART1 Receive/Transmit interrupt    [WEAK]
-                EXPORT     UART1_ERR_IRQHandler  ; UART1 Error interrupt    [WEAK]
-                EXPORT     UART2_RX_TX_IRQHandler  ; UART2 Receive/Transmit interrupt    [WEAK]
-                EXPORT     UART2_ERR_IRQHandler  ; UART2 Error interrupt    [WEAK]
-                EXPORT     UART3_RX_TX_IRQHandler  ; UART3 Receive/Transmit interrupt    [WEAK]
-                EXPORT     UART3_ERR_IRQHandler  ; UART3 Error interrupt    [WEAK]
-                EXPORT     ADC0_IRQHandler  ; ADC0 interrupt    [WEAK]
-                EXPORT     CMP0_IRQHandler  ; CMP0 interrupt    [WEAK]
-                EXPORT     CMP1_IRQHandler  ; CMP1 interrupt    [WEAK]
-                EXPORT     FTM0_IRQHandler  ; FTM0 fault, overflow and channels interrupt    [WEAK]
-                EXPORT     FTM1_IRQHandler  ; FTM1 fault, overflow and channels interrupt    [WEAK]
-                EXPORT     FTM2_IRQHandler  ; FTM2 fault, overflow and channels interrupt    [WEAK]
-                EXPORT     CMT_IRQHandler  ; CMT interrupt    [WEAK]
-                EXPORT     RTC_IRQHandler  ; RTC interrupt    [WEAK]
-                EXPORT     RTC_Seconds_IRQHandler  ; RTC seconds interrupt    [WEAK]
-                EXPORT     PIT0_IRQHandler  ; PIT timer channel 0 interrupt    [WEAK]
-                EXPORT     PIT1_IRQHandler  ; PIT timer channel 1 interrupt    [WEAK]
-                EXPORT     PIT2_IRQHandler  ; PIT timer channel 2 interrupt    [WEAK]
-                EXPORT     PIT3_IRQHandler  ; PIT timer channel 3 interrupt    [WEAK]
-                EXPORT     PDB0_IRQHandler  ; PDB0 Interrupt    [WEAK]
-                EXPORT     USB0_IRQHandler  ; USB0 interrupt    [WEAK]
-                EXPORT     USBDCD_IRQHandler  ; USBDCD Interrupt    [WEAK]
-                EXPORT     Reserved71_IRQHandler  ; Reserved interrupt    [WEAK]
-                EXPORT     DAC0_IRQHandler  ; DAC0 interrupt    [WEAK]
-                EXPORT     MCG_IRQHandler  ; MCG Interrupt    [WEAK]
-                EXPORT     LPTimer_IRQHandler  ; LPTimer interrupt    [WEAK]
-                EXPORT     PORTA_IRQHandler  ; Port A interrupt    [WEAK]
-                EXPORT     PORTB_IRQHandler  ; Port B interrupt    [WEAK]
-                EXPORT     PORTC_IRQHandler  ; Port C interrupt    [WEAK]
-                EXPORT     PORTD_IRQHandler  ; Port D interrupt    [WEAK]
-                EXPORT     PORTE_IRQHandler  ; Port E interrupt    [WEAK]
-                EXPORT     SWI_IRQHandler  ; Software interrupt    [WEAK]
-                EXPORT     SPI2_IRQHandler  ; SPI2 Interrupt    [WEAK]
-                EXPORT     UART4_RX_TX_IRQHandler  ; UART4 Receive/Transmit interrupt    [WEAK]
-                EXPORT     UART4_ERR_IRQHandler  ; UART4 Error interrupt    [WEAK]
-                EXPORT     UART5_RX_TX_IRQHandler  ; UART5 Receive/Transmit interrupt    [WEAK]
-                EXPORT     UART5_ERR_IRQHandler  ; UART5 Error interrupt    [WEAK]
-                EXPORT     CMP2_IRQHandler  ; CMP2 interrupt    [WEAK]
-                EXPORT     FTM3_IRQHandler  ; FTM3 fault, overflow and channels interrupt    [WEAK]
-                EXPORT     DAC1_IRQHandler  ; DAC1 interrupt    [WEAK]
-                EXPORT     ADC1_IRQHandler  ; ADC1 interrupt    [WEAK]
-                EXPORT     I2C2_IRQHandler  ; I2C2 interrupt    [WEAK]
-                EXPORT     CAN0_ORed_Message_buffer_IRQHandler  ; CAN0 OR'd message buffers interrupt    [WEAK]
-                EXPORT     CAN0_Bus_Off_IRQHandler  ; CAN0 bus off interrupt    [WEAK]
-                EXPORT     CAN0_Error_IRQHandler  ; CAN0 error interrupt    [WEAK]
-                EXPORT     CAN0_Tx_Warning_IRQHandler  ; CAN0 Tx warning interrupt    [WEAK]
-                EXPORT     CAN0_Rx_Warning_IRQHandler  ; CAN0 Rx warning interrupt    [WEAK]
-                EXPORT     CAN0_Wake_Up_IRQHandler  ; CAN0 wake up interrupt    [WEAK]
-                EXPORT     SDHC_IRQHandler  ; SDHC interrupt    [WEAK]
-                EXPORT     ENET_1588_Timer_IRQHandler  ; Ethernet MAC IEEE 1588 Timer Interrupt    [WEAK]
-                EXPORT     ENET_Transmit_IRQHandler  ; Ethernet MAC Transmit Interrupt    [WEAK]
-                EXPORT     ENET_Receive_IRQHandler  ; Ethernet MAC Receive Interrupt    [WEAK]
-                EXPORT     ENET_Error_IRQHandler  ; Ethernet MAC Error and miscelaneous Interrupt     [WEAK]
+                EXPORT     DMA0_IRQHandler  [WEAK]
+                EXPORT     DMA1_IRQHandler  [WEAK]
+                EXPORT     DMA2_IRQHandler  [WEAK]
+                EXPORT     DMA3_IRQHandler  [WEAK]
+                EXPORT     DMA4_IRQHandler  [WEAK]
+                EXPORT     DMA5_IRQHandler  [WEAK]
+                EXPORT     DMA6_IRQHandler  [WEAK]
+                EXPORT     DMA7_IRQHandler  [WEAK]
+                EXPORT     DMA8_IRQHandler  [WEAK]
+                EXPORT     DMA9_IRQHandler  [WEAK]
+                EXPORT     DMA10_IRQHandler  [WEAK]
+                EXPORT     DMA11_IRQHandler  [WEAK]
+                EXPORT     DMA12_IRQHandler  [WEAK]
+                EXPORT     DMA13_IRQHandler  [WEAK]
+                EXPORT     DMA14_IRQHandler  [WEAK]
+                EXPORT     DMA15_IRQHandler  [WEAK]
+                EXPORT     DMA_Error_IRQHandler   [WEAK]
+                EXPORT     MCM_IRQHandler  [WEAK]
+                EXPORT     FTFE_IRQHandler     [WEAK]
+                EXPORT     Read_Collision_IRQHandler      [WEAK]
+                EXPORT     LVD_LVW_IRQHandler       [WEAK]
+                EXPORT     LLW_IRQHandler       [WEAK]
+                EXPORT     Watchdog_IRQHandler  [WEAK]
+                EXPORT     RNG_IRQHandler  [WEAK]
+                EXPORT     I2C0_IRQHandler  [WEAK]
+                EXPORT     I2C1_IRQHandler  [WEAK]
+                EXPORT     SPI0_IRQHandler  [WEAK]
+                EXPORT     SPI1_IRQHandler  [WEAK]
+                EXPORT     I2S0_Tx_IRQHandler     [WEAK]
+                EXPORT     I2S0_Rx_IRQHandler      [WEAK]
+                EXPORT     UART0_LON_IRQHandler      [WEAK]
+                EXPORT     UART0_RX_TX_IRQHandler      [WEAK]
+                EXPORT     UART0_ERR_IRQHandler      [WEAK]
+                EXPORT     UART1_RX_TX_IRQHandler      [WEAK]
+                EXPORT     UART1_ERR_IRQHandler      [WEAK]
+                EXPORT     UART2_RX_TX_IRQHandler      [WEAK]
+                EXPORT     UART2_ERR_IRQHandler      [WEAK]
+                EXPORT     UART3_RX_TX_IRQHandler      [WEAK]
+                EXPORT     UART3_ERR_IRQHandler      [WEAK]
+                EXPORT     ADC0_IRQHandler  [WEAK]
+                EXPORT     CMP0_IRQHandler  [WEAK]
+                EXPORT     CMP1_IRQHandler  [WEAK]
+                EXPORT     FTM0_IRQHandler      [WEAK]
+                EXPORT     FTM1_IRQHandler      [WEAK]
+                EXPORT     FTM2_IRQHandler      [WEAK]
+                EXPORT     CMT_IRQHandler      [WEAK]
+                EXPORT     RTC_IRQHandler      [WEAK]
+                EXPORT     RTC_Seconds_IRQHandler      [WEAK]
+                EXPORT     PIT0_IRQHandler      [WEAK]
+                EXPORT     PIT1_IRQHandler      [WEAK]
+                EXPORT     PIT2_IRQHandler      [WEAK]
+                EXPORT     PIT3_IRQHandler      [WEAK]
+                EXPORT     PDB0_IRQHandler      [WEAK]
+                EXPORT     USB0_IRQHandler  [WEAK]
+                EXPORT     USBDCD_IRQHandler  [WEAK]
+                EXPORT     Reserved71_IRQHandler      [WEAK]
+                EXPORT     DAC0_IRQHandler     [WEAK]
+                EXPORT     MCG_IRQHandler      [WEAK]
+                EXPORT     LPTimer_IRQHandler    [WEAK]
+                EXPORT     PORTA_IRQHandler      [WEAK]
+                EXPORT     PORTB_IRQHandler      [WEAK]
+                EXPORT     PORTC_IRQHandler      [WEAK]
+                EXPORT     PORTD_IRQHandler      [WEAK]
+                EXPORT     PORTE_IRQHandler      [WEAK]
+                EXPORT     SWI_IRQHandler    [WEAK]
+                EXPORT     SPI2_IRQHandler  [WEAK]
+                EXPORT     UART4_RX_TX_IRQHandler  [WEAK]
+                EXPORT     UART4_ERR_IRQHandler  [WEAK]
+                EXPORT     UART5_RX_TX_IRQHandler  [WEAK]
+                EXPORT     UART5_ERR_IRQHandler  [WEAK]
+                EXPORT     CMP2_IRQHandler  [WEAK]
+                EXPORT     FTM3_IRQHandler  [WEAK]
+                EXPORT     DAC1_IRQHandler      [WEAK]
+                EXPORT     ADC1_IRQHandler      [WEAK]
+                EXPORT     I2C2_IRQHandler      [WEAK]
+                EXPORT     CAN0_ORed_Message_buffer_IRQHandler   [WEAK]
+                EXPORT     CAN0_Bus_Off_IRQHandler      [WEAK]
+                EXPORT     CAN0_Error_IRQHandler      [WEAK]
+                EXPORT     CAN0_Tx_Warning_IRQHandler  [WEAK]
+                EXPORT     CAN0_Rx_Warning_IRQHandler  [WEAK]
+                EXPORT     CAN0_Wake_Up_IRQHandler  [WEAK]
+                EXPORT     SDHC_IRQHandler  [WEAK]
+                EXPORT     ENET_1588_Timer_IRQHandler  [WEAK]
+                EXPORT     ENET_Transmit_IRQHandler  [WEAK]
+                EXPORT     ENET_Receive_IRQHandler  [WEAK]
+                EXPORT     ENET_Error_IRQHandler  [WEAK]
 
 DMA0_IRQHandler  ; DMA Channel 0 Transfer Complete
 DMA1_IRQHandler  ; DMA Channel 1 Transfer Complete
@@ -703,31 +682,4 @@ DefaultISR
 
 
                 ALIGN
-
-
-; User Initial Stack & Heap
-
-                IF      :DEF:__MICROLIB
-
-                EXPORT  __initial_sp
-                EXPORT  __heap_base
-                EXPORT  __heap_limit
-
-                ELSE
-
-                IMPORT  __use_two_region_memory
-                EXPORT  __user_initial_stackheap
-__user_initial_stackheap
-
-                LDR     R0, =  Heap_Mem
-                LDR     R1, =(Stack_Mem + Stack_Size)
-                LDR     R2, = (Heap_Mem +  Heap_Size)
-                LDR     R3, = Stack_Mem
-                BX      LR
-
-                ALIGN
-
-                ENDIF
-
-
                 END
