@@ -18,10 +18,17 @@
 #include "fsl_gpio_driver.h"
 
 uint32_t gpio_set(PinName pin) {
-    return 1;
+    uint32_t instance = pin >> GPIO_PORT_SHIFT;
+    uint32_t pin_num = pin & 0xFF;
+
+    port_hal_mux_control(instance, pin_num, kPortMuxAsGpio);
+    return 1 << pin_num;
 }
 
 void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
+    if (pin == NC)
+        return;
+
     if (direction) {
         obj->pinName = pin;
         obj->out_config.outputLogic = 0;
@@ -44,7 +51,6 @@ void gpio_mode(gpio_t *obj, PinMode mode) {
     uint32_t instance = obj->pinName >> GPIO_PORT_SHIFT;
     uint32_t pin = obj->pinName & 0xFF;
 
-    /* TODO: in KPSDK driver should be set pull */
     switch (mode) {
         case PullNone:
             obj->in_config.isPullEnable = false;
@@ -54,13 +60,13 @@ void gpio_mode(gpio_t *obj, PinMode mode) {
             break;
         case PullDown:
             obj->in_config.isPullEnable = true;
-            obj->in_config.pullSelect = kPortPullUp;
+            obj->in_config.pullSelect = kPortPullDown;
             port_hal_configure_pull(instance, pin, 1);
             port_hal_pull_select(instance, pin, kPortPullDown);
             break;
         case PullUp:
             obj->in_config.isPullEnable = true;
-            obj->in_config.pullSelect = kPortPullDown;
+            obj->in_config.pullSelect = kPortPullUp;
             port_hal_configure_pull(instance, pin, 1);
             port_hal_pull_select(instance, pin, kPortPullUp);
             break;

@@ -164,7 +164,6 @@ void sdk_gpio_inout_pin_init(const gpio_input_output_pin_t *inoutPin)
  *END**************************************************************************/
 uint32_t sdk_gpio_get_pin_direction(uint32_t pinName)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -173,7 +172,6 @@ uint32_t sdk_gpio_get_pin_direction(uint32_t pinName)
 
 void sdk_gpio_set_pin_direction(uint32_t pinName, gpio_pin_direction_t direction)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -188,7 +186,6 @@ void sdk_gpio_set_pin_direction(uint32_t pinName, gpio_pin_direction_t direction
  *END**************************************************************************/
 void sdk_gpio_write_pin_output(uint32_t pinName, uint32_t output)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -203,7 +200,6 @@ void sdk_gpio_write_pin_output(uint32_t pinName, uint32_t output)
  *END**************************************************************************/
 void sdk_gpio_set_pin_output(uint32_t pinName)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -218,7 +214,6 @@ void sdk_gpio_set_pin_output(uint32_t pinName)
  *END**************************************************************************/
 void sdk_gpio_clear_pin_output(uint32_t pinName)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -233,7 +228,6 @@ void sdk_gpio_clear_pin_output(uint32_t pinName)
  *END**************************************************************************/
 void sdk_gpio_toggle_pin_output(uint32_t pinName)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -248,7 +242,6 @@ void sdk_gpio_toggle_pin_output(uint32_t pinName)
  *END**************************************************************************/
 uint32_t sdk_gpio_read_pin_input(uint32_t pinName)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -264,7 +257,6 @@ uint32_t sdk_gpio_read_pin_input(uint32_t pinName)
  *END**************************************************************************/
 void sdk_gpio_configure_digital_filter(uint32_t pinName, bool isDigitalFilterEnabled)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
@@ -280,7 +272,6 @@ void sdk_gpio_configure_digital_filter(uint32_t pinName, bool isDigitalFilterEna
  *END**************************************************************************/
 void sdk_gpio_clear_pin_interrupt_flag(uint32_t pinName)
 {
-    // assert(pinName <= gpioPinCount);
     uint32_t gpioInstance = pinName  >> GPIO_PORT_SHIFT;
     uint32_t pin = pinName & 0xFF;
 
