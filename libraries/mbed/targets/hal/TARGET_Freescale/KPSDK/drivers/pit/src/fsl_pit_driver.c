@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 #include "fsl_pit_driver.h"
 #include "fsl_clock_manager.h"
 
@@ -38,7 +38,7 @@
 /* pit source clock variable which will be updated in pit_init. */
 uint64_t pitSourceClock;
 
-/* Table to save PIT IRQ enum numbers defined in CMSIS files. This table is 
+/* Table to save PIT IRQ enum numbers defined in CMSIS files. This table is
  * defined in fsl_pit_irq.c */
 extern IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT];
 
@@ -50,15 +50,15 @@ extern IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT];
  *
  * Function Name : pit_init
  * Description   : Initialize PIT in peripheral level.
- * This function will un-gate the PIT clock and enable PIT module automatically. 
- * Users should define the config structure and pass it in. Timers will not 
+ * This function will un-gate the PIT clock and enable PIT module automatically.
+ * Users should define the config structure and pass it in. Timers will not
  * start counting after calling this function as default. Function pit_timer_start
  * need to be called to start timer counting. Periods set in this function are
  * only in unit of count. Call pit_set_timer_period_us to re-set the period in unit
  * of microseconds before starting timers.
  *
  *END**************************************************************************/
-void pit_init(const pit_config_t * config)
+void sdk_pit_init(const pit_config_t * config)
 {
     uint32_t i, busClock;
 
@@ -70,7 +70,7 @@ void pit_init(const pit_config_t * config)
 
     /* Set timer run or stop in debug mode*/
     pit_hal_configure_timer_run_in_debug(config->isRunInDebug);
-   
+
     /* Configure timer channels*/
     for(i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
     {
@@ -91,20 +91,20 @@ void pit_init(const pit_config_t * config)
             /* Enable PIT interrupt.*/
             NVIC_EnableIRQ(pit_irq_ids[i]);
         }
-    } 
-    
+    }
+
     /* Finally, update pit source clock frequency.*/
-    clock_manager_get_frequency(kBusClock, &busClock);    
+    clock_manager_get_frequency(kBusClock, &busClock);
     pitSourceClock = (uint64_t)busClock;
 }
 
 /*FUNCTION**********************************************************************
  *
- * Function Name : pit_shutdown 
+ * Function Name : pit_shutdown
  * Description   : Disable PIT module and gate control
  * This function will disable all PIT interrupts and PIT clock. Then gate the
  * PIT clock control. pit_init must be called in order to use PIT again.
- * 
+ *
  *END**************************************************************************/
 void pit_shutdown(void)
 {
@@ -130,7 +130,7 @@ void pit_shutdown(void)
  * After calling this function, timers load period value, count down to 0 and
  * then load the respective start value again. Each time a timer reaches 0,
  * it will generate a trigger pulse and set the timeout interrupt flag.
- * 
+ *
  *END**************************************************************************/
 void pit_timer_start(uint32_t timer)
 {
@@ -155,7 +155,7 @@ void pit_timer_stop(uint32_t timer)
  * Function Name : pit_set_timer_period_us
  * Description   : Set timer period in microseconds unit.
  * The period range depends on the frequency of PIT source clock. If required
- * period is out the range, try to use lifetime timer if applicable. 
+ * period is out the range, try to use lifetime timer if applicable.
  *
  *END**************************************************************************/
 void pit_set_timer_period_us(uint32_t timer, uint32_t us)
@@ -172,7 +172,7 @@ void pit_set_timer_period_us(uint32_t timer, uint32_t us)
  * This function will return an absolute time stamp in the unit of microseconds.
  * One common use of this function is to measure the running time of part of
  * code. Just call this function at both the beginning and end of code, the time
- * difference between these two time stamp will be the running time (Need to 
+ * difference between these two time stamp will be the running time (Need to
  * make sure the running time will not exceed the timer period). Also, the time
  * stamp returned is up-counting.
  *
@@ -200,7 +200,7 @@ uint32_t pit_read_timer_us(uint32_t timer)
 void pit_set_lifetime_timer_period_us(uint64_t us)
 {
     uint64_t lifeTimeCount;
-    
+
     /* Calculate the counter value.*/
     lifeTimeCount = us * pitSourceClock / 1000000U - 1U;
 
@@ -213,7 +213,7 @@ void pit_set_lifetime_timer_period_us(uint64_t us)
  *
  * Function Name : pit_read_lifetime_timer_us
  * Description   : Read current lifetime value in microseconds unit.
- * Return an absolute time stamp in the unit of microseconds. The time stamp 
+ * Return an absolute time stamp in the unit of microseconds. The time stamp
  * value will not exceed the timer period. Also, the timer is up-counting.
  *
  *END**************************************************************************/

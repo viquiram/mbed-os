@@ -29,11 +29,11 @@
  */
 #ifndef __FSL_PIT_DRIVER_H__
 #define __FSL_PIT_DRIVER_H__
- 
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "fsl_pit_hal.h"
- 
+
 /*!
  * @addtogroup pit_driver
  * @{
@@ -47,7 +47,7 @@
  * @brief PIT timer configuration structure
  *
  * Define structure PitConfig and use pit_init() to make necessary initializations.
- * You may also use remaining functions for PIT configuration. The timer chain and 
+ * You may also use remaining functions for PIT configuration. The timer chain and
  * lifetime timer features are only available in specific MCUs.
  */
 typedef struct PitTimerConfig {
@@ -70,7 +70,7 @@ typedef void (*pit_isr_callback_t)(void);
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -82,21 +82,21 @@ extern "C" {
 
 /*!
  * @brief Initialize PIT in peripheral driver level.
- * 
- * This function un-gates the PIT clock and enables the PIT module automatically. 
- * Users should define the config structure and pass it in. Timers do not 
+ *
+ * This function un-gates the PIT clock and enables the PIT module automatically.
+ * Users should define the config structure and pass it in. Timers do not
  * start counting after calling this function by default. Function pit_timer_start
  * must be called to start timer counting. Periods set in this function are
- * only in units of count. Call pit_set_timer_period_us to re-set the period in 
+ * only in units of count. Call pit_set_timer_period_us to re-set the period in
  * microsecond units before starting timers.
  *
  * Here is an example demonstrating how to define a PIT config structure:
    @code
    pit_config_t pitTestInit = {
-        .isRunInDebug = false,  
+        .isRunInDebug = false,
         .timers[0].isInterruptEnabled = true,
         // Only valid when chain feature is available.
-        .timers[0].isTimerChained = false, 
+        .timers[0].isTimerChained = false,
         .timers[0].period = 0x1234FFFF,
         .timers[1].isInterruptEnabled = false,
         .timers[1].isTimerChained = false,
@@ -106,7 +106,7 @@ extern "C" {
  *
  * @param config PIT configuration data.
  */
-void pit_init(const pit_config_t * config);
+void sdk_pit_init(const pit_config_t * config);
 
 /*!
  * @brief Disable PIT module and gate control.
@@ -119,7 +119,7 @@ void pit_shutdown(void);
 /* @} */
 
 /*!
- * @name Timer Start and Stop 
+ * @name Timer Start and Stop
  * @{
  */
 
@@ -155,8 +155,8 @@ void pit_timer_stop(uint32_t timer);
  * @brief Set timer period in microsecond units.
  *
  * The period range depends on the frequency of PIT source clock. If the required period
- * is out of range, use the lifetime timer, if applicable. 
- * 
+ * is out of range, use the lifetime timer, if applicable.
+ *
  * @param timer Timer channel number.
  * @param us Timer period in microseconds.
  */
@@ -164,11 +164,11 @@ void pit_set_timer_period_us(uint32_t timer, uint32_t us);
 
 /*!
  * @brief Read current timer value in microsecond units.
- * 
+ *
  * This function returns an absolute time stamp in microsecond units.
  * One common use of this function is to measure the running time of a part of
  * code. Call this function at both the beginning and end of code; the time
- * difference between these two time stamps is the running time (Make sure the 
+ * difference between these two time stamps is the running time (Make sure the
  * running time will not exceed the timer period). The time stamp returned is
  * up-counting.
  *
@@ -180,7 +180,7 @@ uint32_t pit_read_timer_us(uint32_t timer);
 #if FSL_FEATURE_PIT_HAS_LIFETIME_TIMER
 /*!
  * @brief Set lifetime timer period.
- * 
+ *
  * Timer 1 must be chained with timer 0 before using the lifetime timer. The period
  * range is restricted by "period * pitSourceClock < max of an uint64_t integer",
  * or it may cause an overflow and be unable to set the correct period.
@@ -192,7 +192,7 @@ void pit_set_lifetime_timer_period_us(uint64_t us);
 /*!
  * @brief Read current lifetime value in microseconds.
  *
- * This feature returns an absolute time stamp in microsecond units. The time stamp 
+ * This feature returns an absolute time stamp in microsecond units. The time stamp
  * value will not exceed the timer period. The timer is up-counting.
  *
  * @return Current lifetime timer value in microseconds.
@@ -203,14 +203,14 @@ uint64_t pit_read_lifetime_timer_us(void);
 /* @} */
 
 /*!
- * @name ISR Callback Function 
+ * @name ISR Callback Function
  * @{
  */
 
 /*!
- * @brief Register pit isr callback function. 
+ * @brief Register pit isr callback function.
  *
- * System default ISR interfaces are already defined in fsl_pit_irq.c. Users 
+ * System default ISR interfaces are already defined in fsl_pit_irq.c. Users
  * can either edit these ISRs or use this function to register a callback
  * function. The default ISR runs the callback function if there is one
  * installed.
@@ -225,9 +225,9 @@ void pit_register_isr_callback_function(uint32_t timer, pit_isr_callback_t funct
 #if defined(__cplusplus)
 }
 #endif
- 
+
 /*! @}*/
- 
+
 #endif /* __FSL_PIT_DRIVER_H__*/
 /*******************************************************************************
  * EOF

@@ -16,6 +16,8 @@
 #include <stddef.h>
 #include "us_ticker_api.h"
 #include "PeripheralNames.h"
+#include "fsl_pit_driver.h"
+#include "fsl_clock_manager.h"
 
 static void pit_init(void);
 static void lptmr_init(void);
@@ -23,22 +25,38 @@ static void lptmr_init(void);
 static int us_ticker_inited = 0;
 
 void us_ticker_init(void) {
+    if (us_ticker_inited)
+        return;
+    us_ticker_inited = 1;
 
+    pit_init();
+    lptmr_init();
 }
 
-static uint32_t pit_us_ticker_counter = 0;
-
-void pit0_isr(void) {
-
-}
 
 uint32_t us_ticker_read() {
+    if (!us_ticker_inited)
+        us_ticker_init();
+
+    return ~(pit_hal_read_timer_count(1));
 }
 /******************************************************************************
  * Timer for us timing.
  ******************************************************************************/
 static void pit_init(void) {
+    pit_config_t config = {0};
+    uint32_t busClock;
 
+    clock_manager_get_frequency(kBusClock, &busClock);
+    config.timers[0].period = busClock / 1000000 - 1;
+    config.isRunInDebug = true;
+    config.timers[0].isInterruptEnabled = false;
+    config.timers[1].isInterruptEnabled = false;
+    config.timers[1].period = 0xFFFFFFFF;
+    config.timers[1].isTimerChained = true;
+    sdk_pit_init((const pit_config_t *)&config);
+    pit_timer_start(0);
+    pit_timer_start(1);
 }
 
 /******************************************************************************
