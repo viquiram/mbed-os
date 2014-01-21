@@ -23,10 +23,7 @@ extern "C" {
 #endif
 
 typedef struct {
-    uint32_t pinName;                    /*!< Virtual pin name from enum defined by user.*/
-    gpio_input_pin_config_t in_config;   /*!< Input pin configuration structure.*/
-    gpio_output_pin_config_t out_config; /*!< Input pin configuration structure.*/
-    uint8_t isOutput;               /*!< Input/Output */
+    uint32_t pinName;
 } gpio_t;
 
 static inline void gpio_write(gpio_t *obj, int value) {

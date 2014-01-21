@@ -30,20 +30,21 @@ void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
         return;
 
     if (direction) {
+        gpio_output_pin_t output = {0};
+
         obj->pinName = pin;
-        obj->out_config.outputLogic = 0;
-        obj->out_config.slewRate = kPortSlowSlewRate;
-        obj->out_config.driveStrength = kPortLowDriveStrength,
-        obj->isOutput = true;
-        sdk_gpio_inout_pin_init((const gpio_input_output_pin_t *)obj);
+        output.config.outputLogic = 0;
+        output.config.slewRate = kPortSlowSlewRate;
+        output.config.driveStrength = kPortLowDriveStrength,
+        sdk_gpio_output_pin_init((const gpio_output_pin_t *)&output);
     } else {
+        gpio_input_pin_t input = {0};
         obj->pinName = pin;
-        obj->in_config.isPullEnable = true;
-        obj->in_config.pullSelect = kPortPullUp;
-        obj->in_config.isPassiveFilterEnabled = false;
-        obj->in_config.interrupt = kPortIntDisabled;
-        obj->isOutput = false;
-        sdk_gpio_inout_pin_init((const gpio_input_output_pin_t *)obj);
+        input.config.isPullEnable = true;
+        input.config.pullSelect = kPortPullUp;
+        input.config.isPassiveFilterEnabled = false;
+        input.config.interrupt = kPortIntDisabled;
+        sdk_gpio_input_pin_init((const gpio_input_pin_t *)&input);
     }
 }
 
@@ -53,20 +54,14 @@ void gpio_mode(gpio_t *obj, PinMode mode) {
 
     switch (mode) {
         case PullNone:
-            obj->in_config.isPullEnable = false;
-            obj->in_config.pullSelect = kPortPullDown;
             port_hal_configure_pull(instance, pin, 0);
             port_hal_pull_select(instance, pin, kPortPullDown);
             break;
         case PullDown:
-            obj->in_config.isPullEnable = true;
-            obj->in_config.pullSelect = kPortPullDown;
             port_hal_configure_pull(instance, pin, 1);
             port_hal_pull_select(instance, pin, kPortPullDown);
             break;
         case PullUp:
-            obj->in_config.isPullEnable = true;
-            obj->in_config.pullSelect = kPortPullUp;
             port_hal_configure_pull(instance, pin, 1);
             port_hal_pull_select(instance, pin, kPortPullUp);
             break;
@@ -78,11 +73,9 @@ void gpio_mode(gpio_t *obj, PinMode mode) {
 void gpio_dir(gpio_t *obj, PinDirection direction) {
     switch (direction) {
         case PIN_INPUT:
-            obj->isOutput = false;
             sdk_gpio_set_pin_direction(obj->pinName, kGpioDigitalInput);
             break;
         case PIN_OUTPUT:
-            obj->isOutput = true;
             sdk_gpio_set_pin_direction(obj->pinName, kGpioDigitalOutput);
             break;
     }
