@@ -83,16 +83,6 @@
 #define GPIO_PORT_SHIFT 12
 
 /*!
- * @brief gpio pin lookup table defined by user.
- *
- * This array is a n*2 array to save actual port and pin number. Must be declared
- * exactly as "const uint8_t gpioPinLookupTable[][2]" in user's file.
- * Column 1 are port instances (eg, HW_GPIOA), column 2 are pin numbers between
- * 0 to 31 in corresponding port instance.
- */
-extern const uint8_t gpioPinLookupTable[][2];
-
-/*!
  * @brief gpio input pin configuration structure.
  *
  * Although every pin is configurable for these features, valid configurations
@@ -150,13 +140,6 @@ typedef struct gpioOutputPin {
     gpio_output_pin_config_t config;/*!< Input pin configuration structure.*/
 } gpio_output_pin_t;
 
-typedef struct gpioInputOutputPin {
-    uint32_t pinName;                    /*!< Virtual pin name from enum defined by user.*/
-    gpio_input_pin_config_t in_config;   /*!< Input pin configuration structure.*/
-    gpio_output_pin_config_t out_config; /*!< Input pin configuration structure.*/
-    bool isOutput;               /*!< Input/Output */
-} gpio_input_output_pin_t;
-
 /*! @brief gpio ISR callback function*/
 typedef void (*gpio_isr_callback_t)(void);
 
@@ -206,8 +189,6 @@ void sdk_gpio_init(const gpio_input_pin_t * inputPins, const gpio_output_pin_t *
 void sdk_gpio_input_pin_init(const gpio_input_pin_t *inputPin);
 
 void sdk_gpio_output_pin_init(const gpio_output_pin_t *outputPin);
-
-void sdk_gpio_inout_pin_init(const gpio_input_output_pin_t *pin);
 
 void sdk_gpio_set_pin_direction(uint32_t pinName, gpio_pin_direction_t direction);
 

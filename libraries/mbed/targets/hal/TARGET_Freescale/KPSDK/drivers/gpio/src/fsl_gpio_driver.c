@@ -35,7 +35,6 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-uint32_t gpioPinCount;
 extern IRQn_Type gpio_irq_ids[HW_PORT_INSTANCE_COUNT];
 
 /*******************************************************************************
@@ -138,22 +137,6 @@ void sdk_gpio_output_pin_init(const gpio_output_pin_t *outputPin)
     uint32_t pin = outputPin->pinName & 0xFF;
 
     sdk_gpio_output_pin_config(&outputPin->config, gpioInstance, pin);
-}
-
-void sdk_gpio_inout_pin_init(const gpio_input_output_pin_t *inoutPin)
-{
-    /* Get actual port and pin number.*/
-    uint32_t gpioInstance = inoutPin->pinName  >> GPIO_PORT_SHIFT;
-    uint32_t pin = inoutPin->pinName & 0xFF;
-
-    if (inoutPin->isOutput)
-    {
-        sdk_gpio_output_pin_config(&inoutPin->out_config, gpioInstance, pin);
-    }
-    else
-    {
-        sdk_gpio_input_pin_config(&inoutPin->in_config, gpioInstance, pin);
-    }
 }
 
 /*FUNCTION**********************************************************************
