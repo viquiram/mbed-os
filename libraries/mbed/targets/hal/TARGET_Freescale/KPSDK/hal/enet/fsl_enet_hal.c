@@ -37,7 +37,7 @@
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_set_mac_address
- * Description: Set enet mac physical address.
+ * Description: Set ENET mac physical address.
  * 
  *END*********************************************************************/
 void enet_hal_set_mac_address(uint32_t instance, enetMacAddr hwAddr)
@@ -56,20 +56,20 @@ void enet_hal_set_mac_address(uint32_t instance, enetMacAddr hwAddr)
  *
  * Function Name: enet_hal_set_group_hashtable
  * Description: Set multicast group address hash value to the mac register
- * To join the mutlicast group address.
+ * To join the multicast group address.
  *END*********************************************************************/
 void enet_hal_set_group_hashtable(uint32_t instance, uint32_t crcValue, enet_special_address_filter_t mode)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT); 
 	
-    switch(mode)
+    switch (mode)
     {
-        case kEnetSpecialAddressInit:           /* Clear group address register on enet initialize */
+        case kEnetSpecialAddressInit:           /* Clear group address register on ENET initialize */
             HW_ENET_GALR_SET(instance,0);
             HW_ENET_GAUR_SET(instance,0);			
             break;
         case kEnetSpecialAddressEnable:         /* Enable a multicast group address*/
-            if(!((crcValue >> 31) & 1U))
+            if (!((crcValue >> 31) & 1U))
             {
                 HW_ENET_GALR_SET(instance,(1U << ((crcValue >> 26) & kEnetHashValMask))); 
             }
@@ -79,7 +79,7 @@ void enet_hal_set_group_hashtable(uint32_t instance, uint32_t crcValue, enet_spe
             }
             break;
         case kEnetSpecialAddressDisable:       /* Disable a multicast group address*/
-            if(!((crcValue >> 31) & 1U))
+            if (!((crcValue >> 31) & 1U))
             {
                 HW_ENET_GALR_CLR(instance,(1U << ((crcValue >> 26) & kEnetHashValMask)));
             }
@@ -97,15 +97,15 @@ void enet_hal_set_group_hashtable(uint32_t instance, uint32_t crcValue, enet_spe
  *
  * Function Name: enet_hal_set_individual_hashtable 
  * Description: Set a specific unicast address hash value to the mac register
- * To receive frames with the individul destination address.  
+ * To receive frames with the individual destination address.  
  *END*********************************************************************/
 void enet_hal_set_individual_hashtable(uint32_t instance, uint32_t crcValue, enet_special_address_filter_t mode)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT); 
 	
-    switch(mode)
+    switch (mode)
     {
-        case kEnetSpecialAddressInit:         /* Clear individual address register on enet initialize */
+        case kEnetSpecialAddressInit:         /* Clear individual address register on ENET initialize */
             HW_ENET_IALR_SET(instance,0);
             HW_ENET_IAUR_SET(instance,0);			
             break;
@@ -137,7 +137,7 @@ void enet_hal_set_individual_hashtable(uint32_t instance, uint32_t crcValue, ene
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_tx_fifo
- * Description: Configure enet transmit FIFO.  
+ * Description: Configure ENET transmit FIFO.  
  *END*********************************************************************/
 void enet_hal_config_tx_fifo(uint32_t instance, enet_config_tx_fifo_t *thresholdCfg)
 {
@@ -154,7 +154,7 @@ void enet_hal_config_tx_fifo(uint32_t instance, enet_config_tx_fifo_t *threshold
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_rx_fifo
- * Description: Configure enet receive FIFO.  
+ * Description: Configure ENET receive FIFO.  
  *END*********************************************************************/
 void enet_hal_config_rx_fifo(uint32_t instance,enet_config_rx_fifo_t *thresholdCfg )
 {
@@ -186,7 +186,7 @@ void enet_hal_init_bd_address(uint32_t instance, uint32_t rxBdAddr, uint32_t txB
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_init_rxbds
- * Description: Initialize enet receive buffer descriptors.
+ * Description: Initialize ENET receive buffer descriptors.
  *END*********************************************************************/
 void enet_hal_init_rxbds(void *rxBds, uint8_t *buffer, bool isLastBd)
 {
@@ -208,7 +208,7 @@ void enet_hal_init_rxbds(void *rxBds, uint8_t *buffer, bool isLastBd)
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_init_txbds
- * Description: Initialize enet transmit buffer descriptors.
+ * Description: Initialize ENET transmit buffer descriptors.
  *END*********************************************************************/
 void enet_hal_init_txbds(void *txBds, bool isLastBd)
 {
@@ -226,16 +226,16 @@ void enet_hal_init_txbds(void *txBds, bool isLastBd)
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_update_rxbds
- * Description: Update enet receive buffer descriptors.
+ * Description: Update ENET receive buffer descriptors.
  *END*********************************************************************/
 void enet_hal_update_rxbds(void *rxBds, uint8_t *data, bool isbufferUpdate)
 {
     assert(rxBds);
 
-	if(isbufferUpdate)
+    if (isbufferUpdate)
     {
         ((enet_bd_struct_t *)rxBds)->buffer = (uint8_t *)HTONL((uint32_t)data);
-	}
+    }
     ((enet_bd_struct_t *)rxBds)->control &= kEnetRxBdWrap;  /* Clear status*/
     ((enet_bd_struct_t *)rxBds)->control |= kEnetRxBdEmpty;   /* Set rx bd empty*/
     ((enet_bd_struct_t *)rxBds)->controlExtend1 |= kEnetRxBdIntrrupt;/* Enable interrupt*/
@@ -244,7 +244,7 @@ void enet_hal_update_rxbds(void *rxBds, uint8_t *data, bool isbufferUpdate)
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_update_txbds
- * Description: Update enet transmit buffer descriptors.
+ * Description: Update ENET transmit buffer descriptors.
  *END*********************************************************************/
 void enet_hal_update_txbds(void *txBds,uint8_t *buffer, uint16_t length, bool isTxtsCfged)
 {
@@ -254,7 +254,7 @@ void enet_hal_update_txbds(void *txBds,uint8_t *buffer, uint16_t length, bool is
     ((enet_bd_struct_t *)txBds)->length = HTONS(length); /* Set data length*/
     ((enet_bd_struct_t *)txBds)->buffer = (uint8_t *)HTONL((uint32_t)buffer); /* Set data buffer*/
     ((enet_bd_struct_t *)txBds)->control |= kEnetTxBdLast | kEnetTxBdTransmitCrc | kEnetTxBdReady;/* set control */
-    if(isTxtsCfged)
+    if (isTxtsCfged)
     {
          /* Set receive and timestamp interrupt*/
         ((enet_bd_struct_t *)txBds)->controlExtend1 |= (kEnetTxBdTxInterrupt | kEnetTxBdTimeStamp);	
@@ -281,7 +281,7 @@ uint16_t enet_hal_get_rxbd_control(void *curBd)
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_get_txbd_control
- * Description: Get enet transmit buffer descriptor control and status data.
+ * Description: Get ENET transmit buffer descriptor control and status data.
  *END*********************************************************************/
 uint16_t enet_hal_get_txbd_control(void *curBd)
 {
@@ -293,7 +293,7 @@ uint16_t enet_hal_get_txbd_control(void *curBd)
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_get_rxbd_control_extend
- * Description: Get enet receive buffer descriptor extended control region.
+ * Description: Get ENET receive buffer descriptor extended control region.
  *END*********************************************************************/
 bool enet_hal_get_rxbd_control_extend(void *curBd,enet_rx_bd_control_extend_t controlRegion)
 {
@@ -323,7 +323,7 @@ bool enet_hal_get_rxbd_control_extend(void *curBd,enet_rx_bd_control_extend_t co
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_get_txbd_control_extend
- * Description: Get enet transmit buffer descriptor extended control region.
+ * Description: Get ENET transmit buffer descriptor extended control region.
  *END*********************************************************************/
 uint16_t enet_hal_get_txbd_control_extend(void *curBd)
 {
@@ -335,7 +335,7 @@ uint16_t enet_hal_get_txbd_control_extend(void *curBd)
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_get_txbd_timestamp_flag
- * Description: Get enet transmit buffer descriptor timestamp region.
+ * Description: Get ENET transmit buffer descriptor timestamp region.
  *END*********************************************************************/
 bool enet_hal_get_txbd_timestamp_flag(void *curBd)
 {
@@ -389,13 +389,13 @@ void enet_hal_set_mii_command(uint32_t instance, uint32_t phyAddr, uint32_t phyR
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_etherent
- * Description: Enable or disable normal ethernet mode and enhanced mode.
+ * Description: Enable or disable normal Ethernet mode and enhanced mode.
  *END*********************************************************************/
 void enet_hal_config_ethernet(uint32_t instance, bool isEnhanced, bool isEnabled)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 		
-    BW_ENET_ECR_ETHEREN(instance,isEnabled);     /* Enable/Diable ethernet module*/
+    BW_ENET_ECR_ETHEREN(instance,isEnabled);     /* Enable/Disable Ethernet module*/
     if (isEnhanced)
     {
         BW_ENET_ECR_EN1588(instance,isEnabled);	 /* Enable/Disable enhanced frame feature*/
@@ -405,7 +405,7 @@ void enet_hal_config_ethernet(uint32_t instance, bool isEnhanced, bool isEnabled
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_interrupt
- * Description: Enable or disable different ethernet interrupts.
+ * Description: Enable or disable different Ethernet interrupts.
  *END*********************************************************************/
 void enet_hal_config_interrupt(uint32_t instance, uint32_t source, bool isEnabled)
 {
@@ -424,7 +424,7 @@ void enet_hal_config_interrupt(uint32_t instance, uint32_t source, bool isEnable
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_tx_acceleator
- * Description: Configure ethernet transmit accelerator features.
+ * Description: Configure Ethernet transmit accelerator features.
  *END*********************************************************************/
 void enet_hal_config_tx_accelerator(uint32_t instance, enet_config_tx_accelerator_t *txCfgPtr)
 {
@@ -440,7 +440,7 @@ void enet_hal_config_tx_accelerator(uint32_t instance, enet_config_tx_accelerato
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_rx_acceleator
- * Description: Configure ethernet receive accelerator features.
+ * Description: Configure Ethernet receive accelerator features.
  *END*********************************************************************/
 void enet_hal_config_rx_accelerator(uint32_t instance, enet_config_rx_accelerator_t *rxCfgPtr)
 {
@@ -458,7 +458,7 @@ void enet_hal_config_rx_accelerator(uint32_t instance, enet_config_rx_accelerato
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_init_ptp_timer
- * Description: Initialize ethernet ptp timer.
+ * Description: Initialize Ethernet ptp timer.
  *END*********************************************************************/
 void enet_hal_init_ptp_timer(uint32_t instance,enet_config_ptp_timer_t *ptpCfgPtr)
 {

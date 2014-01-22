@@ -75,11 +75,11 @@
 #define SDHC_HAL_MAX_DVS                (16U)
 #define SDHC_HAL_INITIAL_DVS            (1U)            /* initial value of divisor to calculate clock rate */
 #define SDHC_HAL_INITIAL_CLKFS          (2U)            /* initial value of clock selector to calculate clock rate */
-#define SDHC_HAL_NEXT_DVS(x)            (x += 1)
-#define SDHC_HAL_PREV_DVS(x)            (x -= 1)
+#define SDHC_HAL_NEXT_DVS(x)            do { ((x) += 1); } while(0)
+#define SDHC_HAL_PREV_DVS(x)            do { ((x) -= 1); } while(0)
 #define SDHC_HAL_MAX_CLKFS              (256U)
-#define SDHC_HAL_NEXT_CLKFS(x)          (x <<= 1)
-#define SDHC_HAL_PREV_CLKFS(x)          (x >>= 1)
+#define SDHC_HAL_NEXT_CLKFS(x)          do { ((x) <<= 1); } while(0)
+#define SDHC_HAL_PREV_CLKFS(x)          do { ((x) >>= 1); } while(0)
 
 /* IRQSTAT */
 #define SDHC_HAL_CMD_COMPLETE_INT       BM_SDHC_IRQSTAT_CC
@@ -137,24 +137,39 @@
 #define SDHC_HAL_DMA_ERROR_EVENT            BM_SDHC_FEVT_DMAE
 
 /* MMCBOOT */
-#define SDHC_HAL_MMCBOOT_NORMAL_BOOT        (0U)
-#define SDHC_HAL_MMCBOOT_ALTER_BOOT         (1U)
+typedef enum _sdhc_hal_mmcboot
+{
+    kSDHC_HAL_MMCBOOT_Normal = 0,
+    kSDHC_HAL_MMCBOOT_Alter = 1,
+} sdhc_hal_mmcboot_t;
 
 /* PROCTL */
-#define SDHC_HAL_LED_OFF                    (0U)
-#define SDHC_HAL_LED_ON                     (1U)
+typedef enum _sdhc_hal_led
+{
+    kSDHC_HAL_LED_Off = 0,
+    kSDHC_HAL_LED_On = 1,
+} sdhc_hal_led_t;
 
-#define SDHC_HAL_1_BIT_MODE                 (0U)
-#define SDHC_HAL_4_BIT_MODE                 (1U)
-#define SDHC_HAL_8_BIT_MODE                 (2U)
+typedef enum _sdhc_hal_dtw
+{
+    kSDHC_HAL_DTW_1Bit = 0,
+    kSDHC_HAL_DTW_4Bit = 1,
+    kSDHC_HAL_DTW_8Bit = 2,
+} sdhc_hal_dtw_t;
 
-#define SDHC_HAL_BIG_ENDIAN_MODE            (0U)
-#define SDHC_HAL_HALF_WORD_BIG_ENDIAN_MODE  (1U)
-#define SDHC_HAL_LITTLE_ENDIAN_MODE         (2U)
+typedef enum _sdhc_hal_endian
+{
+    kSDHC_HAL_ENDIAN_Big = 0,
+    kSDHC_HAL_ENDIAN_HalfWordBig = 1,
+    kSDHC_HAL_ENDIAN_Little = 2,
+} sdhc_hal_endian_t;
 
-#define SDHC_HAL_NO_DMA_OR_SDMA_MODE        (0U)
-#define SDHC_HAL_ADMA1_MODE                 (1U)
-#define SDHC_HAL_ADMA2_MODE                 (2U)
+typedef enum _sdhc_hal_dma_mode
+{
+    kSDHC_HAL_DMA_NoOrSimple = 0,
+    kSDHC_HAL_DMA_Adma1 = 1,
+    kSDHC_HAL_DMA_Adma2 = 2,
+} sdhc_hal_dma_mode_t;
 
 #define SDHC_HAL_RST_TYPE_ALL               BM_SDHC_SYSCTL_RSTA
 #define SDHC_HAL_RST_TYPE_CMD               BM_SDHC_SYSCTL_RSTC
@@ -513,7 +528,7 @@ static inline uint32_t sdhc_hal_get_data_line_level(uint8_t instance)
  * @param instance sdhc instance id
  * @param state the LED state
  */
-static inline void sdhc_hal_set_led_state(uint8_t instance, uint32_t state)
+static inline void sdhc_hal_set_led_state(uint8_t instance, sdhc_hal_led_t state)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
     BW_SDHC_PROCTL_LCTL(state);
@@ -525,7 +540,7 @@ static inline void sdhc_hal_set_led_state(uint8_t instance, uint32_t state)
  * @param instance sdhc instance id
  * @param dtw data transfer width
  */
-static inline void sdhc_hal_set_data_trans_width(uint8_t instance, uint32_t dtw)
+static inline void sdhc_hal_set_data_trans_width(uint8_t instance, sdhc_hal_dtw_t dtw)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
     BW_SDHC_PROCTL_DTW(dtw);
@@ -560,7 +575,7 @@ static inline void sdhc_hal_enable_d3cd(uint8_t instance, bool isEnabled)
  * @param instance sdhc instance id
  * @param endianMode endian mode
  */
-static inline void sdhc_hal_set_endian(uint8_t instance, uint32_t endianMode)
+static inline void sdhc_hal_set_endian(uint8_t instance, sdhc_hal_endian_t endianMode)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
     BW_SDHC_PROCTL_EMODE(endianMode);
@@ -596,7 +611,7 @@ static inline void sdhc_hal_enable_cd_test(uint8_t instance, bool isEnabled)
 * @param instance sdhc instance id
 * @param dmaMode the DMA mode
 */
-static inline void sdhc_hal_set_dma_mode(uint8_t instance, uint32_t dmaMode)
+static inline void sdhc_hal_set_dma_mode(uint8_t instance, sdhc_hal_dma_mode_t dmaMode)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
     BW_SDHC_PROCTL_DMAS(dmaMode);
@@ -1161,7 +1176,7 @@ static inline void sdhc_hal_enable_boot_ack(uint8_t instance, bool isEnabled)
 * @param instance sdhc instance id
 * @param mode the boot mode
 */
-static inline void sdhc_hal_set_boot_mode(uint8_t instance, uint32_t mode)
+static inline void sdhc_hal_set_boot_mode(uint8_t instance, sdhc_hal_mmcboot_t mode)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
     BW_SDHC_MMCBOOT_BOOTMODE(mode);

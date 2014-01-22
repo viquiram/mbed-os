@@ -17,6 +17,7 @@
 #include "us_ticker_api.h"
 #include "PeripheralNames.h"
 #include "fsl_pit_driver.h"
+#include "fsl_sim_hal.h"
 #include "fsl_clock_manager.h"
 
 static void pit_init(void);
@@ -44,19 +45,17 @@ uint32_t us_ticker_read() {
  * Timer for us timing.
  ******************************************************************************/
 static void pit_init(void) {
-    pit_config_t config = {0};
     uint32_t busClock;
 
+    clock_hal_set_gate(kSimClockModulePIT, 0, true);
+    pit_hal_enable();
     clock_manager_get_frequency(kBusClock, &busClock);
-    config.timers[0].period = busClock / 1000000 - 1;
-    config.isRunInDebug = true;
-    config.timers[0].isInterruptEnabled = false;
-    config.timers[1].isInterruptEnabled = false;
-    config.timers[1].period = 0xFFFFFFFF;
-    config.timers[1].isTimerChained = true;
-    sdk_pit_init((const pit_config_t *)&config);
-    pit_timer_start(0);
-    pit_timer_start(1);
+    pit_hal_set_timer_period_count(0, busClock / 1000000 - 1);
+    pit_hal_set_timer_period_count(1, 0xFFFFFFFF);
+    pit_hal_configure_timer_chain(1, true);
+
+    pit_hal_timer_start(0);
+    pit_hal_timer_start(1);
 }
 
 /******************************************************************************

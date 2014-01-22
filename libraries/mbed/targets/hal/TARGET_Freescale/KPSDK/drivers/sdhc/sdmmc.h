@@ -58,10 +58,10 @@
 #define SD_OCR_VDD_34_35        (1 << 22)               /*!< VDD 3.4-3.5 */
 #define SD_OCR_VDD_35_36        (1 << 23)               /*!< VDD 3.5-3.6 */
 
-#define SDMMC_CLK_100KHZ        (100 << 10)
-#define SDMMC_CLK_400KHZ        (400 << 10)
-#define SDMMC_CLK_25MHZ         (25 << 20)
-#define SDMMC_CLK_50MHZ         (50 << 20)
+#define SDMMC_CLK_100KHZ        (100000U)
+#define SDMMC_CLK_400KHZ        (400000U)
+#define SDMMC_CLK_25MHZ         (25000000U)
+#define SDMMC_CLK_50MHZ         (50000000U)
 
 #define SDMMC_R1_OUT_OF_RANGE         (uint32_t)(1 << 31)       /*!< R1: out of range status bit */
 #define SDMMC_R1_ADDRESS_ERROR        (1 << 30)                 /*!< R1: address error status bit */
@@ -82,12 +82,12 @@
 #define SDMMC_R1_WP_ERASE_SKIP        (1 << 15)                 /*!< R1: write protection erase skip status bit */
 #define SDMMC_R1_CARD_ECC_DISABLED    (1 << 14)                 /*!< R1: card ecc disabled status bit */
 #define SDMMC_R1_ERASE_RESET          (1 << 13)                 /*!< R1: erase reset status bit */
-#define SDMMC_R1_STATUS(x)            (x & 0xFFFFE000)          /*!< R1: status */
+#define SDMMC_R1_STATUS(x)            do { ((x) & 0xFFFFE000U); } while(0)       /*!< R1: status */
 #define SDMMC_R1_READY_FOR_DATA       (1 << 8)                  /*!< R1: ready for data status bit */
 #define SDMMC_R1_SWITCH_ERROR         (1 << 7)                  /*!< R1: switch error status bit */
 #define SDMMC_R1_APP_CMD              (1 << 5)                  /*!< R1: application command enabled status bit */
 
-#define SDMMC_R1_CURRENT_STATE(x)     ((x & 0x00001E00) >> 9)   /*!< R1: current state */
+#define SDMMC_R1_CURRENT_STATE(x)     do { (((x) & 0x00001E00U) >> 9); } while(0)  /*!< R1: current state */
 #define SDMMC_R1_STATE_IDLE           (0U)                      /*!< R1: current state: idle */
 #define SDMMC_R1_STATE_READY          (1U)                      /*!< R1: current state: ready */
 #define SDMMC_R1_STATE_IDENT          (2U)                      /*!< R1: current state: ident */

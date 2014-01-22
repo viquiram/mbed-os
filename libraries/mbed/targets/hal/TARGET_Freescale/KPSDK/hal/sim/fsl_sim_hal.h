@@ -361,7 +361,6 @@ typedef struct SimClockNameConfig {
     sim_clock_divider_names_t           dividerName;          /*!< clock divider name*/
 } sim_clock_name_config_t;
 
-
 /*! @brief clock name config table for specified cpu defined in fsl_clock_module_names_Kxxx.h*/
 extern const sim_clock_name_config_t kSimClockNameConfigTable[];
 
@@ -1082,6 +1081,288 @@ void sim_set_tpm_ch_src(uint8_t instance, uint8_t channel, sim_tpm_ch_src_t sele
  * @return select Timer/PWM x channel y input capture source select setting
  */
 sim_tpm_ch_src_t sim_get_tpm_ch_src(uint8_t instance, uint8_t channel);
+#endif
+
+#if FSL_FEATURE_SIM_SDID_HAS_FAMILYID
+/*!
+ * @brief Get Kinetis Family ID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Family ID in System Device ID register. 
+ *
+ * @return id Kinetis Family ID
+ */
+static inline uint32_t sim_get_family_id(void)
+{
+    return BR_SIM_SDID_FAMILYID;
+}
+#endif
+
+#if FSL_FEATURE_SIM_SDID_HAS_SUBFAMID
+/*!
+ * @brief Get Kinetis Sub-Family ID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Sub-Family ID in System Device ID register. 
+ *
+ * @return id Kinetis Sub-Family ID
+ */
+static inline uint32_t sim_get_subfam_id(void)
+{
+    return BR_SIM_SDID_SUBFAMID;
+}
+#endif
+
+#if FSL_FEATURE_SIM_SDID_HAS_SERIESID
+/*!
+ * @brief Get Kinetis SeriesID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Series ID in System Device ID register. 
+ *
+ * @return id Kinetis Series ID
+ */
+static inline uint32_t sim_get_series_id(void)
+{
+    return BR_SIM_SDID_SERIESID;
+}
+#endif
+
+/*!
+ * @brief Get Kinetis Fam ID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Fam ID in System Device ID register. 
+ *
+ * @return id Kinetis Fam ID
+ */
+static inline uint32_t sim_get_fam_id(void)
+{
+    return BR_SIM_SDID_FAMID;
+}
+
+/*!
+ * @brief Get Kinetis Pincount ID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Pincount ID in System Device ID register. 
+ *
+ * @return id Kinetis Pincount ID
+ */
+static inline uint32_t sim_get_pin_id(void)
+{
+    return BR_SIM_SDID_PINID;
+}
+
+/*!
+ * @brief Get Kinetis Revision ID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Revision ID in System Device ID register. 
+ *
+ * @return id Kinetis Revision ID
+ */
+static inline uint32_t sim_get_rev_id(void)
+{
+    return BR_SIM_SDID_REVID;
+}
+
+#if FSL_FEATURE_SIM_SDID_HAS_DIEID
+/*!
+ * @brief Get Kinetis Die ID in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Die ID in System Device ID register. 
+ *
+ * @return id Kinetis Die ID
+ */
+static inline uint32_t sim_get_die_id(void)
+{
+    return BR_SIM_SDID_DIEID;
+}
+#endif
+
+#if FSL_FEATURE_SIM_SDID_HAS_SRAMSIZE
+/*!
+ * @brief Get Kinetis Sram Size in System Device ID register (SIM_SDID) 
+ *
+ * This function will get Kinetis Sram Size in System Device ID register. 
+ *
+ * @return id Kinetis Sram Size
+ */
+static inline uint32_t sim_get_sram_size(void)
+{
+    return BR_SIM_SDID_SRAMSIZE;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_NVMSIZE
+/*!
+ * @brief Get FlexNVM size in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get FlexNVM size in Flash Configuration Register 1  
+ *
+ * @return size FlexNVM Size
+ */
+static inline uint32_t sim_get_nvm_size(void)
+{
+    return BR_SIM_FCFG1_NVMSIZE;
+}
+#endif
+
+/*!
+ * @brief Get Program flash size in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get Program flash size in Flash Configuration Register 1  
+ *
+ * @return size Program flash Size
+ */
+static inline uint32_t sim_get_pf_size(void)
+{
+    return BR_SIM_FCFG1_PFSIZE;
+}
+
+#if FSL_FEATURE_SIM_FCFG_HAS_EESIZE
+/*!
+ * @brief Get EEProm size in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get EEProm size in Flash Configuration Register 1  
+ *
+ * @return size EEProm Size
+ */
+static inline uint32_t sim_get_eeprom_size(void)
+{
+    return BR_SIM_FCFG1_EESIZE;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_DEPART
+/*!
+ * @brief Get FlexNVM partition in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get FlexNVM partition in Flash Configuration Register 1  
+ *
+ * @return setting FlexNVM partition setting
+ */
+static inline uint32_t sim_get_depart(void)
+{
+    return BR_SIM_FCFG1_DEPART;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_FLASHDOZE
+/*!
+ * @brief Set Flash Doze in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will set Flash Doze in Flash Configuration Register 1  
+ * 
+ * @param setting Flash Doze setting
+ */
+static inline void sim_set_flashdoze(uint32_t setting)
+{
+    BW_SIM_FCFG1_FLASHDOZE(setting);
+}
+
+/*!
+ * @brief Get Flash Doze in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get Flash Doze in Flash Configuration Register 1  
+ *
+ * @return setting Flash Doze setting
+ */
+static inline uint32_t sim_get_flashdoze(void)
+{
+    return BR_SIM_FCFG1_FLASHDOZE;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_FLASHDIS
+/*!
+ * @brief Set Flash disable setting in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will Set Flash disable setting in Flash Configuration Register 1  
+ *
+ * @param setting Flash disable setting
+ */
+static inline void sim_set_flashdis(uint32_t setting)
+{
+    BW_SIM_FCFG1_FLASHDIS(setting);
+}
+
+/*!
+ * @brief Get Flash disable setting in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get Flash disable setting in Flash Configuration Register 1  
+ *
+ * @return setting Flash disable setting
+ */
+static inline uint32_t sim_get_flashdis(void)
+{
+    return BR_SIM_FCFG1_FLASHDIS;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR0
+/*!
+ * @brief Get Flash max address block 0 in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get Flash max block 0 in Flash Configuration Register 2  
+ *
+ * @return address Flash max block 0 address
+ */
+static inline uint32_t sim_get_maxaddr0(void)
+{
+    return BR_SIM_FCFG2_MAXADDR0;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR1
+/*!
+ * @brief Get Flash max address block 1 in Flash Configuration Register 2  
+ *
+ * This function will get Flash max block 1 in Flash Configuration Register 1  
+ *
+ * @return address Flash max block 0 address
+ */
+static inline uint32_t sim_get_maxaddr1(void)
+{
+    return BR_SIM_FCFG2_MAXADDR1;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR01
+/*!
+ * @brief Get Flash max address block 0 in Flash Configuration Register 1  (SIM_FCFG) 
+ *
+ * This function will get Flash max block 0 in Flash Configuration Register 2  
+ *
+ * @return address Flash max block 0 address
+ */
+static inline uint32_t sim_get_maxaddr01(void)
+{
+    return BR_SIM_FCFG2_MAXADDR01;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR23
+/*!
+ * @brief Get Flash max address block 1 in Flash Configuration Register 2  
+ *
+ * This function will get Flash max block 1 in Flash Configuration Register 1  
+ *
+ * @return address Flash max block 0 address
+ */
+static inline uint32_t sim_get_maxaddr23(void)
+{
+    return BR_SIM_FCFG2_MAXADDR23;
+}
+#endif
+
+#if FSL_FEATURE_SIM_FCFG_HAS_PFLSH
+/*!
+ * @brief Get program flash in Flash Configuration Register 2  
+ *
+ * This function will get program flash max block 0 in Flash Configuration Register 1  
+ *
+ * @return status program flash status
+ */
+static inline uint32_t sim_get_pflsh(void)
+{
+    return BR_SIM_FCFG2_PFLSH;
+}
 #endif
 
 /*@}*/

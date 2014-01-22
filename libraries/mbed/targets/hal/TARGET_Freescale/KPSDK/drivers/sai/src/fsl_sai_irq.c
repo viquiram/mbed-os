@@ -28,7 +28,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "fsl_soundcard.h"
+#include "fsl_sai_driver.h"
 
  /*************************************************************************
  * Variables
@@ -45,9 +45,9 @@ extern void sai_rx_interrupt_handle(uint32_t instance);
 #if defined (K70F12_SERIES) || defined (K64F12_SERIES) || defined (K22F51212_SERIES)
 IRQn_Type sai_irq_ids[HW_I2S_INSTANCE_COUNT][2] = 
 {
-    {I2S0_Tx_IRQn, I2S0_Rx_IRQn}
+    {I2S0_Rx_IRQn, I2S0_Tx_IRQn}
 #if defined (K70F12_SERIES)
-    , {I2S1_Tx_IRQn, I2S1_Rx_IRQn}
+    , {I2S1_Rx_IRQn, I2S1_Tx_IRQn}
 #endif
 };
 #endif

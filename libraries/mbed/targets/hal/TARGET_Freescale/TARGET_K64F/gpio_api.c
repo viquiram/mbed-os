@@ -33,6 +33,7 @@ void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
         gpio_output_pin_t output = {0};
 
         obj->pinName = pin;
+        output.pinName = pin;
         output.config.outputLogic = 0;
         output.config.slewRate = kPortSlowSlewRate;
         output.config.driveStrength = kPortLowDriveStrength,
@@ -40,6 +41,7 @@ void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
     } else {
         gpio_input_pin_t input = {0};
         obj->pinName = pin;
+        input.pinName = pin;
         input.config.isPullEnable = true;
         input.config.pullSelect = kPortPullUp;
         input.config.isPassiveFilterEnabled = false;

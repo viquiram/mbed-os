@@ -31,12 +31,6 @@
 #include "fsl_edma_driver.h"
 
 /*******************************************************************************
- * Definitions
- ******************************************************************************/
-#define	EDMA_ERROR_VECTOR_PRIORITY (1)
-#define EDMA_CHANNEL_VECTOR_PRIORITY (1)
-
-/*******************************************************************************
  * Variabled
  ******************************************************************************/
 
@@ -97,15 +91,13 @@ edma_status_t edma_init(void)
 
         /* Enable the error interrupt for eDMA module. */
         irqNumber = edma_error_irq_ids[i];
-        NVIC_SetPriority(irqNumber, EDMA_ERROR_VECTOR_PRIORITY);
-        NVIC_EnableIRQ(irqNumber);
+        interrupt_enable(irqNumber);
 
         /* Register all edma channl interrupt handler into vector table. */
         for (j = 0; j < FSL_FEATURE_DMA_MODULE_CHANNEL; j++)
         {
             irqNumber = edma_irq_ids[i][j];
-            NVIC_SetPriority(irqNumber, EDMA_CHANNEL_VECTOR_PRIORITY);
-            NVIC_EnableIRQ(irqNumber);
+            interrupt_enable(irqNumber);
         }
     }
 
@@ -165,7 +157,7 @@ edma_status_t edma_shutdown(void)
  * Description   : Register callback function and parameter.
  *
  *END**************************************************************************/
-void edma_register_callback(edma_channel_t *chn, dma_callback_t callback, void *para)
+void edma_register_callback(edma_channel_t *chn, edma_callback_t callback, void *para)
 {
     chn->callback = callback;
     chn->parameter = para;
@@ -217,7 +209,7 @@ uint32_t edma_request_channel(uint32_t channel, dma_request_source_t source, edm
 {
 
     /*Check if dynamically allocation is requested */
-    if (channel == kDmaAnyChannel)
+    if (channel == kEdmaAnyChannel)
     {
         uint32_t i = 0, j;
         uint32_t map;
@@ -242,7 +234,7 @@ uint32_t edma_request_channel(uint32_t channel, dma_request_source_t source, edm
         }
         
         /* No available channel. */
-        return kDmaInvalidChannel;
+        return kEdmaInvalidChannel;
     }
 
     /* static allocation */
@@ -252,7 +244,7 @@ uint32_t edma_request_channel(uint32_t channel, dma_request_source_t source, edm
         return channel;
     }
 
-    return kDmaInvalidChannel;
+    return kEdmaInvalidChannel;
 }
 
 /*FUNCTION**********************************************************************
@@ -282,7 +274,7 @@ edma_status_t edma_claim_channel(uint32_t channel,dma_request_source_t source, e
     chn->dmamuxModule = channel / FSL_FEATURE_DMAMUX_MODULE_CHANNEL;
     chn->module = channel / FSL_FEATURE_DMA_MODULE_CHANNEL;
 
-    chn->status = kDmaNormal;
+    chn->status = kEdmaNormal;
     chn->tcdLeftBytes = kEdmaDescriptorPrepared;
 
     /* Enable error interrupt for this channel */
@@ -394,7 +386,7 @@ void edma_update_descriptor_internal(edma_channel_t *chn)
         
         /* Check if the channel is disabled by checking whether the dma request is disabled.
            In this DMA driver, only the end of chain would disable the dma request. */
-        if (!(edma_hal_get_all_channel_dma_request_status(chn->module) & (0x1U << chn->channel)))
+        if (!edma_hal_check_dma_request_enable_status(chn->module, chn->channel))
         {
             /* Set DMA read pointer to number to tell that all DMA chain is finished.
              * This status is specailly for the scatter list status.*/
@@ -504,13 +496,13 @@ void DMA_ERR_IRQHandler(uint32_t instance)
                     /* Disable error channel interrupt. */
                     edma_hal_clear_done_status(chn->module, chn->channel);
                     edma_hal_clear_interrupt_request(chn->module, chn->channel);
-                    chn->status = kDmaError;
+                    chn->status = kEdmaError;
                     if (chn->callback)
                     {
                         chn->callback(chn->parameter, chn->status);
                     }
                     edma_hal_clear_error_status(chn->module, chn->channel);
-                    chn->status = kDmaNormal;
+                    chn->status = kEdmaNormal;
                 }
             }
         }
@@ -519,12 +511,12 @@ void DMA_ERR_IRQHandler(uint32_t instance)
 }
 /*FUNCTION**********************************************************************
  *
- * Function Name : dma_config_loop
+ * Function Name : edma_config_loop
  * Description   : User friendly interface to configure loop descritptor chain.
  *
  *END**************************************************************************/
 edma_status_t edma_config_loop(
-                            edma_software_tcd_t *stcd, edma_channel_t *chn, dma_transfer_type_t type,
+                            edma_software_tcd_t *stcd, edma_channel_t *chn, edma_transfer_type_t type,
                             uint32_t srcAddr, uint32_t destAddr, uint32_t size,
                             uint32_t watermark, uint32_t length, uint8_t period)
 {
@@ -571,7 +563,7 @@ edma_status_t edma_config_loop(
                         &stcd[i], length/(period * watermark));
         switch (type)
         {
-            case kDmaPeripheralToMemory:
+            case kEdmaPeripheralToMemory:
                 /* Configure Source Read. */
                 edma_hal_stcd_configure_source_address(&stcd[i], srcAddr);
                 edma_hal_stcd_configure_source_offset(&stcd[i], 0);
@@ -584,7 +576,7 @@ edma_status_t edma_config_loop(
                 edma_hal_stcd_configure_dest_transfersize(&stcd[i], transfersize);
                 
                 break;
-            case kDmaMemoryToPeripheral:
+            case kEdmaMemoryToPeripheral:
                 /* Configure Source Read. */
                 edma_hal_stcd_configure_source_address(&stcd[i], srcAddr + i * (length/period));
                 edma_hal_stcd_configure_source_offset(&stcd[i], size);
@@ -596,7 +588,7 @@ edma_status_t edma_config_loop(
                 edma_hal_stcd_configure_dest_transfersize(&stcd[i], transfersize);
                 
                 break;
-            case kDmaMemoryToMemory:
+            case kEdmaMemoryToMemory:
                 /* Configure Source Read. */
                 edma_hal_stcd_configure_source_address(&stcd[i], srcAddr + i * (length/period));
                 edma_hal_stcd_configure_source_offset(&stcd[i], size);
@@ -621,14 +613,14 @@ edma_status_t edma_config_loop(
 
 /*FUNCTION**********************************************************************
  *
- * Function Name : dma_config_scatter_gather
+ * Function Name : edma_config_scatter_gather
  * Description   : User friendly interface to configure single end descritptor chain.
  *
  *END**************************************************************************/
 edma_status_t edma_config_scatter_gather(
-                            edma_software_tcd_t *stcd, edma_channel_t *chn, dma_transfer_type_t type,
+                            edma_software_tcd_t *stcd, edma_channel_t *chn, edma_transfer_type_t type,
                             uint32_t size, uint32_t watermark,
-                            dma_scatter_list_t *srcScatterList, dma_scatter_list_t *destScatterList,
+                            edma_scatter_list_t *srcScatterList, edma_scatter_list_t *destScatterList,
                             uint8_t number)
 {
     uint8_t i;
@@ -683,21 +675,21 @@ edma_status_t edma_config_scatter_gather(
         edma_hal_htcd_set_scatter_gather_process(chn->module, chn->channel, false);
         switch (type)
         {
-            case kDmaPeripheralToMemory:
+            case kEdmaPeripheralToMemory:
                 /* Configure Source Read. */
                 edma_hal_htcd_configure_source_offset(chn->module, chn->channel, 0);
 
                 /* Configure Dest Write. */
                 edma_hal_htcd_configure_dest_offset(chn->module, chn->channel, size); 
                 break;
-            case kDmaMemoryToPeripheral:
+            case kEdmaMemoryToPeripheral:
                 /* Configure Source Read. */
                 edma_hal_htcd_configure_source_offset(chn->module, chn->channel, size);
 
                 /* Configure Dest Write. */
                 edma_hal_htcd_configure_dest_offset(chn->module, chn->channel, 0); 
                 break;
-            case kDmaMemoryToMemory:
+            case kEdmaMemoryToMemory:
                 /* Configure Source Read. */
                 edma_hal_htcd_configure_source_offset(chn->module, chn->channel, size);
 
@@ -743,21 +735,21 @@ edma_status_t edma_config_scatter_gather(
             
             switch (type)
             {
-                case kDmaPeripheralToMemory:
+                case kEdmaPeripheralToMemory:
                     /* Configure Source Read. */
                     edma_hal_stcd_configure_source_offset(&stcd[i], 0);
 
                     /* Configure Dest Write. */
                     edma_hal_stcd_configure_dest_offset(&stcd[i], size); 
                     break;
-                case kDmaMemoryToPeripheral:
+                case kEdmaMemoryToPeripheral:
                     /* Configure Source Read. */
                     edma_hal_stcd_configure_source_offset(&stcd[i], size);
 
                     /* Configure Dest Write. */
                     edma_hal_stcd_configure_dest_offset(&stcd[i], 0); 
                     break;
-                case kDmaMemoryToMemory:
+                case kEdmaMemoryToMemory:
                     /* Configure Source Read. */
                     edma_hal_stcd_configure_source_offset(&stcd[i], size);
 

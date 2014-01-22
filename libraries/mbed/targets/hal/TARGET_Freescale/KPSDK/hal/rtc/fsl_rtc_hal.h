@@ -34,10 +34,10 @@
 #include "fsl_rtc_features.h"
 #include "fsl_device_registers.h"
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
   #include "fsl_rtc_hal_monotonic.h"
 #endif
-#if (FSL_FEATURE_RTC_HAS_ACCESS_CONTROL == 1)
+#if FSL_FEATURE_RTC_HAS_ACCESS_CONTROL
   #include "fsl_rtc_hal_access_control.h"
 #endif
 
@@ -75,7 +75,7 @@ typedef struct rtc_hal_init_config
    */
   bool enable32kOscillator; /*!< at register field CR[OSCE]*/
   
-#if (FSL_FEATURE_RTC_HAS_WAKEUP_PIN == (1))
+#if FSL_FEATURE_RTC_HAS_WAKEUP_PIN
   /*! For devices that have the wakeup pin this variable will indicate if it is
    *  to be enabled (set to 'true') or not (set to 'false') at the initialization
    *  function.\n
@@ -133,7 +133,7 @@ typedef struct rtc_hal_init_config
    */
   hw_rtc_ier_t enableInterrupts;
   
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
   /*! Sets the Monotonic Counter to the pointed variable's value.
    *  To skip setting a value or if does not apply set pointer to NULL.
    */
@@ -501,7 +501,7 @@ static inline void rtc_hal_configure_supervisor_access(bool enable_reg_write)
   BW_RTC_CR_SUP(enable_reg_write);
 }
 
-#if (FSL_FEATURE_RTC_HAS_WAKEUP_PIN == 1)
+#if FSL_FEATURE_RTC_HAS_WAKEUP_PIN
 /*! @brief      enables/disables the wakeup pin.
  *              Note: The wakeup pin is optional and not available on all devices.
  *  @param      enable_wp true: enables wakeup-pin, wakeup pin asserts if the
@@ -626,7 +626,7 @@ static inline void rtc_hal_config_lock_registers(hw_rtc_lr_t bitfields)
   valid_flags |= (BM_RTC_LR_LRL | BM_RTC_LR_SRL | BM_RTC_LR_CRL |
     BM_RTC_LR_TCL);
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
   valid_flags |= (BM_RTC_LR_MCHL | BM_RTC_LR_MCLL | BM_RTC_LR_MEL);
 #endif
   HW_RTC_LR_WR((bitfields.U) & valid_flags);
@@ -760,12 +760,12 @@ static inline void rtc_hal_config_interrupts(hw_rtc_ier_t * bitfields)
   HW_RTC_IER_WR((bitfields->U) & ( BM_RTC_IER_TSIE |  BM_RTC_IER_TAIE | BM_RTC_IER_TOIE |
     BM_RTC_IER_TIIE));
 
-  #if (FSL_FEATURE_RTC_HAS_WAKEUP_PIN == 1)
+#if FSL_FEATURE_RTC_HAS_WAKEUP_PIN
     BW_RTC_IER_WPON(bitfields->B.WPON);
-  #endif
-  #if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#endif
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
     BW_RTC_IER_MOIE(bitfields->B.MOIE);
-  #endif
+#endif
 
   bitfields->U = HW_RTC_IER_RD;
 }

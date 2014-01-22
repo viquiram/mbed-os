@@ -56,7 +56,14 @@ extern IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT];
  * Code
  ******************************************************************************/
 
-/* See fsl_i2c_master_driver.h for documentation of this function.*/
+ /*FUNCTION**********************************************************************
+ *
+ * Function Name : i2c_master_init
+ * Description   : initializes the I2C master mode driver.
+ * This function will initialize the I2C master mode driver, enable I2C clock,
+ * and enable I2C interrupt.
+ *
+ *END**************************************************************************/
 void i2c_master_init(uint32_t instance, i2c_master_t * master)
 {
     assert(master);
@@ -75,9 +82,6 @@ void i2c_master_init(uint32_t instance, i2c_master_t * master)
     /* Enable module.*/
     i2c_hal_enable(master->instance);
 
-    /* Set interrupt priority.*/
-    NVIC_SetPriority(i2c_irq_ids[instance], I2C_MASTER_IRQ_PRIORITY);
-
     /* Enable I2C interrupt.*/
     interrupt_enable(i2c_irq_ids[instance]);
 
@@ -86,7 +90,14 @@ void i2c_master_init(uint32_t instance, i2c_master_t * master)
     i2c_set_shared_irq_state(instance, master);
 }
 
-/* See fsl_i2c_master_driver.h for documentation of this function.*/
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : i2c_master_shutdown
+ * Description   : shut down the I2C master mode driver.
+ * This function will shut down the I2C master mode driver, disable I2C clock,
+ * and disable I2C interrupt.
+ *
+ *END**************************************************************************/
 void i2c_master_shutdown(i2c_master_t * master)
 {
     assert(master);
@@ -104,7 +115,13 @@ void i2c_master_shutdown(i2c_master_t * master)
     i2c_set_shared_irq_state(master->instance, NULL);
 }
 
-/* See fsl_i2c_master_driver.h for documentation of this function.*/
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : i2c_master_configure_bus
+ * Description   : configures the I2C bus to access a device.
+ * This function will set baud rate.
+ *
+ *END**************************************************************************/
 i2c_status_t i2c_master_configure_bus(i2c_master_t * master, const i2c_device_t * device)
 {
     assert(master);
@@ -127,7 +144,16 @@ i2c_status_t i2c_master_configure_bus(i2c_master_t * master, const i2c_device_t 
     return kStatus_I2C_Success;
 }
 
-/* See fsl_i2c_master_driver.h for documentation of this function.*/
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : i2c_master_transfer
+ * Description   : performs a blocking read or write transaction on the I2C bus.
+ * This function will configure bus for the specified devices, send the device
+ * address with r/w direction. If we have a subaddress, then that is always done
+ * as a write transfer prior to transferring the actual data. At the last, perform
+ * the main transfer.
+ *
+ *END**************************************************************************/
 i2c_status_t i2c_master_transfer(i2c_master_t * master,
                       const i2c_device_t * device,
                       i2c_direction_t direction,
@@ -162,8 +188,10 @@ i2c_status_t i2c_master_transfer(i2c_master_t * master,
     }
 
     /* Send slave address.*/
-    uint32_t bytesTransferred;
-    i2c_status_t error = i2c_master_transfer_basic(master, kI2CNoStop, kI2CWrite, &slaveAddress, sizeof(slaveAddress), &bytesTransferred, timeout_ms);
+    size_t bytesTransferred;
+    i2c_status_t error = i2c_master_transfer_basic(master, kI2CNoStop, kI2CWrite, &slaveAddress,
+                                                   sizeof(slaveAddress), &bytesTransferred,
+                                                   timeout_ms);
     if (error)
     {
         return error;
@@ -172,7 +200,9 @@ i2c_status_t i2c_master_transfer(i2c_master_t * master,
     /* Send subaddress if one was provided.*/
     if (subaddressLength)
     {
-        error = i2c_master_transfer_basic(master, kI2CNoStart | kI2CNoStop, kI2CWrite, (uint8_t *)&subaddress, subaddressLength, &bytesTransferred, timeout_ms);
+        error = i2c_master_transfer_basic(master, kI2CNoStart | kI2CNoStop, kI2CWrite,
+                                          (uint8_t *)&subaddress, subaddressLength,
+                                          &bytesTransferred, timeout_ms);
         if (error)
         {
             return error;
@@ -183,7 +213,8 @@ i2c_status_t i2c_master_transfer(i2c_master_t * master,
         {
             slaveAddress |= kI2CRead;
 
-            error = i2c_master_transfer_basic(master, kI2CNoStop, kI2CWrite, &slaveAddress, sizeof(slaveAddress), &bytesTransferred, timeout_ms);
+            error = i2c_master_transfer_basic(master, kI2CNoStop, kI2CWrite, &slaveAddress,
+                                              sizeof(slaveAddress), &bytesTransferred, timeout_ms);
             if (error)
             {
                 return error;
@@ -192,11 +223,20 @@ i2c_status_t i2c_master_transfer(i2c_master_t * master,
     }
 
     /* Now perform the main transfer.*/
-    error = i2c_master_transfer_basic(master, kI2CNoStart, direction, data, dataLength, actualLengthTransferred, timeout_ms);
+    error = i2c_master_transfer_basic(master, kI2CNoStart, direction, data, dataLength,
+                                      actualLengthTransferred, timeout_ms);
 
     return error;
 }
 
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : i2c_master_transfer_basic
+ * Description   : perform a transfer.
+ * This function will initiate (start) a transfer. This is not a public API as it
+ * is called from other driver functions
+ *
+ *END**************************************************************************/
 i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
                       uint32_t flags,
                       i2c_direction_t direction,
@@ -301,9 +341,11 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
     return error;
 }
 
-/*! @brief I2C master IRQ handler.*/
-/*!*/
-/*! @param instance Instance number of the I2C module.*/
+/*!
+ * @brief I2C master IRQ handler.
+ * This handler uses the buffers stored in the i2c_master_t structs to transfer data.
+ * This is not a public API as it is called whenever an interrupt occurs.
+ */
 void i2c_master_irq_handler(void * state)
 {
     assert(state);

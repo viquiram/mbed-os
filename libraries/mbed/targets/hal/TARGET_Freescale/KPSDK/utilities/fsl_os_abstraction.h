@@ -111,7 +111,7 @@ extern "C" {
 #endif
 
 /*!
- * @name Interrupt handler synchronization
+ * @name Synchronization
  * @{
  */
 
@@ -134,14 +134,15 @@ fsl_rtos_status sync_create(sync_object_t *obj, uint8_t initValue);
  * @param obj Pointer to the synchronization object.
  * @param timeout The maximum number of milliseconds to wait for the object to be signalled.
  *      Pass the #kSyncWaitForever constant to wait indefinitely for someone to signal the object.
- *      0 should not be passed to this function. Instead, use sync_poll for a non blocking check.
+ *      A value of 0 should not be passed to this function. Instead, use sync_poll for
+ *      a non blocking check.
  *
  * @retval kSuccess The object was signalled.
  * @retval kTimeout A timeout occurred.
  * @retval kError An incorrect parameter was passed.
  * @retval kIdle The object has not been signalled.
  *
- * @note There could be only one process wating for the object at the same time.
+ * @note There could be only one process waiting for the object at the same time.
  */
 fsl_rtos_status sync_wait(sync_object_t *obj, uint32_t timeout);
 
@@ -165,8 +166,8 @@ fsl_rtos_status sync_poll(sync_object_t *obj);
  *
  * @param obj The synchronization object to signal.
  * 
- * @retval kSuccess The object was successfully signalled.
- * @retval kError The object signals failed.
+ * @retval kSuccess The object was successfully signaled.
+ * @retval kError The object can not be signaled or invalid parameter.
  */
 fsl_rtos_status sync_signal(sync_object_t *obj);
 
@@ -177,8 +178,8 @@ fsl_rtos_status sync_signal(sync_object_t *obj);
  *
  * @param obj The synchronization object to signal.
  * 
- * @retval kSuccess The object was successfully signalled.
- * @retval kError The object signals failed.
+ * @retval kSuccess The object was successfully signaled.
+ * @retval kError The object can not be signaled or invalid parameter.
  */
 fsl_rtos_status sync_signal_from_isr(sync_object_t *obj);
 
@@ -188,7 +189,7 @@ fsl_rtos_status sync_signal_from_isr(sync_object_t *obj);
  * @param obj The synchronization object to destroy.
  * 
  * @retval kSuccess The object was successfully destroyed.
- * @retval kError The object destroy fails.
+ * @retval kError Object destruction failed.
  */
 fsl_rtos_status sync_destroy(sync_object_t *obj);
 
@@ -200,12 +201,12 @@ fsl_rtos_status sync_destroy(sync_object_t *obj);
  */
 
 /*!
- * @brief Initialize a locking object to a given state.
+ * @brief Initialize a locking object.
  *
  * @param obj The lock object to initialize.
  *
  * @retval kSuccess The lock is created successfully.
- * @retval kError Tke lock created failed.
+ * @retval kError Tke lock creation failed.
  */
 fsl_rtos_status lock_create(lock_object_t *obj);
 
@@ -216,8 +217,9 @@ fsl_rtos_status lock_create(lock_object_t *obj);
  *
  * @param obj The locking object.
  * @param timeout The maximum number of milliseconds to wait for the mutex.
- *      Pass the #kSyncWaitForever constant to wait indefinitely for someone to signal the object.
- *      0 should not be passed to this function. Instead, use sync_poll for a non blocking check.
+ *      Pass the #kSyncWaitForever constant to wait indefinitely for someone to unlock the object.
+ *      A value of 0 should not be passed to this function. Instead, use lock_poll for a non
+ *      blocking check.
  *
  * @retval kSuccess The lock was obtained.
  * @retval kTimeout A timeout occurred.
@@ -235,6 +237,9 @@ fsl_rtos_status lock_wait(lock_object_t *obj, uint32_t timeout);
  * @retval kSuccess The lock was obtained.
  * @retval kIdle The lock could not be obtained.
  * @retval kError An incorrect parameter was passed.
+ *
+ * @note There could be only one process waiting for the object at the same time.
+ *
  */
 fsl_rtos_status lock_poll(lock_object_t *obj);
 
@@ -244,7 +249,7 @@ fsl_rtos_status lock_poll(lock_object_t *obj);
  * @param obj The locking object to unlock.
  * 
  * @retval kSuccess The object was successfully unlocked.
- * @retval kError The object released failed.
+ * @retval kError The object can not be unlocked or invalid parameter.
  */
 fsl_rtos_status lock_release(lock_object_t *obj);
 
@@ -254,7 +259,7 @@ fsl_rtos_status lock_release(lock_object_t *obj);
  * @param obj The locking object to destroy.
  * 
  * @retval kSuccess The object was successfully destroyed.
- * @retval kError The object was destroyed failed.
+ * @retval kError Object destruction failed.
  */
 fsl_rtos_status lock_destroy(lock_object_t *obj);
 
@@ -286,7 +291,7 @@ fsl_rtos_status event_create(event_object_t *obj, event_clear_type clearType);
  *
  * @param obj The event object.
  * @param timeout The maximum number of milliseconds to wait for the event.
- *      Pass the #kSyncWaitForever constant to wait indefinitely. 0 should not be passed 
+ *      Pass the #kSyncWaitForever constant to wait indefinitely. A value of 0 should not be passed 
  *      to this function.
  * @param setFlags Pointer to receive the flags that were set.
  *
@@ -306,6 +311,9 @@ fsl_rtos_status event_wait(event_object_t *obj, uint32_t timeout, event_group_t 
  *
  * @retval kSuccess The flags were succesfully set.
  * @retval kError An incorrect parameter was passed.
+ *
+ * @note There could be only one process waiting for the event.
+ *
  */
 fsl_rtos_status event_set(event_object_t *obj, event_group_t flags);
 
@@ -330,7 +338,7 @@ fsl_rtos_status event_set_from_isr(event_object_t *obj, event_group_t flags);
  * @param obj The event object.
  * @param flags Event flags to be clear.
  *
- * @retval kSuccess The flags were succesfully clear.
+ * @retval kSuccess The flags were succesfully cleared.
  * @retval kError An incorrect parameter was passed.
  */
 fsl_rtos_status event_clear(event_object_t *obj, event_group_t flags);
@@ -352,7 +360,7 @@ event_status event_check_flags(event_object_t *obj, event_group_t flag);
  * @param obj The event object to destroy.
  * 
  * @retval kSuccess The object was successfully destroyed.
- * @retval kError The object destroy failed.
+ * @retval kError Event destruction failed.
  */
 fsl_rtos_status event_destroy(event_object_t *obj);
 /* @} */
@@ -381,6 +389,8 @@ fsl_rtos_status event_destroy(event_object_t *obj);
  *
  * @retval kSuccess The task was successfully created.
  * @retval kError The task could not be created.
+ *
+ * @note Different tasks can not use the same task function.
  */
 fsl_rtos_status __task_create(task_t task, uint8_t *name, uint16_t stackSize,
                               task_stack_t *stackMem, uint16_t priority,
@@ -394,6 +404,7 @@ fsl_rtos_status __task_create(task_t task, uint8_t *name, uint16_t stackSize,
  * @param handler The handler of the task to destroy. Returned by the task_create function.
  * 
  * @retval kSuccess The task was successfully destroyed.
+ * @retval kError Task destruction failed or invalid parameter.
  */
 fsl_rtos_status task_destroy(task_handler_t handler);
 /* @} */
@@ -446,7 +457,9 @@ fsl_rtos_status msg_queue_put(msg_queue_handler_t handler, msg_queue_item_t item
  * @retval kSuccess Element successfully obtained from the queue.
  * @retval kTimeout If a timeout was specified, the queue remained empty after timeout.
  * @retval kError The queue was empty or the handler was invalid.
- * @retval kIdle The queue is empty and the timeout has not expired.
+ * @retval kIdle The queue was empty and the timeout has not expired.
+ *
+ * @note There should be only one process waiting on the queue.
  */
 fsl_rtos_status msg_queue_get(msg_queue_handler_t handler,
                               msg_queue_item_t   *item,
@@ -458,7 +471,7 @@ fsl_rtos_status msg_queue_get(msg_queue_handler_t handler,
  * @param handler Queue handler returned by the msg_queue_create function.
  * 
  * @retval kSuccess Queue successfully emptied.
- * @retval kError Queue empty failed.
+ * @retval kError Emptying queue failed.
  */
 fsl_rtos_status msg_queue_flush(msg_queue_handler_t handler);
 
@@ -468,7 +481,7 @@ fsl_rtos_status msg_queue_flush(msg_queue_handler_t handler);
  * @param handler Queue handler returned by the msg_queue_create function.
  * 
  * @retval kSuccess The queue was successfully destroyed.
- * @retval kError The destroy failed.
+ * @retval kError Message queue destruction failed.
  */
 fsl_rtos_status msg_queue_destroy(msg_queue_handler_t handler);
 

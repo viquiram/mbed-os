@@ -34,9 +34,9 @@
 #include "fsl_device_registers.h"
 #include "fsl_clock_manager.h"
 #include "fsl_os_abstraction.h"
+#include "fsl_sdhc_hal.h"
 #include "fsl_sdhc_driver.h"
 #include "fsl_sdhc_features.h"
-#include "fsl_sdhc_hal.h"
 #include "sdhc.h"
 #include "sdmmc.h"
 
@@ -74,7 +74,7 @@ static sdhc_status_t sdhc_select_clk(sdhc_host_t *host, uint32_t clkSource)
 
 /*FUNCTION****************************************************************
  *
- * Function Name: sdhc_is_card_present
+ * Function Name: sdhc_enable_clk
  * Description: Enable clock for specific host controller
  *
  *END*********************************************************************/
@@ -82,10 +82,6 @@ static sdhc_status_t sdhc_enable_clk(sdhc_host_t *host, bool isEnabled)
 {
     assert(host);
 
-    if (!isEnabled)
-    {
-        return kStatus_SDHC_NoError;
-    }
     if (clock_manager_set_gate(kClockModuleESDHC, host->instance, isEnabled) != kClockManagerSuccess)
     {
         return kStatus_SDHC_Failed;
@@ -102,9 +98,15 @@ static sdhc_status_t sdhc_enable_clk(sdhc_host_t *host, bool isEnabled)
 static bool sdhc_is_card_present(sdhc_host_t *host)
 {
     assert(host);
+    uint32_t isInserted;
     uint32_t irqStat = sdhc_hal_get_intr_flags(host->instance);
-    uint32_t isInserted = sdhc_hal_is_card_inserted(host->instance);
-    return (isInserted || (irqStat & SDHC_INT_CARD_INSERT));
+    if (irqStat & SDHC_INT_CARD_REMOVE) {
+        isInserted = 0;
+    } else {
+        isInserted = 1;
+    }
+    sdhc_hal_clear_intr_flags(host->instance, SDHC_INT_CARD_REMOVE | SDHC_INT_CARD_INSERT);
+    return isInserted;
 }
 
 /*FUNCTION****************************************************************
@@ -179,15 +181,15 @@ static sdhc_status_t sdhc_set_clock(sdhc_host_t *host, uint32_t clock)
 static sdhc_status_t sdhc_set_bus_width(sdhc_host_t *host, uint32_t busWidth)
 {
     assert(host);
-    uint32_t dtw = 0;
+    sdhc_hal_dtw_t dtw = kSDHC_HAL_DTW_1Bit;
 
     switch(busWidth)
     {
         case SD_BUS_WIDTH_1BIT:
-            dtw = SDHC_HAL_1_BIT_MODE;
+            dtw = kSDHC_HAL_DTW_1Bit;
             break;
         case SD_BUS_WIDTH_4BIT:
-            dtw = SDHC_HAL_4_BIT_MODE;
+            dtw = kSDHC_HAL_DTW_4Bit;
             break;
         default:
             return kStatus_SDHC_InvalidParameter;
@@ -375,9 +377,9 @@ sdhc_status_t sdhc_init(uint8_t instance, sdhc_host_t * host, sdhc_init_config_t
     sdhc_hal_enable_intr_signal(host->instance, true, irqEnabled);
 
 #if defined(BIG_ENDIAN)
-    host->endian = SDHC_HAL_BIG_ENDIAN_MODE;
+    host->endian = kSDHC_HAL_ENDIAN_Big;
 #else
-    host->endian = SDHC_HAL_LITTLE_ENDIAN_MODE;
+    host->endian = kSDHC_HAL_ENDIAN_Little;
 #endif
     sdhc_hal_set_endian(host->instance, host->endian);
 
@@ -420,16 +422,19 @@ sdhc_status_t sdhc_check_card(sdhc_host_t *host, sdhc_card_t *card)
         return kStatus_SDHC_InvalidParameter;
     }
 
+    sdhc_enable_clk(host, true);
     sdhc_init_card(host);
 
     if (!sdhc_is_card_present(host))
     {
+        sdhc_enable_clk(host, false);
         return kStatus_SDHC_NoMedium;
     }
 
     host->card = card;
     card->cardType = kCardTypeUnknown;
     card->host = host;
+    sdhc_enable_clk(host, false);
     return kStatus_SDHC_NoError;
 }
 
@@ -439,7 +444,7 @@ sdhc_status_t sdhc_check_card(sdhc_host_t *host, sdhc_card_t *card)
  * Description: Send command to card
  *
  *END*********************************************************************/
-sdhc_status_t sdhc_send_command(sdhc_host_t *host, sdhc_command_t *cmd)
+static sdhc_status_t sdhc_send_command(sdhc_host_t *host, sdhc_command_t *cmd)
 {
     sdhc_status_t ret = kStatus_SDHC_NoError;
     uint32_t flags = 0;
@@ -716,6 +721,8 @@ sdhc_status_t sdhc_config_host(sdhc_host_t *host, sdhc_host_config_t *config)
         syncStatus = sync_wait(&host->host_lock, kSyncWaitForever);
     }while(syncStatus == kIdle);
 
+    sdhc_enable_clk(host, true);
+
     if (host->clock != config->clock)
     {
         ret = sdhc_set_clock(host, config->clock);
@@ -731,6 +738,7 @@ sdhc_status_t sdhc_config_host(sdhc_host_t *host, sdhc_host_config_t *config)
         ret = sdhc_set_power_mode(host, config->powerMode);
     }
 
+    sdhc_enable_clk(host, true);
     sync_signal(&host->host_lock);
     return ret;
 }

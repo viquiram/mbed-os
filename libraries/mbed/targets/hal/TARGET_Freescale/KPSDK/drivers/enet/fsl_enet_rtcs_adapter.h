@@ -37,8 +37,6 @@
  * @{
  */
 
-/*! @file*/
-
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -102,7 +100,7 @@ extern unsigned long  _RTCSTASK_priority;
 #define ENETERR_MIN                 (ENETERR_INVALID_DEVICE)
 #define ENETERR_MAX                 (ENETERR_INVALID_OPTION)
 
-/*! @brief Define enet protocal parameter*/ 
+/*! @brief Define ENET protocol parameter*/ 
 #define ENETPROT_IP               0x0800
 #define ENETPROT_ARP              0x0806
 #define ENETPROT_8021Q            0x8100
@@ -113,14 +111,14 @@ extern unsigned long  _RTCSTASK_priority;
 #define ENET_SETOPT_8021QPRIO(p)  (ENET_OPT_8021QTAG | (((uint_32)(p) & 0x7) << 2))
 #define ENET_GETOPT_8021QPRIO(f)  ((((unsigned int)f) >> 2) & 0x7) 
 
-/*! @brief Define enet option macro*/
+/*! @brief Define ENET option macro*/
 #define ENET_OPTION_HW_TX_IP_CHECKSUM       0x00001000
 #define ENET_OPTION_HW_TX_PROTOCOL_CHECKSUM 0x00002000
 #define ENET_OPTION_HW_RX_IP_CHECKSUM       0x00004000
 #define ENET_OPTION_HW_RX_PROTOCOL_CHECKSUM 0x00008000
 #define ENET_OPTION_HW_RX_MAC_ERR           0x00010000
 
-/*! @brief Define for enet default mac*/
+/*! @brief Define for ENET default mac*/
 #define ENET_DEFAULT_MAC_ADD                { 0x00, 0x00, 0x5E, 0, 0, 0 }
 #define PCB_MINIMUM_SIZE                    (sizeof(PCB2))
 #define PCB_free(pcb_ptr)                   ((pcb_ptr)->FREE(pcb_ptr))
@@ -188,7 +186,7 @@ extern unsigned long  _RTCSTASK_priority;
       }                          \
    }  
 
-/*! @brief Define for enet six-byte mac type*/
+/*! @brief Define for ENET six-byte mac type*/
 typedef unsigned char   _enet_address[6];
 
 /*! @brief Define the structure for ipcfg*/
@@ -211,7 +209,7 @@ typedef struct pcb_fragment
     unsigned char     *FRAGMENT;     /*!< brief Pointer to fragment*/
 } PCB_FRAGMENT, * PCB_FRAGMENT_PTR;
 
-/*! @brief Define pcb structure for rtcs adaptor.*/
+/*! @brief Define PCB structure for RTCS adaptor.*/
 typedef struct pcb 
 {
     PCB_FREE_FPTR     FREE;   /*!< Function that frees PCB*/
@@ -230,9 +228,18 @@ typedef struct pcb2
 /*! @brief Define PCB structure contains two fragments*/
 typedef struct pcb_queue  
 {
-    PCB *pcbHead;     /*!< pcb buffer head*/      
-    PCB *pcbTail;     /*!< pcb buffer tail*/ 
+    PCB *pcbHead;     /*!< PCB buffer head*/      
+    PCB *pcbTail;     /*!< PCB buffer tail*/ 
 }pcb_queue;
+
+/*! @brief Define ECB structure contains protocol type and it's related service function*/
+typedef struct enet_ecb_struct
+{
+    uint16_t  TYPE;
+    void (* SERVICE)(PCB_PTR, void *);
+    void  *PRIVATE;
+    struct enet_ecb_struct *NEXT;
+}ENET_ECB_STRUCT,* ENET_ECB_STRUCT_PTR;
 
 /*! @brief Define 8022 header*/
 typedef struct enet_8022_header
@@ -270,7 +277,7 @@ typedef struct enet_stats {
     uint32_t     ST_TX_EXCESSCOLL;     /*!< Excessive collisions*/
     uint32_t     ST_TX_CARRIER;        /*!< Carrier sense lost*/
     uint32_t     ST_TX_UNDERRUN;       /*!< DMA underrun*/
-   /* Following stats are collected by the ethernet driver  */
+   /* Following stats are collected by the Ethernet driver  */
     uint32_t     ST_RX_COPY_SMALL;     /*!< Driver had to copy packet */
     uint32_t     ST_RX_COPY_LARGE;     /*!< Driver had to copy packet */
     uint32_t     ST_TX_COPY_SMALL;     /*!< Driver had to copy packet */
@@ -303,10 +310,10 @@ extern "C" {
  /*!
  * @brief Initialize the ENET device.
  *
- * @param device The enet device number.
+ * @param device The ENET device number.
  * @param address The hardware address.
  * @param flag The flag for upper layer.
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return The execution status.
  */
 uint32_t ENET_initialize(uint32_t device, _enet_address address,uint32_t flag, _enet_handle *handle);
@@ -314,10 +321,10 @@ uint32_t ENET_initialize(uint32_t device, _enet_address address,uint32_t flag, _
 /*!
  * @brief Open the ENET device.
  *
- * @param handle The address pointer for enet device structure.
- * @param type The enet protocol type.
+ * @param handle The address pointer for ENET device structure.
+ * @param type The ENET protocol type.
  * @param service The service function for type.
- * @param private The private data for enet device.
+ * @param private The private data for ENET device.
  * @return The execution status.
  */
 uint32_t ENET_open(_enet_handle handle, uint16_t type, void (* service)(PCB_PTR, void *), void *private);
@@ -325,24 +332,24 @@ uint32_t ENET_open(_enet_handle handle, uint16_t type, void (* service)(PCB_PTR,
 /*!
  * @brief Shutdown the ENET device.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return The execution status.
  */
 uint32_t ENET_shutdown(_enet_handle handle);
-
+#if !ENET_RECEIVE_ALL_INTERRUPT
 /*!
  * @brief ENET frame receive.
  *
- * @param enetIfPtr The address pointer for enet device structure.
+ * @param enetIfPtr The address pointer for ENET device structure.
  */
 static void ENET_receive(void *param);
-
+#endif
 /*!
  * @brief ENET frame transmit.
  *
- * @param handle The address pointer for enet device structure.
- * @param packet The enet packet buffer.
- * @param type The enet protocol type.
+ * @param handle The address pointer for ENET device structure.
+ * @param packet The ENET packet buffer.
+ * @param type The ENET protocol type.
  * @param dest The destination hardware address.
  * @param flag The flag for upper layer.
  * @return The execution status.
@@ -352,7 +359,7 @@ uint32_t ENET_send(_enet_handle handle, PCB_PTR packet, uint32_t type, _enet_add
 /*!
  * @brief ENET get address with initialized device.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @param address The destination hardware address.
  * @return The execution status.
  */
@@ -361,7 +368,7 @@ uint32_t ENET_get_address(_enet_handle handle, _enet_address address);
 /*!
  * @brief ENET get address with uninitialized device.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @param value The value to change the last three bytes of hardware.
  * @param address The destination hardware address.
  * @return True if the execution status is success else false.
@@ -370,8 +377,8 @@ uint32_t ENET_get_mac_address(uint32_t device, uint32_t value, _enet_address add
 /*!
  * @brief ENET join a multicast group address.
  *
- * @param handle The address pointer for enet device structure.
- * @param type The enet protocol type.
+ * @param handle The address pointer for ENET device structure.
+ * @param type The ENET protocol type.
  * @param address The destination hardware address.
  * @return The execution status.
  */
@@ -380,17 +387,17 @@ uint32_t ENET_join(_enet_handle handle, uint16_t type, _enet_address address);
 /*!
  * @brief ENET leave a multicast group address.
  *
- * @param handle The address pointer for enet device structure.
- * @param type The enet protocol type.
+ * @param handle The address pointer for ENET device structure.
+ * @param type The ENET protocol type.
  * @param address The destination hardware address.
  * @return The execution status.
  */
 uint32_t ENET_leave(_enet_handle handle, uint16_t type, _enet_address address);
 #if BSPCFG_ENABLE_ENET_STATS
 /*!
- * @brief ENET get packet statstic.
+ * @brief ENET get packet statistic.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return The statistic.
  */
 ENET_STATS_PTR ENET_get_stats(_enet_handle handle);
@@ -398,7 +405,7 @@ ENET_STATS_PTR ENET_get_stats(_enet_handle handle);
 /*!
  * @brief ENET get link status.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return The link status.
  */
 bool ENET_link_status(_enet_handle handle);
@@ -406,7 +413,7 @@ bool ENET_link_status(_enet_handle handle);
 /*!
  * @brief ENET get link speed.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return The link speed.
  */
 uint32_t ENET_get_speed(_enet_handle handle);
@@ -414,17 +421,17 @@ uint32_t ENET_get_speed(_enet_handle handle);
 /*!
  * @brief ENET get mtu.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return The link mtu
  */
 uint32_t ENET_get_MTU(_enet_handle handle);
 
 /*!
- * @brief Get ENET phy registers.
+ * @brief Get ENET PHY registers.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @param numRegs The number of registers.
- * @param regPtr The buffer for data read from phy registers.
+ * @param regPtr The buffer for data read from PHY registers.
  * @return True if all numRegs registers are read succeed else false.
  */
 bool ENET_phy_registers(_enet_handle handle, uint32_t numRegs, uint32_t *regPtr);
@@ -432,7 +439,7 @@ bool ENET_phy_registers(_enet_handle handle, uint32_t numRegs, uint32_t *regPtr)
 /*!
  * @brief Get ENET options.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return ENET options.
  */
 uint32_t ENET_get_options(_enet_handle handle);
@@ -440,7 +447,7 @@ uint32_t ENET_get_options(_enet_handle handle);
 /*!
  * @brief Unregisters a protocol type on an Ethernet channel.
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @return ENET options.
  */
 uint32_t ENET_close(_enet_handle handle, uint16_t type);
@@ -448,7 +455,7 @@ uint32_t ENET_close(_enet_handle handle, uint16_t type);
 /*!
  * @brief ENET mediactl .
  *
- * @param handle The address pointer for enet device structure.
+ * @param handle The address pointer for ENET device structure.
  * @param The command Id.
  * @param The buffer for input or output parameters.
  * @return ENET options.
@@ -456,10 +463,10 @@ uint32_t ENET_close(_enet_handle handle, uint16_t type);
 uint32_t ENET_mediactl(_enet_handle handle, uint32_t commandId, void *inOutParam);
 
 /*!
- * @brief Get the next enet device handle address.
+ * @brief Get the next ENET device handle address.
  *
- * @param handle The address pointer for enet device structure.
- * @return The address of next enet device handle.
+ * @param handle The address pointer for ENET device structure.
+ * @return The address of next ENET device handle.
  */
 _enet_handle ENET_get_next_device_handle(_enet_handle handle);
 

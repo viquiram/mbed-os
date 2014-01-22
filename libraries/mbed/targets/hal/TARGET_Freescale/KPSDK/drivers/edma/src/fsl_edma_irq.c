@@ -52,7 +52,7 @@ IRQn_Type edma_irq_ids[HW_DMA_INSTANCE_COUNT][FSL_FEATURE_DMA_MODULE_CHANNEL] =
  */
 IRQn_Type edma_error_irq_ids[HW_DMA_INSTANCE_COUNT] =
 {
-    {DMA_Error_IRQn}
+    DMA_Error_IRQn
 };
 #elif defined (K70F12_SERIES)
 /*!

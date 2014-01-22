@@ -38,10 +38,10 @@ extern void *enetIfHandle;
 /* Internal irq number*/
 typedef enum _enet_irq_number
 {
-    kEnetTsTimerNumber = 0,     /*!< enet ts_timer irq number*/
-    kEnetReceiveNumber = 1,     /*!< enet receivce irq number*/
-    kEnetTransmitNumber = 2,    /*!< enet transmit irq number*/
-    kEnetMiiErrorNumber = 3     /*!< enet mii error irq number*/
+    kEnetTsTimerNumber = 0,     /*!< ENET ts_timer irq number*/
+    kEnetReceiveNumber = 1,     /*!< ENET receive irq number*/
+    kEnetTransmitNumber = 2,    /*!< ENET transmit irq number*/
+    kEnetMiiErrorNumber = 3     /*!< ENET mii error irq number*/
 }enet_irq_number_t;
 
 #if FSL_FEATURE_ENET_SUPPORT_PTP

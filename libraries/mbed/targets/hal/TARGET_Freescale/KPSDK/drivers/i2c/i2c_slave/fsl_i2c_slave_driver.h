@@ -40,11 +40,11 @@
  * Definitions
  ******************************************************************************/
 
-/*! @brief Definition of application implemented callback functions used by the*/
-/*!     I2C slave driver.*/
+/*!
+ *  brief Definition of application implemented callback functions used by the I2C slave driver.
+ */
 typedef struct _i2c_slave_info
 {
-    uint32_t instance;
     i2c_status_t (*data_source)(uint8_t * source_byte);   /*!< Callback used to get byte to transmit.*/
     i2c_status_t (*data_sink)(uint8_t sink_byte);         /*!< Callback used to put received byte.*/
     void (*on_error)(i2c_status_t error);                 /*!< Callback used to report an I2C error.*/
@@ -69,24 +69,17 @@ extern "C" {
  * Enables the device and enables interrupts. Set the I2C to slave mode. 
  * IOMux is expected to already be handled in init_hardware().
  *
- * @param instance Instance number of the I2C module.
- * @param appInfo Pointer of application information.
- * @param slaveAddress 7-bit slave address to use.
- * @param data_source Callback used to get byte to transmit.
- * @param data_sink Callback used to put received byte.
- * @param on_error Callback used to report an I2C error.
+ * @param instance   Instance number of the I2C module.
+ * @param appInfo    Pointer of application information.
  */
-void i2c_slave_init(uint32_t instance, i2c_slave_info_t * appInfo, uint8_t slaveAddress,
-                      i2c_status_t (*data_source)(uint8_t * source_byte),
-                      i2c_status_t (*data_sink)(uint8_t sink_byte),
-                      void (*on_error)(i2c_status_t error));
+void i2c_slave_init(uint32_t instance, i2c_slave_info_t * appInfo);
 
 /*!
  * @brief Shuts down the I2C slave driver.
  *
  * Clears the control register and turns off the clock to the module.
  *
- * @param instance Instance number of the I2C module.
+ * @param instance  Instance number of the I2C module.
  */
 void i2c_slave_shutdown(uint32_t instance);
 

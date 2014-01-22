@@ -63,7 +63,7 @@ extern "C" {
  */
 static inline void pit_hal_enable(void)
 {
-    PIT->MCR &= (~PIT_MCR_MDIS_MASK);
+    BW_PIT_MCR_MDIS(0U);
 }
 
 /*!
@@ -74,7 +74,7 @@ static inline void pit_hal_enable(void)
  */
 static inline void pit_hal_disable(void)
 {
-    PIT->MCR |= PIT_MCR_MDIS_MASK;
+    BW_PIT_MCR_MDIS(1U);
 }
 
 /*!
@@ -85,11 +85,14 @@ static inline void pit_hal_disable(void)
  * to halt the processor, investigate the current state of the system (for example,
  * the timer values) and then continue the operation.
  *
- * @param timerRun Timer runs or stops in debug mode.
- *        - true:  Timer continues to run in debug mode.
- *        - false: Timer stops in debug mode.
+ * @param timerRun Timers run or stop in debug mode.
+ *        - true:  Timers continue to run in debug mode.
+ *        - false: Timers stop in debug mode.
  */
-void pit_hal_configure_timer_run_in_debug(bool timerRun);
+static inline void pit_hal_configure_timer_run_in_debug(bool timerRun)
+{
+    BW_PIT_MCR_FRZ(!timerRun);
+}
 
 #if FSL_FEATURE_PIT_HAS_CHAIN_MODE
 /*!
@@ -106,7 +109,12 @@ void pit_hal_configure_timer_run_in_debug(bool timerRun);
  *        - true:  Current timer is chained with the previous timer.
  *        - false: Timer doesn't chain with other timers. 
  */
-void pit_hal_configure_timer_chain(uint32_t timer, bool enable);
+static inline void pit_hal_configure_timer_chain(uint32_t timer, bool enable)
+{
+    assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
+    BW_PIT_TCTRLn_CHN(timer, enable);
+}
+
 #endif /* FSL_FEATURE_PIT_HAS_CHAIN_MODE*/
 
 /* @} */
@@ -129,7 +137,7 @@ void pit_hal_configure_timer_chain(uint32_t timer, bool enable);
 static inline void pit_hal_timer_start(uint32_t timer)
 {
     assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT->CHANNEL[timer].TCTRL |= PIT_TCTRL_TEN_MASK;
+    BW_PIT_TCTRLn_TEN(timer, 1U);
 }
 
 /*!
@@ -143,7 +151,7 @@ static inline void pit_hal_timer_start(uint32_t timer)
 static inline void pit_hal_timer_stop(uint32_t timer)
 {
     assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT->CHANNEL[timer].TCTRL &= (~PIT_TCTRL_TEN_MASK);
+    BW_PIT_TCTRLn_TEN(timer, 0U);
 }
 
 /* @} */
@@ -168,7 +176,7 @@ static inline void pit_hal_timer_stop(uint32_t timer)
 static inline void pit_hal_set_timer_period_count(uint32_t timer, uint32_t count)
 {
     assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT->CHANNEL[timer].LDVAL = count;
+    HW_PIT_LDVALn_WR(timer, count);
 }
 
 /*!
@@ -183,7 +191,7 @@ static inline void pit_hal_set_timer_period_count(uint32_t timer, uint32_t count
 static inline uint32_t pit_hal_read_timer_count(uint32_t timer)
 {
     assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    return PIT->CHANNEL[timer].CVAL;
+    return HW_PIT_CVALn_RD(timer);
 }
 
 #if FSL_FEATURE_PIT_HAS_LIFETIME_TIMER
@@ -219,7 +227,11 @@ uint64_t pit_hal_read_lifetime_timer_count(void);
  *        - true:  Generate interrupt when timer counts to 0.
  *        - false: No interrupt is generated.
  */
-void pit_hal_configure_interrupt(uint32_t timer, bool enable);
+static inline void pit_hal_configure_interrupt(uint32_t timer, bool enable)
+{
+    assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
+    BW_PIT_TCTRLn_TIE(timer, enable);
+}
 
 /*!
  * @brief Clear timer interrupt flag.
@@ -232,7 +244,8 @@ void pit_hal_configure_interrupt(uint32_t timer, bool enable);
 static inline void pit_hal_clear_interrupt_flag(uint32_t timer)
 {
     assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT->CHANNEL[timer].TFLG |= PIT_TFLG_TIF_MASK;
+    /* Write 1 will clear the flag. */
+    HW_PIT_TFLGn_WR(timer, 1U);
 }
 
 /*!
@@ -248,7 +261,7 @@ static inline void pit_hal_clear_interrupt_flag(uint32_t timer)
 static inline bool pit_hal_is_timeout_occurred(uint32_t timer)
 {
     assert(timer < FSL_FEATURE_PIT_TIMER_COUNT); 
-    return PIT->CHANNEL[timer].TFLG;
+    return HW_PIT_TFLGn_RD(timer);
 }
 
 /* @} */

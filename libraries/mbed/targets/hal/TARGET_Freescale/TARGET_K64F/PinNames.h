@@ -29,10 +29,7 @@ typedef enum {
 } PinDirection;
 
 typedef enum {
-    PTA0 = (0 << GPIO_PORT_SHIFT | 0),
-    PTA1 = (0 << GPIO_PORT_SHIFT | 1),
-    PTA2 = (0 << GPIO_PORT_SHIFT | 2),
-    PTA3 = (0 << GPIO_PORT_SHIFT | 3),
+    /* PTA0 - PTA3 reserved for JTAG pins */
     PTA4 = (0 << GPIO_PORT_SHIFT | 4),
     PTA5 = (0 << GPIO_PORT_SHIFT | 5),
     PTA6 = (0 << GPIO_PORT_SHIFT | 6),
@@ -210,11 +207,11 @@ typedef enum {
     D2 = PTA5,
     D3 = PTD4,
     D4 = PTC8,
-    D5 = PTA1,
+    D5 = PTE1,
     D6 = PTC3,
     D7 = PTC4,
     D8 = PTA12,
-    D9 = PTA2,
+    D9 = PTE1,
     D10 = PTC2,
     D11 = PTD2,
     D12 = PTD3,

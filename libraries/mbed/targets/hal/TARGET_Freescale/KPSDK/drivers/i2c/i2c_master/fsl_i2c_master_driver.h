@@ -95,35 +95,35 @@ extern "C" {
  * @brief Initialize the I2C master mode driver.
  *
  * @param instance The I2C peripheral instance number.
- * @param master
+ * @param master   The pointer to the I2C master driver state structure.
  */
 void i2c_master_init(uint32_t instance, i2c_master_t * master);
 
 /*!
  * @brief Shut down the driver.
  *
- * @param master
+ * @param master   The pointer to the I2C master driver state structure.
  */
 void i2c_master_shutdown(i2c_master_t * master);
 
 /*!
  * @brief Configure the I2C bus to access a device.
  *
- * @param master
- * @param device
+ * @param master   The pointer to the I2C master driver state structure.
+ * @param device   The pointer to the I2C device information struct.
  */
 i2c_status_t i2c_master_configure_bus(i2c_master_t * master, const i2c_device_t * device);
 
 /*!
  * @brief Low-level I2C transfer function.
  *
- * @param master
- * @param flags
- * @param direction
- * @param data
- * @param dataLength
- * @param actualLengthTransferred
- * @param timeous_ms
+ * @param master                   The pointer to the I2C master driver state structure.
+ * @param flags                    The flags to control a transfer.
+ * @param direction                The direction of an I2C transfer.
+ * @param data                     The pointer to the data to be transfered.
+ * @param dataLength               The length in bytes of the data to be transfered.
+ * @param actualLengthTransferred  The length in bytes of the data thansfered.
+ * @param timeous_ms               A timeout for the transfer in microseconds.
  */
 i2c_status_t i2c_master_transfer_basic(i2c_master_t * master, 
                       uint32_t flags,
@@ -136,15 +136,15 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
 /*!
  * @brief Perform a blocking read or write transaction on the I2C bus.
  *
- * @param master
- * @param device
- * @param direction
- * @param subaddress
- * @param subaddressLength
- * @param data
- * @param dataLength
- * @param actualLengthTransferred
- * @param timeous_ms
+ * @param master                   The pointer to the I2C master driver state structure.
+ * @param device                   The pointer to the I2C device information struct.
+ * @param direction                The direction of an I2C transfer.
+ * @param subaddress               The subaddress for a device if it has.
+ * @param subaddressLength         The length of the subaddress.
+ * @param data                     The pointer to the data to be transfered.
+ * @param dataLength               The length in bytes of the data to be transfered.
+ * @param actualLengthTransferred  The length in bytes of the data thansfered.
+ * @param timeous_ms               A timeout for the transfer in microseconds.
  */
 i2c_status_t i2c_master_transfer(i2c_master_t * master, 
                       const i2c_device_t * device,

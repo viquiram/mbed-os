@@ -88,7 +88,7 @@ void i2c_master_irq_handler(void * state);
 
 /* Weak extern for the I2C slave driver's interrupt handler.*/
 #pragma weak i2c_slave_irq_handler
-void i2c_slave_irq_handler(void * state);
+void i2c_slave_irq_handler(uint32_t instance);
 
 #endif /* __FSL_I2C_SHARED_IRQS_H__*/
 /*******************************************************************************

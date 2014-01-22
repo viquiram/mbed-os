@@ -47,53 +47,53 @@
 
 /*! @brief internal resistor pull feature selection.*/
 typedef enum _port_pull {
-    kPortPullDown = 0,  /*!< internal pulldown resistor is enabled.*/
-    kPortPullUp   = 1   /*!< internal pullup resistor is enabled.*/
+    kPortPullDown = 0U,  /*!< internal pulldown resistor is enabled.*/
+    kPortPullUp   = 1U   /*!< internal pullup resistor is enabled.*/
 } port_pull_t;
 
 /*! @brief slew rate selection.*/
 typedef enum _port_slew_rate {
-    kPortFastSlewRate = 0,  /*!< fast slew rate is configured.*/
-    kPortSlowSlewRate = 1   /*!< slow slew rate is configured.*/
+    kPortFastSlewRate = 0U,  /*!< fast slew rate is configured.*/
+    kPortSlowSlewRate = 1U   /*!< slow slew rate is configured.*/
 } port_slew_rate_t;
 
 /*! @brief configure drive strength.*/
 typedef enum _port_drive_strength {
-    kPortLowDriveStrength  = 0, /*!< low drive strength is configured.*/
-    kPortHighDriveStrength = 1  /*!< high drive strength is configured.*/
+    kPortLowDriveStrength  = 0U, /*!< low drive strength is configured.*/
+    kPortHighDriveStrength = 1U  /*!< high drive strength is configured.*/
 } port_drive_strength_t;
 
 /*! @brief pin mux selection.*/
 typedef enum _port_mux {
-    kPortPinDisabled = 0,   /*!< corresponding pin is disabled as analog.*/
-    kPortMuxAsGpio   = 1,   /*!< corresponding pin is configured as GPIO.*/
-    kPortMuxAlt2     = 2,   /*!< chip-specific*/
-    kPortMuxAlt3     = 3,   /*!< chip-specific*/
-    kPortMuxAlt4     = 4,   /*!< chip-specific*/
-    kPortMuxAlt5     = 5,   /*!< chip-specific*/
-    kPortMuxAlt6     = 6,   /*!< chip-specific*/
-    kPortMuxAlt7     = 7    /*!< chip-specific*/
+    kPortPinDisabled = 0U,   /*!< corresponding pin is disabled as analog.*/
+    kPortMuxAsGpio   = 1U,   /*!< corresponding pin is configured as GPIO.*/
+    kPortMuxAlt2     = 2U,   /*!< chip-specific*/
+    kPortMuxAlt3     = 3U,   /*!< chip-specific*/
+    kPortMuxAlt4     = 4U,   /*!< chip-specific*/
+    kPortMuxAlt5     = 5U,   /*!< chip-specific*/
+    kPortMuxAlt6     = 6U,   /*!< chip-specific*/
+    kPortMuxAlt7     = 7U    /*!< chip-specific*/
 } port_mux_t;
 
 /*! @brief digital filter clock source selection.*/
 #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
 typedef enum _port_digital_filter_clock_source {
-    kPortBusClock = 0,  /*!< digital filters are clocked by the bus clock.*/
-    kPortLPOClock = 1   /*!< digital filters are clocked by the 1 kHz LPO clock.*/
+    kPortBusClock = 0U,  /*!< digital filters are clocked by the bus clock.*/
+    kPortLPOClock = 1U   /*!< digital filters are clocked by the 1 kHz LPO clock.*/
 } port_digital_filter_clock_source_t;
 #endif
 
 /*! @brief configure interrupt generation condition.*/
 typedef enum _port_interrupt_config {
-    kPortIntDisabled    = 0x0,  /*!< interrupt/DMA request is disabled.*/
-    kPortDmaRisingEdge  = 0x1,  /*!< DMA request on rising edge.*/
-    kPortDmaFallingEdge = 0x2,  /*!< DMA request on falling edge.*/
-    kPortDmaEitherEdge  = 0x3,  /*!< DMA request on either edge.*/
-    kPortIntLogicZero   = 0x8,  /*!< Interrupt when logic zero. */
-    kPortIntRisingEdge  = 0x9,  /*!< Interrupt on rising edge. */
-    kPortIntFallingEdge = 0xA,  /*!< Interrupt on falling edge. */
-    kPortIntEitherEdge  = 0xB,  /*!< Interrupt on either edge. */
-    kPortIntLogicOne    = 0xC   /*!< Interrupt when logic one. */
+    kPortIntDisabled    = 0x0U,  /*!< interrupt/DMA request is disabled.*/
+    kPortDmaRisingEdge  = 0x1U,  /*!< DMA request on rising edge.*/
+    kPortDmaFallingEdge = 0x2U,  /*!< DMA request on falling edge.*/
+    kPortDmaEitherEdge  = 0x3U,  /*!< DMA request on either edge.*/
+    kPortIntLogicZero   = 0x8U,  /*!< Interrupt when logic zero. */
+    kPortIntRisingEdge  = 0x9U,  /*!< Interrupt on rising edge. */
+    kPortIntFallingEdge = 0xAU,  /*!< Interrupt on falling edge. */
+    kPortIntEitherEdge  = 0xBU,  /*!< Interrupt on either edge. */
+    kPortIntLogicOne    = 0xCU   /*!< Interrupt when logic one. */
 } port_interrupt_config_t;
 
 /*******************************************************************************
@@ -125,7 +125,7 @@ static inline void port_hal_pull_select(uint32_t instance,
                                         port_pull_t pullSelect)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_PS(instance, pin, pullSelect);
 }
 
@@ -141,7 +141,7 @@ static inline void port_hal_pull_select(uint32_t instance,
 static inline void port_hal_configure_pull(uint32_t instance, uint32_t pin, bool isPullEnabled)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);    
+    assert(pin < 32U);    
     BW_PORT_PCRn_PE(instance, pin, isPullEnabled);
 }
 
@@ -159,7 +159,7 @@ static inline void port_hal_configure_slew_rate(uint32_t instance,
                                                 port_slew_rate_t rateSelect)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_SRE(instance, pin, rateSelect);
 }
 
@@ -181,7 +181,7 @@ static inline void port_hal_configure_passive_filter(uint32_t instance,
                                                      bool isPassiveFilterEnabled)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_PFE(instance, pin, isPassiveFilterEnabled);
 }
 
@@ -200,7 +200,7 @@ static inline void port_hal_configure_open_drain(uint32_t instance,
                                                  bool isOpenDrainEnabled)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_ODE(instance, pin, isOpenDrainEnabled);
 }
 #endif /*FSL_FEATURE_PORT_HAS_OPEN_DRAIN*/
@@ -219,7 +219,7 @@ static inline void port_hal_configure_drive_strength(uint32_t instance,
                                                      port_drive_strength_t driveSelect)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_DSE(instance, pin, driveSelect);
 }
 
@@ -236,7 +236,7 @@ static inline void port_hal_configure_drive_strength(uint32_t instance,
 static inline void port_hal_mux_control(uint32_t instance, uint32_t pin, port_mux_t mux)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_MUX(instance, pin, mux);
 }
  
@@ -255,7 +255,7 @@ static inline void port_hal_configure_pin_control_lock(uint32_t instance,
                                                        bool isPinLockEnabled)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);    
+    assert(pin < 32U);    
     BW_PORT_PCRn_LK(instance, pin, isPinLockEnabled);
 }
 #endif /* FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK*/
@@ -276,7 +276,7 @@ static inline void port_hal_configure_digital_filter(uint32_t instance,
                                                      bool isDigitalFilterEnabled)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     HW_PORT_DFER_SET(instance, (uint32_t)isDigitalFilterEnabled << pin);
 }
 
@@ -366,7 +366,7 @@ static inline void port_hal_configure_pin_interrupt(uint32_t instance,
                                                     port_interrupt_config_t intConfig)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);
+    assert(pin < 32U);
     BW_PORT_PCRn_IRQC(instance, pin, intConfig);
 }
 
@@ -388,7 +388,7 @@ static inline void port_hal_configure_pin_interrupt(uint32_t instance,
 static inline bool port_hal_read_pin_interrupt_flag(uint32_t instance, uint32_t pin)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);    
+    assert(pin < 32U);    
     return BR_PORT_PCRn_ISF(instance, pin);
 }
 
@@ -401,7 +401,7 @@ static inline bool port_hal_read_pin_interrupt_flag(uint32_t instance, uint32_t 
 static inline void port_hal_clear_pin_interrupt_flag(uint32_t instance, uint32_t pin)
 {
     assert(instance < HW_PORT_INSTANCE_COUNT);
-    assert(pin < 32);    
+    assert(pin < 32U);    
     BW_PORT_PCRn_ISF(instance, pin, 1U);
 }
 

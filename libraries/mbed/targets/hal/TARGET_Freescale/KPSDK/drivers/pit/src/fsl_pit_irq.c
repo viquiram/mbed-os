@@ -28,6 +28,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  
+#include <stdlib.h>
+#include <assert.h>
 #include "fsl_pit_driver.h"
 
 /*!
@@ -42,7 +44,7 @@
 /*!
  * @brief Table to save PIT IRQ enum numbers defined in CMSIS files. 
  *
- * They are used by pit_init to enable or disable PIT interrupts. This table is
+ * They are used by pit_init_channel to enable or disable PIT interrupts. This table is
  * indexed by channel number which could return PIT IRQ numbers.
  */
 IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT] = 

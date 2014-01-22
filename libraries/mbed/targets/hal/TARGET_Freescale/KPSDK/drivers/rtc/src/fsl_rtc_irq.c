@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,102 +27,96 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#include "fsl_i2c_shared_irqs.h"
+ 
+#include "fsl_rtc_driver.h"
+#include "fsl_os_abstraction.h"
+#include "fsl_interrupt_manager.h"
 #include <assert.h>
 
+/*!
+ * @addtogroup rtc_irq
+ * @{
+ */
+ 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
-i2c_shared_irq_config_t g_i2cSharedIrqConfig[HW_I2C_INSTANCE_COUNT];
+IRQn_Type rtc_irq_ids[FSL_FEATURE_RTC_INTERRUPT_COUNT] = 
+{
+    RTC_IRQn, RTC_Seconds_IRQn
+};
 
 /*!
- * @brief Table to save I2C IRQ enum numbers defined in CMSIS files. 
+ * @brief Function table to save RTC isr callback function pointers.
  *
- * This is used by I2C master and slave init functions to enable or disable I2C interrupts. 
- * This table is indexed by the module instance number and returns I2C IRQ numbers.
+ * Call rtc_register_isr_callback_function to install isr callback functions.
  */
-#if defined (K64F12_SERIES)
-IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT] = {I2C0_IRQn, I2C1_IRQn, I2C2_IRQn};
-#else
-IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT] = {I2C0_IRQn, I2C1_IRQn};
-#endif
-
+rtc_isr_callback_t rtc_isr_callback_table[FSL_FEATURE_RTC_INTERRUPT_COUNT] = {NULL};
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
-static void i2c_handle_shared_irq(uint32_t instance);
+/*! @brief Implementation of RTC handler named in startup code. */
+/*!*/
+/*! Passes instance to generic RTC IRQ handler.*/
+void RTC_IRQHandler(void);
+
+/*! @brief Implementation of RTC handler named in startup code. */
+/*!*/
+/*! Passes instance to generic RTC IRQ handler.*/
+void RTC_Seconds_IRQHandler(void);
 
 /*******************************************************************************
  * Code
  ******************************************************************************/
 
-/*!
- * @brief Pass IRQ control to either the master or slave driver. 
- *
- * The address of the IRQ handlers are checked to make sure they are non-zero before
- * they are called. If the IRQ handler's address is zero, it means that driver was
- * not present in the link (because the IRQ handlers are marked as weak). This would
- * actually be a program error, because it means the master/slave config for the IRQ
- * was set incorrectly.
- *
- * @param instance   Instance number of the I2C module.
- */
-static void i2c_handle_shared_irq(uint32_t instance)
+/*! @brief RTC IRQ handler with the same name in startup code*/
+/*! @brief Implementation of RTC handler named in startup code. */
+/*!*/
+/*! Passes instance to generic RTC IRQ handler.*/
+void RTC_IRQHandler(void)
 {
-    assert(instance < HW_I2C_INSTANCE_COUNT);
-
-    if (g_i2cSharedIrqConfig[instance].isMaster)
+    /* Run callback function if it exists.*/
+    if (rtc_isr_callback_table[0])
     {
-        /* Master mode.*/
-        if (&i2c_master_irq_handler)
-        {
-            i2c_master_irq_handler(g_i2cSharedIrqConfig[instance].state);
-        }
-    }
-    else
-    {
-        /* Slave mode.*/
-        if (&i2c_slave_irq_handler)
-        {
-            i2c_slave_irq_handler(instance);
-        }
+        (*rtc_isr_callback_table[0])();
     }
 }
 
-/*!
- * @brief Implementation of I2C0 handler named in startup code.
- *
- * Passes instance to generic I2C IRQ handler.
- */
-void I2C0_IRQHandler(void)
+/*! @brief Implementation of RTC handler named in startup code. */
+/*!*/
+/*! Passes instance to generic RTC IRQ handler.*/
+void RTC_Seconds_IRQHandler(void)
 {
-    i2c_handle_shared_irq(HW_I2C0);
+    /* Run callback function if it exists.*/
+    if (rtc_isr_callback_table[1])
+    {
+        (*rtc_isr_callback_table[1])();
+    }
 }
 
-/*!
- * @brief Implementation of I2C1 handler named in startup code.
- *
- * Passes instance to generic I2C IRQ handler.
- */
-void I2C1_IRQHandler(void)
-{
-    i2c_handle_shared_irq(HW_I2C1);
-}
+/*! @} */
 
-#if defined (K64F12_SERIES)  
-/*!
- * @brief Implementation of I2C2 handler named in startup code.
+/*FUNCTION**********************************************************************
  *
- * Passes instance to generic I2C IRQ handler.
- */
-void I2C2_IRQHandler(void)
+ * Function Name : rtc_register_isr_callback_function 
+ * Description   : Register rtc isr callback function. 
+ * System default ISR interfaces are already defined in fsl_rtc_irq.c. Users 
+ * can either edit these ISRs or use this function to register a callback
+ * function. The default ISR will run the callback function it there is one
+ * installed here.
+
+ *END**************************************************************************/
+void rtc_register_isr_callback_function(uint8_t rtc_irq_number, rtc_isr_callback_t function)
 {
-    i2c_handle_shared_irq(HW_I2C2);
+    assert(rtc_irq_number < FSL_FEATURE_RTC_INTERRUPT_COUNT);
+    assert(function != NULL);
+    
+    rtc_isr_callback_table[rtc_irq_number] = function;
+    /* Enable RTC interrupt.*/
+    interrupt_enable(rtc_irq_ids[rtc_irq_number]);
 }
-#endif
 
 /*******************************************************************************
  * EOF

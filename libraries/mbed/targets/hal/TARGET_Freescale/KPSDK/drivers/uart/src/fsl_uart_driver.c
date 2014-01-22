@@ -137,14 +137,19 @@ uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUs
     /* Now calculate the number of data words per given FIFO size */
     uartState->txFifoEntryCount = (fifoSize == 0 ? 1 : 0x1 << (fifoSize + 1));
 
-    /* Configure the TX FIFO watermark to be 1/2 of the total entry or 1 if entry count = 1 */
+    /* Configure the TX FIFO watermark to be 1/2 of the total entry or 0 if entry count = 1
+     * A watermark setting of 0 for TX FIFO entry count of 1 means that TDRE will only interrupt
+     * when the TX buffer (the one entry in the TX FIFO) is empty. Otherwise, if we set the
+     * watermark to 1, the TDRE will always be set regardless if the TX buffer was empty or not
+     * as the spec says TDRE will set when the FIFO is at or below the configured watermark.
+     */
     if (uartState->txFifoEntryCount > 1)
     {
         uart_hal_set_tx_fifo_watermark(uartInstance, uartState->txFifoEntryCount/2);
     }
     else
     {
-        uart_hal_set_tx_fifo_watermark(uartInstance, 1);
+        uart_hal_set_tx_fifo_watermark(uartInstance, 0);
     }
 
     /* Configure the RX FIFO watermark to be 1 */
@@ -163,6 +168,13 @@ uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUs
     uart_hal_enable_rx_fifo(uartInstance);
     uart_hal_flush_tx_fifo(uartInstance);
     uart_hal_flush_rx_fifo(uartInstance);
+#else
+    /* For modules that do not support a FIFO, they have a data buffer that essentially
+	 * acts likes a one-entry FIFO, thus to make the code cleaner, we'll
+	 * equate txFifoEntryCount to 1.  Also note that TDRE flag will set only when the tx
+     * buffer is empty.
+     */
+	 uartState->txFifoEntryCount = 1;
 #endif
 
     /* Initialize the UART instance */
@@ -172,11 +184,11 @@ uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUs
         return errorCode;
     }
 
-    /* Enable the interrupt */
-    interrupt_enable(uart_irq_ids[uartInstance]);
-
     /* Configure IRQ state structure, so IRQ handler can point to the correct state structure. */
     uart_set_irq_state(uartInstance, uartState);
+
+    /* Enable the interrupt */
+    interrupt_enable(uart_irq_ids[uartInstance]);
 
     return kStatus_UART_Success;
 }
@@ -194,6 +206,16 @@ void uart_shutdown(uart_state_t * uartState)
 {
     /* Get uartInstance from UART state struct */
     uint32_t uartInstance = uartState->instance;
+
+    /* In case there is still data in the TX FIFO or shift register that is being transmitted
+     * wait till transmit is complete
+     */
+#if FSL_FEATURE_UART_HAS_FIFO
+    /* Wait until there all of the data has been drained from the TX FIFO */
+    while(uart_hal_get_tx_dataword_count_in_fifo(uartInstance) != 0) { }
+#endif
+    /* Wait until the data is completely shifted out of shift register */
+    while(!(uart_hal_is_transmission_complete(uartInstance))) { }
 
     /* Disable the interrupt */
     interrupt_disable(uart_irq_ids[uartInstance]);
@@ -253,6 +275,15 @@ uart_status_t uart_send_data(uart_state_t * uartState, uint8_t * sendBuffer, uin
         error = kStatus_UART_Timeout;
     }
 
+#if FSL_FEATURE_UART_HAS_FIFO
+    /* Wait until the TX FIFO is empty before returning. However, do not wait until the TX
+     * is complete (when all data is shifted from the TX shift register). The reason is, this may
+     * prevent us from exiting in time to queue up more data into the TX FIFO or TX Buffer for
+     * another transmission.
+     */
+    while(uart_hal_get_tx_dataword_count_in_fifo(uartState->instance) != 0) { }
+#endif
+
     return error;
 }
 
@@ -306,47 +337,50 @@ uart_status_t uart_send_data_async(uart_state_t * uartState, uint8_t * sendBuffe
     uartState->remainingSendByteCount = txByteCount;
     uartState->transmittedByteCount = 0;
 
-    /* Make sure the transmit data register is empty and ready for data */
-    while(!uart_hal_is_transmit_data_register_empty(uartInstance)) { }
-
     /* Start the transmission by writing the first char. */
     uartState->isTransmitInProgress = true;
 
+    /* Fill the TX FIFO or TX data buffer. In the event that there still might be data in the
+     * TX FIFO, first ascertain the nubmer of empty spaces and then fill those up.
+     */
+    uint8_t emptyEntryCountInFifo;
 #if FSL_FEATURE_UART_HAS_FIFO
-    uint32_t i;
+    emptyEntryCountInFifo = uartState->txFifoEntryCount -
+                            uart_hal_get_tx_dataword_count_in_fifo(uartInstance);
+#else
+    /* For modules that don't have a FIFO, there is no FIFO data count register */
+    emptyEntryCountInFifo = uartState->txFifoEntryCount;
+    /* Make sure the transmit data register is empty and ready for data */
+    while(!uart_hal_is_transmit_data_register_empty(uartInstance)) { }
+#endif
 
-    /* First need to disable TX */
-    uart_hal_disable_transmitter(uartInstance);
-
-    /* Now fill the TX FIFO */
-    for (i = 0; i < uartState->txFifoEntryCount; i++)
+    /* Fill up FIFO, if only a 1-entry FIFO, then just fill the data buffer */
+    while(emptyEntryCountInFifo--)
     {
         uart_hal_putchar(uartInstance, *(uartState->sendBuffer)); /* put data into FIFO */
         ++uartState->sendBuffer; /* Increment the sendBuffer pointer */
         --uartState->remainingSendByteCount;  /* Decrement the byte count */
         ++uartState->transmittedByteCount;  /* Increment the transmitted byte count */
-        /* If there are no more bytes in the buffer to send, break */
+        /* If there are no more bytes in the buffer to send, then complete transmit. No need
+         * to spend time enabling the interrupt and going to the ISR.
+         */
         if (uartState->remainingSendByteCount == 0)
         {
-            break;
+            uart_complete_send_data(uartState);
+            /* Signal the synchronous completion object if the transmit wasn't async.*/
+            if (!uartState->isTransmitAsync)
+            {
+                sync_signal(&uartState->txIrqSync);
+            }
+            return kStatus_UART_Success;
         }
     }
 
-    /* Enable the transmitter before enabling the interrupt*/
-    uart_hal_enable_transmitter(uartInstance);
-    /* Enable the transmitter data register empty interrupt*/
+    /* Enable the transmitter data register empty interrupt. The TDRE flag will set whenever
+     * the TX buffer is emptied into the TX shift register (for non-FIFO IPs) or when the
+     * data in the TX FIFO is at or below the programmed watermark (for FIFO-supported IPs).
+     */
     uart_hal_enable_tx_data_register_empty_interrupt(uartInstance);
-#else
-    uint8_t byteToSend;
-    byteToSend = *(uartState->sendBuffer); /* The data comes from the sendBuffer*/
-    ++uartState->sendBuffer; /* Increment the sendBuffer pointer*/
-    --uartState->remainingSendByteCount;  /* Decrement the byte count*/
-    ++uartState->transmittedByteCount;  /* increment the transmitted byte count*/
-    uart_hal_putchar(uartInstance, byteToSend); /* Transmit the data*/
-
-    /* Enable transmission complete interrupt*/
-    uart_hal_enable_transmission_complete_interrupt(uartInstance);
-#endif  /* FSL_FEATURE_UART_HAS_FIFO*/
 
     return kStatus_UART_Success;
 }
@@ -360,11 +394,8 @@ static void uart_complete_send_data(uart_state_t * uartState)
     /* Get the current instance number from the UART state struct */
     uint32_t uartInstance = uartState->instance;
 
-    /* Disable all UART transmit interrupt requests */
     /* Disable the transmitter data register empty interrupt */
     uart_hal_disable_tx_data_register_empty_interrupt(uartInstance);
-    /* Disable transmission complete interrupt */
-    uart_hal_disable_transmission_complete_interrupt(uartInstance);
 
     /* Update the information of the module driver state */
     uartState->isTransmitInProgress = false;  /* transmission is complete*/
@@ -382,14 +413,34 @@ static void uart_complete_send_data(uart_state_t * uartState)
  *END**************************************************************************/
 uart_status_t uart_get_transmit_status(uart_state_t * uartState, uint32_t * bytesTransmitted)
 {
-
-    /* Fill in the bytes transferred.*/
+    /* Fill in the bytes transferred. This may return that all bytes were transmitted,
+     * however, for IPs with FIFO support, there still may be data in the TX FIFO still
+     * in the process of being transmitted.
+     */
     if (bytesTransmitted)
     {
         *bytesTransmitted = uartState->transmittedByteCount;
     }
 
+    /*
+     * Return kStatus_UART_TxBusy or kStatus_UART_Success depending on whether or not
+     * the UART has a FIFO. If it does have a FIFO, we'll need to wait until the FIFO is
+     * completely drained before indicating success in addition to isTransmitInProgress = 0.
+     * If there is no FIFO, then we need to only worry about isTransmitInProgress
+     */
+#if FSL_FEATURE_UART_HAS_FIFO
+    if ((uartState->isTransmitInProgress == 0) &&
+        (uart_hal_get_tx_dataword_count_in_fifo(uartState->instance) == 0))
+    {
+        return kStatus_UART_Success; /* No more data to send, FIFO is empty */
+    }
+    else
+    {
+        return kStatus_UART_TxBusy; /* Either more data to send, or FIFO has data */
+    }
+#else
     return (uartState->isTransmitInProgress ? kStatus_UART_TxBusy : kStatus_UART_Success);
+#endif
 }
 
 /*FUNCTION**********************************************************************
@@ -593,47 +644,6 @@ void uart_irq_handler(uart_state_t * uartStateIrq)
         return;
     }
 
-    /* Check to see if the interrupt is due to transmit complete
-     * first see if the interrupt is enabled
-     */
-    if (uart_hal_is_transmission_complete_interrupt_enabled(uartInstance))
-    {
-        if(uart_hal_is_transmission_complete(uartInstance))
-        {
-            /* Check to see if there are any more bytes to send */
-            uint8_t byteToSend;
-            if (uartState->remainingSendByteCount)
-            {
-                byteToSend = *(uartState->sendBuffer); /* The data comes from the sendBuffer */
-                ++uartState->sendBuffer; /* Increment the sendBuffer pointer */
-                --uartState->remainingSendByteCount;  /* Decrement the byte count */
-                ++uartState->transmittedByteCount;  /* increment the transmitted byte count */
-                uart_hal_putchar(uartInstance, byteToSend); /* Transmit the data */
-            }
-            else
-            {
-#if FSL_FEATURE_UART_HAS_FIFO
-                /* If there is more data in the FIFO to transmit, do not complete transmit yet */
-                if (uart_hal_get_tx_dataword_count_in_fifo(uartInstance) == 0)
-                {
-#endif
-                /* We're done with this transfer.
-                 * Complete the transfer. This disables the interrupts, so we don't wind up in
-                 * the ISR again.
-                 */
-                uart_complete_send_data(uartState);
-
-                /* Signal the synchronous completion object if the transmit wasn't async.*/
-                if (!uartState->isTransmitAsync)
-                {
-                    sync_signal(&uartState->txIrqSync);
-                }
-#if FSL_FEATURE_UART_HAS_FIFO
-                }
-#endif
-            }
-        }
-    }
     /* Check to see if the interrupt is due to receive data full
      * first see if the interrupt is enabled
      */
@@ -677,7 +687,7 @@ void uart_irq_handler(uart_state_t * uartStateIrq)
             }
         }
     }
-#if FSL_FEATURE_UART_HAS_FIFO
+
     /* Check to see if the interrupt is due to transmit data register empty
      * first see if the interrupt is enabled.
      */
@@ -689,38 +699,57 @@ void uart_irq_handler(uart_state_t * uartStateIrq)
             if (uartState->remainingSendByteCount)
             {
                 uint8_t emptyEntryCountInFifo;
+#if FSL_FEATURE_UART_HAS_FIFO
                 emptyEntryCountInFifo = uartState->txFifoEntryCount -
-                              uart_hal_get_tx_dataword_count_in_fifo(uartInstance);
+                                        uart_hal_get_tx_dataword_count_in_fifo(uartInstance);
+#else
+                /* For modules that don't have a FIFO, there is no FIFO data count register */
+                emptyEntryCountInFifo = uartState->txFifoEntryCount;
+#endif
 
-                /* Fill up FIFO */
+                /* Fill up FIFO, if only a 1-entry FIFO, then just fill the data buffer */
                 while(emptyEntryCountInFifo--)
                 {
                     uart_hal_putchar(uartInstance, *(uartState->sendBuffer));/* Transmit the data */
                     ++uartState->sendBuffer; /* Increment the sendBuffer pointer */
                     --uartState->remainingSendByteCount;  /* Decrement the byte count */
                     ++uartState->transmittedByteCount;  /* increment the transmitted byte count */
-                    /* If there are no more bytes in the buffer to send, break */
+
+                    /* If there are no more bytes in the buffer to send, complete the transmit
+                     * process and break out of the while loop. We should not re-enter the ISR again
+                     * as all of the data has been put into the FIFO (or the TX data buffer).
+                     */
                     if (!uartState->remainingSendByteCount)
                     {
+                        uart_complete_send_data(uartState);
+                        /* Signal the synchronous completion object if the transmit wasn't async.*/
+                        if (!uartState->isTransmitAsync)
+                        {
+                            sync_signal(&uartState->txIrqSync);
+                        }
                         break;
                     }
                 }
             }
+            /* In case the ISR is entered again, but there is no more data to send, go ahead and
+             * complete the transmit process.
+             */
             else
             {
-                /* There still may be data in the TX FIFO. If there are no more bytes to fill the
-                 * the TX FIFO (remainingSendByteCount= 0), then disable the TX data register
-                 * empty interrupt (the interrupt that is triggered on the watermark) and instead
-                 * enable the transmit complete interrupt.  Then, the transmit complete interrupt
-                 * service routine will check to see if there is more data in the FIFO and if not
-                 * it will complete the transfer.
-                 */
-                uart_hal_disable_tx_data_register_empty_interrupt(uartInstance);
-                uart_hal_enable_transmission_complete_interrupt(uartInstance);
+                /* We're done with this transfer.
+                * Complete the transfer. This disables the interrupts, so we don't wind up in
+                * the ISR again.
+                */
+                uart_complete_send_data(uartState);
+
+                /* Signal the synchronous completion object if the transmit wasn't async.*/
+                if (!uartState->isTransmitAsync)
+                {
+                    sync_signal(&uartState->txIrqSync);
+                }
             }
         }
     }
-#endif
 }
 
 /*******************************************************************************

@@ -73,27 +73,15 @@ typedef enum _sdhc_power_mode
     kSdhcPowerModeStopped,          /*!< SDHC is stopped */
 } sdhc_power_mode_t;
 
-typedef struct SdhcHostDevice sdhc_host_t;
-typedef struct SdhcData sdhc_data_t;
-typedef struct SdhcCommand sdhc_command_t;
-typedef struct SdhcRequest sdhc_request_t;
-typedef struct SdhcHostConfig sdhc_host_config_t;
-typedef struct SdhcCard sdhc_card_t;
-typedef struct SdhcHostInitConfig sdhc_init_config_t;
-/*!
- * @brief SDHC Request Done Callback
- */
-typedef void (*request_done)(sdhc_host_t *host, sdhc_request_t *req);
-
 /*!
  * @brief SDHC Card Structure
  * 
  * Define structure of a card, including necessary fields to identify and
  * describe the card.
  */
-struct SdhcCard
+typedef struct SdhcCard
 {
-    sdhc_host_t * host;                             /*!< associated host */
+    struct SdhcHostDevice * host;                   /*!< associated host */
     uint32_t version;                               /*!< card version */
     uint32_t rca;                                   /*!< RCA */
     sdhc_card_type_t cardType;                      /*!< card type */
@@ -107,43 +95,43 @@ struct SdhcCard
     uint32_t rawScr[2];                             /*!< raw SCR */
     uint8_t* rawExtCsd;                             /*!< raw EXT_CSD  */
     uint32_t capacity;                              /*!< card total size */
-};
+} sdhc_card_t;
 
 /*!
  * @brief SDHC Initialization Configure Structure
  * 
  * Define structure of the necessary configuration data to initialize SDHC.
  */
-struct SdhcHostInitConfig
+typedef struct SdhcHostInitConfig
 {
     uint32_t clock;                                 /*!< clock rate */
     uint32_t busWidth;                              /*!< data bus width */
     void (*card_detect_callback)(void *param);      /*!< card detect callback function */
-};
+} sdhc_init_config_t;
 
 /*!
  * @brief SDHC Configure Structure
  * 
  * Define structure of configuration data to set to SDHC on the fly.
  */
-struct SdhcHostConfig
+typedef struct SdhcHostConfig
 {
     uint32_t clock;                                 /*!< clock rate */
     sdhc_power_mode_t powerMode;                    /*!< power supply mode */
     uint32_t busWidth;                              /*!< data bus width */
-};
+} sdhc_host_config_t;
 
 /*!
  * @brief SDHC Host Device Structure
  * 
  * Define structure of host device includes both static and runtime informations of SDHC.
  */
-struct SdhcHostDevice
+typedef struct SdhcHostDevice
 {
     uint8_t instance;                               /*!< host instance index */
     uint32_t specVer;                               /*!< host specification version */
     uint32_t vendorVer;                             /*!< host vendor version */
-    uint32_t endian;                                /*!< endian mode the host's working at */
+    sdhc_hal_endian_t endian;                       /*!< endian mode the host's working at */
     IRQn_Type irq;                                  /*!< irq number */
     uint32_t flags;                                 /*!< host flags */
     uint32_t busWidth;                              /*!< current busWidth */
@@ -154,23 +142,23 @@ struct SdhcHostDevice
     sdhc_power_mode_t powerMode;                    /*!< current power mode */
     uint32_t maxClock;                              /*!< max clock supported */
     uint32_t maxBlockSize;                          /*!< max block size supported */
-    sdhc_host_config_t config;                      /*!< host configuration */
-    sdhc_request_t * currentReq;                    /*!< associated request */
-    sdhc_command_t * currentCmd;                    /*!< associated command  */
-    sdhc_data_t * currentData;                      /*!< associated data */
-    sdhc_card_t * card;                             /*!< associated card */
+    struct SdhcHostConfig config;                   /*!< host configuration */
+    struct SdhcRequest * currentReq;                /*!< associated request */
+    struct SdhcCommand * currentCmd;                /*!< associated command  */
+    struct SdhcData * currentData;                  /*!< associated data */
+    struct SdhcCard * card;                         /*!< associated card */
     sync_object_t host_lock;                        /*!< sync object */
-};
+} sdhc_host_t;
 
 /*!
  * @brief SDHC Data Structure
  * 
  * Define structure of data for SDHC, including the block size/count and flags.
  */
-struct SdhcData
+typedef struct SdhcData
 {
-    sdhc_request_t *req;                            /*!< associated request */
-    sdhc_command_t *cmd;                            /*!< associated command */
+    struct SdhcRequest *req;                        /*!< associated request */
+    struct SdhcCommand *cmd;                        /*!< associated command */
     uint32_t blockSize;                             /*!< block size */
     uint32_t blockCount;                            /*!< block count */
     uint32_t flags;                                 /*!< data flags */
@@ -202,23 +190,28 @@ struct SdhcData
     uint32_t bytesTransferred;                      /*!< transferred buffer */
     uint32_t length;                                /*!< data length */
     uint32_t *buffer;                               /*!< data buffer */
-};
+} sdhc_data_t;
 
 /*!
  * @brief SDHC Command Structure
  * 
  * Define structure of command for SDHC, including the command index, argument, flags and response.
  */
-struct SdhcCommand
+typedef struct SdhcCommand
 {
-    sdhc_request_t *req;                            /*!< associated request */
-    sdhc_data_t *data;                              /*!< data associated with request */
+    struct SdhcRequest *req;                        /*!< associated request */
+    struct SdhcData *data;                          /*!< data associated with request */
     uint32_t index;                                 /*!< command index */
     uint32_t argument;                              /*!< command argument */
     uint32_t flags;                                 /*!< command flags */
     uint32_t response[4];                           /*!< response for this command */
     uint32_t error;                                 /*!< command error code */
-};
+} sdhc_command_t;
+
+/*!
+ * @brief SDHC Request Done Callback
+ */
+typedef void (*request_done)(struct SdhcHostDevice *host, struct SdhcRequest *req);
 
 /*!
  * @brief SDHC Request Structure
@@ -226,13 +219,13 @@ struct SdhcCommand
  * Define structure of Request for SDHC, for most of the cases, it will include the related
  * command and data, and the callback on its completion.
  */
-struct SdhcRequest
+typedef struct SdhcRequest
 {
-    sdhc_command_t *cmd;                            /*!< command associated with the request */
-    sdhc_data_t *data;                              /*!< data associated with request */
+    struct SdhcCommand *cmd;                        /*!< command associated with the request */
+    struct SdhcData *data;                          /*!< data associated with request */
     sync_object_t done;                             /*!< sync object */
     request_done onDone;                            /*!< callback on request done */
-};
+} sdhc_request_t;
 /*! @} */
 
 /*! @addtogroup sdhc_pd */

@@ -52,7 +52,7 @@
  * API
  ******************************************************************************/
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
 
 #if defined(__cplusplus)
 extern "C" {

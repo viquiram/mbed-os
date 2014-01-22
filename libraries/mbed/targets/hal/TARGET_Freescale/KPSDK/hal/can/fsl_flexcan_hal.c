@@ -144,7 +144,7 @@ flexcan_status_t flexcan_hal_sw_reset(uint8_t instance)
     }
 
     /* Reset the FLEXCAN*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_SOFTRST);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_SOFTRST);
 
     /* Wait for reset cycle to complete*/
     while (BR_CAN_MCR_SOFTRST(instance)){}

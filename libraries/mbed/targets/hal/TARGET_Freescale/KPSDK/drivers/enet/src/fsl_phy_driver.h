@@ -47,72 +47,72 @@
 typedef enum _phy_status
 {
     kStatus_PHY_Success = 0, /*!< Success*/
-    kStatus_PHY_InvaildInput = 1, /*!< Invalid phy input parameter*/
+    kStatus_PHY_InvaildInput = 1, /*!< Invalid PHY input parameter*/
     kStatus_PHY_TimeOut = 2,  /*!< PHY timeout*/
-    kStatus_PHY_Fail = 3  /*!< Phy Fail*/	
-}phy_status_t;
+    kStatus_PHY_Fail = 3  /*!< PHY Fail*/	
+} phy_status_t;
 
 /*! @brief Define ENET's  time out*/
 typedef enum _phy_timeout
 {
-    kPhyTimeout = 0x10000, /*!< enet reset timeout*/
-}phy_timeout_t;
+    kPhyTimeout = 0x10000, /*!< ENET reset timeout*/
+} phy_timeout_t;
 
 /*! @brief Define PHY register*/
 typedef enum _enet_phy_register
 {
-    kEnetPhyCR = 0, /*!< phy control register */
-    kEnetPhySR = 1, /*!< phy status register*/
-    kEnetPhyId1 = 2, /*!< phy identification register 1*/
-    kEnetPhyId2 = 3, /*!< phy identification register 2*/
-    kEnetPhyCt2 = 0x1f /*!< phy control2 register*/
-}enet_phy_register_t;
+    kEnetPhyCR = 0, /*!< PHY control register */
+    kEnetPhySR = 1, /*!< PHY status register*/
+    kEnetPhyId1 = 2, /*!< PHY identification register 1*/
+    kEnetPhyId2 = 3, /*!< PHY identification register 2*/
+    kEnetPhyCt2 = 0x1f /*!< PHY control2 register*/
+} enet_phy_register_t;
 
 /*! @brief Define the control flag*/
 typedef enum _enet_phy_control
 {
-    kEnetPhyAutoNeg = 0x1000,/*!< enet phy auto negotiation control*/
-    kEnetPhySpeed = 0x2000, /*! enet phy speed control*/
-    kEnetPhyLoop = 0x4000, /*!< enet phy loop control*/
-    kEnetPhyReset = 0x8000, /*!< enet phy reset control*/
-    kEnetPhy10HalfDuplex = 0x4, /*!< enet phy 10M half duplex*/
-    kEnetPhy100HalfDuplex = 0x8,/*!< enet phy 100M half duplex*/
-    kEnetPhy10FullDuplex = 0x14,/*!< enet phy 10M full duplex*/
-    kEnetPhy100FullDuplex = 0x18/*!< enet phy 100M full duplex*/
-}enet_phy_control_t;
+    kEnetPhyAutoNeg = 0x1000,/*!< ENET PHY auto negotiation control*/
+    kEnetPhySpeed = 0x2000, /*! ENET PHY speed control*/
+    kEnetPhyLoop = 0x4000, /*!< ENET PHY loop control*/
+    kEnetPhyReset = 0x8000, /*!< ENET PHY reset control*/
+    kEnetPhy10HalfDuplex = 0x4, /*!< ENET PHY 10M half duplex*/
+    kEnetPhy100HalfDuplex = 0x8,/*!< ENET PHY 100M half duplex*/
+    kEnetPhy10FullDuplex = 0x14,/*!< ENET PHY 10M full duplex*/
+    kEnetPhy100FullDuplex = 0x18/*!< ENET PHY 100M full duplex*/
+} enet_phy_control_t;
 
-/*! @brief Define phy link speed */
+/*! @brief Define PHY link speed */
 typedef enum _enet_phy_speed
 {
-    kEnetSpeed10M = 0,   /*!< enet phy 10M speed*/
-    kEnetSpeed100M = 1  /*!< enet phy 100M speed*/
-}enet_phy_speed_t;
+    kEnetSpeed10M = 0,   /*!< ENET PHY 10M speed*/
+    kEnetSpeed100M = 1  /*!< ENET PHY 100M speed*/
+} enet_phy_speed_t;
 
-/*! @brief Define phy link duplex*/
+/*! @brief Define PHY link duplex*/
 typedef enum _enet_phy_duplex
 {
-    kEnetHalfDuplex = 0, /*!< enet phy half duplex*/
-    kEnetFullDuplex = 1  /*!< enet phy full duplex*/
-}enet_phy_duplex_t;
+    kEnetHalfDuplex = 0, /*!< ENET PHY half duplex*/
+    kEnetFullDuplex = 1  /*!< ENET PHY full duplex*/
+} enet_phy_duplex_t;
 
-/*! @brief Define the phy status*/
+/*! @brief Define the PHY status*/
 typedef enum _enet_phy_status
 {
-    kEnetPhyLinkStatus = 0x4,  /*!< enet phy link status bit*/
-    kEnetPhyAutoNegAble = 0x08, /*!< enet phy auto negotiation ability*/
-    kEnetPhyAutoNegComplete = 0x20, /*!< enet phy auto negotiation complete*/
-    kEnetPhySpeedDulpexMask = 0x1c /*!< enet phy speed mask on status register 2*/
-}enet_phy_status_t;
+    kEnetPhyLinkStatus = 0x4,  /*!< ENET PHY link status bit*/
+    kEnetPhyAutoNegAble = 0x08, /*!< ENET PHY auto negotiation ability*/
+    kEnetPhyAutoNegComplete = 0x20, /*!< ENET PHY auto negotiation complete*/
+    kEnetPhySpeedDulpexMask = 0x1c /*!< ENET PHY speed mask on status register 2*/
+} enet_phy_status_t;
 
 /*! @brief Define basic PHY application*/
-typedef struct enet_phy_api
+typedef struct ENETPhyApi
 {
-    uint32_t (* phy_auto_discover)(enet_dev_if_t * enetIfPtr);/*!< phy auto discover*/
-    uint32_t (* phy_init)(enet_dev_if_t * enetIfPtr);/*!< phy initialize*/
-    uint32_t (* phy_get_link_speed)(enet_dev_if_t * enetIfPtr, enet_phy_speed_t *speed);/*!<  get phy speed*/
-    uint32_t (* phy_get_link_status)(enet_dev_if_t * enetIfPtr, bool *status);/*! get phy link status*/
-    uint32_t (* phy_get_link_duplex)(enet_dev_if_t * enetIfPtr, enet_phy_duplex_t *duplex);/*!< get phy link duplex*/
-}enet_phy_api_t;
+    uint32_t (* phy_auto_discover)(enet_dev_if_t * enetIfPtr);/*!< PHY auto discover*/
+    uint32_t (* phy_init)(enet_dev_if_t * enetIfPtr);/*!< PHY initialize*/
+    uint32_t (* phy_get_link_speed)(enet_dev_if_t * enetIfPtr, enet_phy_speed_t *speed);/*!<  get PHY speed*/
+    uint32_t (* phy_get_link_status)(enet_dev_if_t * enetIfPtr, bool *status);/*! get PHY link status*/
+    uint32_t (* phy_get_link_duplex)(enet_dev_if_t * enetIfPtr, enet_phy_duplex_t *duplex);/*!< get PHY link duplex*/
+} enet_phy_api_t;
 
 /*******************************************************************************
  * Global variables
@@ -135,42 +135,42 @@ extern "C" {
 /*!
  * @brief Initialize PHY.
  *
- * @param enetIfPtr The enet context structure.
+ * @param enetIfPtr The ENET context structure.
  * @return The execution status.
  */
 uint32_t phy_init(enet_dev_if_t * enetIfPtr);
 
 /*!
- * @brief Phy address auto discover.
+ * @brief PHY address auto discover.
  *
- * @param enetIfPtr The enet context structure.
+ * @param enetIfPtr The ENET context structure.
  * @return The execution status.
  */
 uint32_t phy_auto_discover(enet_dev_if_t * enetIfPtr);
 
 /*!
- * @brief Get phy link speed.
+ * @brief Get PHY link speed.
  *
- * @param enetIfPtr The enet context structure.
- * @param status The link speed of phy.
+ * @param enetIfPtr The ENET context structure.
+ * @param status The link speed of PHY.
  * @return The execution status.
  */
 uint32_t phy_get_link_speed(enet_dev_if_t * enetIfPtr, enet_phy_speed_t *status);
 
 /*!
- * @brief Get phy link status.
+ * @brief Get PHY link status.
  *
- * @param enetIfPtr The enet context structure.
+ * @param enetIfPtr The ENET context structure.
  * @param status The link on or down status of phy.
  * @return The execution status.
  */
 uint32_t phy_get_link_status(enet_dev_if_t * enetIfPtr, bool *status);
 
 /*!
- * @brief Get phy link duplex.
+ * @brief Get PHY link duplex.
  *
- * @param enetIfPtr The enet context structure.
- * @param status The link duplex status of phy.
+ * @param enetIfPtr The ENET context structure.
+ * @param status The link duplex status of PHY.
  * @return The execution status.
  */
 uint32_t phy_get_link_duplex(enet_dev_if_t * enetIfPtr, enet_phy_duplex_t *status);

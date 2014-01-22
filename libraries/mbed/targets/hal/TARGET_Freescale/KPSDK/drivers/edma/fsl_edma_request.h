@@ -41,14 +41,14 @@
  ******************************************************************************/
 
 /*!
- * @brief Structure for Dma hardware Request.
+ * @brief Structure for DMA hardware Request.
  *
- * Define structure for collections of dma hardware request. User can configure the
+ * Define structure for collections of DMA hardware request. User can configure the
  * hardware request into DMAMUX to trigger the DMA transfer accordingly. The index 
  * of hardware request varies according the to SOC.
  */
 #if defined(CPU_MK70FN1M0VMJ12) || defined(CPU_MK70FN1M0VMJ15)
-typedef enum DmaRequestSource {
+typedef enum _dma_request_source {
     kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the dma request. */
     kDmaRequestMux0Reserved1 = 1|0x100,       /*!< Reserved slot. */
     kDmaRequestMux0UART0Rx = 2|0x100,         /*!< Uart 0 receiver. */
@@ -181,7 +181,7 @@ typedef enum DmaRequestSource {
 
 #elif (defined(CPU_MK63FN1M0VMD12) || defined(CPU_MK63FN1M0VMD12WS) || \
        defined(CPU_MK64FN1M0VMD12) || defined(CPU_MK64FX512VMD12))
-typedef enum DmaRequestSource {
+typedef enum _dma_request_source {
     kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the dma request. */
     kDmaRequestMux0Reserved1 = 1|0x100,       /*!< Reserved slot. */
     kDmaRequestMux0UART0Rx = 2|0x100,         /*!< Uart 0 receiver. */
@@ -249,7 +249,7 @@ typedef enum DmaRequestSource {
 } dma_request_source_t;
 
 #elif (defined(CPU_MK22FN512VDC12))
-typedef enum DmaRequestSource {
+typedef enum _dma_request_source {
     kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the dma request. */
     kDmaRequestMux0Reserved1 = 1|0x100,       /*!< Reserved slot. */
     kDmaRequestMux0UART0Rx = 2|0x100,         /*!< Uart 0 receiver. */

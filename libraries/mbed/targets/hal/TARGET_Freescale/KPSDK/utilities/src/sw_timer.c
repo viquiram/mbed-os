@@ -124,7 +124,6 @@ static volatile channel_enabler_t gs_areChannelsEnabled;
 uint32_t sw_timer_init_service(void)
 {
     pit_config_t pitConfig;
-    uint32_t busClock;
   
     /* All channels are disabled*/
     gs_areChannelsEnabled = 0;
@@ -132,18 +131,21 @@ uint32_t sw_timer_init_service(void)
     /* Init free running counter*/
     gs_freeCounter = 0;
     
-    /* Initialize PIT module */
-    clock_manager_get_frequency(kBusClock, &busClock);
-    
-    pitConfig.isRunInDebug = true;
-    pitConfig.timers[kSWTimerPITChannel].isInterruptEnabled = true;
-    #if FSL_FEATURE_PIT_HAS_CHAIN_MODE
-    pitConfig.timers[kSWTimerPITChannel].isTimerChained = false;
-    #endif
-    pitConfig.timers[kSWTimerPITChannel].period = busClock/1000 - 1;       /* Set 1ms period */
-    
-    pit_init(&pitConfig);
+    /* Define PIT channel init structure. */
+    pitConfig.isInterruptEnabled = true;
+    pitConfig.isTimerChained = false;
+    pitConfig.periodUs = 1000;/* Set 1ms period */
+
+    /* Init PIT module and enable all timers run in debug mode.*/
+    pit_init_module(true);
+
+    /* Init PIT channel. */
+    pit_init_channel(kSWTimerPITChannel, &pitConfig);
+
+    /* Register PIT callback function.*/
     pit_register_isr_callback_function(kSWTimerPITChannel, sw_timer_update_counters);
+
+    /* Start timer counting. */
     pit_timer_start(kSWTimerPITChannel);
     
     return kSwTimerStatusSuccess;

@@ -75,7 +75,7 @@ void rtc_hal_init(rtc_hal_init_config_t * configs)
     */
     BW_RTC_CR_OSCE((uint32_t)configs->enable32kOscillator);
 
-#if (FSL_FEATURE_RTC_HAS_WAKEUP_PIN == (1))
+#if FSL_FEATURE_RTC_HAS_WAKEUP_PIN
     /*! For devices that have the wakeup pin this variable will indicate if it is
     *  to be enabled (set to 'true') or not (set to 'false'). \n
     *  See the device's user manual for details depending on each device's 
@@ -144,7 +144,7 @@ void rtc_hal_init(rtc_hal_init_config_t * configs)
     */
     rtc_hal_config_interrupts(&(configs->enableInterrupts));
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
     if(configs->monotonicCounterAt)
     {
         rtc_hal_set_monotonic_counter(configs->monotonicCounterAt);

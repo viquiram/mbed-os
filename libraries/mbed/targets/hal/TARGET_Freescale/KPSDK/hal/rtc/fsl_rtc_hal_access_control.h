@@ -105,7 +105,7 @@ typedef struct rtc_hal_access_control_config
  * API
  ******************************************************************************/
 
-#if (FSL_FEATURE_RTC_HAS_ACCESS_CONTROL == 1)
+#if FSL_FEATURE_RTC_HAS_ACCESS_CONTROL
 
 #if defined(__cplusplus)
 extern "C" {
@@ -171,7 +171,7 @@ static inline void rtc_hal_access_control_configuration(const rtc_hal_access_con
    */
     valid_flags = 0;
     
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
     valid_flags |= (BM_RTC_WAR_MCHW | BM_RTC_WAR_MCLW | BM_RTC_WAR_MERW);
 #endif
     valid_flags |= (BM_RTC_WAR_IERW | BM_RTC_WAR_LRW | BM_RTC_WAR_SRW |
@@ -205,7 +205,7 @@ static inline void rtc_hal_access_control_configuration(const rtc_hal_access_con
    */
     valid_flags = 0;
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
     valid_flags |= (BM_RTC_RAR_MCHR | BM_RTC_RAR_MCLR | BM_RTC_RAR_MERR);
 #endif
     valid_flags |= (BM_RTC_RAR_IERR | BM_RTC_RAR_LRR | BM_RTC_RAR_SRR |
@@ -217,7 +217,7 @@ static inline void rtc_hal_access_control_configuration(const rtc_hal_access_con
 }
 
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
 /*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Counter High Write (MCHW). Once cleared,
  *              this bit is only set by system reset. It is not affected by

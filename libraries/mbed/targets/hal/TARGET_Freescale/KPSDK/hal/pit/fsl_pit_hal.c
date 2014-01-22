@@ -34,81 +34,6 @@
  * Code
  ******************************************************************************/
 
-/*FUNCTION**********************************************************************
- *
- * Function Name : pit_hal_configure_timer_run_in_debug
- * Description   : Configure timers continue to run or stop in debug mode.
- * In debug mode, the timers will be frozen or not based on the setting of this
- * function. This is intended to aid software development, allowing the developer
- * to halt the processor, investigate the current state of the system (for example,
- * the timer values) and then continue the operation.
-
- *END**************************************************************************/
-void pit_hal_configure_timer_run_in_debug(bool timerRun)
-{
-    if (!timerRun)
-    {
-        /* Timers are stopped in debug mode.*/
-        PIT->MCR |= PIT_MCR_FRZ_MASK;
-    }
-    else
-    {
-        /* Timers continue to run.*/
-        PIT->MCR &= (~PIT_MCR_FRZ_MASK);
-    }
-}
-
-/*FUNCTION**********************************************************************
- *
- * Function Name : pit_hal_configure_interrupt
- * Description   : Enable or disable timer interrupt.
- * If enabled, an interrupt will happen when there is a timeout event occurred
- * (Note: NVIC should be called to enable pit interrupt in system level).
- *
- *END**************************************************************************/
-void pit_hal_configure_interrupt(uint32_t timer, bool enable)
-{
-    assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    if (!enable)
-    {
-        /* Disable interrupt.*/
-        PIT->CHANNEL[timer].TCTRL &= (~PIT_TCTRL_TIE_MASK);
-    }
-    else
-    {
-        /* Generate interrupt when timer counts to 0.*/
-        PIT->CHANNEL[timer].TCTRL |= PIT_TCTRL_TIE_MASK;
-    }
-}
-
-#if FSL_FEATURE_PIT_HAS_CHAIN_MODE
-/*FUNCTION**********************************************************************
- *
- * Function Name : pit_hal_configure_timer_chain
- * Description   : Enable or disable chain with previous timer.
- * When a timer has chain mode enabled, it will only count after the previous
- * timer has expired. So if timer n-1 has counted down to 0, counter n will 
- * decrement the value by one. This allows to chain some of the timers together
- * to form a longer timer. The first timer (timer 0) cannot be chained to any
- * other timer.
- *
- *END**************************************************************************/
-void pit_hal_configure_timer_chain(uint32_t timer, bool enable)
-{
-    assert(timer < FSL_FEATURE_PIT_TIMER_COUNT);
-    if (!enable)
-    {
-        /* Doesn't chain timer with previous timer.*/
-        PIT->CHANNEL[timer].TCTRL &= (~PIT_TCTRL_CHN_MASK);
-    }
-    else
-    {
-        /* Chained current timer with previous timer.*/
-        PIT->CHANNEL[timer].TCTRL |= PIT_TCTRL_CHN_MASK;
-    }
-}
-#endif /* FSL_FEATURE_PIT_HAS_CHAIN_MODE */
-
 #if FSL_FEATURE_PIT_HAS_LIFETIME_TIMER
 /*FUNCTION**********************************************************************
  *
@@ -126,8 +51,8 @@ uint64_t pit_hal_read_lifetime_timer_count(void)
     uint32_t valueH = 0U, valueL = 0U;
     
     /* LTMR64H should be read before LTMR64L */
-    valueH = PIT->LTMR64H;
-    valueL = PIT->LTMR64L;
+    valueH = HW_PIT_LTMR64H_RD;
+    valueL = HW_PIT_LTMR64L_RD;
     return (((uint64_t)valueH << 32U) + (uint64_t)(valueL));
 }
 #endif /* FSL_FEATURE_PIT_HAS_LIFETIME_TIMER*/

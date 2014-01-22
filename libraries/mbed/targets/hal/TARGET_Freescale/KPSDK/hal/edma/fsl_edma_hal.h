@@ -78,48 +78,48 @@ typedef struct EdmaMinorLoopOffset {
 } edma_minorloop_offset_config_t;
 
 /*! @brief Priorty limitation of Edma channel */
-typedef enum EdmaChannelPriority {
+typedef enum _edma_channel_priority {
     kEdmaChannelPriority = 16
 } edma_channel_priority_t;
 
 /*! @brief Edma modulo configuration. */
-typedef enum EdmaModulo {
+typedef enum _edma_modulo {
     kEdmaModuloDisable = 0x0U,
-    kEdmaModulo1bytes = 0x1U,
-    kEdmaModulo2bytes = 0x2U, 
-    kEdmaModulo4bytes = 0x3U, 
-    kEdmaModulo8bytes = 0x4U, 
-    kEdmaModulo16bytes = 0x5U, 
-    kEdmaModulo32bytes = 0x6U, 
-    kEdmaModulo64bytes = 0x7U, 
-    kEdmaModulo128bytes = 0x8U, 
-    kEdmaModulo256bytes = 0x9U, 
-    kEdmaModulo512bytes = 0xaU, 
-    kEdmaModulo1Kbytes = 0xbU,
-    kEdmaModulo2Kbytes = 0xcU,
-    kEdmaModulo4Kbytes = 0xdU,
-    kEdmaModulo8Kbytes = 0xeU,
-    kEdmaModulol6Kbytes = 0xfU,
-    kEdmaModulo32Kbytes = 0x10U,
-    kEdmaModulo64Kbytes = 0x11U,
-    kEdmaModulo128Kbytes = 0x12U,
-    kEdmaModulo256Kbytes = 0x13U,
-    kEdmaModulo512Kbytes = 0x14U,
-    kEdmaModulo1Gbytes = 0x15U,
-    kEdmaModulo2Gbytes = 0x16U,
-    kEdmaModulo4Gbytes = 0x17U,
-    kEdmaModulo8Gbytes = 0x18U,
-    kEdmaModulo16Gbytes = 0x19U,
-    kEdmaModulo32Gbytes = 0x1aU,
-    kEdmaModulo64Gbytes = 0x1bU,
-    kEdmaModulo128Gbytes = 0x1cU,
-    kEdmaModulo256Gbytes = 0x1dU,
-    kEdmaModulo512Gbytes = 0x1eU,
-    kEdmaModulo1024Gbytes = 0x1fU
+    kEdmaModulo2bytes = 0x1U,
+    kEdmaModulo4bytes = 0x2U,
+    kEdmaModulo8bytes = 0x3U,
+    kEdmaModulo16bytes = 0x4U,
+    kEdmaModulo32bytes = 0x5U,
+    kEdmaModulo64bytes = 0x6U,
+    kEdmaModulo128bytes = 0x7U,
+    kEdmaModulo256bytes = 0x8U,
+    kEdmaModulo512bytes = 0x9U,
+    kEdmaModulo1Kbytes = 0xaU,
+    kEdmaModulo2Kbytes = 0xbU,
+    kEdmaModulo4Kbytes = 0xcU,
+    kEdmaModulo8Kbytes = 0xdU,
+    kEdmaModulo16Kbytes = 0xeU,
+    kEdmaModulo32Kbytes = 0xfU,
+    kEdmaModulo64Kbytes = 0x10U,
+    kEdmaModulo128Kbytes = 0x11U,
+    kEdmaModulo256Kbytes = 0x12U,
+    kEdmaModulo512Kbytes = 0x13U,
+    kEdmaModulo1Mbytes = 0x14U,
+    kEdmaModulo2Mbytes = 0x15U,
+    kEdmaModulo4Mbytes = 0x16U,
+    kEdmaModulo8Mbytes = 0x17U,
+    kEdmaModulo16Mbytes = 0x18U,
+    kEdmaModulo32Mbytes = 0x19U,
+    kEdmaModulo64Mbytes = 0x1aU,
+    kEdmaModulo128Mbytes = 0x1bU,
+    kEdmaModulo256Mbytes = 0x1cU,
+    kEdmaModulo512Mbytes = 0x1dU,
+    kEdmaModulo1Gbytes = 0x1eU,
+    kEdmaModulo2Gbytes = 0x1fU
 } edma_modulo_t;
 
 /*! @brief Edma transfer size configuration. */
-typedef enum EdmaTransferSize {
+typedef enum _edma_transfer_size {
     kEdmaTransferSize1bytes = 0x0U,
     kEdmaTransferSize2bytes = 0x1U,
     kEdmaTransferSize4bytes = 0x2U,
@@ -151,7 +151,7 @@ typedef union EdmaErrorStatusAll {
 } edma_error_status_all_t;
 
 /*! @brief Bandwidth control configuration. */
-typedef enum EdmaBandwidthConfiguration {
+typedef enum _edma_bandwidth_configuration {
     kEdmaBandwidthStallNone = 0,    /*!< No eDMA engine stalls. */
     kEdmaBandwidthStall4Cycle = 2,  /*!< eDMA engine stalls for 4 cycles after each r/w. */
     kEdmaBandwidthStall8Cycle = 3   /*!< eDMA engine stalls for 4 cycles after each r/w. */
@@ -183,7 +183,7 @@ typedef struct EdmaSoftwareTcd {
 } edma_software_tcd_t;
 
 /*! @brief Edma group priority. */
-typedef enum EdmaGroupPriority {
+typedef enum _edma_group_priority {
     kEdmaGroup0Priority0Group1Priority1,
     kEdmaGroup0Priority1Group1Priority0
 } edma_group_priority_t;

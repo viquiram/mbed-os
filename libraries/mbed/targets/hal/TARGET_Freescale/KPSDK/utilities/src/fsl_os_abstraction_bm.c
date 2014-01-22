@@ -73,10 +73,9 @@ fsl_rtos_status sync_wait(sync_object_t *obj, uint32_t timeout)
     fsl_rtos_status retVal = kIdle;
     uint32_t status;
 
-    /* Always check for the event first. Deal with timeout only if not already set */
+    /* Check the sem count first. Deal with timeout only if not already set */
     if(obj->semCount)
     {
-        /* Event set. Clear it and return success */
         interrupt_disable_global();
         obj->semCount --;
         obj->isWaiting = false;
@@ -116,7 +115,7 @@ fsl_rtos_status sync_wait(sync_object_t *obj, uint32_t timeout)
  * Description   : This function is used to poll a sync object's status.
  * If the sync object is signaled, this function will return kSuccess and set
  * the object un-signaled. If the object is not signaled, the function will
- * return kIdle immediately. If the parameter is invalid, return kError.
+ * return kIdle immediately.
  *
  *END**************************************************************************/
 fsl_rtos_status sync_poll(sync_object_t *obj)
@@ -236,7 +235,7 @@ fsl_rtos_status lock_create(lock_object_t *obj)
  * Function Name : lock_wait
  * Description   : This function is used to wait to obtain a lock object.
  * Pass the #kSyncWaitForever constant to wait indefinitely for someone to
- * signal the object. 0 should not be passed to this function.
+ * unlock the object. A value of 0 should not be passed to this function.
  * Return kSuccess if the lock object is obtained before the timeout is exhausted,
  * return kTimeout if has not obtained the lock object before the timeout
  * is exhausted, return kError if the parameter is valid, return kIdle if lock
@@ -251,7 +250,7 @@ fsl_rtos_status lock_wait(lock_object_t *obj, uint32_t timeout)
     /* Always check for the event first. Deal with timeout only if not already set */
     if(obj->isLocked == false)
     {
-        /* Event set. Clear it and return success */
+        /* Get the lock and return success */
         interrupt_disable_global();
         obj->isLocked = true;
         obj->isWaiting = false;
@@ -299,10 +298,10 @@ fsl_rtos_status lock_poll(lock_object_t *obj)
 {
     fsl_rtos_status retVal;
         
-    /* Always check for the event first. Deal with timeout only if not already set */
+    /* Always check first. Deal with timeout only if not already set */
     if(obj->isLocked == false)
     {
-        /* Event set. Clear it and return success */
+        /* Lock the object and return success */
         interrupt_disable_global();
         obj->isLocked = true;
         obj->isWaiting = false;
@@ -530,6 +529,7 @@ fsl_rtos_status event_destroy(event_object_t *obj)
 
 /* poll global variale */
 POLL_STRUCT g_poll;
+static task_handler_t g_curTask; /* Current task. */
 
 /*FUNCTION**********************************************************************
  *
@@ -540,7 +540,7 @@ POLL_STRUCT g_poll;
  *END**************************************************************************/
 void POLL_init(void) 
 {
-    uint8_t i;
+    uint32_t i;
 
     g_poll.registered_no = 0; 
     for (i = 0; i <POLL_MAX_NUM; i++)
@@ -560,14 +560,13 @@ void POLL_init(void)
  *END**************************************************************************/
 void Poll(void) 
 {
-
-    uint8_t i;
+    uint32_t i;
 
     for (i = 0; i < g_poll.registered_no; i++)
     {
-        g_poll.p_slot[i].p_func(g_poll.p_slot[i].param);
+        g_curTask = g_poll.p_slot[i].p_func;
+        g_curTask(g_poll.p_slot[i].param);
     }
-
 }
 
 /*FUNCTION**********************************************************************
@@ -588,7 +587,7 @@ fsl_rtos_status __task_create(task_t task, uint8_t *name, uint16_t stackSize,
     }
     else
     {
-        *handler = g_poll.registered_no;
+        *handler = task;
         g_poll.p_slot[g_poll.registered_no].p_func = task;
         g_poll.p_slot[g_poll.registered_no].param = param;
         g_poll.registered_no ++;
@@ -606,17 +605,29 @@ fsl_rtos_status __task_create(task_t task, uint8_t *name, uint16_t stackSize,
  *END**************************************************************************/
 fsl_rtos_status task_destroy(task_handler_t handler)
 {
-    uint8_t task_id = (uint8_t)handler;
-    uint8_t i;
+    uint32_t i;
     
-    if (task_id >= g_poll.registered_no)
+    if (FSL_RTOS_CURRENT_TASK == handler)
+    {
+        handler = g_curTask;
+    }
+
+    for (i=0; i<g_poll.registered_no; i++)
+    {
+        /* Find the index in the poll structure. */
+        if (handler == g_poll.p_slot[i].p_func)
+        {
+            break;
+        }
+    }
+
+    if (i == g_poll.registered_no)
     {
         return kError;
     }
-
     /* sort the function pointer erray */
     g_poll.registered_no--;
-    for(i = task_id; i < g_poll.registered_no; i++) 
+    for( ; i < g_poll.registered_no; i++)
     {
         g_poll.p_slot[i] = g_poll.p_slot[i+1];
     }
@@ -787,7 +798,11 @@ fsl_rtos_status msg_queue_flush(msg_queue_handler_t handler)
     handler->head = 0;
     handler->tail = 0;
     handler->isEmpty = true;
-    sync_poll(&handler->queueSync);
+    /* Consume the queueSync semaphore and set it to 0. */
+    while (kSuccess == sync_poll(&handler->queueSync))
+    {
+        ;
+    }
     
     return kSuccess;
 }

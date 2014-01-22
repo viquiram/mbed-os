@@ -41,7 +41,7 @@
  * Declarations
  ******************************************************************************/
 
-/*! @brief Type for an interrupt synchronization object */
+/*! @brief Type for an synchronization object */
 typedef struct
 {
     bool    isWaiting; /*!< Is any task waiting for a timeout on this object */
@@ -49,7 +49,7 @@ typedef struct
     uint8_t timerId;   /*!< The software timer channal this object bind to   */
 }sync_object_t;
 
-/*! @brief Type for a resource locking object. */
+/*! @brief Type for a resource locking object */
 typedef struct
 {
     bool    isWaiting;  /*!< Is any task waiting for a timeout on this lock  */
@@ -57,10 +57,10 @@ typedef struct
     uint8_t timerId;    /*!< The software timer channal this lock bind to    */
 }lock_object_t;
 
-/*! @brief Type for an event flags group, bit 32 is reserved. */
+/*! @brief Type for an event flags group, bit 32 is reserved */
 typedef uint32_t event_group_t;
 
-/*! @brief Type for an event group object. */
+/*! @brief Type for an event group object */
 typedef struct
 {
     bool             isWaiting;   /*!< Is any task waiting for a timeout on this event  */
@@ -69,16 +69,16 @@ typedef struct
     event_clear_type clearType;   /*!< Auto clear or manual clear                       */
 }event_object_t;
 
-/*! @brief Type for a task pointer. */
+/*! @brief Type for a task pointer */
 typedef void (* task_t)(void* param);
 
-/*! @brief Type for a task handler, returned by the task_create function. */
-typedef uint32_t task_handler_t;
+/*! @brief Type for a task handler, returned by the task_create function */
+typedef task_t task_handler_t;
 
-/*! @brief Type for a task stack. */
+/*! @brief Type for a task stack */
 typedef uint32_t task_stack_t;
 
-/*! @brief Type for a message queue declaration and creation. */
+/*! @brief Type for a message queue declaration and creation */
 typedef struct
 {
 #if (__FSL_RTOS_MSGQ_COPY_MSG__)
@@ -94,19 +94,16 @@ typedef struct
     bool          isEmpty;       /*!< Whether queue is empty */
 }msg_queue_t;
 
-/*! @brief Type for a message queue declaration and creation. */
+/*! @brief Type for a message queue declaration and creation */
 typedef msg_queue_t*  msg_queue_handler_t;
 
-/*! @brief Type for a message queue item.*/
+/*! @brief Type for a message queue item */
 typedef void*         msg_queue_item_t;
 
-/*! @brief Constants to pass as timeout value. */
-enum fsl_rtos_timeouts
-{
-    kSyncWaitForever = kSwTimerMaxTimeout /*!< Wait indefinitely  */
-};
+/*! @brief Constant to pass as timeout value in order to wait indefinitely. */
+#define kSyncWaitForever  kSwTimerMaxTimeout
 
-/*! @brief Macro passed to the task_destroy function to destroy the current task. */
+/*! @brief Macro passed to the task_destroy function to destroy the current task */
 #define FSL_RTOS_CURRENT_TASK   ((task_handler_t)0)
 
 /*******************************************************************************
@@ -118,7 +115,7 @@ extern "C" {
 #endif
 
 /*!
- * @name Interrupt handler synchronization
+ * @name Synchronization
  * @{
  */
 
@@ -138,8 +135,7 @@ extern "C" {
  */
 
 /*!
- * @brief Create the locking object. To be used instead of a standard
- *      declaration.
+ * @brief Create the locking object. To be used instead of a standard declaration.
  *
  * @param obj The lock object to create.
  */
@@ -153,7 +149,7 @@ extern "C" {
  */
 
 /*!
- * @brief Define a task.
+ * @brief Define a task
  *
  * This macro is used to define resouces for a task statically, then task_create will
  * create task based-on these resources.
@@ -167,7 +163,7 @@ extern "C" {
     uint8_t fslTaskName_##task[] = name
 
 /*!
- * @brief Creates and sets the task to active.
+ * @brief Creates and sets the task to active
  *
  * This macro is used with FSL_RTOS_TASK_DEFINE to create a task.
  * Here is an example demonstrating how to use:
@@ -183,11 +179,11 @@ extern "C" {
  *
  * @param task The task function.
  * @param priority Initial priority of the task.
- * @param param Pointer to be passed to the task when it is created.
+ * @param param Parameter to be passed to the task when it is created.
  * @param handler Returns the identifier to be used afterwards to destroy the task.
  * 
  * @retval kSuccess The task was successfully created.
- * @retval kError The task created failed.
+ * @retval kError The task creation failed.
  */
 #define task_create(task, priority, param, handler)                 \
     __task_create(task,                                             \
@@ -232,7 +228,7 @@ extern "C" {
  * @{
  */
 
-/*! @brief Ensures the following code will not be preempted. */
+/*! @brief Ensures the following code will not be preempted */
 #define rtos_enter_critical    interrupt_disable_global
 
 /*! @brief Allows preemption */
@@ -256,7 +252,7 @@ typedef struct {
 /*! @brief Poll structure */
 typedef struct {
 	POLL_SLOT_STRUCT   p_slot[POLL_MAX_NUM]; /*!< polling function pointer array */
-    uint8_t            registered_no;        /*!< number of registered function */
+    uint32_t           registered_no;        /*!< number of registered function */
 } POLL_STRUCT;
 
 /*!

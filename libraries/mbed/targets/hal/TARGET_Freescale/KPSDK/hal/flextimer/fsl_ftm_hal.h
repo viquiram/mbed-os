@@ -890,7 +890,8 @@ static inline void ftm_hal_enable_channel_fault_input_filter(uint8_t instance, u
 static inline void ftm_hal_enable_channel_fault_input(uint8_t instance, uint8_t channel, bool val)
 {
    assert(instance < HW_FTM_INSTANCE_COUNT  && channel < HW_CHAN4);
-   val? HW_FTM_FLTCTRL_SET(instance,  (1U<<channel+4)) : HW_FTM_FLTCTRL_CLR(instance,  (1U<<channel+4));
+   val ? HW_FTM_FLTCTRL_SET(instance,  ((1U << channel) + 4)) 
+       : HW_FTM_FLTCTRL_CLR(instance,  ((1U << channel) + 4));
 }
 
 /*!
@@ -903,7 +904,8 @@ static inline void ftm_hal_enable_dual_channel_invert(uint8_t instance, uint8_t 
 {
     assert(instance < HW_FTM_INSTANCE_COUNT && channel < HW_FTM_CHANNEL_COUNT);
 
-    val? HW_FTM_INVCTRL_SET(instance, (1U << get_channel_pair_index(channel))) : HW_FTM_INVCTRL_CLR(instance,  (1U << get_channel_pair_index(channel)));
+    val ? HW_FTM_INVCTRL_SET(instance, (1U << get_channel_pair_index(channel))) 
+        : HW_FTM_INVCTRL_CLR(instance, (1U << get_channel_pair_index(channel)));
 }
 
 /*FTM software output control*/

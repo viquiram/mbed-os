@@ -48,7 +48,7 @@
  * @brief Constant for length of DMA hardware source. This structure is used inside
  * DMA driver.
  */
-typedef enum DmaMuxSource {
+typedef enum _dmamux_source {
     kDmamuxDmaRequestSource = 64U    /*!< Max number of dma request allowed for a dma mux. */
 } dmamux_dma_request_source;
 

@@ -32,6 +32,7 @@
 #include "fsl_os_abstraction.h"
 #include "fsl_clock_configs.h"
 #include "fsl_clock_manager.h"
+#include "fsl_interrupt_manager.h"
 
 /*******************************************************************************
  * Variables
@@ -315,7 +316,7 @@ flexcan_status_t flexcan_init(
         for (i = 0; i < 4; i++)
         {
             /* Enable FlexCAN interrupt.*/
-            NVIC_EnableIRQ(flexcan_irq_ids[instance][i]);
+            interrupt_enable(flexcan_irq_ids[instance][i]);
         }
     }
 
@@ -696,7 +697,7 @@ uint32_t flexcan_shutdown(uint8_t instance)
     for (i = 0; i < 4; i++)
     {
         /* Disable FlexCAN interrupts.*/
-        NVIC_DisableIRQ(flexcan_irq_ids[instance][i]);
+        interrupt_disable(flexcan_irq_ids[instance][i]);
     }
 
     /* Disable FlexCAN.*/

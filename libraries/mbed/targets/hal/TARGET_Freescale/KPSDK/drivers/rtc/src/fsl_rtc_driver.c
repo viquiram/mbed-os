@@ -30,7 +30,6 @@
 
 #include "fsl_rtc_driver.h"
 #include "fsl_clock_manager.h"
-#include "fsl_interrupt_manager.h"
 
 /*!
  * @addtogroup rtc_driver
@@ -53,15 +52,19 @@ static bool has_datetime_correct_format(const rtc_datetime_t * datetime);
  * Variables
  ******************************************************************************/
 
-/* Table of month length (in days)*/
+/* Table of month length (in days) for the Un-leap-year*/
 static const uint8_t ULY[] = {0U, 31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U,
-    31U,30U,31U}; /* Un-leap-year*/
-static const uint8_t  LY[] = {0U, 31U, 29U, 31U, 30U, 31U, 30U, 31U, 31U, 30U,
-    31U,30U,31U}; /* Leap-year*/
+    31U,30U,31U};
 
-/* Number of days from begin of the year*/
+/* Table of month length (in days) for the Leap-year*/
+static const uint8_t  LY[] = {0U, 31U, 29U, 31U, 30U, 31U, 30U, 31U, 31U, 30U,
+    31U,30U,31U};
+
+/* Number of days from begin of the Leap-year*/
 static const uint16_t MONTH_DAYS[] = {0U, 0U, 31U, 59U, 90U, 120U, 151U, 181U,
-    212U,243U,273U,304U,334U}; /* Leap-year*/
+    212U,243U,273U,304U,334U};
+
+extern IRQn_Type rtc_irq_ids[FSL_FEATURE_RTC_INTERRUPT_COUNT];
 
 /*******************************************************************************
  * Code
@@ -79,29 +82,20 @@ bool rtc_init(const rtc_init_config_t * config)
 {
     bool result = false;
 
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if(NULL == config)
     {
-        return result; /* assuming result variable was initialized to true.*/
+        /* assuming result variable was initialized to false.*/
+        return result;
     }
 
     /* Enable clock gate to RTC module */
     clock_manager_set_gate(kClockModuleRTC, 0U, true);
-    interrupt_enable_global();
 
     if(config->general_config)
     {
+        /* Initialize the general configuration for RTC module.*/
         rtc_hal_init(config->general_config);
-    }
-
-    if(config->rtc_isr_general)
-    {
-        rtc_int_install(config->rtc_isr_general);
-    }
-
-    if(config->rtc_isr_seconds)
-    {
-        rtc_int_seconds_install(config->rtc_isr_seconds);
     }
 
     result = true;
@@ -129,59 +123,6 @@ void rtc_shutdown(void)
     clock_manager_set_gate(kClockModuleRTC, 0U, false);
 }
 
-
-/*FUNCTION**********************************************************************
- *
- * Function Name : rtc_isr
- * Description   : is a template for RTC's ISR function.
- * This function is a template for RTC's ISR function.
- *
- *END**************************************************************************/
-void rtc_isr(void)
-{
-    /* leave empty for driver user to define*/
-}
-
-/*FUNCTION**********************************************************************
- *
- * Function Name : rtc_int_install
- * Description   : installs the ISR for the RTC module.
- * This function will install the ISR for the RTC interrupts and enable the
- * interrupt.
- *
- *END**************************************************************************/
-void rtc_int_install(void (*isr)(void))
-{
-    /*protect against null pointers*/
-    if(NULL == isr)
-    {
-        return;
-    }
-
-    interrupt_register_handler(RTC_IRQn, isr);
-    interrupt_enable(RTC_IRQn);
-}
-    
-/*FUNCTION**********************************************************************
- *
- * Function Name : rtc_int_seconds_install
- * Description   : installs the each second ISR for the RTC senconds interuupt.
- * This function will install the each second ISR for the RTC senconds interuupt
- * and enable the interrupt.
- *
- *END**************************************************************************/
-void rtc_int_seconds_install(void (*isr)(void))
-{
-    /*protect against null pointers*/
-    if(NULL == isr)
-    {
-        return;
-    }
-
-    interrupt_register_handler(RTC_Seconds_IRQn, isr);
-    interrupt_enable(RTC_Seconds_IRQn);
-}
-
 /*FUNCTION**********************************************************************
  *
  * Function Name : rtc_configure_int
@@ -192,12 +133,13 @@ void rtc_int_seconds_install(void (*isr)(void))
  *END**************************************************************************/
 void rtc_configure_int(hw_rtc_ier_t * bitfields)
 {
-  /*protect against null pointers*/
+  /* Protect against null pointers*/
   if(NULL == bitfields)
   {
     return;
   }
-  
+
+  /* Enable RTC interrupts*/
   rtc_hal_config_interrupts(bitfields);
 }
 
@@ -210,7 +152,7 @@ void rtc_configure_int(hw_rtc_ier_t * bitfields)
  *END**************************************************************************/
 void rtc_get_int_status(hw_rtc_sr_t * int_status_flags)
 {
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if(NULL == int_status_flags)
     {
         return;
@@ -232,7 +174,7 @@ bool rtc_set_datetime(const rtc_datetime_t * datetime, bool start_after_set)
 {
     bool result = false;
 
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if(NULL == datetime)
     {
         return result;
@@ -245,28 +187,32 @@ bool rtc_set_datetime(const rtc_datetime_t * datetime, bool start_after_set)
     if(result)
     {
         convert_datetime_to_seconds(datetime, &seconds);
-        rtc_hal_counter_enable(false); /* disable counter*/
+        /* Disable counter*/
+        rtc_hal_counter_enable(false);
 
-        /* create scope for prescale variable*/
+        /* Create scope for prescale variable*/
         { 
             uint16_t prescale = 0;
-            result = rtc_hal_set_prescaler(&prescale); /* clear prescaler*/
+            /* clear prescaler*/
+            result = rtc_hal_set_prescaler(&prescale);
         }
 
         if(result)
         {
-            result = rtc_hal_set_seconds(&seconds); /* set seconds counter*/
+            /* Set seconds counter*/
+            result = rtc_hal_set_seconds(&seconds);
         }
 
         if(result && start_after_set)
         {
-            /* enable RTC oscillator since it is required to start the counter*/
+            /* Enable RTC oscillator since it is required to start the counter*/
             rtc_hal_config_oscillator(true);
 
-            /* jgsp: After enabling the oscillator, wait the oscillator startup
-            * time before setting SR[TCE] to allow time for the oscillator clock
-            * output to stabilize. */
-            rtc_hal_counter_enable(true); /* start counter*/
+            /* jgsp: After enabling the oscillator, wait the oscillator startup */
+            /* time before setting SR[TCE] to allow time for the oscillator clock*/
+            /* output to stabilize. */
+            /* Start counter*/
+            rtc_hal_counter_enable(true);
         }
     }
 
@@ -283,7 +229,7 @@ bool rtc_set_datetime(const rtc_datetime_t * datetime, bool start_after_set)
  *END**************************************************************************/
 void rtc_get_datetime(rtc_datetime_t * datetime)
 {
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if(NULL == datetime)
     {
         return;
@@ -308,7 +254,7 @@ bool rtc_get_alarm(rtc_datetime_t * date)
 {
     bool result = false;
 
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if(NULL == date)
     {
         return result;
@@ -316,7 +262,8 @@ bool rtc_get_alarm(rtc_datetime_t * date)
 
     uint32_t seconds = 0;
 
-    rtc_hal_get_alarm(&seconds); /* get alarm in seconds  */
+    /* Get alarm in seconds  */
+    rtc_hal_get_alarm(&seconds);
 
     convert_seconds_to_datetime(&seconds, date);
 
@@ -341,8 +288,8 @@ bool rtc_set_alarm(const rtc_datetime_t * date)
     if(result)
     {
         convert_datetime_to_seconds(date, &seconds);
-          
-        rtc_hal_set_alarm(&seconds); /* set alarm in seconds    */
+        /* set alarm in seconds*/
+        rtc_hal_set_alarm(&seconds);
     }
 
     return result;
@@ -359,13 +306,14 @@ bool rtc_set_alarm(const rtc_datetime_t * date)
  *END**************************************************************************/
 void rtc_start_time_counter(void)
 {
-    /* enable RTC oscillator since it is required to start the counter*/
+    /* Enable RTC oscillator since it is required to start the counter*/
     rtc_hal_config_oscillator(true);
 
-    /* jgsp: After enabling the oscillator, wait the oscillator startup
-    * time before setting SR[TCE] to allow time for the oscillator clock
-    * output to stabilize. */  
-    rtc_hal_counter_enable(true); /* enable counter*/
+    /* jgsp: After enabling the oscillator, wait the oscillator startup*/
+    /* time before setting SR[TCE] to allow time for the oscillator clock*/
+    /* output to stabilize. */
+    /* Enable counter*/
+    rtc_hal_counter_enable(true);
 }
 
 /*FUNCTION**********************************************************************
@@ -377,10 +325,11 @@ void rtc_start_time_counter(void)
  *END**************************************************************************/
 void rtc_stop_time_counter(void)
 {
-    rtc_hal_counter_enable(false); /* disable counter*/
+    /* Disable counter*/
+    rtc_hal_counter_enable(false);
 }
 
-#if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
+#if FSL_FEATURE_RTC_HAS_MONOTONIC
 /*FUNCTION**********************************************************************
  *
  * Function Name : rtc_increment_monotonic
@@ -403,7 +352,7 @@ bool rtc_increment_monotonic(void)
  *END**************************************************************************/
 void rtc_cp_datetime_time(const rtc_datetime_t * datetime, rtc_time_t * time)
 {
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if((NULL == datetime) || (NULL == time))
     {
         return;
@@ -423,7 +372,7 @@ void rtc_cp_datetime_time(const rtc_datetime_t * datetime, rtc_time_t * time)
  *END**************************************************************************/
 void rtc_cp_time_datetime(const rtc_time_t * time, rtc_datetime_t * datetime)
 {
-    /*protect against null pointers*/
+    /* Protect against null pointers*/
     if((NULL == time) || (NULL == datetime))
     {
         return;
@@ -447,16 +396,26 @@ static void convert_seconds_to_datetime(const uint32_t * seconds,
     uint32_t x;
     uint32_t Seconds, Days;
 
-    Seconds = *seconds; /* start from 1970-01-01*/
-    Days = Seconds / 86400U;             /* days*/
-    Seconds = Seconds % 86400U;          /* seconds left*/
-    datetime->hour = Seconds / 3600U;     /* hours*/
-    Seconds = Seconds % 3600u;           /* seconds left*/
-    datetime->minute = Seconds / 60U;     /* minutes*/
-    datetime->second = Seconds % 60U;     /* seconds*/
-    datetime->year = (4U * (Days / ((4U * 365U) + 1U))) + 1970; /* year*/
+    /* Start from 1970-01-01*/
+    Seconds = *seconds;
+    /* days*/
+    Days = Seconds / 86400U;
+    /* seconds left*/
+    Seconds = Seconds % 86400U;
+    /* hours*/
+    datetime->hour = Seconds / 3600U;
+    /* seconds left*/
+    Seconds = Seconds % 3600u;
+    /* minutes*/
+    datetime->minute = Seconds / 60U;
+    /* seconds*/
+    datetime->second = Seconds % 60U;
+    /* year*/
+    datetime->year = (4U * (Days / ((4U * 365U) + 1U))) + 1970;
+    /* Days left*/
     Days = Days % ((4U * 365U) + 1U);
-    if (Days == ((0U * 365U) + 59U)) /* 59*/
+    /* 59*/
+    if (Days == ((0U * 365U) + 59U))
     {
         datetime->day = 29U;
         datetime->month = 2U;
@@ -498,31 +457,35 @@ static bool has_datetime_correct_format(const rtc_datetime_t * datetime)
 {
     bool result = false;
 
-    /* test correctness of given parameters*/
+    /* Test correctness of given parameters*/
     if ((datetime->year < 1970U) || (datetime->year > 2038U) || (datetime->month > 12U) ||
       (datetime->month == 0U) || (datetime->day > 31U) || (datetime->day == 0U))
     {
-        result = false; /* if not correct then error*/
+        /* If not correct then error*/
+        result = false;
     }
     else
     {
         result = true;
     }
 
-    if ( result && (datetime->year & 3U)) /* is given year un-leap-one?*/
+    /* Is given year un-leap-one?*/
+    if ( result && (datetime->year & 3U))
     {
-        /* does the obtained number of days exceed number of days in the appropriate month & year?*/
+        /* Does the obtained number of days exceed number of days in the appropriate month & year?*/
         if (ULY[datetime->month] < datetime->day)
         {
-            result = false; /* if yes (incorrect datetime inserted) then error*/
+            /* If yes (incorrect datetime inserted) then error*/
+            result = false;
         }
     }
-    else /* is given year leap-one?*/
+    else /* Is given year leap-one?*/
     {
-        /* does the obtained number of days exceed number of days in the appropriate month & year?*/
+        /* Does the obtained number of days exceed number of days in the appropriate month & year?*/
         if (result && (LY[datetime->month] < datetime->day))
         {
-            result = false; /* if yes (incorrect date inserted) then error*/
+            /* if yes (incorrect date inserted) then error*/
+            result = false;
         }
     }
 
@@ -539,11 +502,13 @@ static bool has_datetime_correct_format(const rtc_datetime_t * datetime)
 static void convert_datetime_to_seconds(const rtc_datetime_t * datetime,
   uint32_t * seconds)
 {
-    /* compute number of days from 1970 till given year*/
+    /* Compute number of days from 1970 till given year*/
     *seconds = ((datetime->year - 1970U) * 365U) + (((datetime->year - 1970U) + 3U) / 4U);
-    *seconds += MONTH_DAYS[datetime->month]; /* add number of days till given month*/
-    *seconds += datetime->day; /* add days in given month*/
-    /* for un-leap year or month <= 2, decrement day counter*/
+    /* Add number of days till given month*/
+    *seconds += MONTH_DAYS[datetime->month];
+    /* Add days in given month*/
+    *seconds += datetime->day;
+    /* For un-leap year or month <= 2, decrement day counter*/
     if ((datetime->year & 3U) || (datetime->month <= 2U))
     {
         (*seconds)--;

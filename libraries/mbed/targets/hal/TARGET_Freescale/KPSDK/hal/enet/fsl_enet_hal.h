@@ -67,7 +67,7 @@
 typedef enum _enet_status
 {
     kStatus_ENET_Success = 0,
-    kStatus_ENET_InvalidInput,       /*!< Invalid enet input parameter */
+    kStatus_ENET_InvalidInput,       /*!< Invalid ENET input parameter */
     kStatus_ENET_MemoryAllocateFail, /*!< Memory allocate failure*/
     kStatus_ENET_GetClockFreqFail,   /*!< Get clock frequency failure*/
     kStatus_ENET_Initialized,        /*!< ENET device already initialized*/
@@ -92,7 +92,7 @@ typedef enum _enet_status
     kStatus_ENET_TimeOut,            /*!< ENET Timeout*/
     kStatus_ENET_MulticastPointerNull, /*!< Null multicast group pointer*/
     kStatus_ENET_AlreadyAddedMulticast /*!< Have Already added to multicast group*/
-}enet_status_t;
+} enet_status_t;
 
 
 #if FSL_FEATURE_ENET_DMA_BIG_ENDIAN_ONLY && SYSTEM_LITTLE_ENDIAN
@@ -157,7 +157,7 @@ typedef enum _enet_tx_bd_control_extend2
 {
     kEnetTxBdTxInterrupt = 0x0040, /*!< Transmit interrupt*/
     kEnetTxBdTimeStamp = 0x0020    /*!< Transmit timesstamp flag */
-}enet_tx_bd_control_extend2_t;
+} enet_tx_bd_control_extend2_t;
 #else
 /*! @brief Define control and status region of receive buffer descriptor*/
 typedef enum _enet_rx_bd_control_status
@@ -220,63 +220,17 @@ typedef enum _enet_tx_bd_control_extend2
 {
     kEnetTxBdTxInterrupt = 0x4000, /*!< Transmit interrupt*/
     kEnetTxBdTimeStamp = 0x2000    /*!< Transmit timesstamp flag */
-}enet_tx_bd_control_extend2_t;
+} enet_tx_bd_control_extend2_t;
 #endif
 
-#if (!FSL_FEATURE_ENET_DMA_BIG_ENDIAN_ONLY) && SYSTEM_LITTLE_ENDIAN
-/*! @brief Define the buffer descriptor structure for little-Endian system and endianness configurable IP*/
-typedef struct enet_bd_struct
-{
-    uint16_t  length;           /*!< Buffer descriptor data length*/
-    uint16_t  control;          /*!< Buffer descriptor control*/
-    uint8_t   *buffer;          /*!< Data buffer pointer*/
-    uint16_t  controlExtend0;   /*!< Extend buffer descriptor control0*/
-    uint16_t  controlExtend1;   /*!< Extend buffer descriptor control1*/
-    uint16_t  payloadCheckSum;  /*!< Internal payload checksum*/
-    uint8_t   headerLength;     /*!< Header length*/
-    uint8_t   protocalTyte;     /*!< Protocal type*/
-    uint16_t  reserved0;
-    uint16_t  controlExtend2;   /*!< Extend buffer descriptor control2*/
-    uint32_t  timestamp;        /*!< Timestamp */
-    uint16_t  reserved1;
-    uint16_t  reserved2;
-    uint16_t  reserved3;
-    uint16_t  reserved4;
-}enet_bd_struct_t;
-
-#else
-/*! @brief Define the buffer descriptors structure for Big-Endian system*/
-typedef struct enet_bd_struct
-{
-    uint16_t  control;          /*!< Buffer descriptor control   */
-    uint16_t   length;          /*!< Buffer descriptor data length*/
-    uint8_t   *buffer;          /*!< Data buffer pointer*/
-    uint16_t  controlExtend1;   /*!< Extend buffer descriptor control1*/
-    uint16_t  controlExtend0;   /*!< Extend buffer descriptor control0*/
-    uint8_t   headerLength;     /*!< Header length*/
-    uint8_t   protocalTyte;     /*!< Protocal type*/
-    uint16_t  payloadCheckSum;  /*!< Internal payload checksum*/
-    uint16_t  controlExtend2;   /*!< Extend buffer descriptor control2*/
-    uint16_t  reserved0;  
-    uint32_t  timestamp;        /*!< Timestamp pointer*/
-    uint16_t  reserved1;
-    uint16_t  reserved2;
-    uint16_t  reserved3;
-    uint16_t  reserved4;
-}enet_bd_struct_t;
-#endif
-
-/*! @brief Define macro to different enet constant value*/
+/*! @brief Define macro to different ENET constant value*/
 typedef enum _enet_constant_parameter
 {
-    kEnetMacAddrLen = 6,       /*!< enet mac address length*/
-    kEnetHashValMask = 0x1f,   /*!< enet hash value mask*/
-    kEnetRxBdCtlJudge1 = 0x0080,/*!< enet receive buffer descriptor control judge value1*/
-    kEnetRxBdCtlJudge2 = 0x8000 /*!< enet receive buffer descriptor control judge value2*/
-}enet_constant_parameter_t;
-
-/*! @brief Define six-byte mac address type*/
-typedef uint8_t enetMacAddr[kEnetMacAddrLen];
+    kEnetMacAddrLen = 6,       /*!< ENET mac address length*/
+    kEnetHashValMask = 0x1f,   /*!< ENET hash value mask*/
+    kEnetRxBdCtlJudge1 = 0x0080,/*!< ENET receive buffer descriptor control judge value1*/
+    kEnetRxBdCtlJudge2 = 0x8000 /*!< ENET receive buffer descriptor control judge value2*/
+} enet_constant_parameter_t;
 
 /*! @brief Define rmii or mii mode for data interface between MAC and PHY*/
 typedef enum _enet_config_rmii
@@ -285,11 +239,11 @@ typedef enum _enet_config_rmii
     kEnetCfgRmii = 1   /*!< RMii mode for data interface*/
 } enet_config_rmii_t;
 
-/*! @brief Define 10Mbps or 100Mbps speed mode for data transfer */
+/*! @brief Define 10 Mbps or 100 Mbps speed mode for data transfer */
 typedef enum _enet_config_speed
 {
-    kEnetCfgSpeed100M = 0,  /*!< Speed 100M mode*/
-    kEnetCfgSpeed10M = 1    /*!< Speed 10M mode*/
+    kEnetCfgSpeed100M = 0,  /*!< Speed 100 M mode*/
+    kEnetCfgSpeed10M = 1    /*!< Speed 10 M mode*/
 } enet_config_speed_t;
 
 /*! @brief Define half or full duplex mode for data transfer*/
@@ -308,11 +262,11 @@ typedef enum _enet_mii_operation
     kEnetReadNoCompliant = 3   /*!< Read frame operation, but not MII compliant*/
 }enet_mii_operation_t;
 
-/*! @brief Define initialize , enable or disable operation for special adddress filter */
+/*! @brief Define initialize , enable or disable operation for special address filter */
 typedef enum _enet_special_address_filter
 {
     kEnetSpecialAddressInit= 0,     /*!< Initialize special address filter */
-    kEnetSpecialAddressEnable = 1,  /*!< Enbale special address filter*/
+    kEnetSpecialAddressEnable = 1,  /*!< Enable special address filter*/
     kEnetSpecialAddressDisable = 2  /*!< Disable special address filter*/
 } enet_special_address_filter_t;
 
@@ -331,15 +285,7 @@ typedef enum _enet_timer_channel_mode
     kEnetChannelSetCompareClearOverflow = 9 /*!< Set output on compare,clear output on overflow*/
 } enet_timer_channel_mode_t;
 
-/*! @brief Define configuration structure for 1588 ptp timer*/
-typedef struct enet_config_ptp_timer
-{
-    bool isSlaveEnabled;        /*!< Master or slave ptp timer*/
-    uint32_t clockIncease;      /*!< Timer increase value each clock period*/
-    uint32_t period;            /*!< Timer period for generate interrupt event  */
-} enet_config_ptp_timer_t;
-
-/*! @brief Define RXFRAME/RXBYTE/TXFRAME/TXBYTE/MII/TSTIMER/TSAVAIL interrupt source for enet*/
+/*! @brief Define RXFRAME/RXBYTE/TXFRAME/TXBYTE/MII/TSTIMER/TSAVAIL interrupt source for ENET*/
 typedef enum _enet_interrupt_request
 {
     kEnetBabrInterrupt = 0x40000000,   /*!< BABR interrupt source*/
@@ -361,8 +307,62 @@ typedef enum _enet_interrupt_request
     kEnetAllInterrupt = 0xFFFFFFFF     /*!< All interrupt*/
 } enet_interrupt_request_t;
 
+/*! @brief Define six-byte mac address type*/
+typedef uint8_t enetMacAddr[kEnetMacAddrLen];
+
+#if (!FSL_FEATURE_ENET_DMA_BIG_ENDIAN_ONLY) && SYSTEM_LITTLE_ENDIAN
+/*! @brief Define the buffer descriptor structure for little-Endian system and endianness configurable IP*/
+typedef struct ENETBdStruct
+{
+    uint16_t  length;           /*!< Buffer descriptor data length*/
+    uint16_t  control;          /*!< Buffer descriptor control*/
+    uint8_t   *buffer;          /*!< Data buffer pointer*/
+    uint16_t  controlExtend0;   /*!< Extend buffer descriptor control0*/
+    uint16_t  controlExtend1;   /*!< Extend buffer descriptor control1*/
+    uint16_t  payloadCheckSum;  /*!< Internal payload checksum*/
+    uint8_t   headerLength;     /*!< Header length*/
+    uint8_t   protocalTyte;     /*!< Protocol type*/
+    uint16_t  reserved0;
+    uint16_t  controlExtend2;   /*!< Extend buffer descriptor control2*/
+    uint32_t  timestamp;        /*!< Timestamp */
+    uint16_t  reserved1;
+    uint16_t  reserved2;
+    uint16_t  reserved3;
+    uint16_t  reserved4;
+} enet_bd_struct_t;
+
+#else
+/*! @brief Define the buffer descriptors structure for Big-Endian system*/
+typedef struct ENETBdStruct
+{
+    uint16_t  control;          /*!< Buffer descriptor control   */
+    uint16_t   length;          /*!< Buffer descriptor data length*/
+    uint8_t   *buffer;          /*!< Data buffer pointer*/
+    uint16_t  controlExtend1;   /*!< Extend buffer descriptor control1*/
+    uint16_t  controlExtend0;   /*!< Extend buffer descriptor control0*/
+    uint8_t   headerLength;     /*!< Header length*/
+    uint8_t   protocalTyte;     /*!< Protocol type*/
+    uint16_t  payloadCheckSum;  /*!< Internal payload checksum*/
+    uint16_t  controlExtend2;   /*!< Extend buffer descriptor control2*/
+    uint16_t  reserved0;  
+    uint32_t  timestamp;        /*!< Timestamp pointer*/
+    uint16_t  reserved1;
+    uint16_t  reserved2;
+    uint16_t  reserved3;
+    uint16_t  reserved4;
+} enet_bd_struct_t;
+#endif
+
+/*! @brief Define configuration structure for 1588 ptp timer*/
+typedef struct ENETConfigPtpTimer
+{
+    bool isSlaveEnabled;        /*!< Master or slave ptp timer*/
+    uint32_t clockIncease;      /*!< Timer increase value each clock period*/
+    uint32_t period;            /*!< Timer period for generate interrupt event  */
+} enet_config_ptp_timer_t;
+
 /*! @brief Define transmit accelerator configuration*/
-typedef struct enet_config_tx_accelerator
+typedef struct ENETConfigTxAccelerator
 {
     bool  isIpCheckEnabled;         /*!< Insert ip header checksum */
     bool  isProtocolCheckEnabled;   /*!< Insert protocol checksum*/
@@ -370,7 +370,7 @@ typedef struct enet_config_tx_accelerator
 } enet_config_tx_accelerator_t;
 
 /*! @brief Define receive accelerator configuration*/
-typedef struct enet_config_rx_accelerator
+typedef struct ENETConfigRxAccelerator
 {
     bool isIpcheckEnabled;        /*!< Discard with wrong ip header checksum */
     bool isProtocolCheckEnabled;  /*!< Discard with wrong protocol checksum*/
@@ -380,7 +380,7 @@ typedef struct enet_config_rx_accelerator
 } enet_config_rx_accelerator_t;
 
 /*! @brief Define transmit fifo configuration*/
-typedef struct enet_config_tx_fifo
+typedef struct ENETConfigTxFifo
 {
     bool isStoreForwardEnabled;   /*!< Transmit fifo store and forward */
     uint8_t txFifoWrite;          /*!< Transmit fifo write */
@@ -390,7 +390,7 @@ typedef struct enet_config_tx_fifo
 } enet_config_tx_fifo_t;
 
 /*! @brief Define receive fifo configuration*/
-typedef struct enet_config_rx_fifo
+typedef struct ENETConfigRxFifo
 {
     uint8_t rxFull;           /*!< Receive fifo section full threshold*/
     uint8_t rxAlmostFull;     /*!< Receive fifo section almost full threshold*/
@@ -407,24 +407,24 @@ extern "C" {
 #endif
 
 /*!
- * @brief Reset enet module.
+ * @brief Reset ENET module.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  */
 static inline void enet_hal_reset_ethernet(uint32_t instance)
 {
    assert(instance < HW_ENET_INSTANCE_COUNT);
    
-   BW_ENET_ECR_RESET(instance,1);
+   HW_ENET_ECR_SET(instance, BM_ENET_ECR_RESET);
 }
 
 /*!
- * @brief Get enet status to check if the reset has completed.
+ * @brief Get ENET status to check if the reset has completed.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @return Current status of the reset operation.
- *         - true if enet reset completed.
- *         - false if enet reset has not completed.
+ *         - true if ENET reset completed.
+ *         - false if ENET reset has not completed.
  */
 static inline bool enet_hal_is_reset_completed(uint32_t instance)
 {
@@ -436,9 +436,9 @@ static inline bool enet_hal_is_reset_completed(uint32_t instance)
 /*!
  * @brief Set mac address.
  *
- * This interface is used to set the six-byte mac address of the enet interface.
+ * This interface is used to set the six-byte mac address of the ENET interface.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param hwAddr The mac address pointer store for six bytes mac address.
  */
 void enet_hal_set_mac_address(uint32_t instance, enetMacAddr hwAddr);
@@ -446,10 +446,10 @@ void enet_hal_set_mac_address(uint32_t instance, enetMacAddr hwAddr);
 /*!
  * @brief Set the hardware addressing filtering to multicast group address.
  *
- * This interface is used to add the enet device to a multicast group address,
+ * This interface is used to add the ENET device to a multicast group address,
  * After joining the group , the mac will receive all frames with the group mac address.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param crcValue The crc value of the special address.
  * @param mode The operation for init/enable/disable the specified hardware address.
  */
@@ -461,7 +461,7 @@ void enet_hal_set_group_hashtable(uint32_t instance, uint32_t crcValue, enet_spe
  * This interface is used to add a individual address to the hardware address
  * filter. Then the mac will receive all frames with this individual address as Destination address.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param crcValue The crc value of the special address.
  * @param mode The operation for init/enable/disable the specified hardware address.
  */
@@ -470,7 +470,7 @@ void enet_hal_set_individual_hashtable(uint32_t instance, uint32_t crcValue, ene
 /*!
  * @brief Set the maximum receive buffer size and the maximum frame size.
  * 
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param maxBufferSize The maximum receive buffer size and it should not be smaller than 256.
  *        it should be evenly divisible by 16 and the maximum receive size should not be larger than 0x3ff0.
  * @param maxFrameSize The maximum receive Frame size, the reset value is 1518 or 1522 if the vlan tags are 
@@ -488,29 +488,29 @@ static inline void enet_hal_set_rx_max_size(uint32_t instance, uint32_t maxBuffe
 }
 
 /*!
- * @brief Configure enet transmit FIFO.
+ * @brief Configure ENET transmit FIFO.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param thresholdCfg The FIFO threshold configuration.
  */
 void enet_hal_config_tx_fifo(uint32_t instance, enet_config_tx_fifo_t *thresholdCfg);
 
 /*!
- * @brief Configure enet receive FIFO.
+ * @brief Configure ENET receive FIFO.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param thresholdCfg The FIFO threshold configuration.
  */
 void enet_hal_config_rx_fifo(uint32_t instance, enet_config_rx_fifo_t *thresholdCfg);
 
 /*!
- * @brief Initialize the start address for enet buffer descriptors.
+ * @brief Initialize the start address for ENET buffer descriptors.
  *
  * This interface is used to provide the beginning of the receive 
  * and transmit buffer descriptor queue in the external memory. The
  * input two address must be evenly divisible by 16.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param rxBdAddr The start address of receive buffer descriptors.
  * @param txBdAddr The start address of transmit buffer descriptors.
  */
@@ -520,7 +520,7 @@ void enet_hal_init_bd_address(uint32_t instance, uint32_t rxBdAddr, uint32_t txB
  * @brief Initialize receive buffer descriptors.
  *
  * To make sure the uDMA will do the right data transfer after you active
- * with wrap flag and all the buffer descriptors should initalized with empty bit.
+ * with wrap flag and all the buffer descriptors should initialized with empty bit.
  * 
  * @param rxBds The current receive buffer descriptor.
  * @param buffer The data buffer on buffer descriptor.
@@ -606,7 +606,7 @@ uint16_t enet_hal_get_rxbd_control(void *curBd);
  * the control and status region.
  *
  * @param curBd The current transmit buffer descriptor.
- * @return The extened control region of transmit buffer descriptor.
+ * @return The extended control region of transmit buffer descriptor.
  */
 uint16_t enet_hal_get_txbd_control(void *curBd);
 
@@ -620,7 +620,7 @@ uint16_t enet_hal_get_txbd_control(void *curBd);
  *
  * @param curBd The current receive buffer descriptor.
  * @param controlRegion The different control region.
- * @return The extend control region data of receive buffer desctiptor.
+ * @return The extend control region data of receive buffer descriptor.
  *         - true when the control region is set 
  *         - false when the control region is not set.
  */
@@ -681,36 +681,36 @@ static inline uint32_t enet_hal_get_bd_timestamp(void *curBd)
  * @brief Active receive buffer descriptor.
  *
  * This is used to active the receive buffer descriptor. The active buffer descriptor
- * should be done after the enet module is enabled otherwise the active operation will fail.
+ * should be done after the ENET module is enabled otherwise the active operation will fail.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  */
  static inline void enet_hal_active_rxbd(uint32_t instance)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 
-    BW_ENET_RDAR_RDAR(instance,1);
+    HW_ENET_RDAR_SET(instance, BM_ENET_RDAR_RDAR);
 }
 
 /*!
  * @brief Active transmit buffer descriptor.
  *
- * The active buffer descriptor should be done after the enet module is
+ * The active buffer descriptor should be done after the ENET module is
  * enabled otherwise the active operation will fail.
  * 
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  */
 static inline void enet_hal_active_txbd(uint32_t instance)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 
-    BW_ENET_TDAR_TDAR(instance,1);
+    HW_ENET_TDAR_SET(instance, BM_ENET_TDAR_TDAR);
 }
 
 /*!
- * @brief Config the (R)MII of enet.
+ * @brief Config the (R)MII of ENET.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param mode The rmii or mii mode.
  * @param speed The speed of rmii.
  * @param duplex The full or half duplex mode.
@@ -720,17 +720,17 @@ static inline void enet_hal_active_txbd(uint32_t instance)
 void enet_hal_config_rmii(uint32_t instance, enet_config_rmii_t mode, enet_config_speed_t speed, enet_config_duplex_t duplex, bool isRxOnTxDisabled,  bool isLoopEnabled);
 
 /*!
- * @brief Config the mii of enet.
+ * @brief Config the mii of ENET.
  *
- * This is used to set the mii interface between mac and phy, The miiSpeed is in 
+ * This is used to set the mii interface between mac and PHY, The miiSpeed is in 
  * fact a value controls the frequency of MDC relative to the internal module clock(InterClockSrc).
  * A value of zero in this parameter turns off MDC and leaves it in low voltage state.
  * Any non-zero value results in the MDC frequency MDC = InterClockSrc/((miiSpeed + 1)*2).
  * The desired MII(MDC) clock is 2.5MHZ(maximum), miiSpeed = InterClockSrc/(2*2.5MHZ), plus 1 to round up.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param miiSpeed The mii speed,This value is ranged from 0~0x3F.
- * @param isPreambleDisabled The preamble diabled flag.
+ * @param isPreambleDisabled The preamble disabled flag.
  */
 static inline void enet_hal_config_mii(uint32_t instance, uint32_t miiSpeed, bool isPreambleDisabled)
 {
@@ -744,9 +744,9 @@ static inline void enet_hal_config_mii(uint32_t instance, uint32_t miiSpeed, boo
  * @brief Get the mii configuration status.
  *
  * This interface is usually be called to check the mii interface before 
- * the mac do write or read phy registers.
+ * the mac do write or read PHY registers.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @return The mii configuration status.
  *         - true if the mii has been configured. 
  *         - false if the mii has not been configured.
@@ -759,10 +759,10 @@ static inline bool enet_hal_is_mii_enabled(uint32_t instance)
 }
 
 /*!
- * @brief Read data from phy. 
+ * @brief Read data from PHY. 
  *
- * @param instance The enet instance number.
- * @return The data read from Phy.
+ * @param instance The ENET instance number.
+ * @return The data read from PHY.
  */
 static inline uint32_t enet_hal_get_mii_data(uint32_t instance)
 {
@@ -774,7 +774,7 @@ static inline uint32_t enet_hal_get_mii_data(uint32_t instance)
 /*!
  * @brief Set mii command.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param phyAddr The PHY address.
  * @param phyReg The PHY register.
  * @param operation The read or write operation.
@@ -783,18 +783,18 @@ static inline uint32_t enet_hal_get_mii_data(uint32_t instance)
 void enet_hal_set_mii_command(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, enet_mii_operation_t operation, uint32_t data);
 
 /*!
- * @brief Enable/Disable enet module.
+ * @brief Enable/Disable ENET module.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param isEnhanced The enhanced 1588 feature switch.
- * @param isEnabled The enet module enable switch.
+ * @param isEnabled The ENET module enable switch.
  */
 void enet_hal_config_ethernet(uint32_t instance, bool isEnhanced, bool isEnabled);
 
 /*!
- * @brief Enable/Disable enet interrupt.
+ * @brief Enable/Disable ENET interrupt.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param source The interrupt sources. enet_interrupt_request_t enum types
  *        is recommended to be used as the interrupt sources.
  * @param isEnabled The interrupt enable switch.
@@ -802,9 +802,9 @@ void enet_hal_config_ethernet(uint32_t instance, bool isEnhanced, bool isEnabled
 void enet_hal_config_interrupt(uint32_t instance, uint32_t source, bool isEnabled);
 
 /*!
- * @brief Clear enet interrupt events. 
+ * @brief Clear ENET interrupt events. 
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param source The interrupt source to be cleared. enet_interrupt_request_t 
  *        enum types is recommended to be used as the interrupt sources.
  */
@@ -816,9 +816,9 @@ static inline void enet_hal_clear_interrupt(uint32_t instance, uint32_t source)
 }
 
 /*!
- * @brief Get enet interrupt status.
+ * @brief Get ENET interrupt status.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param source The interrupt sources. enet_interrupt_request_t 
  *        enum types is recommended to be used as the interrupt sources.
  * @return The event status of the interrupt source.
@@ -833,9 +833,9 @@ static inline bool enet_hal_get_interrupt_status(uint32_t instance, uint32_t sou
 }
 
 /*
- * @brief Enable/disble enet promiscuous mode.
+ * @brief Enable/disable ENET promiscuous mode.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param isEnabled The enable switch.
  */
 static inline void enet_hal_config_promiscuous(uint32_t instance, bool isEnabled)
@@ -846,9 +846,9 @@ static inline void enet_hal_config_promiscuous(uint32_t instance, bool isEnabled
 }
 
 /*!
- * @brief Enable/disble clear MIB counter. 
+ * @brief Enable/disable clear MIB counter. 
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param isEnabled The enable switch.
  */
 static inline void enet_hal_clear_mib(uint32_t instance, bool isEnabled)
@@ -860,9 +860,9 @@ static inline void enet_hal_clear_mib(uint32_t instance, bool isEnabled)
 }
 
 /*!
- * @brief Set Enable/disble MIB block. 
+ * @brief Set Enable/disable MIB block. 
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param isEnabled The enable flag.
  */
 static inline void enet_hal_config_mib(uint32_t instance, bool isEnabled)
@@ -876,7 +876,7 @@ static inline void enet_hal_config_mib(uint32_t instance, bool isEnabled)
 /*!
  * @brief Get MIB idle status. 
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @return true if in mib idle and mib is not updating else false.
  */
 static inline bool enet_hal_get_mib_status(uint32_t instance)
@@ -889,7 +889,7 @@ static inline bool enet_hal_get_mib_status(uint32_t instance)
 /*!
  * @brief Set transmit accelerator.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param txCfgPtr The transmit accelerator configuration .
  */
 void enet_hal_config_tx_accelerator(uint32_t instance, enet_config_tx_accelerator_t *txCfgPtr);
@@ -897,7 +897,7 @@ void enet_hal_config_tx_accelerator(uint32_t instance, enet_config_tx_accelerato
 /*!
  * @brief Set receive accelerator. 
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param rxCfgPtr The receive accelerator configuration .
  */
 void enet_hal_config_rx_accelerator(uint32_t instance, enet_config_rx_accelerator_t *rxCfgPtr);
@@ -906,9 +906,9 @@ void enet_hal_config_rx_accelerator(uint32_t instance, enet_config_rx_accelerato
  * @brief Initialize 1588 timer.
  *
  * This interface mainly initialize 1588 context structure. 
- * do intialize 1588 parameters according to users configuration structure.
+ * do initialize 1588 parameters according to users configuration structure.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param ptpCfg The 1588 timer configuration.
  */
 void enet_hal_init_ptp_timer(uint32_t instance, enet_config_ptp_timer_t *ptpCfgPtr);
@@ -916,10 +916,10 @@ void enet_hal_init_ptp_timer(uint32_t instance, enet_config_ptp_timer_t *ptpCfgP
 /*!
  * @brief Start or stop the 1588 timer.
  *
- * This is the acutal interface for ptp timer intialize. Set the right timer source
+ * This is the actual interface for ptp timer initialize. Set the right timer source
  * the timer increase value and the timer wrap period.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param isEnabled The 1588 timer start/stop switch.
  */
 static inline void enet_hal_start_ptp_timer(uint32_t instance, uint32_t isEnabled)
@@ -934,7 +934,7 @@ static inline void enet_hal_start_ptp_timer(uint32_t instance, uint32_t isEnable
  *
  * Restart ptp timer will clear all ptp timer counters to zero.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  */
 static inline void enet_hal_restart_ptp_timer(uint32_t instance)
 {
@@ -946,9 +946,9 @@ static inline void enet_hal_restart_ptp_timer(uint32_t instance)
 /*!
  * @brief Adjust the 1588 timer.
  *
- * Adjust 1588 timer accodring to configured correction increase and correcion period.
+ * Adjust 1588 timer according to configured correction increase and correction period.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param inceaseCorrection The increase correction for 1588 timer.
  * @param periodCorrection The period correction for 1588 timer.
  */
@@ -956,14 +956,15 @@ static inline void enet_hal_adjust_ptp_timer(uint32_t instance, uint32_t increas
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 
-    BW_ENET_ATINC_INC_CORR(instance,(increaseCorrection & (ENET_ATINC_INC_CORR_MASK>>ENET_ATINC_INC_CORR_SHIFT)));      /* set correction for ptp timer increase*/
-    BW_ENET_ATCOR_COR(instance,periodCorrection);             /* set correction for ptp timer period	*/
+    HW_ENET_ATINC_SET(instance,((increaseCorrection << ENET_ATINC_INC_CORR_SHIFT) & ENET_ATINC_INC_CORR_MASK));      /* set correction for ptp timer increase*/
+    /* set correction for ptp timer period*/
+    HW_ENET_ATCOR_SET(instance, (BM_ENET_ATCOR_COR & periodCorrection));
 }
 
 /*!
  * @brief Initialize the 1588 timer channel.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @Param channel The 1588 timer channel number. 
  * @param mode The compare or capture mode for 1588 timer channel.
  */
@@ -971,14 +972,15 @@ static inline void enet_hal_init_timer_channel(uint32_t instance, uint32_t chann
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 
-    BW_ENET_TCSRn_TMODE(instance,channel,mode);
-    BW_ENET_TCSRn_TIE(instance,channel, 1);    
+    HW_ENET_TCSRn_SET(instance, channel, 
+        (BM_ENET_TCSRn_TMODE &(mode << BP_ENET_TCSRn_TMODE)));
+    HW_ENET_TCSRn_SET(instance, channel, BM_ENET_TCSRn_TIE);   
 }
 
 /*!
  * @brief Set the compare value for 1588 timer channel.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @Param channel The 1588 timer channel number. 
  * @param compareValue The compare value for 1588 timer channel.
  */
@@ -992,7 +994,7 @@ static inline void enet_hal_set_timer_channel_compare(uint32_t instance, uint32_
 /*!
  * @brief Get 1588 timer channel status.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param channel The 1588 timer channel number. 
  * @return is the compare happened.
  */
@@ -1006,14 +1008,14 @@ static inline bool enet_hal_get_timer_channel_status(uint32_t instance, uint32_t
 /*!
  * @brief Clear 1588 timer channel flag.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param channel The 1588 timer channel number. 
  */
 static inline void enet_hal_clear_timer_channel_flag(uint32_t instance, uint32_t channel)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
-
-    BW_ENET_TCSRn_TF(instance,channel, 1);                /* clear interrupt flag*/
+                
+    HW_ENET_TCSRn_SET(instance, channel, BM_ENET_TCSRn_TF);/* clear interrupt flag*/
     HW_ENET_TGSR_SET(instance,(1U << channel));            /* clear channel flag*/
 }
 
@@ -1022,19 +1024,21 @@ static inline void enet_hal_clear_timer_channel_flag(uint32_t instance, uint32_t
  *
  * This is used before reading the current time register.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  */
 static inline void enet_hal_set_timer_capture(uint32_t instance)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 
-    BW_ENET_ATCR_CAPTURE(instance,1); 
+    HW_ENET_ATCR_SET(instance, BM_ENET_ATCR_CAPTURE);
+    /* Set twice to confirm correctly set*/
+    HW_ENET_ATCR_SET(instance, BM_ENET_ATCR_CAPTURE);
 }
 
 /*!
  * @brief Set 1588 timer.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @param nanSecond The nanosecond set to 1588 timer.
  */
 static inline void enet_hal_set_current_time(uint32_t instance, uint32_t nanSecond)
@@ -1047,7 +1051,7 @@ static inline void enet_hal_set_current_time(uint32_t instance, uint32_t nanSeco
 /*!
  * @brief Get time from 1588 timer.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @return the current time from 1588 timer.
  */
 static inline uint32_t enet_hal_get_current_time(uint32_t instance)
@@ -1060,7 +1064,7 @@ static inline uint32_t enet_hal_get_current_time(uint32_t instance)
 /*!
  * @brief Get the transmit timestamp.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @return The timestamp of the last transmitted frame.
  */
 static inline uint32_t enet_hal_get_tx_timestamp(uint32_t instance)
@@ -1073,7 +1077,7 @@ static inline uint32_t enet_hal_get_tx_timestamp(uint32_t instance)
 /*!
  * @brief Get the receive timestamp.
  *
- * @param instance The enet instance number.
+ * @param instance The ENET instance number.
  * @return The tiemstamp of the receive frame.
  */
 static inline uint32_t enet_hal_get_rx_timestamp(void *curRxBd)
@@ -1086,13 +1090,13 @@ static inline uint32_t enet_hal_get_rx_timestamp(void *curRxBd)
 /*!
  * @brief Get transmit buffer descriptor timestamp flag.
  *
- * @param curBd The enet transmit buffer descriptor.
+ * @param curBd The ENET transmit buffer descriptor.
  * @return true if timestamp region is set else false.
  */
 bool enet_hal_get_txbd_timestamp_flag(void *curBd);
 
 /*!
- * @brief Get the buffer descritor timestamp.
+ * @brief Get the buffer descriptor timestamp.
  *
  * @param null
  * @return The the size of buffer descriptor.

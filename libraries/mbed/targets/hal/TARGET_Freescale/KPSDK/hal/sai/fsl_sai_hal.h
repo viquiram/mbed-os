@@ -35,7 +35,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
-
 #include "fsl_device_registers.h"
 #include "fsl_sai_features.h"
 
@@ -67,16 +66,15 @@
 #define SAI_FIFO_LEN		FSL_FEATURE_I2S_FIFO_COUNT
 
 /*! @brief Define the bus type of sai */
-typedef enum sai_bus
+typedef enum _sai_bus
 {
     kSaiBusI2SLeft = 0x0,/*!< Use I2S left aligned format */
     kSaiBusI2SRight = 0x1,/*!< Use I2S right aligned format */
     kSaiBusI2SType = 0x2,/*!< Use I2S format */ 
-    kSaiBusAC97 = 0x3/*!< Use AC97 format */
  } sai_bus_t;
 
 /*! @brief Transmit or receive data, or reand and write at the same time */
-typedef enum sai_io_mode
+typedef enum _sai_io_mode
 {
     kSaiIOModeTransmit = 0x0,/*!< Write data to FIFO */
     kSaiIOModeReceive = 0x1,/*!< Read data from FIFO */
@@ -84,14 +82,14 @@ typedef enum sai_io_mode
 } sai_io_mode_t;
 
 /*! @brief Master or slave mode */
-typedef enum sai_master_slave
+typedef enum _sai_master_slave
 {
     kSaiMaster = 0x0,/*!< Master mode */
     kSaiSlave = 0x1/*!< Slave mode */
 } sai_master_slave_t;
 
 /*! @brief Synchronous or asynchronous mode */
-typedef enum sai_sync_mode
+typedef enum _sai_sync_mode
 {
     kSaiModeAsync = 0x0,/*!< Asynchronous mode */
     kSaiModeSync = 0x1,/*!< Synchronous mode (with receiver or transmit) */
@@ -100,7 +98,7 @@ typedef enum sai_sync_mode
 } sai_sync_mode_t;
 
 /*! @brief Mater clock source */
-typedef enum sai_mclk_source
+typedef enum _sai_mclk_source
 {
     kSaiMclkSourceSysclk = 0x0,/*!< Master clock from system clock */
     kSaiMclkSourceExtal = 0x1,/*!< Master clock from extal */
@@ -109,7 +107,7 @@ typedef enum sai_mclk_source
 } sai_mclk_source_t;
 
 /*! @brief Bit clock source */
-typedef enum sai_bclk_source
+typedef enum _sai_bclk_source
 {
     kSaiBclkSourceBusclk = 0x0,/*!< Bit clock using bus clock */
     kSaiBclkSourceMclkDiv = 0x1,/*!< Bit clock using master clock divider */
@@ -118,7 +116,7 @@ typedef enum sai_bclk_source
 } sai_bclk_source_t;
 
 /*! @brief The state flag of the sai */
-typedef enum sai_interrupt_request
+typedef enum _sai_interrupt_request
 {
     kSaiIntrequestWordStart = 0x0,/*!< Word start flag, means the first word in a frame detected */
     kSaiIntrequestSyncError = 0x1,/*!< Sync error flag, means the sync error is detected */
@@ -129,14 +127,14 @@ typedef enum sai_interrupt_request
 
 
 /*! @brief The dma request sources */
-typedef enum sai_dma_type
+typedef enum _sai_dma_type
 {
     kSaiDmaReqFIFOWarning = 0x0,/*!< FIFO warning caused dma request */
     kSaiDmaReqFIFORequest = 0x1/*!< FIFO request caused dma request */
 } sai_dma_request_t;
 
 /*! @brief The state flag of the sai */
-typedef enum sai_state_flag
+typedef enum _sai_state_flag
 {
     kSaiStateFlagWordStart = 0x0,/*!< Word start flag, means the first word in a frame detected. */
     kSaiStateFlagSyncError = 0x1,/*!< Sync error flag, means the sync error is detected */
@@ -144,7 +142,7 @@ typedef enum sai_state_flag
 } sai_state_flag_t;
 
 /*! @brief The reset type */
-typedef enum sai_reset
+typedef enum _sai_reset
 {
     kSaiResetTypeSoftware = 0x0,/*!< Software reset, reset the logic state */
     kSaiResetTypeFIFO = 0x1/*!< FIFO reset, reset the FIFO read and write pointer */
@@ -154,7 +152,7 @@ typedef enum sai_reset
  * @brief The running mode of sai
  * The mode includes normal mode, debug mode, stop mode
  */
-typedef enum sai_running_mode
+typedef enum _sai_running_mode
 {
     kSaiRunModeDebug = 0x0,/*!< In debug mode */ 
     kSaiRunModeStop = 0x1/*!< In stop mode */
