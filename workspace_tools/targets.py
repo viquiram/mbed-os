@@ -45,12 +45,6 @@ class Target:
         # list of macros (-D)
         self.macros = []
 
-        # list of ignore folders
-        self.ignore_folders = []
-
-        # list of folders in cmsis hierarchy which gets copied with it's origin structure
-        self.copy_cmsis_folders = []
-
         self.name = self.__class__.__name__
 
     def program_cycle_s(self):
@@ -117,8 +111,6 @@ class KL05Z(Target):
 
         self.supported_toolchains = ["ARM", "GCC_ARM"]
 
-        self.ignore_folders = ['KPSDK']
-
         self.is_disk_virtual = True
 
 
@@ -132,8 +124,6 @@ class KL25Z(Target):
 
         self.supported_toolchains = ["ARM", "GCC_CW_EWL", "GCC_CW_NEWLIB", "GCC_ARM"]
 
-        self.ignore_folders = ['KPSDK']
-
         self.is_disk_virtual = True
 
 class KL46Z(Target):
@@ -145,8 +135,6 @@ class KL46Z(Target):
         self.extra_labels = ['Freescale']
 
         self.supported_toolchains = ["GCC_ARM", "ARM"]
-
-        self.ignore_folders = ['KPSDK']
 
         self.is_disk_virtual = True
 
@@ -160,8 +148,6 @@ class K20D5M(Target):
 
         self.supported_toolchains = ["GCC_ARM", "ARM"]
 
-        self.ignore_folders = ['KPSDK']
-
         self.is_disk_virtual = True
 
 class K64F(Target):
@@ -170,11 +156,9 @@ class K64F(Target):
 
         self.core = "Cortex-M4F"
 
-        self.extra_labels = ['Freescale', 'KPSDK']
+        self.extra_labels = ['Freescale', 'KPSDK_MCUS', 'KPSDK_CODE']
 
         self.macros = ["CPU_MK64FN1M0VMD12"]
-
-        self.copy_cmsis_folders = ['device']
 
         self.supported_toolchains = ["ARM"]
 

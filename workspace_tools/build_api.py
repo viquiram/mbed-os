@@ -163,10 +163,6 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
     toolchain.copy_files(resources.headers, BUILD_TARGET)
     toolchain.copy_files(resources.linker_script, BUILD_TOOLCHAIN)
 
-    # if there's a folder in cmsis, copy it with its origin structure
-    if target.copy_cmsis_folders:
-        toolchain.copy_folders(cmsis_src)
-
     objects = toolchain.compile_sources(resources, TMP_PATH)
     toolchain.copy_files(objects, BUILD_TOOLCHAIN)
 

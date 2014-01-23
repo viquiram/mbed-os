@@ -278,13 +278,6 @@ class mbedToolchain:
                     (d.startswith('TOOLCHAIN_') and d[10:] not in labels['TOOLCHAIN'])):
                     dirs.remove(d)
 
-                # exlude dirs which are defined in the target class
-                if self.target.ignore_folders:
-                    for exclude_dir in self.target.ignore_folders:
-                        if (d.find(exclude_dir) != -1):
-                            print d
-                            dirs.remove(d)
-
             # Add root to include paths
             resources.inc_dirs.append(root)
 
@@ -340,14 +333,6 @@ class mbedToolchain:
                 resources.append(file_path)
 
         return resources
-
-    def copy_folders(self, path):
-        for d in self.target.copy_cmsis_folders:
-            #create a folder and copy all content to it
-            TMP_PATH = join(MBED_LIBRARIES, "TARGET_" + self.target.name, d)
-            mkdir(TMP_PATH)
-            EXTRA_PATH = join(path, "TARGET_" + self.target.extra_labels[0], "TARGET_" + self.target.name, d)
-            distutils.dir_util.copy_tree(EXTRA_PATH, TMP_PATH)
 
     def copy_files(self, files_paths, trg_path, rel_path=None):
         # Handle a single file

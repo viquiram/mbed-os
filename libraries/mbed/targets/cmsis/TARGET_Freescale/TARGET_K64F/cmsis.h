@@ -7,7 +7,7 @@
 #ifndef MBED_CMSIS_H
 #define MBED_CMSIS_H
 
-#include "device/MK64F12/MK64F12.h"
+#include "MK64F12.h"
 #include "cmsis_nvic.h"
 
 #endif
