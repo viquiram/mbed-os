@@ -15,11 +15,37 @@
  */
 #include "pinmap.h"
 #include "error.h"
+#include "fsl_clock_manager.h"
 
 void pin_function(PinName pin, int function) {
+    if (pin == (PinName)NC)
+        return;
 
+    clock_manager_set_gate(kClockModulePORT, pin >> GPIO_PORT_SHIFT, true);
+    port_hal_mux_control(pin >> GPIO_PORT_SHIFT, pin & 0xFF, (port_mux_t)function);
 }
 
 void pin_mode(PinName pin, PinMode mode) {
+    if (pin == (PinName)NC)
+        return;
 
+    uint32_t instance = pin >> GPIO_PORT_SHIFT;
+    uint32_t pinName = pin & 0xFF;
+
+    switch (mode) {
+        case PullNone:
+            port_hal_configure_pull(instance, pinName, 0);
+            port_hal_pull_select(instance, pinName, kPortPullDown);
+            break;
+        case PullDown:
+            port_hal_configure_pull(instance, pinName, 1);
+            port_hal_pull_select(instance, pinName, kPortPullDown);
+            break;
+        case PullUp:
+            port_hal_configure_pull(instance, pinName, 1);
+            port_hal_pull_select(instance, pinName, kPortPullUp);
+            break;
+        default:
+            break;
+    }
 }
