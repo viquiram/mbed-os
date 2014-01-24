@@ -18,20 +18,48 @@
 #include "gpio_api.h"
 
 PinName port_pin(PortName port, int pin_n) {
+    return (PinName)((port << GPIO_PORT_SHIFT) | pin_n);
 }
 
 void port_init(port_t *obj, PortName port, int mask, PinDirection dir) {
+    obj->port = port;
+    obj->mask = mask;
+
+    // The function is set per pin: reuse gpio logic
+    for (uint32_t i = 0; i < 32; i++) {
+        if (obj->mask & (1 << i)) {
+            gpio_set(port_pin(obj->port, i));
+        }
+    }
+
+    port_dir(obj, dir);
 }
 
 void port_mode(port_t *obj, PinMode mode) {
+
+    // The mode is set per pin: reuse pinmap logic
+    for (uint32_t i = 0; i < 32; i++) {
+        if (obj->mask & (1 << i)) {
+            pin_mode(port_pin(obj->port, i), mode);
+        }
+    }
 }
 
 void port_dir(port_t *obj, PinDirection dir) {
+    switch (dir) {
+        case PIN_INPUT :
+            gpio_hal_set_port_direction((uint32_t)obj->port, kGpioDigitalInput);
+            break;
+        case PIN_OUTPUT:
+            gpio_hal_set_port_direction((uint32_t)obj->port, kGpioDigitalOutput);
+            break;
+    }
 }
 
 void port_write(port_t *obj, int value) {
+    gpio_hal_write_port_output((uint32_t)obj->port, (uint32_t)(value & obj->mask));
 }
 
 int port_read(port_t *obj) {
-    return 1;
+    return (int)(gpio_hal_read_port_input((uint32_t)obj->port) & obj->mask);
 }

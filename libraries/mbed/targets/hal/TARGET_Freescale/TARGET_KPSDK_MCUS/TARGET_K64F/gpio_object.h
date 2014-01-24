@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 typedef struct {
-    uint32_t pinName;
+    PinName pinName;
 } gpio_t;
 
 static inline void gpio_write(gpio_t *obj, int value) {

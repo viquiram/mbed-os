@@ -18,10 +18,9 @@
 #include "fsl_gpio_driver.h"
 
 uint32_t gpio_set(PinName pin) {
-    uint32_t instance = pin >> GPIO_PORT_SHIFT;
     uint32_t pin_num = pin & 0xFF;
 
-    port_hal_mux_control(instance, pin_num, kPortMuxAsGpio);
+    pin_function(pin, (int)kPortMuxAsGpio);
     return 1 << pin_num;
 }
 
@@ -51,25 +50,7 @@ void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
 }
 
 void gpio_mode(gpio_t *obj, PinMode mode) {
-    uint32_t instance = obj->pinName >> GPIO_PORT_SHIFT;
-    uint32_t pin = obj->pinName & 0xFF;
-
-    switch (mode) {
-        case PullNone:
-            port_hal_configure_pull(instance, pin, 0);
-            port_hal_pull_select(instance, pin, kPortPullDown);
-            break;
-        case PullDown:
-            port_hal_configure_pull(instance, pin, 1);
-            port_hal_pull_select(instance, pin, kPortPullDown);
-            break;
-        case PullUp:
-            port_hal_configure_pull(instance, pin, 1);
-            port_hal_pull_select(instance, pin, kPortPullUp);
-            break;
-        default:
-            break;
-    }
+    pin_mode(obj->pinName, mode);
 }
 
 void gpio_dir(gpio_t *obj, PinDirection direction) {
