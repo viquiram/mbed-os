@@ -17,20 +17,189 @@
 #include "cmsis.h"
 
 #include "gpio_irq_api.h"
+#include "fsl_gpio_driver.h"
+#include "fsl_gpio_hal.h"
+#include "fsl_port_hal.h"
 #include "error.h"
 
-static void handle_interrupt_in(PORT_Type *port, int ch_base) {
+#define CHANNEL_NUM    160
 
+static uint32_t channel_ids[CHANNEL_NUM] = {0};
+static gpio_irq_handler irq_handler;
+
+#define IRQ_DISABLED        (0)
+#define IRQ_RAISING_EDGE    (9)
+#define IRQ_FALLING_EDGE    (10)
+#define IRQ_EITHER_EDGE     (11)
+
+static void handle_interrupt_in(PortName port, int ch_base) {
+    uint32_t i;
+
+    for (i = 0; i < 32; i++) {
+        if (port_hal_read_pin_interrupt_flag(port, i)) {
+            uint32_t id = channel_ids[ch_base + i];
+            if (id == 0)
+                continue;
+
+            gpio_irq_event event = IRQ_NONE;
+            switch (BR_PORT_PCRn_IRQC(port, i)) {
+                case IRQ_RAISING_EDGE:
+                    event = IRQ_RISE;
+                    break;
+
+                case IRQ_FALLING_EDGE:
+                    event = IRQ_FALL;
+                    break;
+
+                case IRQ_EITHER_EDGE:
+                    event = (gpio_hal_read_pin_input(port, i)) ? (IRQ_RISE) : (IRQ_FALL);
+                    break;
+            }
+            if (event != IRQ_NONE)
+                irq_handler(id, event);
+        }
+    }
+    port_hal_clear_port_interrupt_flag(port);
 }
 
+void gpio_irqA(void) {handle_interrupt_in(PortA, 0);}
+void gpio_irqB(void) {handle_interrupt_in(PortB, 32);}
+void gpio_irqC(void) {handle_interrupt_in(PortC, 64);}
+void gpio_irqD(void) {handle_interrupt_in(PortD, 96);}
+void gpio_irqE(void) {handle_interrupt_in(PortE, 128);}
+
 int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32_t id) {
-    return 1;
+   if (pin == NC)
+        return -1;
+
+    irq_handler = handler;
+
+    obj->port = pin >> GPIO_PORT_SHIFT;
+    obj->pin = pin & 0x7F;
+
+    uint32_t ch_base, vector;
+    IRQn_Type irq_n;
+    switch (obj->port) {
+        case PortA:
+            ch_base = 0;
+            irq_n = PORTA_IRQn;
+            vector = (uint32_t)gpio_irqA;
+            break;
+        case PortB:
+            ch_base = 32;
+            irq_n = PORTB_IRQn;
+            vector = (uint32_t)gpio_irqB;
+            break;
+        case PortC:
+            ch_base = 64;
+            irq_n = PORTC_IRQn;
+            vector = (uint32_t)gpio_irqC;
+            break;
+        case PortD:
+            ch_base = 96;
+            irq_n = PORTD_IRQn;
+            vector = (uint32_t)gpio_irqD;
+            break;
+        case PortE:
+            ch_base = 128;
+            irq_n = PORTE_IRQn;
+            vector = (uint32_t)gpio_irqE;
+            break;
+
+        default:
+            error("gpio_irq only supported on port A-E.\n");
+            break;
+    }
+    NVIC_SetVector(irq_n, vector);
+    NVIC_EnableIRQ(irq_n);
+
+    obj->ch = ch_base + obj->pin;
+    channel_ids[obj->ch] = id;
+
+    return 0;
 }
 
 void gpio_irq_free(gpio_irq_t *obj) {
-
+    channel_ids[obj->ch] = 0;
 }
 
 void gpio_irq_set(gpio_irq_t *obj, gpio_irq_event event, uint32_t enable) {
+    port_interrupt_config_t irq_settings = kPortIntDisabled;
 
+    switch (BR_PORT_PCRn_IRQC(obj->port, obj->pin)) {
+        case IRQ_DISABLED:
+            if (enable)
+                irq_settings = (event == IRQ_RISE) ? (kPortIntRisingEdge) : (kPortIntFallingEdge);
+            break;
+
+        case IRQ_RAISING_EDGE:
+            if (enable) {
+                irq_settings = (event == IRQ_RISE) ? (kPortIntRisingEdge) : (kPortIntEitherEdge);
+            } else {
+                if (event == IRQ_FALL)
+                    irq_settings = kPortIntRisingEdge;
+            }
+            break;
+
+        case IRQ_FALLING_EDGE:
+            if (enable) {
+                irq_settings = (event == IRQ_FALL) ? (kPortIntFallingEdge) : (kPortIntEitherEdge);
+            } else {
+                if (event == IRQ_RISE)
+                    irq_settings = kPortIntFallingEdge;
+            }
+            break;
+
+        case IRQ_EITHER_EDGE:
+            if (enable) {
+                irq_settings = kPortIntEitherEdge;
+            } else {
+                irq_settings = (event == IRQ_RISE) ? (kPortIntFallingEdge) : (kPortIntRisingEdge);
+            }
+            break;
+    }
+
+    // Interrupt configuration and clear interrupt
+    port_hal_configure_pin_interrupt(obj->port, obj->pin, irq_settings);
+    port_hal_clear_pin_interrupt_flag(obj->port, obj->pin);
+}
+
+void gpio_irq_enable(gpio_irq_t *obj) {
+    switch (obj->port) {
+        case PortA:
+            NVIC_EnableIRQ(PORTA_IRQn);
+            break;
+        case PortB:
+            NVIC_EnableIRQ(PORTB_IRQn);
+            break;
+        case PortC:
+            NVIC_EnableIRQ(PORTC_IRQn);
+            break;
+        case PortD:
+            NVIC_EnableIRQ(PORTD_IRQn);
+            break;
+        case PortE:
+            NVIC_EnableIRQ(PORTE_IRQn);
+            break;
+    }
+}
+
+void gpio_irq_disable(gpio_irq_t *obj) {
+    switch (obj->port) {
+        case PortA:
+            NVIC_DisableIRQ(PORTA_IRQn);
+            break;
+        case PortB:
+            NVIC_DisableIRQ(PORTB_IRQn);
+            break;
+        case PortC:
+            NVIC_DisableIRQ(PORTC_IRQn);
+            break;
+        case PortD:
+            NVIC_DisableIRQ(PORTD_IRQn);
+            break;
+        case PortE:
+            NVIC_DisableIRQ(PORTE_IRQn);
+            break;
+    }
 }
