@@ -50,17 +50,28 @@ typedef enum {
     PWM_10 = (1 << TPM_SHIFT) | (1),  // FTM1 CH1
 } PWMName;
 
+#define ADC_SHIFT 8
 typedef enum {
-    ADC0_SE4b =  4,
-    ADC0_SE5b =  5,
-    ADC0_SE6b =  6,
-    ADC0_SE7b =  7,
-    ADC0_SE8  =  8,
-    ADC0_SE9  =  9,
-    ADC0_SE12 = 12,
-    ADC0_SE13 = 13,
-    ADC0_SE14 = 14,
-    ADC0_SE15 = 15
+    ADC0_SE4b = (0 << ADC_SHIFT) | 4,
+    ADC0_SE5b = (0 << ADC_SHIFT) | 5,
+    ADC0_SE6b = (0 << ADC_SHIFT) | 6,
+    ADC0_SE7b = (0 << ADC_SHIFT) | 7,
+    ADC0_SE8  = (0 << ADC_SHIFT) | 8,
+    ADC0_SE9  = (0 << ADC_SHIFT) | 9,
+    ADC0_SE12 = (0 << ADC_SHIFT) | 12,
+    ADC0_SE13 = (0 << ADC_SHIFT) | 13,
+    ADC0_SE14 = (0 << ADC_SHIFT) | 14,
+    ADC0_SE15 = (0 << ADC_SHIFT) | 15,
+    ADC1_SE4b = (1 << ADC_SHIFT) | 4,
+    ADC1_SE5b = (1 << ADC_SHIFT) | 5,
+    ADC1_SE6b = (1 << ADC_SHIFT) | 6,
+    ADC1_SE7b = (1 << ADC_SHIFT) | 7,
+    ADC1_SE8  = (1 << ADC_SHIFT) | 8,
+    ADC1_SE9  = (1 << ADC_SHIFT) | 9,
+    ADC1_SE12 = (1 << ADC_SHIFT) | 12,
+    ADC1_SE13 = (1 << ADC_SHIFT) | 13,
+    ADC1_SE14 = (1 << ADC_SHIFT) | 14,
+    ADC1_SE15 = (1 << ADC_SHIFT) | 15
 } ADCName;
 
 typedef enum {

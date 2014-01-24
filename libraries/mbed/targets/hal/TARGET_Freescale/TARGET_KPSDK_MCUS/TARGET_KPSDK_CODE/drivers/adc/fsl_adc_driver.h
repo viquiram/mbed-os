@@ -265,7 +265,7 @@ uint32_t adc_get_conversion_value(uint32_t instance, adc_channel_config_t *chann
 void adc_register_user_callback_isr(uint32_t instance, adc_isr_callback_t func);
 
 #if defined(__cplusplus)
-extern }
+}
 #endif
 
 /*! @}*/

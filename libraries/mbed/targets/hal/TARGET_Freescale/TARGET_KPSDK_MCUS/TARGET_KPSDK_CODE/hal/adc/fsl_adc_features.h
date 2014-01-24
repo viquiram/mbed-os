@@ -31,7 +31,7 @@
 #ifndef __FSL_ADC_FEATURES_H__
 #define __FSL_ADC_FEATURES_H__
 
-#include "device/fsl_device_registers.h"
+#include "fsl_device_registers.h"
 
 #if defined(CPU_MK70FN1M0VMJ12)
     /*! @brief Define if there is Programmable Gain Amplifier in ADC. */
