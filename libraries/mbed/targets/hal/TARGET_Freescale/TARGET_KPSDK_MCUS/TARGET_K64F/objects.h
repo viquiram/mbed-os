@@ -38,10 +38,7 @@ struct port_s {
 };
 
 struct pwmout_s {
-    __IO uint32_t *MOD;
-    __IO uint32_t *CNT;
-    __IO uint32_t *CnV;
-    __IO uint32_t *SYNC;
+    PWMName pwm_name;
 };
 
 struct serial_s {

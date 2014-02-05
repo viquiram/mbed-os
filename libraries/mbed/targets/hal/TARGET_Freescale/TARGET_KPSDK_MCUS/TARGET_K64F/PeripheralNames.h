@@ -48,6 +48,20 @@ typedef enum {
     PWM_8  = (0 << TPM_SHIFT) | (7),  // FTM0 CH7
     PWM_9  = (1 << TPM_SHIFT) | (0),  // FTM1 CH0
     PWM_10 = (1 << TPM_SHIFT) | (1),  // FTM1 CH1
+    PWM_11 = (1 << TPM_SHIFT) | (2),  // FTM1 CH2
+    PWM_12 = (1 << TPM_SHIFT) | (3),  // FTM1 CH3
+    PWM_13 = (1 << TPM_SHIFT) | (4),  // FTM1 CH4
+    PWM_14 = (1 << TPM_SHIFT) | (5),  // FTM1 CH5
+    PWM_15 = (1 << TPM_SHIFT) | (6),  // FTM1 CH6
+    PWM_16 = (1 << TPM_SHIFT) | (7),  // FTM1 CH7
+    PWM_17 = (2 << TPM_SHIFT) | (0),  // FTM2 CH0
+    PWM_18 = (2 << TPM_SHIFT) | (1),  // FTM2 CH1
+    PWM_19 = (2 << TPM_SHIFT) | (2),  // FTM2 CH2
+    PWM_20 = (2 << TPM_SHIFT) | (3),  // FTM2 CH3
+    PWM_21 = (2 << TPM_SHIFT) | (4),  // FTM2 CH4
+    PWM_22 = (2 << TPM_SHIFT) | (5),  // FTM2 CH5
+    PWM_23 = (2 << TPM_SHIFT) | (6),  // FTM2 CH6
+    PWM_24 = (2 << TPM_SHIFT) | (7),  // FTM2 CH7
 } PWMName;
 
 #define ADC_SHIFT 8
