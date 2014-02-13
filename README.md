@@ -1,5 +1,5 @@
-mbed SDK
-========
+mbed SDK 
+======== 
 
 [![Build Status](https://travis-ci.org/mbedmicro/mbed.png)](https://travis-ci.org/mbedmicro/mbed/builds)
 
@@ -24,7 +24,9 @@ Supported Microcontrollers
 --------------------------
 NXP:
 * [LPC1768](http://mbed.org/platforms/mbed-LPC1768/) (Cortex-M3)
+* [LPC1768](http://mbed.org/platforms/u-blox-C027/) (Cortex-M3)
 * [LPC11U24](http://mbed.org/platforms/mbed-LPC11U24/) (Cortex-M0)
+* [LPC11U35](http://mbed.org/platforms/EA-LPC11U35/) (Cortex-M0)
 * LPC2368 (ARM7TDMI-S)
 * LPC810 (Cortex-M0+)
 * [LPC812](http://mbed.org/platforms/NXP-LPC800-MAX/) (Cortex-M0+)

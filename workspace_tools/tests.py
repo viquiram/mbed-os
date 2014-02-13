@@ -278,7 +278,7 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "sleep"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "duration": 30,
-        "mcu": ["LPC1768", "LPC11U24", "LPC4088"]
+        "mcu": ["LPC1768", "LPC11U24", "LPC4088","NRF51822"]
     },
     {
         "id": "MBED_5", "description": "PWM",
@@ -422,7 +422,12 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "pwm_led"),
         "dependencies": [MBED_LIBRARIES],
     },
-
+    {
+        "id": "MBED_32", "description": "Pin toggling",
+        "source_dir": join(TEST_DIR, "mbed", "pin_toggling"),
+        "dependencies": [MBED_LIBRARIES],
+    },
+    
     # CMSIS RTOS tests
     {
         "id": "CMSIS_RTOS_1", "description": "Basic",
@@ -681,7 +686,7 @@ TESTS = [
         "id": "KL25Z_5", "description": "MMA8451Q accelerometer",
         "source_dir": join(TEST_DIR, "mbed", "i2c_MMA8451Q"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, join(PERIPHERALS, 'MMA8451Q')],
-        "mcu": ["KL25Z"],
+        "mcu": ["KL25Z", "KL05Z", "KL46Z"],
     },
     
     # Examples

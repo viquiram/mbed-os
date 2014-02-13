@@ -29,6 +29,9 @@
  */
 #include "gpio_api.h"
 #include "pinmap.h"
+#include "error.h"
+
+extern uint32_t Set_GPIO_Clock(uint32_t port_idx);
 
 uint32_t gpio_set(PinName pin) {  
     if (pin == NC) return 0;
@@ -38,20 +41,21 @@ uint32_t gpio_set(PinName pin) {
     return (uint32_t)(1 << ((uint32_t)pin & 0xF)); // Return the pin mask
 }
 
-void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {    
+void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
     if (pin == NC) return;
 
-    // Get GPIO structure base address
-    uint32_t pin_number = (uint32_t)pin;
-    uint32_t port_index = (pin_number >> 4);  
-    GPIO_TypeDef *gpio  = (GPIO_TypeDef *)(GPIOA_BASE + (port_index << 10));
+    uint32_t port_index = STM_PORT(pin);
   
+    // Enable GPIO clock
+    uint32_t gpio_add = Set_GPIO_Clock(port_index);
+    GPIO_TypeDef *gpio = (GPIO_TypeDef *)gpio_add;
+    
     // Fill GPIO object structure for future use
     obj->pin     = pin;
     obj->mask    = gpio_set(pin);
     obj->reg_in  = &gpio->IDR;
     obj->reg_set = &gpio->BSRR;
-    obj->reg_clr = &gpio->BRR;    
+    obj->reg_clr = &gpio->BRR;
   
     // Configure GPIO
     if (direction == PIN_OUTPUT) {
