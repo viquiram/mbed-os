@@ -14,13 +14,29 @@
  * limitations under the License.
  */
 #include "rtc_api.h"
+#include "fsl_rtc_driver.h"
 
-static void init(void) {
-
-}
+const PinMap PinMap_RTC[] = {
+    {NC, OSC32KCLK, 0},
+};
 
 void rtc_init(void) {
+    rtc_init_config_t config={0};
+    rtc_hal_init_config_t hal_config = {0};
 
+    hal_config.disableClockOutToPeripheral = true;
+    if (PinMap_RTC[0].pin == NC) {
+        hal_config.enable32kOscillator = true;
+    }
+    hal_config.startSecondsCounterAt = 1; /* TSR = 1 */
+    config.general_config = &hal_config;
+    rtc_init(&config);
+
+    // select RTC clock source
+    SIM->SOPT1 &= ~SIM_SOPT1_OSC32KSEL_MASK;
+    SIM->SOPT1 |= SIM_SOPT1_OSC32KSEL(PinMap_RTC[0].peripheral);
+
+    rtc_start_time_counter();
 }
 
 void rtc_free(void) {
@@ -32,13 +48,19 @@ void rtc_free(void) {
  * 0 = Disabled, 1 = Enabled
  */
 int rtc_isenabled(void) {
-    return 1;
+    clock_manager_set_gate(kClockModuleRTC, 0U, true);
+    return (int)rtc_hal_is_counter_enabled();
 }
 
 time_t rtc_read(void) {
-    return 1;
+    return BR_RTC_TSR_TSR;
 }
 
 void rtc_write(time_t t) {
-
+    if (t == 0) {
+        t = 1;
+    }
+    rtc_hal_counter_enable(false);
+    BW_RTC_TSR_TSR(t);
+    rtc_hal_counter_enable(true);
 }

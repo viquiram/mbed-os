@@ -23,6 +23,10 @@ extern "C" {
 #endif
 
 typedef enum {
+    OSC32KCLK = 0,
+} RTCName;
+
+typedef enum {
     UART_0 = (int)UART0_BASE,
     UART_1 = (int)UART1_BASE,
     UART_2 = (int)UART2_BASE
