@@ -465,6 +465,15 @@ class NRF51822(Target):
         t_self.debug("Generated concatenated binary of %d bytes" % len(bindata))
         """
 
+class LPC1549(Target):
+    def __init__(self):
+        Target.__init__(self)
+        
+        self.core = "Cortex-M3"
+        
+        self.extra_labels = ['NXP', 'LPC15XX']
+        
+        self.supported_toolchains = ["uARM"]
 
 # Get a single instance for each target
 TARGETS = [
@@ -490,7 +499,8 @@ TARGETS = [
     LPC11C24(),
     LPC11U35_401(),
     NRF51822(),
-    UBLOX_C027()
+    UBLOX_C027(),
+    LPC1549()
 ]
 
 # Map each target name to its unique instance
