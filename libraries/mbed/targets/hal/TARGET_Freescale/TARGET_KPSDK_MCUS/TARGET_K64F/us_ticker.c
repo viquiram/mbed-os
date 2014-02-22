@@ -27,8 +27,9 @@ static void lptmr_init(void);
 static int us_ticker_inited = 0;
 
 void us_ticker_init(void) {
-    if (us_ticker_inited)
+    if (us_ticker_inited) {
         return;
+    }
     us_ticker_inited = 1;
 
     pit_init();
@@ -37,8 +38,9 @@ void us_ticker_init(void) {
 
 
 uint32_t us_ticker_read() {
-    if (!us_ticker_inited)
+    if (!us_ticker_inited) {
         us_ticker_init();
+    }
 
     return ~(pit_hal_read_timer_count(1));
 }
@@ -119,12 +121,10 @@ static void lptmr_isr(void) {
     if (us_ticker_int_counter > 0) {
         lptmr_set(0xFFFF);
         us_ticker_int_counter--;
-
     } else {
         if (us_ticker_int_remainder > 0) {
             lptmr_set(us_ticker_int_remainder);
             us_ticker_int_remainder = 0;
-
         } else {
             // This function is going to disable the interrupts if there are
             // no other events in the queue

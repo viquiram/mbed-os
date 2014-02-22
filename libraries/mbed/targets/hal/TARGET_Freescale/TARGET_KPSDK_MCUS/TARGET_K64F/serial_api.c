@@ -63,11 +63,9 @@ static uint32_t serial_get_clock(uint32_t uart_instance)
 }
 
 void serial_init(serial_t *obj, PinName tx, PinName rx) {
-
-    // determine the UART to use
-    UARTName uart_tx = (UARTName)pinmap_peripheral(tx, PinMap_UART_TX);
-    UARTName uart_rx = (UARTName)pinmap_peripheral(rx, PinMap_UART_RX);
-    UARTName uart_instance = (UARTName)pinmap_merge(uart_tx, uart_rx);
+    uint32_t uart_tx = pinmap_peripheral(tx, PinMap_UART_TX);
+    uint32_t uart_rx = pinmap_peripheral(rx, PinMap_UART_RX);
+    uint32_t uart_instance = (UARTName)pinmap_merge(uart_tx, uart_rx);
     if ((int)uart_instance == NC) {
         error("Serial pinout mapping failed");
     }

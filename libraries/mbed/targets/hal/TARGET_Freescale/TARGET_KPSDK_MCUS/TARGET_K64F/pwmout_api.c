@@ -41,8 +41,9 @@ void pwmout_init(pwmout_t* obj, PinName pin) {
     while (clkval > 1) {
         clkdiv++;
         clkval /= 2.0f;
-        if (clkdiv == 7)
+        if (clkdiv == 7) {
             break;
+        }
     }
     uint32_t channel = pwm & 0xF;
     uint32_t instance = pwm >> TPM_SHIFT;
@@ -70,7 +71,6 @@ void pwmout_write(pwmout_t* obj, float value) {
     uint16_t mod = ftm_hal_get_mod(obj->pwm_name >> TPM_SHIFT);
     uint32_t new_count = (uint32_t)((float)(mod) * value);
     ftm_hal_set_channel_count_value(obj->pwm_name >> TPM_SHIFT, obj->pwm_name & 0xF, new_count);
-    // *obj->CNT = 0;
 }
 
 float pwmout_read(pwmout_t* obj) {

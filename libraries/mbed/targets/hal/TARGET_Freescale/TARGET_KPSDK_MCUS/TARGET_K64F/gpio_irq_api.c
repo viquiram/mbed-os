@@ -55,8 +55,9 @@ static void handle_interrupt_in(PortName port, int ch_base) {
                     event = (gpio_hal_read_pin_input(port, i)) ? (IRQ_RISE) : (IRQ_FALL);
                     break;
             }
-            if (event != IRQ_NONE)
+            if (event != IRQ_NONE) {
                 irq_handler(id, event);
+            }
         }
     }
     port_hal_clear_port_interrupt_flag(port);
@@ -69,11 +70,11 @@ void gpio_irqD(void) {handle_interrupt_in(PortD, 96);}
 void gpio_irqE(void) {handle_interrupt_in(PortE, 128);}
 
 int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32_t id) {
-   if (pin == NC)
+    if (pin == NC) {
         return -1;
+   }
 
     irq_handler = handler;
-
     obj->port = pin >> GPIO_PORT_SHIFT;
     obj->pin = pin & 0x7F;
 
@@ -159,7 +160,6 @@ void gpio_irq_set(gpio_irq_t *obj, gpio_irq_event event, uint32_t enable) {
             break;
     }
 
-    // Interrupt configuration and clear interrupt
     port_hal_configure_pin_interrupt(obj->port, obj->pin, irq_settings);
     port_hal_clear_pin_interrupt_flag(obj->port, obj->pin);
 }

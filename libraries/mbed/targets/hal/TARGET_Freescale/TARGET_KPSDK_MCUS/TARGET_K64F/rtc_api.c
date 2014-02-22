@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 #include "rtc_api.h"
-#include "fsl_rtc_driver.h"
+#include "pinmap.h"
+#include "fsl_rtc_hal.h"
+#include "fsl_clock_manager.h"
 
 const PinMap PinMap_RTC[] = {
     {NC, OSC32KCLK, 0},
 };
 
 void rtc_init(void) {
-    rtc_init_config_t config={0};
     rtc_hal_init_config_t hal_config = {0};
 
     hal_config.disableClockOutToPeripheral = true;
     if (PinMap_RTC[0].pin == NC) {
         hal_config.enable32kOscillator = true;
     }
+    clock_manager_set_gate(kClockModuleRTC, 0U, true);
     hal_config.startSecondsCounterAt = 1; /* TSR = 1 */
-    config.general_config = &hal_config;
-    rtc_init(&config);
+    rtc_hal_init(&hal_config);
 
     // select RTC clock source
     SIM->SOPT1 &= ~SIM_SOPT1_OSC32KSEL_MASK;
     SIM->SOPT1 |= SIM_SOPT1_OSC32KSEL(PinMap_RTC[0].peripheral);
 
-    rtc_start_time_counter();
+    rtc_hal_config_oscillator(true);
+    rtc_hal_counter_enable(true);
 }
 
 void rtc_free(void) {

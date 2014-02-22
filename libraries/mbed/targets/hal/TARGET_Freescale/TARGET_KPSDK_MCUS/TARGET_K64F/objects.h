@@ -51,11 +51,11 @@ struct analogin_s {
 };
 
 struct i2c_s {
-    I2C_Type *i2c;
+    uint32_t instance;
 };
 
 struct spi_s {
-    SPI_Type *spi;
+    uint32_t instance;
 };
 
 #include "gpio_object.h"

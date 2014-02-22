@@ -25,8 +25,9 @@ uint32_t gpio_set(PinName pin) {
 }
 
 void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
-    if (pin == NC)
+    if (pin == NC) {
         return;
+    }
 
     if (direction) {
         gpio_output_pin_t output = {0};
