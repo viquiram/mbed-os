@@ -38,8 +38,9 @@ static void handle_interrupt_in(PortName port, int ch_base) {
     for (i = 0; i < 32; i++) {
         if (port_hal_read_pin_interrupt_flag(port, i)) {
             uint32_t id = channel_ids[ch_base + i];
-            if (id == 0)
+            if (id == 0) {
                 continue;
+            }
 
             gpio_irq_event event = IRQ_NONE;
             switch (BR_PORT_PCRn_IRQC(port, i)) {
