@@ -26,7 +26,7 @@ from workspace_tools.build_api import build_mbed_libs
 from workspace_tools.targets import TARGET_MAP
 
 OFFICIAL_MBED_LIBRARY_BUILD = (
-    ('LPC11U24',     ('ARM', 'uARM')),
+    ('LPC11U24',     ('ARM', 'uARM', 'GCC_ARM')),
     ('LPC1768',      ('ARM', 'GCC_ARM', 'GCC_CR', 'GCC_CS', 'IAR')),
     ('UBLOX_C027',   ('ARM', 'GCC_ARM', 'GCC_CR', 'GCC_CS', 'IAR')),
     ('LPC2368',      ('ARM',)),
@@ -35,6 +35,7 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('LPC4088',      ('ARM', 'GCC_ARM', 'GCC_CR')),
     ('LPC1114',      ('uARM',)),
     ('LPC11U35_401', ('ARM', 'uARM')),
+    ('LPC11U35_501', ('ARM', 'uARM')),
     ('LPC1549',      ('uARM',)),
     
     ('KL05Z',        ('ARM', 'uARM', 'GCC_ARM')),
