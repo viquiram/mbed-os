@@ -19,6 +19,10 @@ from exporters import Exporter
 
 class IAREmbeddedWorkbench(Exporter):
     NAME = 'IAR'
+<<<<<<< HEAD
+=======
+    TARGETS = ['LPC1768']
+>>>>>>> e8c404c8cad21354a1a3a8f26b44f1bec7642570
     TOOLCHAIN = 'IAR'
     
     TARGETS = [
