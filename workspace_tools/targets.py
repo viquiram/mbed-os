@@ -104,6 +104,8 @@ class LPC11U24_301(Target):
 
 
 class KL05Z(Target):
+    ONLINE_TOOLCHAIN = "uARM"
+
     def __init__(self):
         Target.__init__(self)
         
@@ -111,7 +113,7 @@ class KL05Z(Target):
         
         self.extra_labels = ['Freescale', 'KLXX']
         
-        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
         
         self.is_disk_virtual = True
 
@@ -297,7 +299,7 @@ class NUCLEO_F103RB(Target):
         
         self.extra_labels = ['STM', 'STM32F1', 'STM32F103RB']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 
 class NUCLEO_L152RE(Target):
@@ -311,7 +313,7 @@ class NUCLEO_L152RE(Target):
         
         self.extra_labels = ['STM', 'STM32L1', 'STM32L152RE']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 
 class NUCLEO_F401RE(Target):
@@ -325,7 +327,7 @@ class NUCLEO_F401RE(Target):
         
         self.extra_labels = ['STM', 'STM32F4', 'STM32F401RE']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 
 class NUCLEO_F030R8(Target):
@@ -339,7 +341,7 @@ class NUCLEO_F030R8(Target):
         
         self.extra_labels = ['STM', 'STM32F0', 'STM32F030R8']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 
 class LPC1347(Target):
@@ -390,23 +392,37 @@ class LPC11U35_401(Target):
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
 
 
+class LPC11U35_501(Target):
+    ONLINE_TOOLCHAIN = "uARM"
+
+    def __init__(self):
+        Target.__init__(self)
+        
+        self.core = "Cortex-M0"
+        
+        self.extra_labels = ['NXP', 'LPC11UXX']
+        
+        self.supported_toolchains = ["ARM", "uARM"]
+
+
 class UBLOX_C027(Target):
     def __init__(self):
         Target.__init__(self)
         
         self.core = "Cortex-M3"
         
-        self.extra_labels = ['NXP', 'LPC176X', 'UBLOX_C027']
+        self.extra_labels = ['NXP', 'LPC176X']
         
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CS", "GCC_CR", "IAR"]
 
 
 class NRF51822(Target):
-    OUTPUT_EXT = '.hex'
-
     EXPECTED_SOFTDEVICE = 's110_nrf51822_6.0.0_softdevice.hex'
-    UICR_START = 0x10001000
+    
     APPCODE_OFFSET = 0x14000
+    
+    UICR_START = 0x10001000
+    UICR_END   = 0x10001013
     
     def __init__(self):
         Target.__init__(self)
@@ -416,6 +432,8 @@ class NRF51822(Target):
         self.extra_labels = ["NORDIC"]
         
         self.supported_toolchains = ["ARM"]
+        
+        self.is_disk_virtual = True
     
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO']:
@@ -430,9 +448,7 @@ class NRF51822(Target):
             t_self.debug("Hex file not found. Aborting.")
             return
         
-        # Generate hex file
-        # NOTE: this is temporary, it will be removed later and only the
-        # combined binary file (below) will be used
+        # Merge user code with softdevice
         from intelhex import IntelHex
         binh = IntelHex()
         binh.loadbin(binf, offset = NRF51822.APPCODE_OFFSET)
@@ -440,46 +456,26 @@ class NRF51822(Target):
         sdh = IntelHex(hexf)
         sdh.merge(binh)
         
-        outname = binf.replace('.bin', '.hex')
-        with open(outname, "w") as f:
-            sdh.tofile(f, format = 'hex')
-        t_self.debug("Generated SoftDevice-enabled image in '%s'" % outname)
+        # Remove UICR section
+        del sdh[NRF51822.UICR_START:NRF51822.UICR_END+1]
         
-        # Generate concatenated SoftDevice + application binary
-        # Currently, this is only supported for SoftDevice images that have
-        # an UICR area
-        """
-        sdh = IntelHex(hexf)
-        if sdh.maxaddr() < NRF51822.UICR_START:
-            t_self.error("SoftDevice image does not have UICR area. Aborting.")
-            return
-        addrlist = sdh.addresses()
-        try:
-            uicr_start_index = addrlist.index(NRF51822.UICR_START)
-        except ValueError:
-            t_self.error("UICR start address not found in the SoftDevice image. Aborting.")
-            return
+        with open(binf, "wb") as f:
+            sdh.tofile(f, format = 'bin')
         
-        # Assume that everything up to uicr_start_index are contiguous addresses
-        # in the SoftDevice code area
-        softdevice_code_size = addrlist[uicr_start_index - 1] + 1
-        t_self.debug("SoftDevice code size is %d bytes" % softdevice_code_size)
-        
-        # First part: SoftDevice code
-        bindata = sdh[:softdevice_code_size].tobinstr()
-        
-        # Second part: pad with 0xFF up to APPCODE_OFFSET
-        bindata = bindata + '\xFF' * (NRF51822.APPCODE_OFFSET - softdevice_code_size)
-        
-        # Last part: the application code
-        with open(binf, 'r+b') as f:
-            bindata = bindata + f.read()
-            # Write back the binary
-            f.seek(0)
-            f.write(bindata)
-        t_self.debug("Generated concatenated binary of %d bytes" % len(bindata))
-        """
+        #with open(binf.replace(".bin", ".hex"), "w") as f:
+        #   sdh.tofile(f, format = 'hex')
 
+class LPC1549(Target):
+    ONLINE_TOOLCHAIN = "uARM"
+    
+    def __init__(self):
+        Target.__init__(self)
+        
+        self.core = "Cortex-M3"
+        
+        self.extra_labels = ['NXP', 'LPC15XX']
+        
+        self.supported_toolchains = ["uARM"]
 
 # Get a single instance for each target
 TARGETS = [
@@ -491,6 +487,7 @@ TARGETS = [
     KL25Z(),
     KL46Z(),
     K20D5M(),
+    K64F(),
     LPC812(),
     LPC810(),
     LPC4088(),
@@ -504,9 +501,10 @@ TARGETS = [
     LPC1114(),
     LPC11C24(),
     LPC11U35_401(),
+    LPC11U35_501(),
     NRF51822(),
     UBLOX_C027(),
-	K64F()
+    LPC1549()
 ]
 
 # Map each target name to its unique instance
