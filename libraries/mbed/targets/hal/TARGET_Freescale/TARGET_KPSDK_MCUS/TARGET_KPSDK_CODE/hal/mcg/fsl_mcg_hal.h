@@ -36,7 +36,6 @@
 #include <assert.h>
 #include "fsl_device_registers.h"
 #include "fsl_mcg_features.h"
-#include "fsl_clock_configs.h"
 
 /*! @addtogroup mcg_hal*/
 /*! @{*/
@@ -46,7 +45,7 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-/*! @brief mcg constant definitions*/
+/*! @brief MCG constant definitions*/
 enum _mcg_constant
 {
    kMcgConstant1 =        (1u),
@@ -70,7 +69,7 @@ enum _mcg_constant
    kMcgConstantHexE0 =       (0xE0u)
 };
 
-/*! @brief mcg clock source select */
+/*! @brief MCG clock source select */
 typedef enum _mcg_clock_select
 {
     kMcgClockSelectOut,             /* Output of FLL or PLLCS is selected(depends on PLLS bit) */
@@ -79,58 +78,58 @@ typedef enum _mcg_clock_select
     kMcgClockSelectReserved
 } mcg_clock_select_t;
 
-/*! @brief mcg internal reference clock source select */
+/*! @brief MCG internal reference clock source select */
 typedef enum _mcg_iref_clock_source
 {
     kMcgIrefClockSourceExt,         /* External reference clock is selected */
     kMcgIrefClockSourceSlow         /* The slow internal reference clock is selected */
 } mcg_iref_clock_source_t;
 
-/*! @brief mcg frequency range select */
+/*! @brief MCG frequency range select */
 typedef enum _mcg_freq_range_select
 {
-    kMcgFreqRangeSelectLow,         /* Low frequency range selected for the crystal osc */
-    kMcgFreqRangeSelectHigh,        /* High frequency range selected for the crystal osc */
-    kMcgFreqRangeSelectVeryHigh,    /* Very High frequency range selected for the crystal osc */
-    kMcgFreqRangeSelectVeryHigh1    /* Very High frequency range selected for the crystal osc */
+    kMcgFreqRangeSelectLow,         /* Low frequency range selected for the crystal OSC */
+    kMcgFreqRangeSelectHigh,        /* High frequency range selected for the crystal OSC */
+    kMcgFreqRangeSelectVeryHigh,    /* Very High frequency range selected for the crystal OSC */
+    kMcgFreqRangeSelectVeryHigh1    /* Very High frequency range selected for the crystal OSC */
 } mcg_freq_range_select_t;
 
-/*! @brief mcg high gain oscillator select */
+/*! @brief MCG high gain oscillator select */
 typedef enum _mcg_hgo_select
 {
     kMcgHgoSelectLow,               /* Configure crystal oscillator for low-power operation */
     kMcgHgoSelectHigh               /* Configure crystal oscillator for high-gain operation */
 } mcg_hgo_select_t;
 
-/*! @brief mcg high gain oscillator select */
+/*! @brief MCG high gain oscillator select */
 typedef enum _mcg_eref_clock_select
 {
     kMcgErefClockSelectExt,         /* External reference clock requested */
     kMcgErefClockSelectOsc          /* Oscillator requested */
 } mcg_eref_clock_select_t;
 
-/*! @brief mcg low power select */
+/*! @brief MCG low power select */
 typedef enum _mcg_lp_select
 {
     kMcgLpSelectNormal,             /* FLL (or PLL) is not disabled in bypass modes */
     kMcgLpSelectLowPower            /* FLL (or PLL) is disabled in bypass modes (lower power) */
 } mcg_lp_select_t;
 
-/*! @brief mcg internal reference clock select */
+/*! @brief MCG internal reference clock select */
 typedef enum _mcg_iref_clock_select
 {
     kMcgIrefClockSelectSlow,        /* Slow internal reference clock selected */
     kMcgIrefClockSelectFast         /* Fast internal reference clock selected */
 } mcg_iref_clock_select_t;
 
-/*! @brief mcg DCO Maximum Frequency with 32.768 kHz Reference */
+/*! @brief MCG DCO Maximum Frequency with 32.768 kHz Reference */
 typedef enum _mcg_dmx32_select
 {
     kMcgDmx32Default,               /* DCO has a default range of 25% */
     kMcgDmx32Fine                   /* DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
 } mcg_dmx32_select_t;
 
-/*! @brief mcg dco range select */
+/*! @brief MCG DCO range select */
 typedef enum _mcg_dco_range_select
 {
     kMcgDcoRangeSelectLow,          /* Low frequency range */
@@ -139,49 +138,49 @@ typedef enum _mcg_dco_range_select
     kMcgDcoRangeSelectHigh          /* High frequency range */
 } mcg_dco_range_select_t;
 
-/*! @brief mcg pll external reference clock select */
+/*! @brief MCG PLL external reference clock select */
 typedef enum _mcg_pll_eref_clock_select
 {
     kMcgPllErefClockSelectOsc0,    /* Selects OSC0 clock source as its external reference clock */
     kMcgPllErefClockSelectOsc1     /* Selects OSC1 clock source as its external reference clock */
 } mcg_pll_eref_clock_select_t;
 
-/*! @brief mcg pll select */
+/*! @brief MCG PLL select */
 typedef enum _mcg_pll_select
 {
     kMcgPllSelectFll,               /* FLL is selected */
     kMcgPllSelectPllcs              /* PLLCS output clock is selected */
 } mcg_pll_select_t;
 
-/*! @brief mcg loss of lock status */
+/*! @brief MCG loss of lock status */
 typedef enum _mcg_lols_status
 {
     kMcgLolsNotLostLock,           /* PLL has not lost lock since LOLS 0 was last cleared */
     kMcgLolsLostLock               /* PLL has lost lock since LOLS 0 was last cleared */
 } mcg_lols_status_t;
 
-/*! @brief mcg lock status */
+/*! @brief MCG lock status */
 typedef enum _mcg_lock_status
 {
     kMcgLockUnlocked,              /* PLL is currently unlocked */
     kMcgLockLocked                 /* PLL is currently locked */
 } mcg_lock_status_t;
 
-/*! @brief mcg clock status */
+/*! @brief MCG clock status */
 typedef enum _mcg_pllst_status
 {
     kMcgPllstFll,                   /* Source of PLLS clock is FLL clock */
     kMcgPllstPllcs                  /* Source of PLLS clock is PLLCS output clock */
 } mcg_pllst_status_t;
 
-/*! @brief mcg iref status */
+/*! @brief MCG iref status */
 typedef enum _mcg_irefst_status
 {
     kMcgIrefstExt,                  /* FLL reference clock is the external reference clock */
     kMcgIrefstInt                   /* FLL reference clock is the internal reference clock */
 } mcg_irefst_status_t;
 
-/*! @brief mcg clock mode status */
+/*! @brief MCG clock mode status */
 typedef enum _mcg_clkst_status
 {
     kMcgClkstFll,                   /* Output of the FLL is selected (reset default) */
@@ -190,56 +189,57 @@ typedef enum _mcg_clkst_status
     kMcgClkstPll                    /* Output of the PLL is selected */
 } mcg_clkst_status_t;
 
-/*! @brief mcg ircst status */
+/*! @brief MCG ircst status */
 typedef enum _mcg_ircst_status
 {
     kMcgIrcstSlow,                  /* internal reference clock is the slow clock (32 kHz IRC) */
     kMcgIrcstFast                   /* internal reference clock is the fast clock (2 MHz IRC) */
 } mcg_ircst_status_t;
 
-/*! @brief mcg auto trim fail status */
+/*! @brief MCG auto trim fail status */
 typedef enum _mcg_atmf_status
 {
     kMcgAtmfNormal,                 /* Automatic Trim Machine completed normally */
     kMcgAtmfFail                    /* Automatic Trim Machine failed */
 } mcg_atmf_status_t;
 
-/*! @brief mcg loss of clock status */
+/*! @brief MCG loss of clock status */
 typedef enum _mcg_locs0_status
 {
     kMcgLocs0NotOccured,            /* Loss of OSC0 has not occurred */
     kMcgLocs0Occured                /* Loss of OSC0 has occurred */
 } mcg_locs0_status_t;
 
-/*! @brief mcg Automatic Trim Machine Select */
+/*! @brief MCG Automatic Trim Machine Select */
 typedef enum _mcg_atms_select
 {
     kMcgAtmsSelect32k,              /* 32 kHz Internal Reference Clock selected */
     kMcgAtmsSelect4m                /* 4 MHz Internal Reference Clock selected */
 } mcg_atms_select_t;
 
-/*! @brief mcg OSC Clock Select */
+/*! @brief MCG OSC Clock Select */
 typedef enum _mcg_oscsel_select
 {
     kMcgOscselOsc,                  /* Selects System Oscillator (OSCCLK) */
-    kMcgOscselRtc                   /*Selects 32 kHz RTC Oscillator */
+    kMcgOscselRtc,                  /* Selects 32 kHz RTC Oscillator */
+    kMcgOscselIrc                   /* Selects 48 MkHz IRC Oscillator */
 } mcg_oscsel_select_t;
 
-/*! @brief mcg loss of clock status */
+/*! @brief MCG loss of clock status */
 typedef enum _mcg_locs1_status
 {
     kMcgLocs1NotOccured,            /* Loss of RTC has not occurred */
     kMcgLocs1Occured                /* Loss of RTC has occurred */
 } mcg_locs1_status_t;
 
-/*! @brief mcg pllcs select */
+/*! @brief MCG PLLCS select */
 typedef enum _mcg_pllcs_select
 {
     kMcgPllcsSelectPll0,            /* PLL0 output clock is selected */
     kMcgPllcsSelectPll1,            /* PLL1 output clock is selected */
 } mcg_pllcs_select_t;
 
-/*! @brief mcg loss of clock status */
+/*! @brief MCG loss of clock status */
 typedef enum _mcg_locs2_status
 {
     kMcgLocs2NotOccured,            /* Loss of OSC1 has not occurred */
@@ -254,80 +254,80 @@ typedef enum _mcg_locs2_status
 extern "C" {
 #endif /* __cplusplus*/
 
-/*! @name mcg out clock access API*/
+/*! @name MCG out clock access API*/
 /*@{*/
 
 /*!
- * @brief Get the current mcg fll clock
+ * @brief Gets the current MCG FLL clock.
  *
- * This function will return the mcgfllclk value in frequency(hz) based on 
- * current mcg configurations and settings. Fll should be properly configured
+ * This function  returns the mcgfllclk value in frequency(Hertz) based on the
+ * current MCG configurations and settings. FLL should be properly configured
  * in order to get the valid value.
  *
  * @param none
- * @return value Frequency value in hz of mcgpllclk.
+ * @return value Frequency value in Hertz of the mcgpllclk.
  */
 uint32_t clock_hal_get_fllclk(void);
 
 /*!
- * @brief Get the current mcg pll/pll0 clock
+ * @brief Gets the current MCG PLL/PLL0 clock.
  *
- * This function will return the mcgpllclk/mcgpll0 value in frequency(hz) based
- * on current mcg configurations and settings. PLL/PLL0 should be properly 
+ * This function  returns the mcgpllclk/mcgpll0 value in frequency(Hertz) based
+ * on the current MCG configurations and settings. PLL/PLL0 should be properly 
  * configured in order to get the valid value.
  *
  * @param none
- * @return value Frequency value in hz of mcgpllclk or mcgpll0clk.
+ * @return value Frequency value in Hertz of the mcgpllclk or the mcgpll0clk.
  */
 uint32_t clock_hal_get_pll0clk(void);
 
 #if FSL_FEATURE_MCG_HAS_PLL1
 /*!
- * @brief Get the current mcg pll1 clock
+ * @brief Gets the current MCG PLL1 clock.
  *
- * This function will return the mcgpll1clk value in frequency(hz) based
- * on current mcg configurations and settings. PLL1 should be properly configured
+ * This function  returns the mcgpll1clk value in frequency (Hertz) based
+ * on the current MCG configurations and settings. PLL1 should be properly configured
  * in order to get the valid value.
  *
  * @param none
- * @return value Frequency value in hz of mcgpll1clk.
+ * @return value Frequency value in Hertz of mcgpll1clk.
  */
 uint32_t clock_hal_get_pll1clk(void);
 #endif
 
 /*!
- * @brief Get the current mcg ir clock
+ * @brief Gets the current MCG IR clock.
  *
- * This function will return the mcgirclk value in frequency(hz) based
- * on current mcg configurations and settings. It will not check if the 
+ * This function  returns the mcgirclk value in frequency (Hertz) based
+ * on the current MCG configurations and settings. It does not check if the 
  * mcgirclk is enabled or not, just calculate and return the value.
  *
  * @param none
- * @return value Frequency value in hz of mcgirclk. 
+ * @return value Frequency value in Hertz of the mcgirclk. 
  */
 uint32_t clock_hal_get_irclk(void);
 
 /*!
- * @brief Get the current mcg out clock
+ * @brief Gets the current MCG out clock.
  *
- * This function will return the mcgoutclk value in frequency(hz) based on 
- * current mcg configurations and settings. The configuration should be 
+ * This function  returns the mcgoutclk value in frequency (Hertz) based on the
+ * current MCG configurations and settings. The configuration should be 
  * properly done in order to get the valid value.
  *
  * @param none
- * @return value Frequency value in hz of mcgoutclk.
+ * @return value Frequency value in Hertz of mcgoutclk.
  */
 uint32_t clock_hal_get_outclk(void);
 
 /*@}*/
 
-/*! @name mcg control register access API*/
+/*! @name MCG control register access API*/
 /*@{*/
 
 /*!
- * @brief Set Clock Source Select 
+ * @brief Sets the Clock Source Select 
  *
- * This function will select the clock source for MCGOUTCLK 
+ * This function  selects the clock source for the MCGOUTCLK.
  *
  * @param select    Clock source selection
  *                  - 00: Output of FLL or PLLCS is selected(depends on PLLS control bit)
@@ -341,9 +341,9 @@ static inline void clock_set_clks(mcg_clock_select_t select)
 }
 
 /*!
- * @brief Get Clock Source Select 
+ * @brief Gets the Clock Source Select.
  *
- * This function will get the select of the clock source for MCGOUTCLK 
+ * This function  gets the select of the clock source for the MCGOUTCLK.
  *
  * @return select    Clock source selection
  */
@@ -353,9 +353,9 @@ static inline mcg_clock_select_t clock_get_clks(void)
 }
 
 /*!
- * @brief Set FLL External Reference Divider 
+ * @brief Sets the FLL External Reference Divider.
  *
- * This function will set the FLL External Reference Divider
+ * This function  sets the FLL External Reference Divider.
  *
  * @param setting   Divider setting
  */
@@ -365,9 +365,9 @@ static inline void clock_set_frdiv(uint8_t setting)
 }
 
 /*!
- * @brief Get FLL External Reference Divider 
+ * @brief Gets the FLL External Reference Divider.
  *
- * This function will get the FLL External Reference Divider 
+ * This function  gets the FLL External Reference Divider.
  *
  * @return setting  Divider setting
  */
@@ -377,9 +377,9 @@ static inline uint8_t clock_get_frdiv(void)
 }
 
 /*!
- * @brief Set Internal Reference Select 
+ * @brief Sets the Internal Reference Select. 
  *
- * This function will select the reference clock source for the FLL.
+ * This function  selects the reference clock source for the FLL.
  *
  * @param select   Clock source select
  *                 - 0: External reference clock is selected
@@ -391,9 +391,9 @@ static inline void clock_set_irefs(mcg_iref_clock_source_t select)
 }
 
 /*!
- * @brief Get Internal Reference Select  
+ * @brief Gets the Internal Reference Select  
  *
- * This function will get the reference clock source for the FLL.
+ * This function  gets the reference clock source for the FLL.
  *
  * @return select  Clock source select
  */
@@ -403,10 +403,10 @@ static inline mcg_iref_clock_source_t clock_get_irefs(void)
 }
 
 /*!
- * @brief Set CLKS, FRDIV and IREFS at the same time
+ * @brief Sets the CLKS, FRDIV and IREFS at the same time.
  *
- * This function will set the CLKS, FRDIV and IREFS settings at the same time
- * in order keep the integrity of clock switching.
+ * This function  sets the CLKS, FRDIV, and IREFS settings at the same time
+ * in order keep the integrity of the clock switching.
  *
  * @param clks    Clock source select
  * @param frdiv   FLL external reference divider select
@@ -417,14 +417,14 @@ static inline void clock_set_clks_frdiv_irefs(mcg_clock_select_t clks,
                                               mcg_iref_clock_source_t irefs)
 {
     /* Set the required CLKS , FRDIV  and IREFS values */
-    HW_MCG_C1_WR((HW_MCG_C1_RD & ~(BM_MCG_C1_CLKS | BM_MCG_C1_FRDIV | BM_MCG_C1_IREFS)) 
+    HW_MCG_C1_WR((HW_MCG_C1_RD() & ~(BM_MCG_C1_CLKS | BM_MCG_C1_FRDIV | BM_MCG_C1_IREFS)) 
                   | (BF_MCG_C1_CLKS(clks) | BF_MCG_C1_FRDIV(frdiv) | BF_MCG_C1_IREFS(irefs)));
 }
 
 /*!
- * @brief Set Enable Internal Reference Clock setting
+ * @brief Sets the Enable Internal Reference Clock setting.
  *
- * This function will enable/disable the internal reference clock for use as MCGIRCLK.
+ * This function  enables/disables the internal reference clock to use as the MCGIRCLK.
  *
  * @params enable Enable or disable internal reference clock.
  *                 - true: MCGIRCLK active
@@ -436,11 +436,11 @@ static inline void clock_set_irclken(bool enable)
 }
 
 /*!
- * @brief Get Enable Internal Reference Clock setting  
+ * @brief Gets the enable Internal Reference Clock setting.
  *
- * This function will get the reference clock enable setting.
+ * This function  gets the reference clock enable setting.
  *
- * @return enabled  True if Internal reference clock is enabled
+ * @return enabled  True if the internal reference clock is enabled.
  */
 static inline bool clock_get_irclken(void)
 {
@@ -448,12 +448,12 @@ static inline bool clock_get_irclken(void)
 }
 
 /*!
- * @brief Set Internal Reference Clock Stop Enable setting
+ * @brief Sets the Internal Reference Clock Stop Enable setting.
  *
- * This function will control whether or not the internal reference clock remains 
+ * This function  controls whether or not the internal reference clock remains 
  * enabled when the MCG enters Stop mode.
  *
- * @params enable Enable or disable internal reference clock stop setting.
+ * @params enable Enable or disable the internal reference clock stop setting.
  *                 - true: Internal reference clock is enabled in Stop mode if IRCLKEN is set
                         or if MCG is in FEI, FBI, or BLPI modes before entering Stop mode.
  *                 - false: Internal reference clock is disabled in Stop mode
@@ -464,9 +464,9 @@ static inline void clock_set_irefsten(bool enable)
 }
 
 /*!
- * @brief Get Enable Internal Reference Clock setting  
+ * @brief Gets the Enable Internal Reference Clock setting.
  *
- * This function will get the Internal Reference Clock Stop Enable setting.
+ * This function  gets the Internal Reference Clock Stop Enable setting.
  *
  * @return enabled  True if internal reference clock stop is enabled.
  */
@@ -476,12 +476,12 @@ static inline bool clock_get_irefsten(void)
 }
 
 /*!
- * @brief Set Loss of Clock Reset Enable setting
+ * @brief Sets the Loss of Clock Reset Enable setting.
  *
- * This function will determine if a interrupt or a reset request is made following a loss
- *  of OSC0 external reference clock. The LOCRE0 only has an affect when CME0 is set.
+ * This function  determines whether an interrupt or a reset request is made following a loss
+ *  of the OSC0 external reference clock. The LOCRE0 only has an affect when CME0 is set.
  *
- * @params enable Loss of Clock Reset Enable setting.
+ * @params enable Loss of Clock Reset Enable setting
  *                 - true: Generate a reset request on a loss of OSC0 external reference clock
  *                 - false: Interrupt request is generated on a loss of OSC0 external reference clock
  */
@@ -491,11 +491,11 @@ static inline void clock_set_locre0(bool enable)
 }
 
 /*!
- * @brief Get Loss of Clock Reset Enable setting  
+ * @brief Gets the Loss of Clock Reset Enable setting.
  *
- * This function will get Loss of Clock Reset Enable setting.
+ * This function  gets the Loss of Clock Reset Enable setting.
  *
- * @return enabled  True if Loss of Clock Reset is enabled
+ * @return enabled  True if Loss of Clock Reset is enabled.
  */
 static inline bool clock_get_locre0(void)
 {
@@ -504,16 +504,16 @@ static inline bool clock_get_locre0(void)
 
 #if FSL_FEATURE_MCG_HAS_FCFTRIM
 /*!
- * @brief Set Fast Internal Reference Clock Fine Trim setting
+ * @brief Sets the Fast Internal Reference Clock Fine Trim setting.
  *
- * This function will set Fast Internal Reference Clock Fine Trim setting. FCFTRIM
+ * This function  sets the Fast Internal Reference Clock Fine Trim setting. FCFTRIM
  * controls the smallest adjustment of the fast internal reference clock frequency. 
- * Setting FCFTRIM increases the period and clearing FCFTRIM decreases the period 
- * by the smallest amount possible. If an FCFTRIM value stored in nonvolatile 
- * memory is to be used, it is your responsibility to copy that value from the 
- * nonvolatile memory location to this bit.
+ * Setting the FCFTRIM increases the period and clearing FCFTRIM decreases the period 
+ * by the smallest amount possible. If an FCFTRIM value is stored and non-volatile 
+ * memory is to be used, it is the user's responsibility to copy that value from the 
+ * non-volatile memory location to this bit.
  *
- * @params setting Fast Internal Reference Clock Fine Trim setting.
+ * @params setting Fast Internal Reference Clock Fine Trim setting
  */
 static inline void clock_set_fcftrim(uint8_t setting)
 {
@@ -521,9 +521,9 @@ static inline void clock_set_fcftrim(uint8_t setting)
 }
 
 /*!
- * @brief Get Fast Internal Reference Clock Fine Trim setting  
+ * @brief Gets the Fast Internal Reference Clock Fine Trim setting.
  *
- * This function will get Fast Internal Reference Clock Fine Trim setting.
+ * This function  gets the Fast Internal Reference Clock Fine Trim setting.
  *
  * @return setting  Fast Internal Reference Clock Fine Trim setting
  */
@@ -534,38 +534,38 @@ static inline uint8_t clock_get_fcftrim(void)
 #endif /* FSL_FEATURE_MCG_HAS_FCFTRIM */
 
 /*!
- * @brief Set Frequency Range Select
+ * @brief Sets the Frequency Range Select.
  *
- * This function will select the frequency range for the crystal oscillator or external
- * clock source. Refer to the Oscillator (OSC) chapter for more details and the device 
+ * This function  selects the frequency range for the crystal oscillator or an external
+ * clock source. See the Oscillator (OSC) chapter for more details and the device 
  * data sheet for the frequency ranges used.
  *
- * @params select  Frequency Range Select.
+ * @params select  Frequency Range Select
  *                 - 00: Low frequency range selected for the crystal oscillator
  *                 - 01: High frequency range selected for the crystal oscillator
  *                 - 1X: Very high frequency range selected for the crystal oscillator
  */
 static inline void clock_set_range0(mcg_freq_range_select_t select)
 {
-    BW_MCG_C2_RANGE0(select);
+    BW_MCG_C2_RANGE(select);
 }
 
 /*!
- * @brief Get Frequency Range Select  
+ * @brief Gets the Frequency Range Select.
  *
- * This function will get Frequency Range Select.
+ * This function  gets the Frequency Range Select.
  *
  * @return select  Frequency Range Select
  */
 static inline mcg_freq_range_select_t clock_get_range0(void)
 {
-    return (mcg_freq_range_select_t)BR_MCG_C2_RANGE0;
+    return (mcg_freq_range_select_t)BR_MCG_C2_RANGE;
 }
 
 /*!
- * @brief Set High Gain Oscillator Select
+ * @brief Sets the High Gain Oscillator Select.
  *
- * This function will control the crystal oscillator mode of operation. Refer to the
+ * This function  controls the crystal oscillator mode of operation. See the
  * Oscillator (OSC) chapter for more details.
  *
  * @params select  High Gain Oscillator Select.
@@ -574,57 +574,57 @@ static inline mcg_freq_range_select_t clock_get_range0(void)
  */
 static inline void clock_set_hgo0(mcg_hgo_select_t select)
 {
-    BW_MCG_C2_HGO0(select);
+    BW_MCG_C2_HGO(select);
 }
 
 /*!
- * @brief Get High Gain Oscillator Select 
+ * @brief Gets the High Gain Oscillator Select.
  *
- * This function will get High Gain Oscillator Select.
+ * This function  gets the High Gain Oscillator Select.
  *
  * @return select  High Gain Oscillator Select
  */
 static inline mcg_hgo_select_t clock_get_hgo0(void)
 {
-    return (mcg_hgo_select_t)BR_MCG_C2_HGO0;
+    return (mcg_hgo_select_t)BR_MCG_C2_HGO;
 }
 
 /*!
- * @brief Set External Reference Select
+ * @brief Sets the External Reference Select.
  *
- * This function will select the source for the external reference clock. 
- * Refer to the Oscillator (OSC) chapter for more details.
+ * This function  selects the source for the external reference clock. 
+ * See the Oscillator (OSC) chapter for more details.
  *
- * @params select  External Reference Select.
+ * @params select  External Reference Select
  *                 - 0: External reference clock requested
  *                 - 1: Oscillator requested
  */
 static inline void clock_set_erefs0(mcg_eref_clock_select_t select)
 {
-    BW_MCG_C2_EREFS0(select);
+    BW_MCG_C2_EREFS(select);
 }
 
 /*!
- * @brief Get External Reference Select 
+ * @brief Gets the External Reference Select.
  *
- * This function will get External Reference Select.
+ * This function  gets the External Reference Select.
  *
  * @return select  External Reference Select
  */
 static inline mcg_eref_clock_select_t clock_get_erefs0(void)
 {
-    return (mcg_eref_clock_select_t)BR_MCG_C2_EREFS0;
+    return (mcg_eref_clock_select_t)BR_MCG_C2_EREFS;
 }
 
 /*!
- * @brief Set Low Power Select
+ * @brief Sets the Low Power Select.
  *
- * This function will control whether the FLL (or PLL) is disabled in BLPI and 
- * BLPE modes. In FBE or PBE modes, setting this bit to 1 will transition the MCG
- * into BLPE mode; in FBI mode, setting this bit to 1 will transition the MCG into
- * BLPI mode. In any other MCG mode, LP bit has no affect..
+ * This function  controls whether the FLL (or PLL) is disabled in the BLPI and the 
+ * BLPE modes. In the FBE or the PBE modes, setting this bit to 1  transitions the MCG
+ * into the BLPE mode; in the FBI mode, setting this bit to 1  transitions the MCG into
+ * the BLPI mode. In any other MCG mode, the LP bit has no affect..
  *
- * @params select  Low Power Select.
+ * @params select  Low Power Select
  *                 - 0: FLL (or PLL) is not disabled in bypass modes
  *                 - 1: FLL (or PLL) is disabled in bypass modes (lower power)
  */
@@ -634,9 +634,9 @@ static inline void clock_set_lp(mcg_lp_select_t select)
 }
 
 /*!
- * @brief Get Low Power Select 
+ * @brief Gets the Low Power Select.
  *
- * This function will get Low Power Select.
+ * This function  gets the Low Power Select.
  *
  * @return select  Low Power Select
  */
@@ -646,11 +646,11 @@ static inline mcg_lp_select_t clock_get_lp(void)
 }
 
 /*!
- * @brief Set Internal Reference Clock Select
+ * @brief Sets the Internal Reference Clock Select.
  *
- * This function will Selects between the fast or slow internal reference clock source.
+ * This function  selects between the fast or slow internal reference clock source.
  *
- * @params select  Low Power Select.
+ * @params select  Low Power Select
  *                 - 0: Slow internal reference clock selected.
  *                 - 1: Fast internal reference clock selected.
  */
@@ -660,9 +660,9 @@ static inline void clock_set_ircs(mcg_iref_clock_select_t select)
 }
 
 /*!
- * @brief Get Internal Reference Clock Select 
+ * @brief Gets the Internal Reference Clock Select.
  *
- * This function will get Internal Reference Clock Select.
+ * This function  gets the Internal Reference Clock Select.
  *
  * @return select  Internal Reference Clock Select
  */
@@ -672,20 +672,20 @@ static inline mcg_iref_clock_select_t clock_get_ircs(void)
 }
 
 /*!
- * @brief Set Slow Internal Reference Clock Trim Setting
+ * @brief Sets the Slow Internal Reference Clock Trim Setting.
  *
- * This function will control the slow internal reference clock frequency by 
+ * This function  controls the slow internal reference clock frequency by 
  * controlling the slow internal reference clock period. The SCTRIM bits are
  * binary weighted (that is, bit 1 adjusts twice as much as bit 0).
  * Increasing the binary value increases the period, and decreasing the value
  * decreases the period.
- * An additional fine trim bit is available in C4 register as the SCFTRIM bit.
- * Upon reset this value is loaded with a factory trim value.
- * If an SCTRIM value stored in nonvolatile memory is to be used, it is your 
- * responsibility to copy that value from the nonvolatile memory location to 
- * this register
+ * An additional fine trim bit is available in the C4 register as the SCFTRIM bit.
+ * Upon reset, this value is loaded with a factory trim value.
+ * If an SCTRIM value stored in non-volatile memory is to be used, it is the user's 
+ * responsibility to copy that value from the non-volatile memory location to 
+ * this register.
  *
- * @params setting  Slow Internal Reference Clock Trim Setting.
+ * @params setting  Slow Internal Reference Clock Trim Setting
  */
 static inline void clock_set_sctrim(uint8_t setting)
 {
@@ -693,9 +693,9 @@ static inline void clock_set_sctrim(uint8_t setting)
 }
 
 /*!
- * @brief Get Slow Internal Reference Clock Trim Setting
+ * @brief Gets the Slow Internal Reference Clock Trim Setting.
  *
- * This function will get Slow Internal Reference Clock Trim Setting.
+ * This function  gets the Slow Internal Reference Clock Trim Setting.
  *
  * @return setting  Slow Internal Reference Clock Trim Setting
  */
@@ -705,12 +705,12 @@ static inline uint8_t clock_get_sctrim(void)
 }
 
 /*!
- * @brief Set DCO Maximum Frequency with 32.768 kHz Reference
+ * @brief Sets the DCO Maximum Frequency with 32.768 kHz Reference.
  *
- * This function will control whether or not the DCO frequency range 
- * is narrowed to its maximum frequency with a 32.768 kHz reference
+ * This function  controls whether or not the DCO frequency range 
+ * is narrowed to its maximum frequency with a 32.768 kHz reference.
  *
- * @params setting  DCO Maximum Frequency with 32.768 kHz Reference Setting.
+ * @params setting  DCO Maximum Frequency with 32.768 kHz Reference Setting
  *                  - 0: DCO has a default range of 25%.
  *                  - 1: DCO is fine-tuned for maximum frequency with 32.768 kHz reference.
  */
@@ -720,9 +720,9 @@ static inline void clock_set_dmx32(mcg_dmx32_select_t setting)
 }
 
 /*!
- * @brief Get DCO Maximum Frequency with 32.768 kHz Reference Setting
+ * @brief Gets the DCO Maximum Frequency with the 32.768 kHz Reference Setting.
  *
- * This function will get DCO Maximum Frequency with 32.768 kHz Reference Setting.
+ * This function  gets the DCO Maximum Frequency with 32.768 kHz Reference Setting.
  *
  * @return setting  DCO Maximum Frequency with 32.768 kHz Reference Setting
  */
@@ -732,16 +732,16 @@ static inline mcg_dmx32_select_t clock_get_dmx32(void)
 }
 
 /*!
- * @brief Set DCO Range Select
+ * @brief Sets the DCO Range Select.
  *
- * This function will select the frequency range for the FLL output, DCOOUT.
- * When the LP bit is set, writes to the DRS bits are ignored. The DRST read
- * field indicates the current frequency range for DCOOUT. The DRST field does
+ * This function  selects the frequency range for the FLL output, DCOOUT.
+ * When the LP bit is set, the writes to the DRS bits are ignored. The DRST read
+ * field indicates the current frequency range for the DCOOUT. The DRST field does
  * not update immediately after a write to the DRS field due to internal 
- * synchronization between clock domains. Refer to DCO Frequency Range table
+ * synchronization between the clock domains. See the DCO Frequency Range table
  *  for more details.
  *
- * @params setting  DCO Range Select Setting.
+ * @params setting  DCO Range Select Setting
  *                  - 00: Low range (reset default).
  *                  - 01: Mid range.
  *                  - 10: Mid-high range.
@@ -753,9 +753,9 @@ static inline void clock_set_drst_drs(mcg_dco_range_select_t setting)
 }
 
 /*!
- * @brief Get DCO Range Select Setting
+ * @brief Gets the DCO Range Select Setting.
  *
- * This function will get DCO Range Select Setting.
+ * This function  gets the DCO Range Select Setting.
  *
  * @return setting  DCO Range Select Setting
  */
@@ -765,15 +765,15 @@ static inline mcg_dco_range_select_t clock_get_drst_drs(void)
 }
 
 /*!
- * @brief Set Fast Internal Reference Clock Trim Setting
+ * @brief Sets the Fast Internal Reference Clock Trim Setting.
  *
- * This function will control the fast internal reference clock frequency
+ * This function  controls the fast internal reference clock frequency
  * by controlling the fast internal reference clock period. The FCTRIM 
  * bits are binary weighted (that is, bit 1 adjusts twice as much as bit 0).
  * Increasing the binary value increases the period, and decreasing the 
  * value decreases the period. 
- * If an FCTRIM[3:0] value stored in nonvolatile memory is to be used, it is
- * your responsibility to copy that value from the nonvolatile memory location
+ * If an FCTRIM[3:0] value stored in non-volatile memory is to be used, it is
+ * the user's responsibility to copy that value from the non-volatile memory location
  * to this register.
  *
  * @params setting  Fast Internal Reference Clock Trim Setting.
@@ -784,9 +784,9 @@ static inline void clock_set_fctrim(uint8_t setting)
 }
 
 /*!
- * @brief Get Fast Internal Reference Clock Trim Setting
+ * @brief Gets the Fast Internal Reference Clock Trim Setting.
  *
- * This function will get Fast Internal Reference Clock Trim Setting.
+ * This function  gets the Fast Internal Reference Clock Trim Setting.
  *
  * @return setting  Fast Internal Reference Clock Trim Setting
  */
@@ -796,16 +796,16 @@ static inline uint8_t clock_get_fctrim(void)
 }
 
 /*!
- * @brief Set Slow Internal Reference Clock Fine Trim Setting.
+ * @brief Sets the Slow Internal Reference Clock Fine Trim Setting.
  *
- * This function will control the smallest adjustment of the slow internal
- * reference clock frequency. Setting SCFTRIM increases the period and 
- * clearing SCFTRIM decreases the period by the smallest amount possible.
- * If an SCFTRIM value stored in nonvolatile memory is to be used, it is 
- * your responsibility to copy that value from the nonvolatile memory 
+ * This function  controls the smallest adjustment of the slow internal
+ * reference clock frequency. Setting the SCFTRIM increases the period and 
+ * clearing the SCFTRIM decreases the period by the smallest amount possible.
+ * If an SCFTRIM value, stored in non-volatile memory, is to be used, it is 
+ * the user's responsibility to copy that value from the non-volatile memory 
  * location to this bit.
  *
- * @params setting  Slow Internal Reference Clock Fine Trim Setting.
+ * @params setting  Slow Internal Reference Clock Fine Trim Setting
  */
 static inline void clock_set_scftrim(uint8_t setting)
 {
@@ -813,9 +813,9 @@ static inline void clock_set_scftrim(uint8_t setting)
 }
 
 /*!
- * @brief Get Slow Internal Reference Clock Fine Trim Setting
+ * @brief Gets the Slow Internal Reference Clock Fine Trim Setting.
  *
- * This function will get Slow Internal Reference Clock Fine Trim Setting.
+ * This function  gets the Slow Internal Reference Clock Fine Trim Setting.
  *
  * @return setting  Slow Internal Reference Clock Fine Trim Setting
  */
@@ -826,11 +826,11 @@ static inline uint8_t clock_get_scftrim(void)
 
 #if FSL_FEATURE_MCG_USE_PLLREFSEL
 /*!
- * @brief Set PLL0 External Reference Select Setting
+ * @brief Sets the PLL0 External Reference Select Setting.
  *
- * This function will select PLL0 external reference clock source.
+ * This function  selects the PLL0 external reference clock source.
  *
- * @params setting  PLL0 External Reference Select Setting.
+ * @params setting  PLL0 External Reference Select Setting
  *                  - 0: Selects OSC0 clock source as its external reference clock
  *                  - 1: Selects OSC1 clock source as its external reference clock
  */
@@ -840,9 +840,9 @@ static inline void clock_set_pllrefsel0(mcg_pll_eref_clock_select_t setting)
 }
 
 /*!
- * @brief Get PLL0 External Reference Select Setting
+ * @brief Gets the PLL0 External Reference Select Setting.
  *
- * This function will get PLL0 External Reference Select Setting.
+ * This function  gets the PLL0 External Reference Select Setting.
  *
  * @return setting  PLL0 External Reference Select Setting
  */
@@ -853,17 +853,17 @@ static inline mcg_pll_eref_clock_select_t clock_get_pllrefsel0(void)
 #endif /* FSL_FEATURE_MCG_USE_PLLREFSEL */
 
 /*!
- * @brief Set PLL Clock Enable Setting
+ * @brief Sets the PLL Clock Enable Setting.
  *
- * This function will enable/disable PLL0 independent of PLLS and enables the PLL0
- * clock for use as MCGPLL0CLK and MCGPLL0CLK2X. (PRDIV0 needs to be programmed to
+ * This function  enables/disables the PLL0 independent of the PLLS and enables the PLL0
+ * clock to use as the MCGPLL0CLK and the MCGPLL0CLK2X. (PRDIV0 needs to be programmed to
  * the correct divider to generate a PLL1 reference clock in a valid reference range
- * prior to setting the PLLCLKEN0 bit). Setting PLLCLKEN0 will enable the external 
+ * prior to setting the PLLCLKEN0 bit). Setting PLLCLKEN0  enables the external 
  * oscillator selected by REFSEL if not already enabled. Whenever the PLL0 is being
- * enabled by means of the PLLCLKEN0 bit, and the external oscillator is being used
+ * enabled with the PLLCLKEN0 bit, and the external oscillator is being used
  * as the reference clock, the OSCINIT 0 bit should be checked to make sure it is set.
  *
- * @params enable  PLL Clock Enable Setting.
+ * @params enable  PLL Clock Enable Setting
  *                 - true: MCGPLL0CLK and MCGPLL0CLK2X are active
  *                 - false: MCGPLL0CLK and MCGPLL0CLK2X are inactive
  */
@@ -873,11 +873,11 @@ static inline void clock_set_pllclken0(bool enable)
 }
 
 /*!
- * @brief Get PLL Clock Enable Setting
+ * @brief Gets the PLL Clock Enable Setting.
  *
- * This function will get PLL Clock Enable Setting.
+ * This function  gets the PLL Clock Enable Setting.
  *
- * @return enabled True if PLL0 PLL Clock is enabled
+ * @return enabled True if PLL0 PLL Clock is enabled.
  */
 static inline bool clock_get_pllclken0(void)
 {
@@ -885,14 +885,14 @@ static inline bool clock_get_pllclken0(void)
 }
 
 /*!
- * @brief Set PLL0 Stop Enable Setting
+ * @brief Sets the PLL0 Stop Enable Setting.
  *
- * This function will enable/disable the PLL0 Clock during Normal Stop (In Low
- * Power Stop mode, the PLL0 clock gets disabled even if PLLSTEN0=1). All other
- * power modes, PLLSTEN0 bit has no affect and does not enable the PLL0 Clock 
+ * This function  enables/disables the PLL0 Clock during a Normal Stop (In Low
+ * Power Stop mode, the PLL0 clock gets disabled even if PLLSTEN0=1). In all other
+ * power modes, the PLLSTEN0 bit has no affect and does not enable the PLL0 Clock 
  * to run if it is written to 1.
  *
- * @params enable   PLL0 Stop Enable Setting.
+ * @params enable   PLL0 Stop Enable Setting
  *                  - true: MCGPLL0CLK and MCGPLL0CLK2X are enabled if system is in
  *                       Normal Stop mode.
  *                  - false: MCGPLL0CLK and MCGPLL0CLK2X are disabled in any of the 
@@ -904,11 +904,11 @@ static inline void clock_set_pllsten0(bool enable)
 }
 
 /*!
- * @brief Get PLL0 Stop Enable Setting
+ * @brief Gets the PLL0 Stop Enable Setting.
  *
- * This function will get PLL0 Stop Enable Setting.
+ * This function  gets the PLL0 Stop Enable Setting.
  *
- * @return enabled  True if PLL0 Stop is enabled
+ * @return enabled  True if the PLL0 Stop is enabled.
  */
 static inline bool clock_get_pllsten0(void)
 {
@@ -916,14 +916,14 @@ static inline bool clock_get_pllsten0(void)
 }
 
 /*!
- * @brief Set PLL0 External Reference Divider Setting
+ * @brief Sets the PLL0 External Reference Divider Setting.
  *
- * This function will select the amount to divide down the external reference
+ * This function  selects the amount to divide down the external reference
  * clock for the PLL0. The resulting frequency must be in a valid reference 
- * range. After the PLL0 is enabled (by setting either PLLCLKEN0 or PLLS), the
+ * range. After the PLL0 is enabled, (by setting either PLLCLKEN0 or PLLS), the
  * PRDIV0 value must not be changed when LOCK0 is zero.
  *
- * @params setting  PLL0 External Reference Divider Setting.
+ * @params setting  PLL0 External Reference Divider Setting
  */
 static inline void clock_set_prdiv0(uint8_t setting)
 {
@@ -931,9 +931,9 @@ static inline void clock_set_prdiv0(uint8_t setting)
 }
 
 /*!
- * @brief Get PLL0 External Reference Divider Setting
+ * @brief Gets the PLL0 External Reference Divider Setting.
  *
- * This function will get PLL0 External Reference Divider Setting.
+ * This function  gets the PLL0 External Reference Divider Setting.
  *
  * @return setting  PLL0 External Reference Divider Setting
  */
@@ -943,12 +943,12 @@ static inline uint8_t clock_get_prdiv0(void)
 }
 
 /*!
- * @brief Set Loss of Lock Interrrupt Enable Setting
+ * @brief Sets the Loss of Lock Interrupt Enable Setting.
  *
- * This function will determine if an interrupt request is made following a loss
+ * This function  determine whether an interrupt request is made following a loss
  * of lock indication. This bit only has an effect when LOLS 0 is set.
  *
- * @params enable  Loss of Lock Interrrupt Enable Setting.
+ * @params enable  Loss of Lock Interrupt Enable Setting
  *                 - true: Generate an interrupt request on loss of lock.
  *                 - false: No interrupt request is generated on loss of lock.
  */
@@ -958,11 +958,11 @@ static inline void clock_set_lolie0(bool enable)
 }
 
 /*!
- * @brief Get Loss of Lock Interrrupt Enable Setting
+ * @brief Gets the Loss of the Lock Interrupt Enable Setting.
  *
- * This function will get Loss of Lock Interrrupt Enable Setting.
+ * This function  gets the Loss of the Lock Interrupt Enable Setting.
  *
- * @return enabled  True if Loss of Lock Interrrupt is enabled
+ * @return enabled  True if the Loss of Lock Interrupt is enabled.
  */
 static inline bool clock_get_lolie0(void)
 {
@@ -970,14 +970,14 @@ static inline bool clock_get_lolie0(void)
 }
 
 /*!
- * @brief Set PLL Select Setting
+ * @brief Sets the PLL Select Setting.
  *
- * This function will control whether the PLLCS or FLL output is selected as the
+ * This function  controls whether the PLLCS or FLL output is selected as the
  * MCG source when CLKS[1:0]=00. If the PLLS bit is cleared and PLLCLKEN0 and 
  * PLLCLKEN1 is not set, the PLLCS output clock is disabled in all modes. If the
  * PLLS is set, the FLL is disabled in all modes.
  *
- * @params setting  PLL Select Setting.
+ * @params setting  PLL Select Setting
  *                  - 0: FLL is selected.
  *                  - 1: PLLCS output clock is selected (PRDIV0 bits of PLL in 
  *                       control need to be programmed to the correct divider to
@@ -990,9 +990,9 @@ static inline void clock_set_plls(mcg_pll_select_t setting)
 }
 
 /*!
- * @brief Get PLL Select Setting
+ * @brief Gets the PLL Select Setting.
  *
- * This function will get PLL Select Setting.
+ * This function  gets the PLL Select Setting.
  *
  * @return setting  PLL Select Setting
  */
@@ -1002,20 +1002,20 @@ static inline mcg_pll_select_t clock_get_plls(void)
 }
 
 /*!
- * @brief Set Clock Monitor Enable Setting
+ * @brief Sets the Clock Monitor Enable Setting.
  *
- * This function will enable/disable the loss of clock monitoring circuit for 
- * the OSC0 external reference mux select. The LOCRE0 bit will determine if a 
- * interrupt or a reset request is generated following a loss of OSC0 indication.
+ * This function  enables/disables the loss of clock monitoring circuit for 
+ * the OSC0 external reference mux select. The LOCRE0 bit  determines whether an 
+ * interrupt or a reset request is generated following a loss of the OSC0 indication.
  * The CME0 bit should only be set to a logic 1 when the MCG is in an operational
- * mode that uses the external clock (FEE, FBE, PEE, PBE, or BLPE) . Whenever the
+ * mode that uses the external clock (FEE, FBE, PEE, PBE, or BLPE). Whenever the
  * CME0 bit is set to a logic 1, the value of the RANGE0 bits in the C2 register
  * should not be changed. CME0 bit should be set to a logic 0 before the MCG 
  * enters any Stop mode. Otherwise, a reset request may occur while in Stop mode. 
  * CME0 should also be set to a logic 0 before entering VLPR or VLPW power modes 
  * if the MCG is in BLPE mode.
  *
- * @params enable  Clock Monitor Enable Setting.
+ * @params enable  Clock Monitor Enable Setting
  *                 - true: External clock monitor is enabled for OSC0.
  *                 - false: External clock monitor is disabled for OSC0.
  */
@@ -1025,9 +1025,9 @@ static inline void clock_set_cme0(bool enable)
 }
 
 /*!
- * @brief Get Clock Monitor Enable Setting
+ * @brief Gets the Clock Monitor Enable Setting.
  *
- * This function will get Clock Monitor Enable Setting.
+ * This function  gets the Clock Monitor Enable Setting.
  *
  * @return enabled  True if Clock Monitor is enabled
  */
@@ -1037,14 +1037,14 @@ static inline bool clock_get_cme0(void)
 }
 
 /*!
- * @brief Set VCO0 Divider Setting
+ * @brief Sets the VCO0 Divider Setting.
  *
- * This function will select the amount to divide the VCO output of the PLL0. 
+ * This function  selects the amount to divide the VCO output of the PLL0. 
  * The VDIV0 bits establish the multiplication factor (M) applied to the 
  * reference clock frequency. After the PLL0 is enabled (by setting either
  * PLLCLKEN0 or PLLS), the VDIV0 value must not be changed when LOCK0 is zero.
  *
- * @params setting  VCO0 Divider Setting.
+ * @params setting  VCO0 Divider Setting
  */
 static inline void clock_set_vdiv0(uint8_t setting)
 {
@@ -1052,9 +1052,9 @@ static inline void clock_set_vdiv0(uint8_t setting)
 }
 
 /*!
- * @brief Get VCO0 Divider Setting
+ * @brief Gets the VCO0 Divider Setting.
  *
- * This function will get VCO0 Divider Setting.
+ * This function  gets the VCO0 Divider Setting.
  *
  * @return setting  VCO0 Divider Setting
  */
@@ -1064,9 +1064,9 @@ static inline uint8_t clock_get_vdiv0(void)
 }
 
 /*!
- * @brief Get Loss of Lock Status
+ * @brief Gets the Loss of the Lock Status.
  *
- * This function will get Loss of Lock Status. This bit is a sticky bit indicating
+ * This function  gets the Loss of Lock Status. This bit is a sticky bit indicating
  * the lock status for the PLL. LOLS 0 is set if after acquiring lock, the PLL 
  * output frequency has fallen outside the lock exit frequency tolerance, D unl . 
  * LOLIE 0 determines whether an interrupt request is made when LOLS 0 is set. 
@@ -1083,21 +1083,21 @@ static inline mcg_lols_status_t clock_get_lols0(void)
 }
 
 /*!
- * @brief Get Lock Status
+ * @brief Gets the Lock Status.
  *
- * This function will get Lock Status. This bit indicates whether the PLL0 has 
- * acquired lock. Lock detection is disabled when not operating in either PBE or 
- * PEE mode unless PLLCLKEN0=1 and the MCG is not configured in BLPI or BLPE mode.
+ * This function  gets the Lock Status. This bit indicates whether the PLL0 has 
+ * acquired the lock. Lock detection is disabled when not operating in either the PBE or the
+ * PEE mode unless PLLCLKEN0=1 and the MCG is not configured in the BLPI or the BLPE mode.
  * While the PLL0 clock is locking to the desired frequency, MCGPLL0CLK and 
- * MCGPLL0CLK2X will be gated off until the LOCK0 bit gets asserted. If the lock
+ * MCGPLL0CLK2X are  gated off until the LOCK0 bit gets asserted. If the lock
  * status bit is set, changing the value of the PRDIV0[2:0] bits in the C5 register
  * or the VDIV0[4:0] bits in the C6 register causes the lock status bit to clear 
- * and stay cleared until the PLL0 has reacquired lock. Loss of PLL0 reference 
- * clock will also cause the LOCK0 bit to clear until PLL0 has a Entry into LLS, 
- * VLPS, or regular Stop with PLLSTEN0=0 also causes the lock status bit to clear
- * and stay cleared until the Stop mode is exited and the PLL0 has reacquired lock.
+ * and stay cleared until the PLL0 has reacquired the lock. The loss of the PLL0 reference 
+ * clock  also causes the LOCK0 bit to clear until the PLL0 has an entry into the LLS, 
+ * VLPS, or a regular Stop with PLLSTEN0=0 also causes the lock status bit to clear
+ * and stay cleared until the stop mode is exited and the PLL0 has reacquired the lock.
  * Any time the PLL0 is enabled and the LOCK0 bit is cleared, the MCGPLL0CLK and
- * MCGPLL0CLK2X will be gated off until the LOCK0 bit is asserted again.
+ * MCGPLL0CLK2X are  gated off until the LOCK0 bit is reasserted.
  *
  * @return status  Lock Status
  *                 - 0: PLL is currently unlocked
@@ -1109,11 +1109,11 @@ static inline mcg_lock_status_t clock_get_lock0(void)
 }
 
 /*!
- * @brief Get PLL Select Status
+ * @brief Gets the PLL Select Status.
  *
- * This function will get PLL Select Status. This bit indicates the clock source
+ * This function  gets the PLL Select Status. This bit indicates the clock source
  * selected by PLLS . The PLLST bit does not update immediately after a write to
- * the PLLS bit due to internal synchronization between clock domains.
+ * the PLLS bit due to the internal synchronization between the clock domains.
  *
  * @return status  PLL Select Status
  *                 - 0: Source of PLLS clock is FLL clock.
@@ -1125,11 +1125,11 @@ static inline mcg_pllst_status_t clock_get_pllst(void)
 }
 
 /*!
- * @brief Get Internal Reference Status
+ * @brief Gets the Internal Reference Status.
  *
- * This function will get Internal Reference Status. This bit indicates the current
+ * This function  gets the Internal Reference Status. This bit indicates the current
  * source for the FLL reference clock. The IREFST bit does not update immediately 
- * after a write to the IREFS bit due to internal synchronization between clock 
+ * after a write to the IREFS bit due to internal synchronization between the clock 
  * domains.
  *
  * @return status  Internal Reference Status
@@ -1142,9 +1142,9 @@ static inline mcg_irefst_status_t clock_get_irefst(void)
 }
 
 /*!
- * @brief Get Clock Mode Status
+ * @brief Gets the Clock Mode Status.
  *
- * This function will get Clock Mode Status. These bits indicate the current clock mode.
+ * This function  gets the Clock Mode Status. These bits indicate the current clock mode.
  * The CLKST bits do not update immediately after a write to the CLKS bits due to 
  * internal synchronization between clock domains.
  *
@@ -1160,12 +1160,12 @@ static inline mcg_clkst_status_t clock_get_clkst(void)
 }
 
 /*!
- * @brief Get OSC Initialization Status
+ * @brief Gets the OSC Initialization Status.
  *
- * This function will get OSC Initialization Status. This bit, which resets to 0, is set
+ * This function  gets the OSC Initialization Status. This bit, which resets to 0, is set
  * to 1 after the initialization cycles of the crystal oscillator clock have completed. 
- * After being set, the bit is cleared to 0 if the OSC is subsequently disabled. Refer to
- * the OSC module's detailed description for more information.
+ * After being set, the bit is cleared to 0 if the OSC is subsequently disabled. See the
+ * OSC module's detailed description for more information.
  *
  * @return status  OSC Initialization Status
  */
@@ -1175,12 +1175,12 @@ static inline uint8_t clock_get_oscinit0(void)
 }
 
 /*!
- * @brief Get Internal Reference Clock Status
+ * @brief Gets the Internal Reference Clock Status.
  *
- * This function will get Internal Reference Clock Status. The IRCST bit indicates the 
+ * This function  gets the Internal Reference Clock Status. The IRCST bit indicates the
  * current source for the internal reference clock select clock (IRCSCLK). The IRCST bit
- * does not update immediately after a write to the IRCS bit due to internal 
- * synchronization between clock domains. The IRCST bit will only be updated if the 
+ * does not update immediately after a write to the IRCS bit due to the internal 
+ * synchronization between clock domains. The IRCST bit is only  updated if the 
  * internal reference clock is enabled, either by the MCG being in a mode that uses the
  * IRC or by setting the C1[IRCLKEN] bit.
  *
@@ -1194,9 +1194,9 @@ static inline mcg_ircst_status_t clock_get_ircst(void)
 }
 
 /*!
- * @brief Get Automatic Trim machine Fail Flag
+ * @brief Gets the Automatic Trim machine Fail Flag.
  *
- * This function will get Automatic Trim machine Fail Flag. This Fail flag for the 
+ * This function  gets the Automatic Trim machine Fail Flag. This Fail flag for the 
  * Automatic Trim Machine (ATM). This bit asserts when the Automatic Trim Machine is
  * enabled (ATME=1) and a write to the C1, C3, C4, and SC registers is detected or the MCG
  * enters into any Stop mode. A write to ATMF clears the flag.
@@ -1211,9 +1211,9 @@ static inline mcg_atmf_status_t clock_get_atmf(void)
 }
 
 /*!
- * @brief Set Automatic Trim machine Fail Flag
+ * @brief Sets the Automatic Trim machine Fail Flag.
  *
- * This function will clear the ATMF flag.
+ * This function  clears the ATMF flag.
  */
 static inline void clock_set_atmf(void)
 {
@@ -1221,9 +1221,9 @@ static inline void clock_set_atmf(void)
 }
 
 /*!
- * @brief Get OSC0 Loss of Clock Status
+ * @brief Gets the OSC0 Loss of Clock Status.
  *
- * This function will get OSC0 Loss of Clock Status. The LOCS0 indicates when a loss of 
+ * This function  gets the OSC0 Loss of Clock Status. The LOCS0 indicates when a loss of 
  * OSC0 reference clock has occurred. The LOCS0 bit only has an effect when CME0 is set. 
  * This bit is cleared by writing a logic 1 to it when set.
  *
@@ -1237,11 +1237,11 @@ static inline mcg_locs0_status_t clock_get_locs0(void)
 }
 
 /*!
- * @brief Set Automatic Trim Machine Enable Setting
+ * @brief Sets the Automatic Trim Machine Enable Setting.
  *
- * This function will enable/disable the Auto Trim Machine to start automatically
+ * This function  enables/disables the Auto Trim Machine to start automatically
  * trimming the selected Internal Reference Clock.
- * ATME deasserts after the Auto Trim Machine has completed trimming all trim bits
+ * ATME de-asserts after the Auto Trim Machine has completed trimming all trim bits
  * of the IRCS clock selected by the ATMS bit.
  * Writing to C1, C3, C4, and SC registers or entering Stop mode aborts the auto 
  * trim operation and clears this bit.
@@ -1256,9 +1256,9 @@ static inline void clock_set_atme(bool enable)
 }
 
 /*!
- * @brief Get Automatic Trim Machine Enable Setting
+ * @brief Gets the Automatic Trim Machine Enable Setting.
  *
- * This function will get Automatic Trim Machine Enable Setting.
+ * This function  gets the Automatic Trim Machine Enable Setting.
  *
  * @return enabled  True if Automatic Trim Machine is enabled
  */
@@ -1268,9 +1268,9 @@ static inline bool clock_get_atme(void)
 }
 
 /*!
- * @brief Set Automatic Trim Machine Select Setting
+ * @brief Sets the Automatic Trim Machine Select Setting.
  *
- * This function will Selects the IRCS clock for Auto Trim Test.
+ * This function  selects the IRCS clock for Auto Trim Test.
  *
  * @params setting  Automatic Trim Machine Select Setting
  *                  - 0: 32 kHz Internal Reference Clock selected
@@ -1282,9 +1282,9 @@ static inline void clock_set_atms(mcg_atms_select_t setting)
 }
 
 /*!
- * @brief Get Automatic Trim Machine Select Setting
+ * @brief Gets the Automatic Trim Machine Select Setting.
  *
- * This function will get Automatic Trim Machine Select Setting.
+ * This function  gets the Automatic Trim Machine Select Setting.
  *
  * @return setting  Automatic Trim Machine Select Setting
  */
@@ -1294,19 +1294,19 @@ static inline mcg_atms_select_t clock_get_atms(void)
 }
 
 /*!
- * @brief Set FLL Filter Preserve Enable Setting
+ * @brief Sets the FLL Filter Preserve Enable Setting.
  *
- * This function will set FLL Filter Preserve Enable. This bit will prevent the
+ * This function  sets the FLL Filter Preserve Enable. This bit  prevents the
  * FLL filter values from resetting allowing the FLL output frequency to remain the
- * same during clock mode changes where the FLL/DCO output is still valid. 
- * (Note: This requires that the FLL reference frequency to remain the same as what
- *  it was prior to the new clock mode switch. Otherwise FLL filter and frequency 
- * values will change.)
+ * same during the clock mode changes where the FLL/DCO output is still valid. 
+ * (Note: This requires that the FLL reference frequency  remain the same as 
+ *  the value prior to the new clock mode switch. Otherwise, the FLL filter and the frequency 
+ * values  change.)
  *
  * @params enable  FLL Filter Preserve Enable Setting
- *                 - true: Fll filter and FLL frequency retain their previous values 
+ *                 - true: FLL filter and FLL frequency retain their previous values 
  *                       during new clock mode change
- *                 - false: FLL filter and FLL frequency will reset on changes to currect 
+ *                 - false: FLL filter and FLL frequency will reset on changes to correct 
  *                       clock mode
  */
 static inline void clock_set_fltprsrv(bool enable)
@@ -1315,11 +1315,11 @@ static inline void clock_set_fltprsrv(bool enable)
 }
 
 /*!
- * @brief Get FLL Filter Preserve Enable Setting
+ * @brief Gets the FLL Filter Preserve Enable Setting.
  *
- * This function will get FLL Filter Preserve Enable Setting.
+ * This function  gets the FLL Filter Preserve Enable Setting.
  *
- * @return enabled  True if FLL Filter Preserve is enabled
+ * @return enabled  True if FLL Filter Preserve is enabled.
  */
 static inline bool clock_get_fltprsrv(void)
 {
@@ -1327,11 +1327,11 @@ static inline bool clock_get_fltprsrv(void)
 }
 
 /*!
- * @brief Set Fast Clock Internal Reference Divider Setting
+ * @brief Sets the Fast Clock Internal Reference Divider Setting.
  *
- * This function will select the amount to divide down the fast internal reference
- * clock. The resulting frequency will be in the range 31.25 kHz to 4 MHz.
- * (Note: Changing the divider when the Fast IRC is enabled is not supported)
+ * This function  selects the amount to divide down the fast internal reference
+ * clock. The resulting frequency is  in the range 31.25 kHz to 4 MHz.
+ * (Note: Changing the divider when the Fast IRC is enabled is not supported).
  *
  * @params setting  Fast Clock Internal Reference Divider Setting
  */
@@ -1341,9 +1341,9 @@ static inline void clock_set_fcrdiv(uint8_t setting)
 }
 
 /*!
- * @brief Get Fast Clock Internal Reference Divider Setting
+ * @brief Gets the Fast Clock Internal Reference Divider Setting.
  *
- * This function will get Fast Clock Internal Reference Divider Setting.
+ * This function  gets the Fast Clock Internal Reference Divider Setting.
  *
  * @return setting  Fast Clock Internal Reference Divider Setting
  */
@@ -1353,10 +1353,10 @@ static inline uint8_t clock_get_fcrdiv(void)
 }
 
 /*!
- * @brief Set ATM Compare Value High Setting
+ * @brief Sets the ATM Compare Value High Setting.
  *
- * This function will set ATM compare value high setting. The values are used by 
- * Auto Trim Machine to compare and adjust Internal Reference trim values during ATM
+ * This function  sets the ATM compare value high setting. The values are used by the 
+ * Auto Trim Machine to compare and adjust the Internal Reference trim values during the ATM
  * SAR conversion.
  *
  * @params setting  ATM Compare Value High Setting
@@ -1367,9 +1367,9 @@ static inline void clock_set_atcvh(uint8_t setting)
 }
 
 /*!
- * @brief Get ATM Compare Value High Setting
+ * @brief Gets the ATM Compare Value High Setting.
  *
- * This function will get ATM Compare Value High Setting.
+ * This function  gets the ATM Compare Value High Setting.
  *
  * @return setting  ATM Compare Value High Setting
  */
@@ -1379,10 +1379,10 @@ static inline uint8_t clock_get_atcvh(void)
 }
 
 /*!
- * @brief Set ATM Compare Value Low Setting
+ * @brief Sets the ATM Compare Value Low Setting.
  *
- * This function will set ATM compare value low setting. The values are used by 
- * Auto Trim Machine to compare and adjust Internal Reference trim values during ATM
+ * This function  sets the ATM compare value low setting. The values are used by the 
+ * Auto Trim Machine to compare and adjust Internal Reference trim values during the ATM
  * SAR conversion.
  *
  * @params setting  ATM Compare Value Low Setting
@@ -1393,9 +1393,9 @@ static inline void clock_set_atcvl(uint8_t setting)
 }
 
 /*!
- * @brief Get ATM Compare Value Low Setting
+ * @brief Gets the ATM Compare Value Low Setting.
  *
- * This function will get ATM Compare Value Low Setting.
+ * This function  gets the ATM Compare Value Low Setting.
  *
  * @return setting  ATM Compare Value Low Setting
  */
@@ -1406,9 +1406,9 @@ static inline uint8_t clock_get_atcvl(void)
 
 #if FSL_FEATURE_MCG_USE_OSCSEL
 /*!
- * @brief Set MCG OSC Clock Select Setting
+ * @brief Sets the MCG OSC Clock Select Setting.
  *
- * This function will select the MCG FLL external reference clock.
+ * This function  selects the MCG FLL external reference clock.
  *
  * @params setting  MCG OSC Clock Select Setting
  *                  - 0: Selects System Oscillator (OSCCLK).
@@ -1420,9 +1420,9 @@ static inline void clock_set_oscsel(mcg_oscsel_select_t setting)
 }
 
 /*!
- * @brief Get MCG OSC Clock Select Setting
+ * @brief Gets the MCG OSC Clock Select Setting.
  *
- * This function will get MCG OSC Clock Select Setting.
+ * This function  gets the MCG OSC Clock Select Setting.
  *
  * @return setting  MCG OSC Clock Select Setting
  */
@@ -1434,13 +1434,13 @@ static inline mcg_oscsel_select_t clock_get_oscsel(void)
 
 #if FSL_FEATURE_MCG_HAS_LOLRE
 /*!
- * @brief Set PLL Loss of Lock Reset Enable Setting
+ * @brief Sets the PLL Loss of Lock Reset Enable Setting.
  *
- * This function will determine if a interrupt or a reset request is made 
+ * This function  determines whether an interrupt or a reset request is made
  * following a PLL loss of lock.
  *
  * @params enable   PLL Loss of Lock Reset Enable Setting
- *                  - true: Generate a reset request on a PLL loss of lock indication..
+ *                  - true: Generate a reset request on a PLL loss of lock indication.
  *                  - false: Interrupt request is generated on a PLL loss of lock
  *                       indication. The PLL loss of lock interrupt enable bit
  *                       must also be set to generate the interrupt request.
@@ -1451,11 +1451,11 @@ static inline void clock_set_lolre(bool enable)
 }
 
 /*!
- * @brief Get PLL Loss of Lock Reset Enable Setting
+ * @brief Gets the PLL Loss of Lock Reset Enable Setting.
  *
- * This function will get PLL Loss of Lock Reset Enable Setting.
+ * This function  gets the PLL Loss of Lock Reset Enable Setting.
  *
- * @return enabled  True if PLL Loss of Lock Reset is enabled
+ * @return enabled  True if the PLL Loss of Lock Reset is enabled.
  */
 static inline bool clock_get_lolre(void)
 {
@@ -1466,10 +1466,10 @@ static inline bool clock_get_lolre(void)
 
 #if FSL_FEATURE_MCG_HAS_RTC_32K
 /*!
- * @brief Set Loss of Clock Reset Enable Setting
+ * @brief Sets the Loss of Clock Reset Enable Setting.
  *
- * This function will determine if a interrupt or a reset request is made following
- * a loss of RTC external reference clock. The LOCRE1 only has an affect when CME1 
+ * This function  determines whether an interrupt or a reset request is made following
+ * a loss of the RTC external reference clock. The LOCRE1 only has an affect when CME1 
  * is set.
  *
  * @params enable   Loss of Clock Reset Enable Setting
@@ -1483,9 +1483,9 @@ static inline void clock_set_locre1(bool enable)
 }
 
 /*!
- * @brief Get Loss of Clock Reset Enable Setting
+ * @brief Gets the Loss of Clock Reset Enable Setting.
  *
- * This function will get Loss of Clock Reset Enable Setting.
+ * This function  gets the Loss of Clock Reset Enable Setting.
  *
  * @return enabled  True if Loss of Clock Reset is enabled.
  */
@@ -1495,11 +1495,11 @@ static inline bool clock_get_locre1(void)
 }
 
 /*!
- * @brief Set Clock Monitor Enable1 Setting
+ * @brief Sets the Clock Monitor Enable1 Setting.
  *
- * This function will enable/disable the loss of clock monitoring circuit for the
- * output of the RTC external reference clock. The LOCRE1 bit will determine if a
- * interrupt or a reset request is generated following a loss of RTC clock indication.
+ * This function  enables/disables the loss of the clock monitoring circuit for the
+ * output of the RTC external reference clock. The LOCRE1 bit  determines whether an
+ * interrupt or a reset request is generated following a loss of the RTC clock indication.
  * The CME1 bit should only be set to a logic 1 when the MCG is in an operational mode
  * that uses the external clock (FEE, FBE, PEE, PBE, or BLPE). CME1 bit must be set to
  * a logic 0 before the MCG enters any Stop mode. Otherwise, a reset request may occur 
@@ -1516,9 +1516,9 @@ static inline void clock_set_cme1(bool enable)
 }
 
 /*!
- * @brief Get Clock Monitor Enable1 Setting
+ * @brief Gets the Clock Monitor Enable1 Setting.
  *
- * This function will get Clock Monitor Enable1 Setting.
+ * This function  gets the Clock Monitor Enable1 Setting.
  *
  * @return enabled True if Clock Monitor Enable1 is enabled
  */
@@ -1528,14 +1528,14 @@ static inline bool clock_get_cme1(void)
 }
 
 /*!
- * @brief Get RTC Loss of Clock Status
+ * @brief Gets the RTC Loss of Clock Status.
  *
- * This function will get RTC Loss of Clock Status.This bit indicates when a loss
+ * This function  gets the RTC Loss of Clock Status. This bit indicates when a loss
  * of clock has occurred. This bit is cleared by writing a logic 1 to it when set.
  *
  * @return status  RTC Loss of Clock Status
- *                 - 0: Loss of RTC has not occured
- *                 - 1: Loss of RTC has occured
+ *                 - 0: Loss of RTC has not occurred
+ *                 - 1: Loss of RTC has occurred
  */
 static inline mcg_locs1_status_t clock_get_locs1(void)
 {
@@ -1545,9 +1545,9 @@ static inline mcg_locs1_status_t clock_get_locs1(void)
 
 #if FSL_FEATURE_MCG_USE_PLLREFSEL
 /*!
- * @brief Set OSC1 Loss of Clock Reset Enable Setting
+ * @brief Sets the OSC1 Loss of Clock Reset Enable Setting.
  *
- * This function will determine if a interrupt or reset request is made following
+ * This function  determines whether an interrupt or reset request is made following
  * a loss of OSC1 external reference clock. The LOCRE2 only has an affect when 
  * LOCS2 is set.
  *
@@ -1563,9 +1563,9 @@ static inline void clock_set_locre2(bool enable)
 }
 
 /*!
- * @brief Get OSC1 Loss of Clock Reset Enable Setting
+ * @brief Gets the OSC1 Loss of the Clock Reset Enable Setting.
  *
- * This function will get OSC1 Loss of Clock Reset Enable Setting.
+ * This function  gets the OSC1 Loss of Clock Reset Enable Setting.
  *
  * @return enabled  True if OSC1 Loss of Clock Reset is enabled.
  */
@@ -1575,10 +1575,10 @@ static inline bool clock_get_locre2(void)
 }
 
 /*!
- * @brief Set Frequency Range1 Select Setting
+ * @brief Sets the Frequency Range1 Select Setting.
  *
- * This function will select the frequency range for the OSC1 crystal oscillator
- * or external clock source. Refer to the Oscillator chapter for more details and
+ * This function  selects the frequency range for the OSC1 crystal oscillator
+ * or an external clock source. See the Oscillator chapter for more details and
  * the device data sheet for the frequency ranges used.
  *
  * @params setting  Frequency Range1 Select Setting
@@ -1592,9 +1592,9 @@ static inline void clock_set_range1(mcg_freq_range_select_t setting)
 }
 
 /*!
- * @brief Get Frequency Range1 Select Setting
+ * @brief Gets the Frequency Range1 Select Setting.
  *
- * This function will get Frequency Range1 Select Setting.
+ * This function  gets the Frequency Range1 Select Setting.
  *
  * @return setting  Frequency Range1 Select Setting
  */
@@ -1604,10 +1604,10 @@ static inline mcg_freq_range_select_t clock_get_range1(void)
 }
 
 /*!
- * @brief Set High Gain Oscillator1 Select Setting
+ * @brief Sets the High Gain Oscillator1 Select Setting.
  *
- * This function will control the OSC1 crystal oscillator mode of operation.
- * Refer to the Oscillator chapter for more details.
+ * This function  controls the OSC1 crystal oscillator mode of operation.
+ * See the Oscillator chapter for more details.
  *
  * @params setting  High Gain Oscillator1 Select Setting
  *                  - 0: Configure crystal oscillator for low-power operation.
@@ -1619,9 +1619,9 @@ static inline void clock_set_hgo1(mcg_hgo_select_t setting)
 }
 
 /*!
- * @brief Get High Gain Oscillator1 Select Setting
+ * @brief Gets the High Gain Oscillator1 Select Setting.
  *
- * This function will get High Gain Oscillator1 Select Setting.
+ * This function  gets the High Gain Oscillator1 Select Setting.
  *
  * @return setting  High Gain Oscillator1 Select Setting
  */
@@ -1631,10 +1631,10 @@ static inline mcg_hgo_select_t clock_get_hgo1(void)
 }
 
 /*!
- * @brief Set External Reference Select Setting
+ * @brief Sets the External Reference Select Setting.
  *
- * This function will select the source for the OSC1 external reference clock. 
- * Refer to the Oscillator chapter for more details.
+ * This function  selects the source for the OSC1 external reference clock. 
+ * See the Oscillator chapter for more details.
  *
  * @params setting  External Reference Select Setting
  *                  - 0: External reference clock requested.
@@ -1646,9 +1646,9 @@ static inline void clock_set_erefs1(mcg_eref_clock_select_t setting)
 }
 
 /*!
- * @brief Get External Reference Select Setting
+ * @brief Gets the External Reference Select Setting.
  *
- * This function will get External Reference Select Setting.
+ * This function  gets the External Reference Select Setting.
  *
  * @return setting  External Reference Select Setting
  */
@@ -1658,9 +1658,9 @@ static inline mcg_eref_clock_select_t clock_get_erefs1(void)
 }
 
 /*!
- * @brief Set PLL1 External Reference Select Setting
+ * @brief Sets the PLL1 External Reference Select Setting.
  *
- * This function will select the PLL1 external reference clock source.
+ * This function  selects the PLL1 external reference clock source.
  *
  * @params setting  PLL1 External Reference Select Setting
  *                  - 0: Selects OSC0 clock source as its external reference clock.
@@ -1672,9 +1672,9 @@ static inline void clock_set_pllrefsel1(mcg_pll_eref_clock_select_t setting)
 }
 
 /*!
- * @brief Get PLL1 External Reference Select Setting
+ * @brief Gets the PLL1 External Reference Select Setting.
  *
- * This function will get PLL1 External Reference Select Setting.
+ * This function  gets the PLL1 External Reference Select Setting.
  *
  * @return setting  PLL1 External Reference Select Setting
  */
@@ -1684,15 +1684,15 @@ static inline mcg_pll_eref_clock_select_t clock_get_pllrefsel1(void)
 }
 
 /*!
- * @brief Set PLL1 Clock Enable Setting
+ * @brief Sets the PLL1 Clock Enable Setting.
  *
- * This function will enable/disable the PLL1 independent of PLLS and enables the
+ * This function  enables/disables the PLL1 independent of PLLS and enables the
  * PLL clocks for use as MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X. (PRDIV1 needs 
  * to be programmed to the correct divider to generate a PLL1 reference clock in a
  * valid reference range prior to setting the PLLCLKEN1 bit.) Setting PLLCLKEN1 
- * will enable the PLL1 selected external oscillator if not already enabled. 
- * Whenever the PLL1 is being enabled by means of the PLLCLKEN1 bit, and the 
- * external oscillator is being used as the reference clock, the OSCINIT1 bit should
+ *  enables the PLL1 selected external oscillator if not already enabled. 
+ * Whenever the PLL1 is  enabled with the PLLCLKEN1 bit, and the 
+ * external oscillator is  used as the reference clock, the OSCINIT1 bit should
  * be checked to make sure it is set.
  *
  * @params enable   PLL1 Clock Enable Setting
@@ -1706,11 +1706,11 @@ static inline void clock_set_pllclken1(bool enable)
 }
 
 /*!
- * @brief Get PLL1 Clock Enable Setting
+ * @brief Gets the PLL1 Clock Enable Setting.
  *
- * This function will get PLL1 Clock Enable Setting.
+ * This function  gets the PLL1 Clock Enable Setting.
  *
- * @return enabled  True if PLL1 Clock is enabled
+ * @return enabled  True if the PLL1 Clock is enabled.
  */
 static inline bool clock_get_pllclken1(void)
 {
@@ -1718,10 +1718,10 @@ static inline bool clock_get_pllclken1(void)
 }
 
 /*!
- * @brief Set PLL1 Stop Enable Setting
+ * @brief Sets the PLL1 Stop Enable Setting.
  *
- * This function will enable/disable the PLL1 Clock during Normal Stop (In Low
- * Power Stop modes, the PLL1 clock gets disabled even if PLLSTEN1=1. All other 
+ * This function  enables/disables the PLL1 Clock during the Normal Stop (In Low
+ * Power Stop modes, the PLL1 clock gets disabled even if PLLSTEN1=1. In all other 
  * power modes, PLLSTEN1 bit has no affect and does not enable the PLL1 Clock to
  * run if it is written to 1.
  *
@@ -1737,11 +1737,11 @@ static inline void clock_set_pllsten1(bool enable)
 }
 
 /*!
- * @brief Get PLL1 Stop Enable Setting
+ * @brief Gets the PLL1 Stop Enable Setting.
  *
- * This function will get PLL1 Stop Enable Setting.
+ * This function  gets the PLL1 Stop Enable Setting.
  *
- * @return enabled True if PLL1 Stop is enabled
+ * @return enabled True if PLL1 Stop is enabled.
  */
 static inline bool clock_get_pllsten1(void)
 {
@@ -1749,9 +1749,9 @@ static inline bool clock_get_pllsten1(void)
 }
 
 /*!
- * @brief Set PLL Clock Select Setting
+ * @brief Sets the PLL Clock Select Setting.
  *
- * This function will control whether the PLL0 or PLL1 output is selected as the
+ * This function  controls  whether the PLL0 or PLL1 output is selected as the
  * MCG source when CLKS are programmed in PLL Engaged External (PEE) mode 
  * (CLKS[1:0]=00 and IREFS=0 and PLLS=1).
  *
@@ -1765,9 +1765,9 @@ static inline void clock_set_pllcs(mcg_pllcs_select_t setting)
 }
 
 /*!
- * @brief Get PLL Clock Select Setting
+ * @brief Gets the PLL Clock Select Setting.
  *
- * This function will get PLL Clock Select Setting.
+ * This function  gets the PLL Clock Select Setting.
  *
  * @return setting  PLL Clock Select Setting
  */
@@ -1777,9 +1777,9 @@ static inline mcg_pllcs_select_t clock_get_pllcs(void)
 }
 
 /*!
- * @brief Set PLL1 External Reference Divider Setting
+ * @brief Sets the PLL1 External Reference Divider Setting.
  *
- * This function will select the amount to divide down the external reference 
+ * This function  selects the amount to divide down the external reference 
  * clock selected by REFSEL2 for PLL1. The resulting frequency must be in a valid
  * reference range. After the PLL1 is enabled (by setting either PLLCLKEN1 or PLLS),
  * the PRDIV1 value must not be changed when LOCK1 is zero.
@@ -1792,9 +1792,9 @@ static inline void clock_set_prdiv1(uint8_t setting)
 }
 
 /*!
- * @brief Get PLL1 External Reference Divider Setting
+ * @brief Gets the PLL1 External Reference Divider Setting.
  *
- * This function will get PLL1 External Reference Divider Setting.
+ * This function  gets the PLL1 External Reference Divider Setting.
  *
  * @return setting  PLL1 External Reference Divider Setting
  */
@@ -1804,9 +1804,9 @@ static inline uint8_t clock_get_prdiv1(void)
 }
 
 /*!
- * @brief Set PLL1 Loss of Lock Interrupt Enable Setting
+ * @brief Sets the PLL1 Loss of Lock Interrupt Enable Setting.
  *
- * This function will determinee if an interrupt request is made following a 
+ * This function  determines whether an interrupt request is made following a 
  * loss of lock indication for PLL1. This bit only has an affect when LOLS1 is set.
  *
  * @params enable   PLL1 Loss of Lock Interrupt Enable Setting
@@ -1819,11 +1819,11 @@ static inline void clock_set_lolie1(bool enable)
 }
 
 /*!
- * @brief Get PLL1 Loss of Lock Interrupt Enable Setting
+ * @brief Gets the PLL1 Loss of Lock Interrupt Enable Setting.
  *
- * This function will get PLL1 Loss of Lock Interrupt Enable Setting.
+ * This function  gets the PLL1 Loss of Lock Interrupt Enable Setting.
  *
- * @return enabled true if PLL1 Loss of Lock Interrupt is enabled
+ * @return enabled true if PLL1 Loss of Lock Interrupt is enabled.
  */
 static inline bool clock_get_lolie1(void)
 {
@@ -1831,10 +1831,10 @@ static inline bool clock_get_lolie1(void)
 }
 
 /*!
- * @brief Set Clock Monitor Enable2 Setting
+ * @brief Sets the Clock Monitor Enable2 Setting
  *
- * This function will enable/disable the loss of clock monitor for the OSC1 external
- * reference clock. LOCRE2 will determine if a reset or interrupt request is geneated
+ * This function  enables/disables the loss of the clock monitor for the OSC1 external
+ * reference clock. LOCRE2  determines whether a reset or interrupt request is generated
  * following a loss of OSC1 external reference clock. The CME2 bit should only be set
  * to a logic 1 when the MCG is in an operational mode that uses the external clock 
  * (PEE or PBE) . Whenever the CME2 bit is set to a logic 1, the value of the RANGE1
@@ -1852,11 +1852,11 @@ static inline void clock_set_cme2(bool enable)
 }
 
 /*!
- * @brief Get Clock Monitor Enable2 Setting
+ * @brief Gets the Clock Monitor Enable2 Setting.
  *
- * This function will get Clock Monitor Enable2 Setting.
+ * This function  gets the Clock Monitor Enable2 Setting.
  *
- * @return enabled true if Clock Monitor Enable2 is enabled
+ * @return enabled True if Clock Monitor Enable2 is enabled.
  */
 static inline bool clock_get_cme2(void)
 {
@@ -1864,10 +1864,10 @@ static inline bool clock_get_cme2(void)
 }
 
 /*!
- * @brief Set VCO1 Divider Setting
+ * @brief Sets the VCO1 Divider Setting.
  *
- * This function will select the amount to divide the VCO output of the PLL1. 
- * The VDIV1 bits establish the multiplication factor (M) applied to the reference
+ * This function  selects the amount to divide the VCO output of the PLL1. 
+ * The VDIV1 bits establishes the multiplication factor (M) applied to the reference
  * clock frequency. After the PLL1 is enabled (by setting either PLLCLKEN1 or 
  * PLLS), the VDIV1 value must not be changed when LOCK1 is zero.
  *
@@ -1879,9 +1879,9 @@ static inline void clock_set_vdiv1(uint8_t setting)
 }
 
 /*!
- * @brief Get VCO1 Divider Setting
+ * @brief Gets the VCO1 Divider Setting.
  *
- * This function will get VCO1 Divider Setting.
+ * This function  gets the VCO1 Divider Setting.
  *
  * @return setting  VCO1 Divider Setting
  */
@@ -1891,11 +1891,11 @@ static inline uint8_t clock_get_vdiv1(void)
 }
 
 /*!
- * @brief Get Loss of Lock2 Status
+ * @brief Gets the Loss of the Lock2 Status.
  *
- * This function will get Loss of Lock2 Status. This bit is a sticky bit indicating
+ * This function  gets the Loss of the Lock2 Status. This bit is a sticky bit indicating
  * the lock status for the PLL1. LOLS1 is set if after acquiring lock, the PLL1 
- * output frequency has fallen outside the lock exit frequency tolerance, D unl . 
+ * output frequency has fallen outside the lock exit frequency tolerance, D unl. 
  * LOLIE1 determines whether an interrupt request is made when LOLS1 is set. This
  * bit is cleared by reset or by writing a logic 1 to it when set. Writing a logic 0
  * to this bit has no effect.
@@ -1910,21 +1910,21 @@ static inline mcg_lols_status_t clock_get_lols1(void)
 }
 
 /*!
- * @brief Get Lock1 Status
+ * @brief Gets the Lock1 Status.
  *
- * This function will get Lock1 Status. This bit indicates whether PLL1 has 
- * acquired lock. PLL1 Lock detection is disabled when not operating in either
- * PBE or PEE mode unless PLLCLKEN1=1 and the MCG is not configured in BLPI or
- * BLPE mode. While the PLL1 clock is locking to the desired frequncy, MCGPLL1CLK,
- * MCGPLL1CLK2X, and MCGDDRCLK2X will be gated off until the LOCK1 bit gets 
+ * This function  gets the Lock1 Status. This bit indicates whether PLL1 has 
+ * acquired the lock. PLL1 Lock detection is disabled when not operating in either
+ * PBE or PEE mode unless the PLLCLKEN1=1 and the the MCG is not configured in the BLPI or the
+ * BLPE mode. While the PLL1 clock is locking to the desired frequency, MCGPLL1CLK,
+ * MCGPLL1CLK2X, and MCGDDRCLK2X  are gated off until the LOCK1 bit gets 
  * asserted. If the lock status bit is set, changing the value of the PRDIV1[2:0] 
  * bits in the C8 register or the VDIV2[4:0] bits in the C9 register causes the
  * lock status bit to clear and stay cleared until the PLL1 has reacquired lock. 
- * Loss of PLL1 reference clock will also cause the LOCK1 bit to clear until PLL1 
- * has reacquired lock. Entry into LLS, VLPS, or regular Stop with PLLSTEN1=0 also
- * causes the lock status bit to clear and stay cleared until Stop mode is exited
- * and the PLL1 has reacquired lock. Any time the PLL1 is enabled and the LOCK1 bit
- * is cleared, the MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X will be gated off 
+ * Loss of PLL1 reference clock will also causes the LOCK1 bit to clear until the PLL1 
+ * has reacquired lock. Entry into the LLS, VLPS, or a regular Stop with the PLLSTEN1=0 also
+ * causes the lock status bit to clear and stay cleared until the Stop mode is exited
+ * and the PLL1 has reacquired the lock. Any time the PLL1 is enabled and the LOCK1 bit
+ * is cleared, the MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X  are gated off 
  * until the LOCK1 bit is asserted again.
  *
  * @return status  Lock1 Status
@@ -1937,10 +1937,10 @@ static inline mcg_lock_status_t clock_get_lock1(void)
 }
 
 /*!
- * @brief Get PLL Clock Select Status
+ * @brief Gets the PLL Clock Select Status.
  *
- * This function will get PLL Clock Select Status. The PLLCST indicates the PLL
- * clock selected by PLLCS. The PLLCST bit does not updated immediately after a
+ * This function  gets the PLL Clock Select Status. The PLLCST indicates the PLL
+ * clock selected by PLLCS. The PLLCST bit is not updated immediately after a
  * write to the PLLCS bit due internal synchronization between clock domains.
  *
  * @return status  PLL Clock Select Status
@@ -1953,11 +1953,11 @@ static inline mcg_pllcs_select_t clock_get_pllcst(void)
 }
 
 /*!
- * @brief Get OSC1 Initialization Status
+ * @brief Gets the OSC1 Initialization Status.
  *
- * This function will get OSC1 Initialization Status. This bit is set after the 
- * initialization cycles of the 2nd crystal oscillator clock have completed. Refer
- * to the Oscillator block guide for more details.
+ * This function  gets the OSC1 Initialization Status. This bit is set after the 
+ * initialization cycles of the 2nd crystal oscillator clock have completed. See
+ * the Oscillator block guide for more details.
  *
  * @return status  OSC1 Initialization Status
  */
@@ -1967,10 +1967,10 @@ static inline uint8_t clock_get_oscinit1(void)
 }
 
 /*!
- * @brief Get OSC1 Loss of Clock Status
+ * @brief Gets the OSC1 Loss of Clock Status.
  *
- * This function will get OSC1 Loss of Clock Status. This bit indicates when a loss
- * of OSC1 external reference clock has occurred. LOCRE2 determines if a reset or 
+ * This function  gets the OSC1 Loss of Clock Status. This bit indicates when a loss
+ * of the OSC1 external reference clock has occurred. LOCRE2 determines if a reset or 
  * interrupt is generated when LOCS2 is set. This bit is cleared by writing a 
  * logic 1 to it when set.
  *

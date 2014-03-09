@@ -48,7 +48,7 @@
  ******************************************************************************/
 
 /*! Place to store application callbacks for each of the I2C modules.*/
-static i2c_slave_info_t s_applicationInfo[2] = {{0}};
+static i2c_slave_user_config_t s_applicationInfo[2] = {{0}};
 
 extern IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT];
 
@@ -69,7 +69,7 @@ void i2c_slave_irq_handler(uint32_t instance)
 {
     assert(instance < HW_I2C_INSTANCE_COUNT);
 
-    i2c_slave_info_t * appInfo = &s_applicationInfo[instance];
+    i2c_slave_user_config_t * appInfo = &s_applicationInfo[instance];
     
     bool doTransmit = false;
     i2c_status_t error = kStatus_I2C_Success;
@@ -177,7 +177,7 @@ void i2c_slave_irq_handler(uint32_t instance)
  * module, enable the device and enable interrupts. Set the I2C to slave mode. 
  *
  *END**************************************************************************/
-void i2c_slave_init(uint32_t instance, i2c_slave_info_t * appInfo)
+void i2c_slave_init(uint32_t instance, i2c_slave_user_config_t * appInfo)
 {
     assert(appInfo);
     assert(instance < HW_I2C_INSTANCE_COUNT);

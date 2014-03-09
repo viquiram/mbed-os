@@ -27,54 +27,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
-#include "fsl_gpio_hal.h"
+#include "fsl_sdhc_hal.h"
 
-/*******************************************************************************
- * Code
- ******************************************************************************/
-/*FUNCTION**********************************************************************
+/*FUNCTION****************************************************************
  *
- * Function Name : gpio_hal_set_pin_direction
- * Description   : Set individual gpio pin to general input or output.
+ * Function Name: sdhc_hal_enable_intr_signal
+ * Description: Enable specified interrupts
  *
- *END**************************************************************************/
-void gpio_hal_set_pin_direction(uint32_t instance, uint32_t pin,
-                                gpio_pin_direction_t direction)
+ *END*********************************************************************/
+void sdhc_hal_enable_intr_signal(uint8_t instance, bool isEnabled, uint32_t mask)
 {
-    assert(instance < HW_GPIO_INSTANCE_COUNT);
-    assert(pin < 32);
-
-    if (kGpioDigitalOutput == direction)
+    assert(instance < HW_SDHC_INSTANCE_COUNT);
+    if (isEnabled)
     {
-        HW_GPIO_PDDR_WR(instance, ((uint32_t)1 << pin) | HW_GPIO_PDDR_RD(instance));  
+        HW_SDHC_IRQSIGEN_SET(mask);
     }
     else
     {
-        HW_GPIO_PDDR_WR(instance, (~((uint32_t)1 << pin)) & HW_GPIO_PDDR_RD(instance));
+        HW_SDHC_IRQSIGEN_CLR(mask);
     }
 }
 
-/*FUNCTION**********************************************************************
+/*FUNCTION****************************************************************
  *
- * Function Name : gpio_hal_write_pin_output
- * Description   : Set output level of individual gpio pin to logic 1 or 0.
+ * Function Name: sdhc_hal_enable_intr_state
+ * Description: Enable specified interrupts' state
  *
- *END**************************************************************************/
-void gpio_hal_write_pin_output(uint32_t instance, uint32_t pin, uint32_t output)
+ *END*********************************************************************/
+void sdhc_hal_enable_intr_state(uint8_t instance, bool isEnabled, uint32_t mask)
 {
-    assert(instance < HW_GPIO_INSTANCE_COUNT);
-    assert(pin < 32);
-    if (output != 0U)
+    assert(instance < HW_SDHC_INSTANCE_COUNT);
+    if (isEnabled)
     {
-        gpio_hal_set_pin_output(instance, pin); /* Set pin output to high level.*/
+        HW_SDHC_IRQSTATEN_SET(mask);
     }
     else
     {
-        gpio_hal_clear_pin_output(instance, pin); /* Set pin output to low level.*/
+        HW_SDHC_IRQSTATEN_CLR(mask);
     }
 }
 
-/*******************************************************************************
+/*FUNCTION****************************************************************
+ *
+ * Function Name: sdhc_hal_get_resp
+ * Description: get command response
+ *
+ *END*********************************************************************/
+void sdhc_hal_get_resp(uint8_t instance, uint32_t * resp)
+{
+    assert(instance < HW_SDHC_INSTANCE_COUNT);
+    resp[0] = BR_SDHC_CMDRSP0_CMDRSP0;
+    resp[1] = BR_SDHC_CMDRSP1_CMDRSP1;
+    resp[2] = BR_SDHC_CMDRSP2_CMDRSP2;
+    resp[3] = BR_SDHC_CMDRSP3_CMDRSP3;
+}
+
+/*************************************************************************************************
  * EOF
- ******************************************************************************/
+ ************************************************************************************************/

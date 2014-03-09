@@ -43,25 +43,6 @@
  * @{
  */
 
-/*! @brief Macro to select the RTOS to be used in the application. */
-#define FSL_RTOS_SELECTED       FSL_RTOS_NONE
-
-/*! @brief Macro to set message queue copy messages to internal memory or not. */
-#define __FSL_RTOS_MSGQ_COPY_MSG__  0
-
-/*! @brief Choose bare metal.  */
-#define FSL_RTOS_NONE           0
-/*! @brief Choose MQX.         */
-#define FSL_RTOS_MQX            1
-/*! @brief Choose Free RTOS.   */
-#define FSL_RTOS_FREE_RTOS      2
-/*! @brief Choose uCOS-II.     */
-#define FSL_RTOS_UCOSII         3
-/*! @brief Choose CMSIS.       */
-#define FSL_RTOS_CMSIS          4
-/*! @brief Choose uCOS-III.    */
-#define FSL_RTOS_UCOSIII        5
-
 /*! @brief Status values to be returned by functions. */
 typedef enum
 {
@@ -85,21 +66,31 @@ typedef enum
     kEventManualClr    /*!< The flags of the event will be cleared manually.      */
 }event_clear_type;
 
-/* Include the required header file based on the RTOS selection */
-#if FSL_RTOS_SELECTED == FSL_RTOS_MQX
-#include "fsl_os_abstraction_mqx.h"
-#elif FSL_RTOS_SELECTED == FSL_RTOS_FREE_RTOS
-#include "fsl_os_abstraction_free_rtos.h"
-#elif FSL_RTOS_SELECTED == FSL_RTOS_UCOSII
-#include "fsl_os_abstraction_ucosii.h"
-#elif FSL_RTOS_SELECTED == FSL_RTOS_UCOSIII
-#include "fsl_os_abstraction_ucosiii.h"
-#elif FSL_RTOS_SELECTED == FSL_RTOS_CMSIS
-#include "fsl_os_abstraction_cmsis.h"
-#elif FSL_RTOS_SELECTED == FSL_RTOS_NONE
-#include "fsl_os_abstraction_bm.h"
+/* Include required header file based on RTOS selection */
+#if defined (FSL_RTOS_MQX)
+    /*! @brief Macro to set message queue copy messages to internal memory or not. */
+    #define __FSL_RTOS_MSGQ_COPY_MSG__  1
+    #include "fsl_os_abstraction_mqx.h"
+
+#elif defined (FSL_RTOS_FREE_RTOS)
+    #define __FSL_RTOS_MSGQ_COPY_MSG__  1
+    #include "fsl_os_abstraction_free_rtos.h"
+
+#elif defined (FSL_RTOS_UCOSII)
+    #define __FSL_RTOS_MSGQ_COPY_MSG__  1
+    #include "fsl_os_abstraction_ucosii.h"
+
+#elif defined (FSL_RTOS_UCOSIII)
+    #define __FSL_RTOS_MSGQ_COPY_MSG__  1
+    #include "fsl_os_abstraction_ucosiii.h"
+
+#elif defined (FSL_RTOS_CMSIS)
+    #define __FSL_RTOS_MSGQ_COPY_MSG__  0
+    #include "fsl_os_abstraction_cmsis.h"
+
 #else
-#error "Invalid RTOS selection."
+    #define __FSL_RTOS_MSGQ_COPY_MSG__  1
+    #include "fsl_os_abstraction_bm.h"
 #endif
 
 /*******************************************************************************
@@ -127,9 +118,11 @@ extern "C" {
 fsl_rtos_status sync_create(sync_object_t *obj, uint8_t initValue);
 
 /*!
- * @brief Wait for a synchronization object to be signalled.
+ * @brief Wait for the synchronization object.
  *
- * This function will wait for some time or wait forever if object is not signaled.
+ * This function checks the sync object's counting value, if it is
+ * positive, decreases it and returns kSuccess, otherwise, timeout will be
+ * used for wait.
  *
  * @param obj Pointer to the synchronization object.
  * @param timeout The maximum number of milliseconds to wait for the object to be signalled.
@@ -147,9 +140,12 @@ fsl_rtos_status sync_create(sync_object_t *obj, uint8_t initValue);
 fsl_rtos_status sync_wait(sync_object_t *obj, uint32_t timeout);
 
 /*!
- * @brief Checks if a synchronization object has been signalled.
+ * @brief Checks a synchronization object's status.
  *
- * This function returns instantly if object is not signaled.
+ * This function is used to poll a sync object's status.
+ * If the sync object's counting value is positive, decrease it and return
+ * kSuccess. If the object's counting value is 0, the function will
+ * return kIdle immediately
  *
  * @param obj The synchronization object.
  *
@@ -160,7 +156,7 @@ fsl_rtos_status sync_wait(sync_object_t *obj, uint32_t timeout);
 fsl_rtos_status sync_poll(sync_object_t *obj);
 
 /*!
- * @brief Signal for someone waiting on the syncronization object to wake up.
+ * @brief Signal for someone waiting on the synchronization object to wake up.
  *
  * This function should not be called from an ISR.
  *
@@ -172,7 +168,7 @@ fsl_rtos_status sync_poll(sync_object_t *obj);
 fsl_rtos_status sync_signal(sync_object_t *obj);
 
 /*!
- * @brief Signal for someone waiting on the syncronization object to wake up.
+ * @brief Signal for someone waiting on the synchronization object to wake up.
  *
  * This function should only be called from an ISR.
  *
@@ -239,6 +235,7 @@ fsl_rtos_status lock_wait(lock_object_t *obj, uint32_t timeout);
  * @retval kError An incorrect parameter was passed.
  *
  * @note There could be only one process waiting for the object at the same time.
+ * For RTOSes, wait for a lock recursively by one task is not supported.
  *
  */
 fsl_rtos_status lock_poll(lock_object_t *obj);
@@ -284,7 +281,7 @@ fsl_rtos_status lock_destroy(lock_object_t *obj);
 fsl_rtos_status event_create(event_object_t *obj, event_clear_type clearType);
 
 /*!
- * @brief Wait for any event to be set.
+ * @brief Wait for any event flags to be set.
  *
  * This function will wait for some time or wait forever if no flags are set. Any flags set
  * will wake up the function.
@@ -302,14 +299,14 @@ fsl_rtos_status event_create(event_object_t *obj, event_clear_type clearType);
 fsl_rtos_status event_wait(event_object_t *obj, uint32_t timeout, event_group_t *setFlags);
 
 /*!
- * @brief Set one or more events of an event object.
+ * @brief Set one or more event flags of an event object.
  *
  * This function should not be called from an ISR.
  *
  * @param obj The event object.
  * @param flags Event flags to be set.
  *
- * @retval kSuccess The flags were succesfully set.
+ * @retval kSuccess The flags were successfully set.
  * @retval kError An incorrect parameter was passed.
  *
  * @note There could be only one process waiting for the event.
@@ -318,14 +315,14 @@ fsl_rtos_status event_wait(event_object_t *obj, uint32_t timeout, event_group_t 
 fsl_rtos_status event_set(event_object_t *obj, event_group_t flags);
 
 /*!
- * @brief Set one or more events of an event object.
+ * @brief Set one or more event flags of an event object.
  *
  * This function should only be called from an ISR.
  *
  * @param obj The event object.
  * @param flags Event flags to be set.
  *
- * @retval kSuccess The flags were succesfully set.
+ * @retval kSuccess The flags were successfully set.
  * @retval kError An incorrect parameter was passed.
  */
 fsl_rtos_status event_set_from_isr(event_object_t *obj, event_group_t flags);
@@ -338,7 +335,7 @@ fsl_rtos_status event_set_from_isr(event_object_t *obj, event_group_t flags);
  * @param obj The event object.
  * @param flags Event flags to be clear.
  *
- * @retval kSuccess The flags were succesfully cleared.
+ * @retval kSuccess The flags were successfully cleared.
  * @retval kError An incorrect parameter was passed.
  */
 fsl_rtos_status event_clear(event_object_t *obj, event_group_t flags);
@@ -440,7 +437,7 @@ msg_queue_handler_t msg_queue_create(msg_queue_t *queue, uint16_t number, uint16
  * @param handler Queue handler returned by the msg_queue_create function.
  * @param item Pointer to the element to be introduced in the queue.
  * 
- * @retval kSuccess Element succesfully introduced in the queue.
+ * @retval kSuccess Element successfully introduced in the queue.
  * @retval kError The queue was full or an invalid parameter was passed.
  */
 fsl_rtos_status msg_queue_put(msg_queue_handler_t handler, msg_queue_item_t item);
@@ -532,6 +529,24 @@ fsl_rtos_status mem_free(void *ptr);
  * @param delay The time in milliseconds to wait.
  */
 void time_delay(uint32_t delay);
+
+/* @} */
+
+/*!
+ * @name Interrupt management
+ * @{
+ */
+
+/*!
+ * @brief Install interrupt handler.
+ *
+ * @param irqNumber IRQ number of the interrupt.
+ * @param handler The interrupt handler to install.
+ *
+ * @retval kSuccess Handler is installed successfully.
+ * @retval kSuccess Handler could not be installed.
+ */
+fsl_rtos_status interrupt_handler_register(int32_t irqNumber, void (*handler)(void));
 
 /* @} */
 

@@ -49,9 +49,9 @@
  ******************************************************************************/
 
 /*!
- * @brief Define the parameter structure for calibration
+ * @brief Defines the calibration parameter structure.
  * 
- * This structure is used to keep the calibration parameter after executing the 
+ * This structure keeps the calibration parameter after executing the 
  * auto-calibration or filled by indicated ones.
  */
 typedef struct adcCalibrationParam
@@ -59,9 +59,25 @@ typedef struct adcCalibrationParam
     uint32_t PG; /*!< The value for PG register */
     uint32_t MG; /*!< The value for MG register */
 } adc_calibration_param_t;   
-   
+
 /*! 
- * @brief Define ADC's extend configuration structure
+ * @brief Defines the ADC basic configuration structure.
+ * 
+ * This structure is used when initializing the ADC device associated with 
+ * adc_init(). It contains the basic feature configuration which are 
+ * necessary.
+ */
+typedef struct AdcUserConfig
+{
+    adc_clock_source_mode_t clockSourceMode; /*!< Selection of ADC clock source */
+    adc_clock_divider_mode_t clockSourceDividerMode; /*!< Selection of ADC clock divider */
+    adc_resolution_mode_t resolutionMode; /*!< Selection of ADC resolution */
+    adc_reference_voltage_mode_t referenceVoltageMode; /*!< Selection of ref voltage source */
+    bool isContinuousEnabled;   /*!< Switcher to enable continuous conversion */
+} adc_user_config_t;
+
+/*! 
+ * @brief Defines the ADC extended configuration structure.
  * 
  * This structure is used when initializing the ADC device associated with 
  * adc_init_extend(). It contains the advanced feature configuration when 
@@ -73,22 +89,22 @@ typedef struct adcExtendConfig
     bool isLongSampleEnabled;  /*!< Switcher to enable the long sample mode*/
     adc_long_sample_mode_t hwLongSampleMode;  /*!< Selection of long sample mode*/
     bool isHighSpeedEnabled;  /*!< Switcher to enable high speed sample mode*/
-    bool isAsynClockEnabled;  /*!< Switcher to enable internal asynchonous clock at initialization*/
+    bool isAsynClockEnabled;  /*!< Switcher to enable internal asynchronous clock at initialization*/
     bool isHwTriggerEnabled;  /*!< Switcher to enable hardware trigger*/
     bool isHwCompareEnabled;  /*!< Switcher to enable hardware compare*/
     bool isHwCompareGreaterEnabled; /*!< Switcher to enable greater compare*/
     bool isHwCompareRangeEnabled;  /*!< Switcher to enable range compare*/
     uint32_t hwCompareValue1;   /*!< Low limit in hardware compare*/
     uint32_t hwCompareValue2;   /*!< High limit in hardware compare*/
-    bool isHwAverageEnabled;    /*!< Switcher to enable hareware average*/
+    bool isHwAverageEnabled;    /*!< Switcher to enable hardware average*/
     adc_hw_average_mode_t hwAverageSampleMode;  /*!< Selection of hardware average time*/
     bool isDmaEnabled;  /*! < Switcher to enable DMA support*/
 } adc_extend_config_t;
 
 /*! 
- * @brief Define the channel's configuration structure
+ * @brief Defines the channel configuration structure.
  * 
- * This structure is used when setting the convertion channel associated with
+ * This structure is used when setting the conversion channel associated with
  * adc_start_conversion(), adc_stop_conversion(), adc_is_conversion_completed()
  * and adc_get_conversion_value(). It contains all the information that can
  * identify an ADC channel.
@@ -96,9 +112,9 @@ typedef struct adcExtendConfig
 typedef struct adcChannelConfig
 {
     /* 
-     * Corresponding to the ADCH bits of a 5-bit field , chennelId  here selects 
-     * one of the input channels. The ADC will be turned off when the channel 
-     * select bits are all set as ADCH = 11111(kAdcChannelDisable). See to the 
+     * Corresponding to the ADCH bits of a 5-bit field , channel ID  selects 
+     * one of the input channels. The ADC  is turned off when the channel 
+     * select bits are all set as ADCH = 11111(kAdcChannelDisable). See  the 
      * type definition of adc_channel_mode_t.
      */
     adc_channel_mode_t channelId; /*!< Channel number*/
@@ -107,165 +123,166 @@ typedef struct adcChannelConfig
     adc_group_mux_mode_t muxSelect; /*!< Selection mux to group A(0) or group B(1)*/
 } adc_channel_config_t;
 
-/*! 
- * @brief Define ADC's basic configuration structure
- * 
- * This structure is used when initializing the ADC device associated with 
- * adc_init(). It contains the basic feature configuration which are 
- * necessary.
- */
-typedef struct adcConfig
-{
-    adc_clock_source_mode_t clockSourceMode; /*!< the selection of ADC clock source, see to adc_clock_source_mode_t's type definition */
-    adc_clock_divider_mode_t clockSourceDividerMode; /*!< the selection of ADC clock divider, see to adc_clock_divider_mode_t's type defnition */
-    adc_resolution_mode_t resolutionMode; /*!< the selection of ADC resolution, see to adc_resolution_mode_t's type definition */
-    adc_reference_voltage_mode_t referenceVoltageMode; /*!< the selection of ref voltage source, see to adc_reference_voltage_mode_t's type definition*/
-    bool isContinuousEnabled;   /*!< switcher to enable continuous conversion*/
-    adc_calibration_param_t *calibrationParam; /*!< NULL to enable auto-calibration or indicate mannually when initializing */
-} adc_config_t;
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
   
 /*! 
- * @brief Define ADC ISR callback function.
+ * @brief Defines the ADC ISR callback function.
  *
- * This type define the phototype of ADC ISR'callback function that can be 
+ * This type defines the prototype of ADC ISR callback function that can be 
  * registered inside the ISR.
  */
 typedef void (*adc_isr_callback_t)(void);
 
 /*!
- * @brief Get the parameters for calibration.
+ * @brief Gets the parameters for calibration.
  *
- * This function is to get the calibration parameters in auto-calibrate mode.
- * It is recommended to execute this fucntion to obtain the parameter for 
- * calibration during the initialzation, even though it will take a few time.
+ * This function is used to get the calibration parameters in auto-calibrate mode.
+ * Execute this function to obtain the parameter for the
+ * calibration during the initialization. This process may be time consuming.
  * 
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param paramPtr The pointer to a empty calibration parameter structure.
  * @return The execution status.
  */
 adc_status_t adc_get_calibration_param(uint32_t instance, adc_calibration_param_t *paramPtr);
 
 /*!
- * @brief Set the parameters for calibration.
+ * @brief Sets the parameters for calibration.
  * 
- * This function is to set the calibration parameters when necessary. The 
- * parameters could be generated from the auto-calibration by 
- * adc_get_calibration_param() or created by mannually indicated ones.
+ * This function is used to set the calibration parameters. The 
+ * parameters can be generated from the auto-calibration by the
+ * adc_get_calibration_param() or created by manually indicated parameters.
  * 
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param paramPtr The pointer to a filled calibration parameter structure.
  * @return The execution status.
  */
 adc_status_t adc_set_calibration_param(uint32_t instance, adc_calibration_param_t *paramPtr);
+
 /*!
- * @brief Initialize the ADC with the basic configuration.
+ * @brief Executes the auto calibration.
  *
- * This function is the necessary one that can make sure ADC can work at least 
- * in the basic way. If application do not need more complex features, just call
- * this fucntion will be simple.
+ * This function is used to execute the auto calibration.
+ * Recommended configuration has been accepted to fetch calibration parameters
+ * for highest accuracy. The calibration offset  is returned to the application
+ * for further use. After the auto calibration process, the initialization function
+ * should be called explicitly to update the configuration according to the
+ * application.
  * 
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
+ * @param paramPtr The pointer to an empty calibration parameter structure.
+ * It is  filled with the calibration offset value after the function is called.
+ * @return The execution status.
+ */
+adc_status_t adc_auto_calibration(uint32_t instance, adc_calibration_param_t *paramPtr);
+
+/*!
+ * @brief Initializes the ADC with the basic configuration.
+ *
+ * This function ensures that the basic operations of ADC  function correctly.
+ * This function should be called when an application does not  require complex features.
+ * 
+ * 
+ * @param instance ADC instance ID.
  * @param cfgPtr The pointer to basic configuration structure.
  * @return The execution status.
  */
-adc_status_t adc_init(uint32_t instance, adc_config_t *cfgPtr);
+adc_status_t adc_init(uint32_t instance, adc_user_config_t *cfgPtr);
 
 /*!
- * @brief Initialize the ADC with the extend configuration when necessory.
+ * @brief Initializes the ADC with the extended configurations when necessary.
  *
- * This function is an optional one that can provide advanced features according
- * to application when more complex configurations are needed. They are:
- * low power mode, long sample mode, high speed mode, asynchonous's work mode,
- * hardware trigger, hardware compare and hardwrare average.
+ * This function  provides advanced features according
+ * when an application requires  complex configurations. They are:
+ * low power mode, long sample mode, high speed mode, asynchronous work mode,
+ * hardware trigger, hardware compare, and hardware average.
  *
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param extendCfgPtr The pointer to extend configuration structure.
  * @return The execution status.
  */
 adc_status_t adc_init_extend(uint32_t instance, adc_extend_config_t *extendCfgPtr);
 
 /*!
- * @brief Shutdown the ADC.
+ * @brief Shuts down the ADC.
  *
- * Shutdown the ADC will cut off the clock to the indicated ADC device.
+ * Shutting down the ADC  cuts off the clock to the indicated ADC device.
  *
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  */
 void adc_shutdown(uint32_t instance);
 
 /*!
- * @brief Start the conversion from indicated channel.
+ * @brief Starts the conversion from the indicated channel.
  *
- * Trigger the indicated channel's conversion. In single conversion mode, this
- * function should be called every time when triggering the conversion. In
+ * Triggers the indicated channel conversion in a single conversion mode. This
+ * function should be called when each time the conversion is triggered. In a
  * continuous conversion mode, this function can be called only once at the 
- * beginning of conversion, and then the ADC will execute conversion periodically
+ * beginning of conversion. The ADC  executes the conversion periodically
  * and automatically.
  *
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param channelCfgPtr The pointer to channel configuration structure.
  * @return The execution status.
  */
 adc_status_t adc_start_conversion(uint32_t instance, adc_channel_config_t *channelCfgPtr);
 
 /*!
- * @brief Stop the conversion.
+ * @brief Stops the conversion.
  *
- * Stop the ADC's conversion. In fact, this function will set ADC to a "NULL"  
- * channel. And then, the ADC will not convert from any channel. It is different
- * from adc_shutdown() while ADC is still alive.
+ * Stops the ADC conversion. This function  sets  ADC to a "NULL"  
+ * channel, which stops ADC conversion from any channel. It is a different function
+ * than the adc_shutdown().
  *
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param channelCfgPtr The pointer to channel configuration structure.
  * @return The execution status.
  */
 adc_status_t adc_stop_conversion(uint32_t instance, adc_channel_config_t *channelCfgPtr);
 
 /*!
- * @brief Check whether the conversion is completed.
+ * @brief Checks whether the conversion is completed.
  *
- * Check whether the current conversion is completed. As there are multiple 
- * channels sharing the same conventer, the status is used to indicated the 
- * converter's situation.
+ * Checks whether the current conversion is completed. Because there are multiple 
+ * channels sharing the same converter, the status is used to indicate the 
+ * converter status.
  *
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param channelCfgPtr The pointer to channel configuration structure.
  * @return True if the event is asserted.
  */
 bool adc_is_conversion_completed(uint32_t instance, adc_channel_config_t *channelCfgPtr);
 
 /*!
- * @brief Get the value after the conversion.
+ * @brief Gets the value after the conversion.
  *
- * The value just comes from value register that may be eventually processed 
- * according to application. when use polling mode, the value will be obtain 
- * after the converions is completed. when use interrupt mode, the value will 
- * come from the buffer that is updated by ADC ISR.
+ * The value  comes from the value register that may be eventually processed 
+ * according to the application. When using polling mode, the value is obtained
+ * after the conversion is completed. When using the interrupt mode, the value  
+ * comes from the buffer that is updated by the ADC ISR.
  *
- * @param instance ADC instance id.
+ * @param instance ADC instance ID.
  * @param channelCfgPtr The pointer to channel configuration structure.
  * @return the value of conversion. 
  */
 uint32_t adc_get_conversion_value(uint32_t instance, adc_channel_config_t *channelCfgPtr);
 
 /*!
- * @brief Privated to register the custom callback funcion of ADC ISR.
+ * @brief Registers the custom callback function of the ADC ISR.
  *
- * Callback provides a friendly API for application to program ISR, when special
- * function piece need to be executed at the moment conversion is completed, 
- * they can be inserted to ISR by call the registering function by user. 
+ * Callback provides a friendly API for application to program the ISR. A special
+ * function  needs to be executed at the moment conversion is completed and can
+ * be inserted to the ISR by calling the function registered  by the user. 
  *
- * @param instance ADC instance id.
- * @param func The pointer to user indicated callback function.
+ * @param instance ADC instance ID.
+ * @param func The pointer to user indicating callback function.
  */
 void adc_register_user_callback_isr(uint32_t instance, adc_isr_callback_t func);
 
 #if defined(__cplusplus)
-}
+extern }
 #endif
 
 /*! @}*/

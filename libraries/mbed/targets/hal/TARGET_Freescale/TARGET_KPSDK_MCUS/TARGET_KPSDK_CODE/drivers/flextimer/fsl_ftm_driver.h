@@ -40,10 +40,10 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-/*! @brief channel info */
+/*! @brief Channel information */
 typedef struct FtmChannelInfo
 {
-    ftm_config_mode_t   mode;                   /*!< flextimer operation mode */
+    ftm_config_mode_t   mode;                   /*!< FlexTimer operation mode */
     ftm_edge_mode_t     edge_mode;              /*!< capture mode */
     bool                isChannelEnabled;
     bool                isSoftwareOutputCTRL;
@@ -54,7 +54,7 @@ typedef struct FtmChannelInfo
     uint8_t             inputCaptureFilterVal;
 }ftm_channel_info_t;
 
-/*! @brief combine channels info*/
+/*! @brief Combines channel information.*/
 typedef struct FtmCombinedChannelSetting
 {
     bool   isComplementaryMode;
@@ -64,8 +64,8 @@ typedef struct FtmCombinedChannelSetting
     bool   isInvertingEnabled;
 }ftm_combined_channel_info_t;
 
-/*! @brief Internal driver state information, they are grouped by naming. User just need to set the relevant ones*/
-typedef struct FtmDriverInfo {
+/*! @brief Internal driver state information grouped by naming. User  needs to set the relevant ones.*/
+typedef struct FtmUserConfig {
     uint8_t instance;                /*!< name FTM instance FTM0, FTM1, FTM2, FTM3 */
 
     ftm_clock_source_t  clockSrc;
@@ -146,20 +146,20 @@ typedef struct FtmDriverInfo {
     /* ftm_config_mode_t   mode;*/
     /* ftm_edge_mode_t     edge_mode    */
 
-} ftm_driver_info_t;
+} ftm_user_config_t;
 
 /*!
- * @brief flextimer driver PWM param
+ * @brief FlexTimer driver PWM parameter
  *
- * For example setting uPulseHigPercentage = 1, uPulseLowPulsePercentage = 1
- * means sin wave, equal low and high width
+ * Setting uPulseHigPercentage = 1, uPulseLowPulsePercentage = 1
+ * means sin wave equal to low and high width.
  */
 typedef struct FtmDriverPwmParam
 {
-  uint32_t uFrequencyHZ;           /*!< This is the PWM's period */
-  uint32_t uPulseHighPercentage;   /*!< This period is high pulse width */
-  uint32_t uPulseLowPercentage;    /*!< This period is low pulse width */
-  uint16_t uCnV;                   /*!< In combined mode, the n channel's count value, the duty cycle=|Cn+1V -CnV| */
+  uint32_t uFrequencyHZ;           /*!< PWM period */
+  uint32_t uPulseHighPercentage;   /*!< High pulse width period */
+  uint32_t uPulseLowPercentage;    /*!< Low pulse width period*/
+  uint16_t uCnV;                   /*!< In combined mode, the n channel count value, the duty cycle=|Cn+1V -CnV| */
 }ftm_pwm_param_t;
 
 /*******************************************************************************
@@ -171,44 +171,45 @@ extern "C" {
 #endif
 
 /*!
- * @brief Initialize the FTM driver.
+ * @brief Initializes the FTM driver.
  *
  * @param instance The FTM peripheral instance number.
- * @param
+ * @param info The FTM user config structure.
  */
-void ftm_init(uint8_t instance, ftm_driver_info_t *info);
+void ftm_init(uint8_t instance, ftm_user_config_t *info);
 
 /*!
- * @brief shutdown the FTM driver.
+ * @brief Shuts down the FTM driver.
  *
- * @param instance The FTM peripheral instance number.
- * @param
+ * @param state The FTM user config structure.
  */
-void ftm_shutdown(ftm_driver_info_t *state);
+void ftm_shutdown(ftm_user_config_t *state);
 
 /*!
- * @brief start channel pwm.
- * @param info The FTM peripheral instance info.
- * @param channel the channel or channel pair number(combined mode).
+ * @brief Starts channel PWM.
+ * @param info The FTM user config structure.
+ * @param channel The channel or channel pair number(combined mode).
  */
-void ftm_pwm_start( ftm_driver_info_t *info, uint8_t channel);
+void ftm_pwm_start( ftm_user_config_t *info, uint8_t channel);
 
 /*!
- * @brief stop channel pwm.
+ * @brief Stops channel PWM.
  *
- * @param info The FTM peripheral instance info.
- * @param channel the channel or channel pair number(combined mode).
+ * @param info The FTM user config structure.
+ * @param channel The channel or channel pair number(combined mode).
  */
-void ftm_pwm_stop( ftm_driver_info_t *info,uint8_t channel);
+void ftm_pwm_stop( ftm_user_config_t *info,uint8_t channel);
 
 /*!
- * @brief configure duty cycle and frequency of channel pwm.
- * @param info The FTM peripheral instance info.
- * @param channel the channel or channel pair number(combined mode). for channel pair, channel= 0(0,1),1(2,3),2(4,5),3(6,7)
+ * @brief Configures duty cycle and frequency of the channel PWM.
+ * @param info The FTM user config structure.
+ * @param channel The channel or channel pair number(combined mode).
+ *                For channel pair, channel= 0(0,1),1(2,3),2(4,5),3(6,7)
+ * @param param FTM driver PWM parameter to configure PWM options
  */
-void ftm_pwm_configure(ftm_driver_info_t *info,uint8_t channel, ftm_pwm_param_t *param);
+void ftm_pwm_configure(ftm_user_config_t *info,uint8_t channel, ftm_pwm_param_t *param);
 
-/*other apis functions for input catpure, output compare dual edge capture and quadrature */
+/*Other API functions are for input capture, output compare, dual edge capture, and quadrature. */
 #if defined(__cplusplus)
 }
 #endif

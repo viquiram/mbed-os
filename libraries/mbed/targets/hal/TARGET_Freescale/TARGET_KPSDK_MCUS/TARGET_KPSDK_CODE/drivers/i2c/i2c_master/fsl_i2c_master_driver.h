@@ -30,25 +30,30 @@
 #ifndef __FSL_I2C_MASTER_DRIVER_H__
 #define __FSL_I2C_MASTER_DRIVER_H__
 
+#include <stdlib.h>
+#include <stdbool.h>
 #include "fsl_i2c_hal.h"
 #include "fsl_os_abstraction.h"
-#include <stdlib.h>
 
-/*! @addtogroup i2c_master*/
-/*! @{*/
+/*!
+ * @addtogroup i2c_master
+ * @{
+ */
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 
 /*! @brief Information necessary to communicate with an I2C slave device.*/
-typedef struct I2CDeviceInfo {
+typedef struct I2CDeviceInfo 
+{
     uint8_t address;        /*!< The slave's 7-bit address.*/
     uint32_t baudRate_kbps; /*!< The baud rate in kbps to use with this slave device.*/
 } i2c_device_t;
 
 /*! @brief Constants for the direction of an I2C transfer.*/
-typedef enum I2CDirection {
+typedef enum I2CDirection 
+{
     kI2CRead = 1,   /*!< Read from slave device.*/
     kI2CWrite = 0   /*!< Write to slave device.*/
 } i2c_direction_t;
@@ -73,9 +78,9 @@ typedef struct I2CMasterState {
     uint32_t flags;
     i2c_direction_t direction;
     uint8_t * data;
-    size_t dataRemainingCount;
-    size_t bytesTransferredCount;
-    bool gotNak;
+    volatile size_t dataRemainingCount;
+    volatile size_t bytesTransferredCount;
+    volatile bool gotNak;
     uint32_t lastBaudRate_kbps;
     sync_object_t irqSync;
 } i2c_master_t;
@@ -88,8 +93,10 @@ typedef struct I2CMasterState {
 extern "C" {
 #endif
 
-/*! @name I2C Master*/
-/*@{*/
+/*!
+ * @name I2C Master
+ * @{
+ */
 
 /*!
  * @brief Initialize the I2C master mode driver.
@@ -139,6 +146,7 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
  * @param master                   The pointer to the I2C master driver state structure.
  * @param device                   The pointer to the I2C device information struct.
  * @param direction                The direction of an I2C transfer.
+ * @param stopAfterTransfer        Send STOP signal after this transfer or not.
  * @param subaddress               The subaddress for a device if it has.
  * @param subaddressLength         The length of the subaddress.
  * @param data                     The pointer to the data to be transfered.
@@ -149,6 +157,7 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
 i2c_status_t i2c_master_transfer(i2c_master_t * master, 
                       const i2c_device_t * device,
                       i2c_direction_t direction,
+                      bool stopAfterTransfer,
                       uint32_t subaddress,
                       size_t subaddressLength,
                       uint8_t * data,
@@ -156,7 +165,7 @@ i2c_status_t i2c_master_transfer(i2c_master_t * master,
                       size_t * actualLengthTransferred,
                       uint32_t timeout_ms);
 
-/*@}*/
+/* @} */
 
 #if defined(__cplusplus)
 }

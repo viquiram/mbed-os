@@ -30,8 +30,6 @@
 
 #include <assert.h>
 #include "fsl_os_abstraction.h"
-
-#if FSL_RTOS_SELECTED == FSL_RTOS_NONE
 #include "fsl_interrupt_manager.h"
 
 /*FUNCTION**********************************************************************
@@ -765,20 +763,18 @@ fsl_rtos_status msg_queue_get(msg_queue_handler_t handler, void **item, uint32_t
         if(handler->head == handler->tail)
         {
             handler->isEmpty = true;
+            /* Set sync to 0 because the queue is empty. */
+            (void)sync_poll(&handler->queueSync);
         }
         rtos_exit_critical();
-        
-        /* Poll the sync object to consume it in case it has been signalled before */
-        (void)sync_poll(&handler->queueSync);
 
         retVal = kSuccess;
-    
     }
     else
     {
+        rtos_exit_critical();
         /* Wait for the semaphore if the queue was empty */
         retVal = sync_wait(&handler->queueSync, timeout);
-        rtos_exit_critical();
     }
     
     return retVal;
@@ -876,7 +872,20 @@ void time_delay(uint32_t delay)
     }
 }
 
-#endif /* FSL_RTOS_SELECTED == FSL_RTOS_NONE */
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : interrupt_handler_register
+ * Description   : This function is used to install interrupt handler.
+ * For bare metal, this function will always return kSuccess.
+ *
+ *END**************************************************************************/
+fsl_rtos_status interrupt_handler_register(int32_t irqNumber, void (*handler)(void))
+{
+    interrupt_register_handler((IRQn_Type)irqNumber, handler);
+
+    return kSuccess;
+}
+
 /*******************************************************************************
  * EOF
  ******************************************************************************/

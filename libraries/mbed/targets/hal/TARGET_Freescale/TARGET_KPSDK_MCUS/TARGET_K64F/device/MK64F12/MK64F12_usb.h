@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -57,6 +57,9 @@
  * - HW_USB_CONTROL - USB OTG Control register
  * - HW_USB_USBTRC0 - USB Transceiver Control register 0
  * - HW_USB_USBFRMADJUST - Frame Adjust Register
+ * - HW_USB_CLK_RECOVER_CTRL - USB Clock recovery control
+ * - HW_USB_CLK_RECOVER_IRC_EN - IRC48M oscillator enable register
+ * - HW_USB_CLK_RECOVER_INT_STATUS - Clock recovery separated interrupt status
  *
  * - hw_usb_t - Struct containing all module registers.
  */
@@ -100,7 +103,7 @@ typedef union _hw_usb_perid
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_PERID             (*(__I hw_usb_perid_t *) HW_USB_PERID_ADDR)
-#define HW_USB_PERID_RD          (HW_USB_PERID.U)
+#define HW_USB_PERID_RD()        (HW_USB_PERID.U)
 #endif
 //@}
 
@@ -156,7 +159,7 @@ typedef union _hw_usb_idcomp
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_IDCOMP            (*(__I hw_usb_idcomp_t *) HW_USB_IDCOMP_ADDR)
-#define HW_USB_IDCOMP_RD         (HW_USB_IDCOMP.U)
+#define HW_USB_IDCOMP_RD()       (HW_USB_IDCOMP.U)
 #endif
 //@}
 
@@ -167,7 +170,7 @@ typedef union _hw_usb_idcomp
 /*!
  * @name Register USB_IDCOMP, field NID[5:0] (RO)
  *
- * Ones complement of peripheral identification bits.
+ * Ones' complement of PERID[ID]. bits.
  */
 //@{
 #define BP_USB_IDCOMP_NID    (0U)          //!< Bit position for USB_IDCOMP_NID.
@@ -210,7 +213,7 @@ typedef union _hw_usb_rev
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_REV               (*(__I hw_usb_rev_t *) HW_USB_REV_ADDR)
-#define HW_USB_REV_RD            (HW_USB_REV.U)
+#define HW_USB_REV_RD()          (HW_USB_REV.U)
 #endif
 //@}
 
@@ -221,7 +224,7 @@ typedef union _hw_usb_rev
 /*!
  * @name Register USB_REV, field REV[7:0] (RO)
  *
- * Indicate the revision number of the USB Core.
+ * Indicates the revision number of the USB Core.
  */
 //@{
 #define BP_USB_REV_REV       (0U)          //!< Bit position for USB_REV_REV.
@@ -230,7 +233,7 @@ typedef union _hw_usb_rev
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the USB_REV_REV field.
-#define BR_USB_REV_REV       (HW_USB_REV.B.REV)
+#define BR_USB_REV_REV       (HW_USB_REV.U)
 #endif
 //@}
 
@@ -267,7 +270,7 @@ typedef union _hw_usb_addinfo
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_ADDINFO           (*(__I hw_usb_addinfo_t *) HW_USB_ADDINFO_ADDR)
-#define HW_USB_ADDINFO_RD        (HW_USB_ADDINFO.U)
+#define HW_USB_ADDINFO_RD()      (HW_USB_ADDINFO.U)
 #endif
 //@}
 
@@ -278,7 +281,7 @@ typedef union _hw_usb_addinfo
 /*!
  * @name Register USB_ADDINFO, field IEHOST[0] (RO)
  *
- * When this bit is set, the USB peripheral is operating in host mode.
+ * This bit is set if host mode is enabled.
  */
 //@{
 #define BP_USB_ADDINFO_IEHOST (0U)         //!< Bit position for USB_ADDINFO_IEHOST.
@@ -316,7 +319,7 @@ typedef union _hw_usb_addinfo
  * Reset value: 0x00U
  *
  * Records changes of the ID sense and VBUS signals. Software can read this
- * register to determine the event that triggers interrupt. Only bits that have
+ * register to determine the event that triggers an interrupt. Only bits that have
  * changed since the last software read are set. Writing a one to a bit clears the
  * associated interrupt.
  */
@@ -345,11 +348,11 @@ typedef union _hw_usb_otgistat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_OTGISTAT          (*(__IO hw_usb_otgistat_t *) HW_USB_OTGISTAT_ADDR)
-#define HW_USB_OTGISTAT_RD       (HW_USB_OTGISTAT.U)
+#define HW_USB_OTGISTAT_RD()     (HW_USB_OTGISTAT.U)
 #define HW_USB_OTGISTAT_WR(v)    (HW_USB_OTGISTAT.U = (v))
-#define HW_USB_OTGISTAT_SET(v)   (HW_USB_OTGISTAT_WR(HW_USB_OTGISTAT_RD |  (v)))
-#define HW_USB_OTGISTAT_CLR(v)   (HW_USB_OTGISTAT_WR(HW_USB_OTGISTAT_RD & ~(v)))
-#define HW_USB_OTGISTAT_TOG(v)   (HW_USB_OTGISTAT_WR(HW_USB_OTGISTAT_RD ^  (v)))
+#define HW_USB_OTGISTAT_SET(v)   (HW_USB_OTGISTAT_WR(HW_USB_OTGISTAT_RD() |  (v)))
+#define HW_USB_OTGISTAT_CLR(v)   (HW_USB_OTGISTAT_WR(HW_USB_OTGISTAT_RD() & ~(v)))
+#define HW_USB_OTGISTAT_TOG(v)   (HW_USB_OTGISTAT_WR(HW_USB_OTGISTAT_RD() ^  (v)))
 #endif
 //@}
 
@@ -433,9 +436,13 @@ typedef union _hw_usb_otgistat
 /*!
  * @name Register USB_OTGISTAT, field LINE_STATE_CHG[5] (RW)
  *
- * This bit is set when the USB line state changes. The interrupt associated
- * with this bit can be used to detect Reset, Resume, Connect, and Data Line Pulse
- * signaling
+ * This interrupt is set when the USB line state (CTL[SE0] and CTL[JSTATE] bits)
+ * are stable without change for 1 millisecond, and the value of the line state
+ * is different from the last time when the line state was stable. It is set on
+ * transitions between SE0 and J-state, SE0 and K-state, and J-state and K-state.
+ * Changes in J-state while SE0 is true do not cause an interrupt. This interrupt
+ * can be used in detecting Reset, Resume, Connect, and Data Line Pulse
+ * signaling.
  */
 //@{
 #define BP_USB_OTGISTAT_LINE_STATE_CHG (5U) //!< Bit position for USB_OTGISTAT_LINE_STATE_CHG.
@@ -545,11 +552,11 @@ typedef union _hw_usb_otgicr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_OTGICR            (*(__IO hw_usb_otgicr_t *) HW_USB_OTGICR_ADDR)
-#define HW_USB_OTGICR_RD         (HW_USB_OTGICR.U)
+#define HW_USB_OTGICR_RD()       (HW_USB_OTGICR.U)
 #define HW_USB_OTGICR_WR(v)      (HW_USB_OTGICR.U = (v))
-#define HW_USB_OTGICR_SET(v)     (HW_USB_OTGICR_WR(HW_USB_OTGICR_RD |  (v)))
-#define HW_USB_OTGICR_CLR(v)     (HW_USB_OTGICR_WR(HW_USB_OTGICR_RD & ~(v)))
-#define HW_USB_OTGICR_TOG(v)     (HW_USB_OTGICR_WR(HW_USB_OTGICR_RD ^  (v)))
+#define HW_USB_OTGICR_SET(v)     (HW_USB_OTGICR_WR(HW_USB_OTGICR_RD() |  (v)))
+#define HW_USB_OTGICR_CLR(v)     (HW_USB_OTGICR_WR(HW_USB_OTGICR_RD() & ~(v)))
+#define HW_USB_OTGICR_TOG(v)     (HW_USB_OTGICR_WR(HW_USB_OTGICR_RD() ^  (v)))
 #endif
 //@}
 
@@ -751,11 +758,11 @@ typedef union _hw_usb_otgstat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_OTGSTAT           (*(__IO hw_usb_otgstat_t *) HW_USB_OTGSTAT_ADDR)
-#define HW_USB_OTGSTAT_RD        (HW_USB_OTGSTAT.U)
+#define HW_USB_OTGSTAT_RD()      (HW_USB_OTGSTAT.U)
 #define HW_USB_OTGSTAT_WR(v)     (HW_USB_OTGSTAT.U = (v))
-#define HW_USB_OTGSTAT_SET(v)    (HW_USB_OTGSTAT_WR(HW_USB_OTGSTAT_RD |  (v)))
-#define HW_USB_OTGSTAT_CLR(v)    (HW_USB_OTGSTAT_WR(HW_USB_OTGSTAT_RD & ~(v)))
-#define HW_USB_OTGSTAT_TOG(v)    (HW_USB_OTGSTAT_WR(HW_USB_OTGSTAT_RD ^  (v)))
+#define HW_USB_OTGSTAT_SET(v)    (HW_USB_OTGSTAT_WR(HW_USB_OTGSTAT_RD() |  (v)))
+#define HW_USB_OTGSTAT_CLR(v)    (HW_USB_OTGSTAT_WR(HW_USB_OTGSTAT_RD() & ~(v)))
+#define HW_USB_OTGSTAT_TOG(v)    (HW_USB_OTGSTAT_WR(HW_USB_OTGSTAT_RD() ^  (v)))
 #endif
 //@}
 
@@ -961,11 +968,11 @@ typedef union _hw_usb_otgctl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_OTGCTL            (*(__IO hw_usb_otgctl_t *) HW_USB_OTGCTL_ADDR)
-#define HW_USB_OTGCTL_RD         (HW_USB_OTGCTL.U)
+#define HW_USB_OTGCTL_RD()       (HW_USB_OTGCTL.U)
 #define HW_USB_OTGCTL_WR(v)      (HW_USB_OTGCTL.U = (v))
-#define HW_USB_OTGCTL_SET(v)     (HW_USB_OTGCTL_WR(HW_USB_OTGCTL_RD |  (v)))
-#define HW_USB_OTGCTL_CLR(v)     (HW_USB_OTGCTL_WR(HW_USB_OTGCTL_RD & ~(v)))
-#define HW_USB_OTGCTL_TOG(v)     (HW_USB_OTGCTL_WR(HW_USB_OTGCTL_RD ^  (v)))
+#define HW_USB_OTGCTL_SET(v)     (HW_USB_OTGCTL_WR(HW_USB_OTGCTL_RD() |  (v)))
+#define HW_USB_OTGCTL_CLR(v)     (HW_USB_OTGCTL_WR(HW_USB_OTGCTL_RD() & ~(v)))
+#define HW_USB_OTGCTL_TOG(v)     (HW_USB_OTGCTL_WR(HW_USB_OTGCTL_RD() ^  (v)))
 #endif
 //@}
 
@@ -1087,7 +1094,7 @@ typedef union _hw_usb_otgctl
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_USB_ISTAT - Interrupt Status register (RW)
+ * @brief HW_USB_ISTAT - Interrupt Status register (W1C)
  *
  * Reset value: 0x00U
  *
@@ -1124,11 +1131,11 @@ typedef union _hw_usb_istat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_ISTAT             (*(__IO hw_usb_istat_t *) HW_USB_ISTAT_ADDR)
-#define HW_USB_ISTAT_RD          (HW_USB_ISTAT.U)
+#define HW_USB_ISTAT_RD()        (HW_USB_ISTAT.U)
 #define HW_USB_ISTAT_WR(v)       (HW_USB_ISTAT.U = (v))
-#define HW_USB_ISTAT_SET(v)      (HW_USB_ISTAT_WR(HW_USB_ISTAT_RD |  (v)))
-#define HW_USB_ISTAT_CLR(v)      (HW_USB_ISTAT_WR(HW_USB_ISTAT_RD & ~(v)))
-#define HW_USB_ISTAT_TOG(v)      (HW_USB_ISTAT_WR(HW_USB_ISTAT_RD ^  (v)))
+#define HW_USB_ISTAT_SET(v)      (HW_USB_ISTAT_WR(HW_USB_ISTAT_RD() |  (v)))
+#define HW_USB_ISTAT_CLR(v)      (HW_USB_ISTAT_WR(HW_USB_ISTAT_RD() & ~(v)))
+#define HW_USB_ISTAT_TOG(v)      (HW_USB_ISTAT_WR(HW_USB_ISTAT_RD() ^  (v)))
 #endif
 //@}
 
@@ -1272,9 +1279,8 @@ typedef union _hw_usb_istat
 /*!
  * @name Register USB_ISTAT, field RESUME[5] (W1C)
  *
- * This bit is set depending upon the DP/DM signals, and can be used to signal
- * remote wake-up signaling on the USB bus. When not in suspend mode this
- * interrupt must be disabled.
+ * This bit is set when a K-state is observed on the DP/DM signals for 2.5 us.
+ * When not in suspend mode this interrupt must be disabled.
  */
 //@{
 #define BP_USB_ISTAT_RESUME  (5U)          //!< Bit position for USB_ISTAT_RESUME.
@@ -1300,7 +1306,8 @@ typedef union _hw_usb_istat
  *
  * This bit is set when the USB Module detects an attach of a USB device. This
  * signal is only valid if HOSTMODEEN is true. This interrupt signifies that a
- * peripheral is now present and must be configured.
+ * peripheral is now present and must be configured; it is asserted if there have
+ * been no transitions on the USB for 2.5 us and the current bus state is not SE0."
  */
 //@{
 #define BP_USB_ISTAT_ATTACH  (6U)          //!< Bit position for USB_ISTAT_ATTACH.
@@ -1388,11 +1395,11 @@ typedef union _hw_usb_inten
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_INTEN             (*(__IO hw_usb_inten_t *) HW_USB_INTEN_ADDR)
-#define HW_USB_INTEN_RD          (HW_USB_INTEN.U)
+#define HW_USB_INTEN_RD()        (HW_USB_INTEN.U)
 #define HW_USB_INTEN_WR(v)       (HW_USB_INTEN.U = (v))
-#define HW_USB_INTEN_SET(v)      (HW_USB_INTEN_WR(HW_USB_INTEN_RD |  (v)))
-#define HW_USB_INTEN_CLR(v)      (HW_USB_INTEN_WR(HW_USB_INTEN_RD & ~(v)))
-#define HW_USB_INTEN_TOG(v)      (HW_USB_INTEN_WR(HW_USB_INTEN_RD ^  (v)))
+#define HW_USB_INTEN_SET(v)      (HW_USB_INTEN_WR(HW_USB_INTEN_RD() |  (v)))
+#define HW_USB_INTEN_CLR(v)      (HW_USB_INTEN_WR(HW_USB_INTEN_RD() & ~(v)))
+#define HW_USB_INTEN_TOG(v)      (HW_USB_INTEN_WR(HW_USB_INTEN_RD() ^  (v)))
 #endif
 //@}
 
@@ -1623,7 +1630,7 @@ typedef union _hw_usb_inten
  * bits of this register are logically OR'd together and the result placed in the
  * ERROR bit of the ISTAT register. After an interrupt bit has been set it may only
  * be cleared by writing a one to the respective interrupt bit. Each bit is set
- * as soon as the error conditions is detected. Therefore, the interrupt does not
+ * as soon as the error condition is detected. Therefore, the interrupt does not
  * typically correspond with the end of a token being processed. This register
  * contains the value of 0x00 after a reset.
  */
@@ -1652,11 +1659,11 @@ typedef union _hw_usb_errstat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_ERRSTAT           (*(__IO hw_usb_errstat_t *) HW_USB_ERRSTAT_ADDR)
-#define HW_USB_ERRSTAT_RD        (HW_USB_ERRSTAT.U)
+#define HW_USB_ERRSTAT_RD()      (HW_USB_ERRSTAT.U)
 #define HW_USB_ERRSTAT_WR(v)     (HW_USB_ERRSTAT.U = (v))
-#define HW_USB_ERRSTAT_SET(v)    (HW_USB_ERRSTAT_WR(HW_USB_ERRSTAT_RD |  (v)))
-#define HW_USB_ERRSTAT_CLR(v)    (HW_USB_ERRSTAT_WR(HW_USB_ERRSTAT_RD & ~(v)))
-#define HW_USB_ERRSTAT_TOG(v)    (HW_USB_ERRSTAT_WR(HW_USB_ERRSTAT_RD ^  (v)))
+#define HW_USB_ERRSTAT_SET(v)    (HW_USB_ERRSTAT_WR(HW_USB_ERRSTAT_RD() |  (v)))
+#define HW_USB_ERRSTAT_CLR(v)    (HW_USB_ERRSTAT_WR(HW_USB_ERRSTAT_RD() & ~(v)))
+#define HW_USB_ERRSTAT_TOG(v)    (HW_USB_ERRSTAT_WR(HW_USB_ERRSTAT_RD() ^  (v)))
 #endif
 //@}
 
@@ -1866,7 +1873,7 @@ typedef union _hw_usb_errstat
  *
  * Contains enable bits for each of the error interrupt sources within the USB
  * module. Setting any of these bits enables the respective interrupt source in
- * ERRSTAT. Each bit is set as soon as the error conditions is detected. Therefore,
+ * ERRSTAT. Each bit is set as soon as the error condition is detected. Therefore,
  * the interrupt does not typically correspond with the end of a token being
  * processed. This register contains the value of 0x00 after a reset.
  */
@@ -1895,11 +1902,11 @@ typedef union _hw_usb_erren
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_ERREN             (*(__IO hw_usb_erren_t *) HW_USB_ERREN_ADDR)
-#define HW_USB_ERREN_RD          (HW_USB_ERREN.U)
+#define HW_USB_ERREN_RD()        (HW_USB_ERREN.U)
 #define HW_USB_ERREN_WR(v)       (HW_USB_ERREN.U = (v))
-#define HW_USB_ERREN_SET(v)      (HW_USB_ERREN_WR(HW_USB_ERREN_RD |  (v)))
-#define HW_USB_ERREN_CLR(v)      (HW_USB_ERREN_WR(HW_USB_ERREN_RD & ~(v)))
-#define HW_USB_ERREN_TOG(v)      (HW_USB_ERREN_WR(HW_USB_ERREN_RD ^  (v)))
+#define HW_USB_ERREN_SET(v)      (HW_USB_ERREN_WR(HW_USB_ERREN_RD() |  (v)))
+#define HW_USB_ERREN_CLR(v)      (HW_USB_ERREN_WR(HW_USB_ERREN_RD() & ~(v)))
+#define HW_USB_ERREN_TOG(v)      (HW_USB_ERREN_WR(HW_USB_ERREN_RD() ^  (v)))
 #endif
 //@}
 
@@ -2134,7 +2141,7 @@ typedef union _hw_usb_stat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_STAT              (*(__I hw_usb_stat_t *) HW_USB_STAT_ADDR)
-#define HW_USB_STAT_RD           (HW_USB_STAT.U)
+#define HW_USB_STAT_RD()         (HW_USB_STAT.U)
 #endif
 //@}
 
@@ -2220,7 +2227,7 @@ typedef union _hw_usb_ctl
         uint8_t TXSUSPENDTOKENBUSY : 1; //!< [5]
         uint8_t SE0 : 1;               //!< [6] Live USB Single Ended Zero signal
         uint8_t JSTATE : 1;            //!< [7] Live USB differential receiver JSTATE
-                                       //!< signal
+                                       //! signal
     } B;
 } hw_usb_ctl_t;
 #endif
@@ -2233,11 +2240,11 @@ typedef union _hw_usb_ctl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_CTL               (*(__IO hw_usb_ctl_t *) HW_USB_CTL_ADDR)
-#define HW_USB_CTL_RD            (HW_USB_CTL.U)
+#define HW_USB_CTL_RD()          (HW_USB_CTL.U)
 #define HW_USB_CTL_WR(v)         (HW_USB_CTL.U = (v))
-#define HW_USB_CTL_SET(v)        (HW_USB_CTL_WR(HW_USB_CTL_RD |  (v)))
-#define HW_USB_CTL_CLR(v)        (HW_USB_CTL_WR(HW_USB_CTL_RD & ~(v)))
-#define HW_USB_CTL_TOG(v)        (HW_USB_CTL_WR(HW_USB_CTL_RD ^  (v)))
+#define HW_USB_CTL_SET(v)        (HW_USB_CTL_WR(HW_USB_CTL_RD() |  (v)))
+#define HW_USB_CTL_CLR(v)        (HW_USB_CTL_WR(HW_USB_CTL_RD() & ~(v)))
+#define HW_USB_CTL_TOG(v)        (HW_USB_CTL_WR(HW_USB_CTL_RD() ^  (v)))
 #endif
 //@}
 
@@ -2248,7 +2255,8 @@ typedef union _hw_usb_ctl
 /*!
  * @name Register USB_CTL, field USBENSOFEN[0] (RW)
  *
- * Setting this bit causes the SIE to reset all of its ODD bits to the BDTs.
+ * Setting this bit enables the USB-FS to operate; clearing it disables the
+ * USB-FS. Setting the bit causes the SIE to reset all of its ODD bits to the BDTs.
  * Therefore, setting this bit resets much of the logic in the SIE. When host mode
  * is enabled, clearing this bit causes the SIE to stop sending SOF tokens.
  *
@@ -2389,7 +2397,7 @@ typedef union _hw_usb_ctl
  *
  * In Host mode, TOKEN_BUSY is set when the USB module is busy executing a USB
  * token. Software must not write more token commands to the Token Register when
- * TOKEN_BUSY is set.. Software should check this field before writing any tokens
+ * TOKEN_BUSY is set. Software should check this field before writing any tokens
  * to the Token Register to ensure that token commands are not lost. In Target
  * mode, TXD_SUSPEND is set when the SIE has disabled packet transmission and
  * reception. Clearing this bit allows the SIE to continue token processing. This bit
@@ -2474,11 +2482,10 @@ typedef union _hw_usb_ctl
  * Holds the unique USB address that the USB module decodes when in Peripheral
  * mode (HOSTMODEEN=0). When operating in Host mode (HOSTMODEEN=1) the USB module
  * transmits this address with a TOKEN packet. This enables the USB module to
- * uniquely address an USB peripheral. In either mode, USB_EN within the control
- * register must be 1. The Address register is reset to 0x00 after the reset input
- * becomes active or the USB module decodes a USB reset signal. This action
- * initializes the Address register to decode address 0x00 as required by the USB
- * specification.
+ * uniquely address any USB peripheral. In either mode, CTL[USBENSOFEN] must be 1.
+ * The Address register is reset to 0x00 after the reset input becomes active or
+ * the USB module decodes a USB reset signal. This action initializes the Address
+ * register to decode address 0x00 as required by the USB specification.
  */
 typedef union _hw_usb_addr
 {
@@ -2499,11 +2506,11 @@ typedef union _hw_usb_addr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_ADDR              (*(__IO hw_usb_addr_t *) HW_USB_ADDR_ADDR)
-#define HW_USB_ADDR_RD           (HW_USB_ADDR.U)
+#define HW_USB_ADDR_RD()         (HW_USB_ADDR.U)
 #define HW_USB_ADDR_WR(v)        (HW_USB_ADDR.U = (v))
-#define HW_USB_ADDR_SET(v)       (HW_USB_ADDR_WR(HW_USB_ADDR_RD |  (v)))
-#define HW_USB_ADDR_CLR(v)       (HW_USB_ADDR_WR(HW_USB_ADDR_RD & ~(v)))
-#define HW_USB_ADDR_TOG(v)       (HW_USB_ADDR_WR(HW_USB_ADDR_RD ^  (v)))
+#define HW_USB_ADDR_SET(v)       (HW_USB_ADDR_WR(HW_USB_ADDR_RD() |  (v)))
+#define HW_USB_ADDR_CLR(v)       (HW_USB_ADDR_WR(HW_USB_ADDR_RD() & ~(v)))
+#define HW_USB_ADDR_TOG(v)       (HW_USB_ADDR_WR(HW_USB_ADDR_RD() ^  (v)))
 #endif
 //@}
 
@@ -2532,7 +2539,7 @@ typedef union _hw_usb_addr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ADDR field to a new value.
-#define BW_USB_ADDR_ADDR(v)  (HW_USB_ADDR_WR((HW_USB_ADDR_RD & ~BM_USB_ADDR_ADDR) | BF_USB_ADDR_ADDR(v)))
+#define BW_USB_ADDR_ADDR(v)  (HW_USB_ADDR_WR((HW_USB_ADDR_RD() & ~BM_USB_ADDR_ADDR) | BF_USB_ADDR_ADDR(v)))
 #endif
 //@}
 
@@ -2573,9 +2580,9 @@ typedef union _hw_usb_addr
  * Reset value: 0x00U
  *
  * Provides address bits 15 through 9 of the base address where the current
- * Buffer Descriptor Table (BDT) resides in system memory. The 32-bit BDT Base
- * Address is always aligned on 512-byte boundaries, so bits 8 through 0 of the base
- * address are always zero.
+ * Buffer Descriptor Table (BDT) resides in system memory. See Buffer Descriptor
+ * Table. The 32-bit BDT Base Address is always aligned on 512-byte boundaries, so
+ * bits 8 through 0 of the base address are always zero.
  */
 typedef union _hw_usb_bdtpage1
 {
@@ -2596,11 +2603,11 @@ typedef union _hw_usb_bdtpage1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_BDTPAGE1          (*(__IO hw_usb_bdtpage1_t *) HW_USB_BDTPAGE1_ADDR)
-#define HW_USB_BDTPAGE1_RD       (HW_USB_BDTPAGE1.U)
+#define HW_USB_BDTPAGE1_RD()     (HW_USB_BDTPAGE1.U)
 #define HW_USB_BDTPAGE1_WR(v)    (HW_USB_BDTPAGE1.U = (v))
-#define HW_USB_BDTPAGE1_SET(v)   (HW_USB_BDTPAGE1_WR(HW_USB_BDTPAGE1_RD |  (v)))
-#define HW_USB_BDTPAGE1_CLR(v)   (HW_USB_BDTPAGE1_WR(HW_USB_BDTPAGE1_RD & ~(v)))
-#define HW_USB_BDTPAGE1_TOG(v)   (HW_USB_BDTPAGE1_WR(HW_USB_BDTPAGE1_RD ^  (v)))
+#define HW_USB_BDTPAGE1_SET(v)   (HW_USB_BDTPAGE1_WR(HW_USB_BDTPAGE1_RD() |  (v)))
+#define HW_USB_BDTPAGE1_CLR(v)   (HW_USB_BDTPAGE1_WR(HW_USB_BDTPAGE1_RD() & ~(v)))
+#define HW_USB_BDTPAGE1_TOG(v)   (HW_USB_BDTPAGE1_WR(HW_USB_BDTPAGE1_RD() ^  (v)))
 #endif
 //@}
 
@@ -2628,7 +2635,7 @@ typedef union _hw_usb_bdtpage1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the BDTBA field to a new value.
-#define BW_USB_BDTPAGE1_BDTBA(v) (HW_USB_BDTPAGE1_WR((HW_USB_BDTPAGE1_RD & ~BM_USB_BDTPAGE1_BDTBA) | BF_USB_BDTPAGE1_BDTBA(v)))
+#define BW_USB_BDTPAGE1_BDTBA(v) (HW_USB_BDTPAGE1_WR((HW_USB_BDTPAGE1_RD() & ~BM_USB_BDTPAGE1_BDTBA) | BF_USB_BDTPAGE1_BDTBA(v)))
 #endif
 //@}
 
@@ -2642,8 +2649,9 @@ typedef union _hw_usb_bdtpage1
  *
  * Reset value: 0x00U
  *
- * Contains an 11-bit value used to compute the address where the current Buffer
- * Descriptor Table (BDT) resides in system memory.
+ * The Frame Number registers (low and high) contain the 11-bit frame number.
+ * These registers are updated with the current frame number whenever a SOF TOKEN
+ * is received.
  */
 typedef union _hw_usb_frmnuml
 {
@@ -2663,11 +2671,11 @@ typedef union _hw_usb_frmnuml
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_FRMNUML           (*(__IO hw_usb_frmnuml_t *) HW_USB_FRMNUML_ADDR)
-#define HW_USB_FRMNUML_RD        (HW_USB_FRMNUML.U)
+#define HW_USB_FRMNUML_RD()      (HW_USB_FRMNUML.U)
 #define HW_USB_FRMNUML_WR(v)     (HW_USB_FRMNUML.U = (v))
-#define HW_USB_FRMNUML_SET(v)    (HW_USB_FRMNUML_WR(HW_USB_FRMNUML_RD |  (v)))
-#define HW_USB_FRMNUML_CLR(v)    (HW_USB_FRMNUML_WR(HW_USB_FRMNUML_RD & ~(v)))
-#define HW_USB_FRMNUML_TOG(v)    (HW_USB_FRMNUML_WR(HW_USB_FRMNUML_RD ^  (v)))
+#define HW_USB_FRMNUML_SET(v)    (HW_USB_FRMNUML_WR(HW_USB_FRMNUML_RD() |  (v)))
+#define HW_USB_FRMNUML_CLR(v)    (HW_USB_FRMNUML_WR(HW_USB_FRMNUML_RD() & ~(v)))
+#define HW_USB_FRMNUML_TOG(v)    (HW_USB_FRMNUML_WR(HW_USB_FRMNUML_RD() ^  (v)))
 #endif
 //@}
 
@@ -2689,7 +2697,7 @@ typedef union _hw_usb_frmnuml
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the USB_FRMNUML_FRM field.
-#define BR_USB_FRMNUML_FRM   (HW_USB_FRMNUML.B.FRM)
+#define BR_USB_FRMNUML_FRM   (HW_USB_FRMNUML.U)
 #endif
 
 //! @brief Format value for bitfield USB_FRMNUML_FRM.
@@ -2697,7 +2705,7 @@ typedef union _hw_usb_frmnuml
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FRM field to a new value.
-#define BW_USB_FRMNUML_FRM(v) (HW_USB_FRMNUML_WR((HW_USB_FRMNUML_RD & ~BM_USB_FRMNUML_FRM) | BF_USB_FRMNUML_FRM(v)))
+#define BW_USB_FRMNUML_FRM(v) (HW_USB_FRMNUML_WR(v))
 #endif
 //@}
 
@@ -2711,8 +2719,9 @@ typedef union _hw_usb_frmnuml
  *
  * Reset value: 0x00U
  *
- * Contains an 11-bit value used to compute the address where the current Buffer
- * Descriptor Table (BDT) resides in system memory.
+ * The Frame Number registers (low and high) contain the 11-bit frame number.
+ * These registers are updated with the current frame number whenever a SOF TOKEN
+ * is received.
  */
 typedef union _hw_usb_frmnumh
 {
@@ -2733,11 +2742,11 @@ typedef union _hw_usb_frmnumh
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_FRMNUMH           (*(__IO hw_usb_frmnumh_t *) HW_USB_FRMNUMH_ADDR)
-#define HW_USB_FRMNUMH_RD        (HW_USB_FRMNUMH.U)
+#define HW_USB_FRMNUMH_RD()      (HW_USB_FRMNUMH.U)
 #define HW_USB_FRMNUMH_WR(v)     (HW_USB_FRMNUMH.U = (v))
-#define HW_USB_FRMNUMH_SET(v)    (HW_USB_FRMNUMH_WR(HW_USB_FRMNUMH_RD |  (v)))
-#define HW_USB_FRMNUMH_CLR(v)    (HW_USB_FRMNUMH_WR(HW_USB_FRMNUMH_RD & ~(v)))
-#define HW_USB_FRMNUMH_TOG(v)    (HW_USB_FRMNUMH_WR(HW_USB_FRMNUMH_RD ^  (v)))
+#define HW_USB_FRMNUMH_SET(v)    (HW_USB_FRMNUMH_WR(HW_USB_FRMNUMH_RD() |  (v)))
+#define HW_USB_FRMNUMH_CLR(v)    (HW_USB_FRMNUMH_WR(HW_USB_FRMNUMH_RD() & ~(v)))
+#define HW_USB_FRMNUMH_TOG(v)    (HW_USB_FRMNUMH_WR(HW_USB_FRMNUMH_RD() ^  (v)))
 #endif
 //@}
 
@@ -2767,7 +2776,7 @@ typedef union _hw_usb_frmnumh
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FRM field to a new value.
-#define BW_USB_FRMNUMH_FRM(v) (HW_USB_FRMNUMH_WR((HW_USB_FRMNUMH_RD & ~BM_USB_FRMNUMH_FRM) | BF_USB_FRMNUMH_FRM(v)))
+#define BW_USB_FRMNUMH_FRM(v) (HW_USB_FRMNUMH_WR((HW_USB_FRMNUMH_RD() & ~BM_USB_FRMNUMH_FRM) | BF_USB_FRMNUMH_FRM(v)))
 #endif
 //@}
 
@@ -2813,11 +2822,11 @@ typedef union _hw_usb_token
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_TOKEN             (*(__IO hw_usb_token_t *) HW_USB_TOKEN_ADDR)
-#define HW_USB_TOKEN_RD          (HW_USB_TOKEN.U)
+#define HW_USB_TOKEN_RD()        (HW_USB_TOKEN.U)
 #define HW_USB_TOKEN_WR(v)       (HW_USB_TOKEN.U = (v))
-#define HW_USB_TOKEN_SET(v)      (HW_USB_TOKEN_WR(HW_USB_TOKEN_RD |  (v)))
-#define HW_USB_TOKEN_CLR(v)      (HW_USB_TOKEN_WR(HW_USB_TOKEN_RD & ~(v)))
-#define HW_USB_TOKEN_TOG(v)      (HW_USB_TOKEN_WR(HW_USB_TOKEN_RD ^  (v)))
+#define HW_USB_TOKEN_SET(v)      (HW_USB_TOKEN_WR(HW_USB_TOKEN_RD() |  (v)))
+#define HW_USB_TOKEN_CLR(v)      (HW_USB_TOKEN_WR(HW_USB_TOKEN_RD() & ~(v)))
+#define HW_USB_TOKEN_TOG(v)      (HW_USB_TOKEN_WR(HW_USB_TOKEN_RD() ^  (v)))
 #endif
 //@}
 
@@ -2846,7 +2855,7 @@ typedef union _hw_usb_token
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TOKENENDPT field to a new value.
-#define BW_USB_TOKEN_TOKENENDPT(v) (HW_USB_TOKEN_WR((HW_USB_TOKEN_RD & ~BM_USB_TOKEN_TOKENENDPT) | BF_USB_TOKEN_TOKENENDPT(v)))
+#define BW_USB_TOKEN_TOKENENDPT(v) (HW_USB_TOKEN_WR((HW_USB_TOKEN_RD() & ~BM_USB_TOKEN_TOKENENDPT) | BF_USB_TOKEN_TOKENENDPT(v)))
 #endif
 //@}
 
@@ -2875,7 +2884,7 @@ typedef union _hw_usb_token
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TOKENPID field to a new value.
-#define BW_USB_TOKEN_TOKENPID(v) (HW_USB_TOKEN_WR((HW_USB_TOKEN_RD & ~BM_USB_TOKEN_TOKENPID) | BF_USB_TOKEN_TOKENPID(v)))
+#define BW_USB_TOKEN_TOKENPID(v) (HW_USB_TOKEN_WR((HW_USB_TOKEN_RD() & ~BM_USB_TOKEN_TOKENPID) | BF_USB_TOKEN_TOKENPID(v)))
 #endif
 //@}
 
@@ -2924,11 +2933,11 @@ typedef union _hw_usb_softhld
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_SOFTHLD           (*(__IO hw_usb_softhld_t *) HW_USB_SOFTHLD_ADDR)
-#define HW_USB_SOFTHLD_RD        (HW_USB_SOFTHLD.U)
+#define HW_USB_SOFTHLD_RD()      (HW_USB_SOFTHLD.U)
 #define HW_USB_SOFTHLD_WR(v)     (HW_USB_SOFTHLD.U = (v))
-#define HW_USB_SOFTHLD_SET(v)    (HW_USB_SOFTHLD_WR(HW_USB_SOFTHLD_RD |  (v)))
-#define HW_USB_SOFTHLD_CLR(v)    (HW_USB_SOFTHLD_WR(HW_USB_SOFTHLD_RD & ~(v)))
-#define HW_USB_SOFTHLD_TOG(v)    (HW_USB_SOFTHLD_WR(HW_USB_SOFTHLD_RD ^  (v)))
+#define HW_USB_SOFTHLD_SET(v)    (HW_USB_SOFTHLD_WR(HW_USB_SOFTHLD_RD() |  (v)))
+#define HW_USB_SOFTHLD_CLR(v)    (HW_USB_SOFTHLD_WR(HW_USB_SOFTHLD_RD() & ~(v)))
+#define HW_USB_SOFTHLD_TOG(v)    (HW_USB_SOFTHLD_WR(HW_USB_SOFTHLD_RD() ^  (v)))
 #endif
 //@}
 
@@ -2948,7 +2957,7 @@ typedef union _hw_usb_softhld
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the USB_SOFTHLD_CNT field.
-#define BR_USB_SOFTHLD_CNT   (HW_USB_SOFTHLD.B.CNT)
+#define BR_USB_SOFTHLD_CNT   (HW_USB_SOFTHLD.U)
 #endif
 
 //! @brief Format value for bitfield USB_SOFTHLD_CNT.
@@ -2956,7 +2965,7 @@ typedef union _hw_usb_softhld
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CNT field to a new value.
-#define BW_USB_SOFTHLD_CNT(v) (HW_USB_SOFTHLD_WR((HW_USB_SOFTHLD_RD & ~BM_USB_SOFTHLD_CNT) | BF_USB_SOFTHLD_CNT(v)))
+#define BW_USB_SOFTHLD_CNT(v) (HW_USB_SOFTHLD_WR(v))
 #endif
 //@}
 
@@ -2971,7 +2980,7 @@ typedef union _hw_usb_softhld
  * Reset value: 0x00U
  *
  * Contains an 8-bit value used to compute the address where the current Buffer
- * Descriptor Table (BDT) resides in system memory.
+ * Descriptor Table (BDT) resides in system memory. See Buffer Descriptor Table.
  */
 typedef union _hw_usb_bdtpage2
 {
@@ -2991,11 +3000,11 @@ typedef union _hw_usb_bdtpage2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_BDTPAGE2          (*(__IO hw_usb_bdtpage2_t *) HW_USB_BDTPAGE2_ADDR)
-#define HW_USB_BDTPAGE2_RD       (HW_USB_BDTPAGE2.U)
+#define HW_USB_BDTPAGE2_RD()     (HW_USB_BDTPAGE2.U)
 #define HW_USB_BDTPAGE2_WR(v)    (HW_USB_BDTPAGE2.U = (v))
-#define HW_USB_BDTPAGE2_SET(v)   (HW_USB_BDTPAGE2_WR(HW_USB_BDTPAGE2_RD |  (v)))
-#define HW_USB_BDTPAGE2_CLR(v)   (HW_USB_BDTPAGE2_WR(HW_USB_BDTPAGE2_RD & ~(v)))
-#define HW_USB_BDTPAGE2_TOG(v)   (HW_USB_BDTPAGE2_WR(HW_USB_BDTPAGE2_RD ^  (v)))
+#define HW_USB_BDTPAGE2_SET(v)   (HW_USB_BDTPAGE2_WR(HW_USB_BDTPAGE2_RD() |  (v)))
+#define HW_USB_BDTPAGE2_CLR(v)   (HW_USB_BDTPAGE2_WR(HW_USB_BDTPAGE2_RD() & ~(v)))
+#define HW_USB_BDTPAGE2_TOG(v)   (HW_USB_BDTPAGE2_WR(HW_USB_BDTPAGE2_RD() ^  (v)))
 #endif
 //@}
 
@@ -3016,7 +3025,7 @@ typedef union _hw_usb_bdtpage2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the USB_BDTPAGE2_BDTBA field.
-#define BR_USB_BDTPAGE2_BDTBA (HW_USB_BDTPAGE2.B.BDTBA)
+#define BR_USB_BDTPAGE2_BDTBA (HW_USB_BDTPAGE2.U)
 #endif
 
 //! @brief Format value for bitfield USB_BDTPAGE2_BDTBA.
@@ -3024,7 +3033,7 @@ typedef union _hw_usb_bdtpage2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the BDTBA field to a new value.
-#define BW_USB_BDTPAGE2_BDTBA(v) (HW_USB_BDTPAGE2_WR((HW_USB_BDTPAGE2_RD & ~BM_USB_BDTPAGE2_BDTBA) | BF_USB_BDTPAGE2_BDTBA(v)))
+#define BW_USB_BDTPAGE2_BDTBA(v) (HW_USB_BDTPAGE2_WR(v))
 #endif
 //@}
 
@@ -3039,7 +3048,7 @@ typedef union _hw_usb_bdtpage2
  * Reset value: 0x00U
  *
  * Contains an 8-bit value used to compute the address where the current Buffer
- * Descriptor Table (BDT) resides in system memory.
+ * Descriptor Table (BDT) resides in system memory. See Buffer Descriptor Table.
  */
 typedef union _hw_usb_bdtpage3
 {
@@ -3059,11 +3068,11 @@ typedef union _hw_usb_bdtpage3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_BDTPAGE3          (*(__IO hw_usb_bdtpage3_t *) HW_USB_BDTPAGE3_ADDR)
-#define HW_USB_BDTPAGE3_RD       (HW_USB_BDTPAGE3.U)
+#define HW_USB_BDTPAGE3_RD()     (HW_USB_BDTPAGE3.U)
 #define HW_USB_BDTPAGE3_WR(v)    (HW_USB_BDTPAGE3.U = (v))
-#define HW_USB_BDTPAGE3_SET(v)   (HW_USB_BDTPAGE3_WR(HW_USB_BDTPAGE3_RD |  (v)))
-#define HW_USB_BDTPAGE3_CLR(v)   (HW_USB_BDTPAGE3_WR(HW_USB_BDTPAGE3_RD & ~(v)))
-#define HW_USB_BDTPAGE3_TOG(v)   (HW_USB_BDTPAGE3_WR(HW_USB_BDTPAGE3_RD ^  (v)))
+#define HW_USB_BDTPAGE3_SET(v)   (HW_USB_BDTPAGE3_WR(HW_USB_BDTPAGE3_RD() |  (v)))
+#define HW_USB_BDTPAGE3_CLR(v)   (HW_USB_BDTPAGE3_WR(HW_USB_BDTPAGE3_RD() & ~(v)))
+#define HW_USB_BDTPAGE3_TOG(v)   (HW_USB_BDTPAGE3_WR(HW_USB_BDTPAGE3_RD() ^  (v)))
 #endif
 //@}
 
@@ -3084,7 +3093,7 @@ typedef union _hw_usb_bdtpage3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the USB_BDTPAGE3_BDTBA field.
-#define BR_USB_BDTPAGE3_BDTBA (HW_USB_BDTPAGE3.B.BDTBA)
+#define BR_USB_BDTPAGE3_BDTBA (HW_USB_BDTPAGE3.U)
 #endif
 
 //! @brief Format value for bitfield USB_BDTPAGE3_BDTBA.
@@ -3092,7 +3101,7 @@ typedef union _hw_usb_bdtpage3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the BDTBA field to a new value.
-#define BW_USB_BDTPAGE3_BDTBA(v) (HW_USB_BDTPAGE3_WR((HW_USB_BDTPAGE3_RD & ~BM_USB_BDTPAGE3_BDTBA) | BF_USB_BDTPAGE3_BDTBA(v)))
+#define BW_USB_BDTPAGE3_BDTBA(v) (HW_USB_BDTPAGE3_WR(v))
 #endif
 //@}
 
@@ -3115,7 +3124,14 @@ typedef union _hw_usb_bdtpage3
  * characteristics of the host transfer. For Control, Bulk and Interrupt transfers, the EPHSHK
  * bit should be 1. For Isochronous transfers it should be 0. Common values to
  * use for ENDPT0 in host mode are 0x4D for Control, Bulk, and Interrupt transfers,
- * and 0x4C for Isochronous transfers.
+ * and 0x4C for Isochronous transfers. The three bits EPCTLDIS, EPRXEN, and
+ * EPTXEN define if an endpoint is enabled and define the direction of the endpoint.
+ * The endpoint enable/direction control is defined in the following table.
+ * Endpoint enable and direction control EPCTLDIS EPRXEN EPTXEN Endpoint
+ * enable/direction control X 0 0 Disable endpoint X 0 1 Enable endpoint for Tx transfers only
+ * X 1 0 Enable endpoint for Rx transfers only 1 1 1 Enable endpoint for Rx and
+ * Tx transfers 0 1 1 Enable Endpoint for RX and TX as well as control (SETUP)
+ * transfers.
  */
 typedef union _hw_usb_endptn
 {
@@ -3291,8 +3307,8 @@ typedef union _hw_usb_endptn
  * endpoint 0 (ENDPT0) only. When set this bit causes the host to not retry NAK'ed
  * (Negative Acknowledgement) transactions. When a transaction is NAKed, the BDT PID
  * field is updated with the NAK PID, and the TOKEN_DNE interrupt is set. When
- * this bit is cleared NAKed transactions is retried in hardware. This bit must be
- * set when the host is attempting to poll an interrupt endpoint.
+ * this bit is cleared, NAKed transactions are retried in hardware. This bit must
+ * be set when the host is attempting to poll an interrupt endpoint.
  */
 //@{
 #define BP_USB_ENDPTn_RETRYDIS (6U)        //!< Bit position for USB_ENDPTn_RETRYDIS.
@@ -3319,7 +3335,7 @@ typedef union _hw_usb_endptn
  * This is a Host mode only field and is present in the control register for
  * endpoint 0 (ENDPT0) only. When set this bit allows the host to communicate to a
  * directly connected low speed device. When cleared, the host produces the
- * PRE_PID. It then switches to low-speed signaling when sends a token to a low speed
+ * PRE_PID. It then switches to low-speed signaling when sending a token to a low speed
  * device as required to communicate with a low speed device through a hub.
  */
 //@{
@@ -3371,11 +3387,11 @@ typedef union _hw_usb_usbctrl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_USBCTRL           (*(__IO hw_usb_usbctrl_t *) HW_USB_USBCTRL_ADDR)
-#define HW_USB_USBCTRL_RD        (HW_USB_USBCTRL.U)
+#define HW_USB_USBCTRL_RD()      (HW_USB_USBCTRL.U)
 #define HW_USB_USBCTRL_WR(v)     (HW_USB_USBCTRL.U = (v))
-#define HW_USB_USBCTRL_SET(v)    (HW_USB_USBCTRL_WR(HW_USB_USBCTRL_RD |  (v)))
-#define HW_USB_USBCTRL_CLR(v)    (HW_USB_USBCTRL_WR(HW_USB_USBCTRL_RD & ~(v)))
-#define HW_USB_USBCTRL_TOG(v)    (HW_USB_USBCTRL_WR(HW_USB_USBCTRL_RD ^  (v)))
+#define HW_USB_USBCTRL_SET(v)    (HW_USB_USBCTRL_WR(HW_USB_USBCTRL_RD() |  (v)))
+#define HW_USB_USBCTRL_CLR(v)    (HW_USB_USBCTRL_WR(HW_USB_USBCTRL_RD() & ~(v)))
+#define HW_USB_USBCTRL_TOG(v)    (HW_USB_USBCTRL_WR(HW_USB_USBCTRL_RD() ^  (v)))
 #endif
 //@}
 
@@ -3475,7 +3491,7 @@ typedef union _hw_usb_observe
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_OBSERVE           (*(__I hw_usb_observe_t *) HW_USB_OBSERVE_ADDR)
-#define HW_USB_OBSERVE_RD        (HW_USB_OBSERVE.U)
+#define HW_USB_OBSERVE_RD()      (HW_USB_OBSERVE.U)
 #endif
 //@}
 
@@ -3486,7 +3502,7 @@ typedef union _hw_usb_observe
 /*!
  * @name Register USB_OBSERVE, field DMPD[4] (RO)
  *
- * Provides observability of the D- Pulldown enable at the USB transceiver
+ * Provides observability of the D- Pulldown enable at the USB transceiver.
  *
  * Values:
  * - 0 - D- pulldown disabled.
@@ -3506,7 +3522,7 @@ typedef union _hw_usb_observe
 /*!
  * @name Register USB_OBSERVE, field DPPD[6] (RO)
  *
- * Provides observability of the D+ Pulldown . enable at the USB transceiver
+ * Provides observability of the D+ Pulldown enable at the USB transceiver.
  *
  * Values:
  * - 0 - D+ pulldown disabled.
@@ -3526,7 +3542,7 @@ typedef union _hw_usb_observe
 /*!
  * @name Register USB_OBSERVE, field DPPU[7] (RO)
  *
- * Provides observability of the D+ Pullup . enable at the USB transceiver
+ * Provides observability of the D+ Pullup enable at the USB transceiver.
  *
  * Values:
  * - 0 - D+ pullup disabled.
@@ -3573,11 +3589,11 @@ typedef union _hw_usb_control
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_CONTROL           (*(__IO hw_usb_control_t *) HW_USB_CONTROL_ADDR)
-#define HW_USB_CONTROL_RD        (HW_USB_CONTROL.U)
+#define HW_USB_CONTROL_RD()      (HW_USB_CONTROL.U)
 #define HW_USB_CONTROL_WR(v)     (HW_USB_CONTROL.U = (v))
-#define HW_USB_CONTROL_SET(v)    (HW_USB_CONTROL_WR(HW_USB_CONTROL_RD |  (v)))
-#define HW_USB_CONTROL_CLR(v)    (HW_USB_CONTROL_WR(HW_USB_CONTROL_RD & ~(v)))
-#define HW_USB_CONTROL_TOG(v)    (HW_USB_CONTROL_WR(HW_USB_CONTROL_RD ^  (v)))
+#define HW_USB_CONTROL_SET(v)    (HW_USB_CONTROL_WR(HW_USB_CONTROL_RD() |  (v)))
+#define HW_USB_CONTROL_CLR(v)    (HW_USB_CONTROL_WR(HW_USB_CONTROL_RD() & ~(v)))
+#define HW_USB_CONTROL_TOG(v)    (HW_USB_CONTROL_WR(HW_USB_CONTROL_RD() ^  (v)))
 #endif
 //@}
 
@@ -3588,8 +3604,8 @@ typedef union _hw_usb_control
 /*!
  * @name Register USB_CONTROL, field DPPULLUPNONOTG[4] (RW)
  *
- * Provides control of the DP Pullup in the USB OTG module, if USB is configured
- * in non-OTG device mode.
+ * Provides control of the DP Pullup in USBOTG, if USB is configured in non-OTG
+ * device mode.
  *
  * Values:
  * - 0 - DP Pullup in non-OTG device mode is not enabled.
@@ -3635,7 +3651,9 @@ typedef union _hw_usb_usbtrc0
     {
         uint8_t USB_RESUME_INT : 1;    //!< [0] USB Asynchronous Interrupt
         uint8_t SYNC_DET : 1;          //!< [1] Synchronous USB Interrupt Detect
-        uint8_t RESERVED0 : 3;         //!< [4:2]
+        uint8_t USB_CLK_RECOVERY_INT : 1; //!< [2] Combined USB Clock
+                                       //! Recovery interrupt status
+        uint8_t RESERVED0 : 2;         //!< [4:3]
         uint8_t USBRESMEN : 1;         //!< [5] Asynchronous Resume Interrupt Enable
         uint8_t RESERVED1 : 1;         //!< [6]
         uint8_t USBRESET : 1;          //!< [7] USB Reset
@@ -3651,11 +3669,11 @@ typedef union _hw_usb_usbtrc0
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_USBTRC0           (*(__IO hw_usb_usbtrc0_t *) HW_USB_USBTRC0_ADDR)
-#define HW_USB_USBTRC0_RD        (HW_USB_USBTRC0.U)
+#define HW_USB_USBTRC0_RD()      (HW_USB_USBTRC0.U)
 #define HW_USB_USBTRC0_WR(v)     (HW_USB_USBTRC0.U = (v))
-#define HW_USB_USBTRC0_SET(v)    (HW_USB_USBTRC0_WR(HW_USB_USBTRC0_RD |  (v)))
-#define HW_USB_USBTRC0_CLR(v)    (HW_USB_USBTRC0_WR(HW_USB_USBTRC0_RD & ~(v)))
-#define HW_USB_USBTRC0_TOG(v)    (HW_USB_USBTRC0_WR(HW_USB_USBTRC0_RD ^  (v)))
+#define HW_USB_USBTRC0_SET(v)    (HW_USB_USBTRC0_WR(HW_USB_USBTRC0_RD() |  (v)))
+#define HW_USB_USBTRC0_CLR(v)    (HW_USB_USBTRC0_WR(HW_USB_USBTRC0_RD() & ~(v)))
+#define HW_USB_USBTRC0_TOG(v)    (HW_USB_USBTRC0_WR(HW_USB_USBTRC0_RD() ^  (v)))
 #endif
 //@}
 
@@ -3700,6 +3718,28 @@ typedef union _hw_usb_usbtrc0
 //@}
 
 /*!
+ * @name Register USB_USBTRC0, field USB_CLK_RECOVERY_INT[2] (RO)
+ *
+ * This read-only field will be set to value high at 1'b1 when any of USB clock
+ * recovery interrupt conditions are detected and those interrupts are unmasked.
+ * For customer use the only unmasked USB clock recovery interrupt condition
+ * results from an overflow of the frequency trim setting values indicating that the
+ * frequency trim calculated is out of the adjustment range of the IRC48M output
+ * clock. To clear this bit after it has been set, Write 0xFF to register
+ * USB_CLK_RECOVER_INT_STATUS.
+ */
+//@{
+#define BP_USB_USBTRC0_USB_CLK_RECOVERY_INT (2U) //!< Bit position for USB_USBTRC0_USB_CLK_RECOVERY_INT.
+#define BM_USB_USBTRC0_USB_CLK_RECOVERY_INT (0x04U) //!< Bit mask for USB_USBTRC0_USB_CLK_RECOVERY_INT.
+#define BS_USB_USBTRC0_USB_CLK_RECOVERY_INT (1U) //!< Bit field size in bits for USB_USBTRC0_USB_CLK_RECOVERY_INT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_USBTRC0_USB_CLK_RECOVERY_INT field.
+#define BR_USB_USBTRC0_USB_CLK_RECOVERY_INT (BITBAND_ACCESS8(HW_USB_USBTRC0_ADDR, BP_USB_USBTRC0_USB_CLK_RECOVERY_INT))
+#endif
+//@}
+
+/*!
  * @name Register USB_USBTRC0, field USBRESMEN[5] (RW)
  *
  * This bit, when set, allows the USB module to send an asynchronous wakeup
@@ -3713,7 +3753,8 @@ typedef union _hw_usb_usbtrc0
  * - 1 - USB asynchronous wakeup from suspend mode enabled. The asynchronous
  *     resume interrupt differs from the synchronous resume interrupt in that it
  *     asynchronously detects K-state using the unfiltered state of the D+ and D-
- *     pins. This interupt should only be enabled when the Transceiver is suspended.
+ *     pins. This interrupt should only be enabled when the Transceiver is
+ *     suspended.
  */
 //@{
 #define BP_USB_USBTRC0_USBRESMEN (5U)      //!< Bit position for USB_USBTRC0_USBRESMEN.
@@ -3737,9 +3778,9 @@ typedef union _hw_usb_usbtrc0
 /*!
  * @name Register USB_USBTRC0, field USBRESET[7] (WO)
  *
- * Generates a hard reset to the USB_OTG module. After this bit is set and the
- * reset occurs, this bit is automatically cleared. This bit is always read as
- * zero. Wait two USB clock cycles after setting this bit.
+ * Generates a hard reset to USBOTG. After this bit is set and the reset occurs,
+ * this bit is automatically cleared. This bit is always read as zero. Wait two
+ * USB clock cycles after setting this bit.
  *
  * Values:
  * - 0 - Normal USB module operation.
@@ -3750,18 +3791,8 @@ typedef union _hw_usb_usbtrc0
 #define BM_USB_USBTRC0_USBRESET (0x80U)    //!< Bit mask for USB_USBTRC0_USBRESET.
 #define BS_USB_USBTRC0_USBRESET (1U)       //!< Bit field size in bits for USB_USBTRC0_USBRESET.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the USB_USBTRC0_USBRESET field.
-#define BR_USB_USBTRC0_USBRESET (BITBAND_ACCESS8(HW_USB_USBTRC0_ADDR, BP_USB_USBTRC0_USBRESET))
-#endif
-
 //! @brief Format value for bitfield USB_USBTRC0_USBRESET.
 #define BF_USB_USBTRC0_USBRESET(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_USBTRC0_USBRESET), uint8_t) & BM_USB_USBTRC0_USBRESET)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the USBRESET field to a new value.
-#define BW_USB_USBTRC0_USBRESET(v) (BITBAND_ACCESS8(HW_USB_USBTRC0_ADDR, BP_USB_USBTRC0_USBRESET) = (v))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -3792,11 +3823,11 @@ typedef union _hw_usb_usbfrmadjust
 
 #ifndef __LANGUAGE_ASM__
 #define HW_USB_USBFRMADJUST      (*(__IO hw_usb_usbfrmadjust_t *) HW_USB_USBFRMADJUST_ADDR)
-#define HW_USB_USBFRMADJUST_RD   (HW_USB_USBFRMADJUST.U)
+#define HW_USB_USBFRMADJUST_RD() (HW_USB_USBFRMADJUST.U)
 #define HW_USB_USBFRMADJUST_WR(v) (HW_USB_USBFRMADJUST.U = (v))
-#define HW_USB_USBFRMADJUST_SET(v) (HW_USB_USBFRMADJUST_WR(HW_USB_USBFRMADJUST_RD |  (v)))
-#define HW_USB_USBFRMADJUST_CLR(v) (HW_USB_USBFRMADJUST_WR(HW_USB_USBFRMADJUST_RD & ~(v)))
-#define HW_USB_USBFRMADJUST_TOG(v) (HW_USB_USBFRMADJUST_WR(HW_USB_USBFRMADJUST_RD ^  (v)))
+#define HW_USB_USBFRMADJUST_SET(v) (HW_USB_USBFRMADJUST_WR(HW_USB_USBFRMADJUST_RD() |  (v)))
+#define HW_USB_USBFRMADJUST_CLR(v) (HW_USB_USBFRMADJUST_WR(HW_USB_USBFRMADJUST_RD() & ~(v)))
+#define HW_USB_USBFRMADJUST_TOG(v) (HW_USB_USBFRMADJUST_WR(HW_USB_USBFRMADJUST_RD() ^  (v)))
 #endif
 //@}
 
@@ -3820,7 +3851,7 @@ typedef union _hw_usb_usbfrmadjust
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the USB_USBFRMADJUST_ADJ field.
-#define BR_USB_USBFRMADJUST_ADJ (HW_USB_USBFRMADJUST.B.ADJ)
+#define BR_USB_USBFRMADJUST_ADJ (HW_USB_USBFRMADJUST.U)
 #endif
 
 //! @brief Format value for bitfield USB_USBFRMADJUST_ADJ.
@@ -3828,7 +3859,333 @@ typedef union _hw_usb_usbfrmadjust
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ADJ field to a new value.
-#define BW_USB_USBFRMADJUST_ADJ(v) (HW_USB_USBFRMADJUST_WR((HW_USB_USBFRMADJUST_RD & ~BM_USB_USBFRMADJUST_ADJ) | BF_USB_USBFRMADJUST_ADJ(v)))
+#define BW_USB_USBFRMADJUST_ADJ(v) (HW_USB_USBFRMADJUST_WR(v))
+#endif
+//@}
+
+//-------------------------------------------------------------------------------------------
+// HW_USB_CLK_RECOVER_CTRL - USB Clock recovery control
+//-------------------------------------------------------------------------------------------
+
+#ifndef __LANGUAGE_ASM__
+/*!
+ * @brief HW_USB_CLK_RECOVER_CTRL - USB Clock recovery control (RW)
+ *
+ * Reset value: 0x00U
+ *
+ * Signals in this register control the crystal-less USB clock mode in which the
+ * internal IRC48M oscillator is tuned to match the clock extracted from the
+ * incoming USB data stream. The IRC48M internal oscillator module must be enabled
+ * in register USB_CLK_RECOVER_IRC_EN for this mode.
+ */
+typedef union _hw_usb_clk_recover_ctrl
+{
+    uint8_t U;
+    struct _hw_usb_clk_recover_ctrl_bitfields
+    {
+        uint8_t RESERVED0 : 5;         //!< [4:0]
+        uint8_t RESTART_IFRTRIM_EN : 1; //!< [5] Restart from IFR trim value
+        uint8_t RESET_RESUME_ROUGH_EN : 1; //!< [6] Reset/resume to rough
+                                       //! phase enable
+        uint8_t CLOCK_RECOVER_EN : 1;  //!< [7] Crystal-less USB enable
+    } B;
+} hw_usb_clk_recover_ctrl_t;
+#endif
+
+/*!
+ * @name Constants and macros for entire USB_CLK_RECOVER_CTRL register
+ */
+//@{
+#define HW_USB_CLK_RECOVER_CTRL_ADDR (REGS_USB_BASE + 0x140U)
+
+#ifndef __LANGUAGE_ASM__
+#define HW_USB_CLK_RECOVER_CTRL  (*(__IO hw_usb_clk_recover_ctrl_t *) HW_USB_CLK_RECOVER_CTRL_ADDR)
+#define HW_USB_CLK_RECOVER_CTRL_RD() (HW_USB_CLK_RECOVER_CTRL.U)
+#define HW_USB_CLK_RECOVER_CTRL_WR(v) (HW_USB_CLK_RECOVER_CTRL.U = (v))
+#define HW_USB_CLK_RECOVER_CTRL_SET(v) (HW_USB_CLK_RECOVER_CTRL_WR(HW_USB_CLK_RECOVER_CTRL_RD() |  (v)))
+#define HW_USB_CLK_RECOVER_CTRL_CLR(v) (HW_USB_CLK_RECOVER_CTRL_WR(HW_USB_CLK_RECOVER_CTRL_RD() & ~(v)))
+#define HW_USB_CLK_RECOVER_CTRL_TOG(v) (HW_USB_CLK_RECOVER_CTRL_WR(HW_USB_CLK_RECOVER_CTRL_RD() ^  (v)))
+#endif
+//@}
+
+/*
+ * Constants & macros for individual USB_CLK_RECOVER_CTRL bitfields
+ */
+
+/*!
+ * @name Register USB_CLK_RECOVER_CTRL, field RESTART_IFRTRIM_EN[5] (RW)
+ *
+ * IRC48 has a default trim fine value whose default value is factory trimmed
+ * (the IFR trim value). Clock recover block tracks the accuracy of the clock 48Mhz
+ * and keeps updating the trim fine value accordingly
+ *
+ * Values:
+ * - 0 - Trim fine adjustment always works based on the previous updated trim
+ *     fine value (default)
+ * - 1 - Trim fine restarts from the IFR trim value whenever
+ *     bus_reset/bus_resume is detected or module enable is desasserted
+ */
+//@{
+#define BP_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN (5U) //!< Bit position for USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN.
+#define BM_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN (0x20U) //!< Bit mask for USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN.
+#define BS_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN (1U) //!< Bit field size in bits for USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN field.
+#define BR_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_CTRL_ADDR, BP_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN))
+#endif
+
+//! @brief Format value for bitfield USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN.
+#define BF_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN), uint8_t) & BM_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the RESTART_IFRTRIM_EN field to a new value.
+#define BW_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN(v) (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_CTRL_ADDR, BP_USB_CLK_RECOVER_CTRL_RESTART_IFRTRIM_EN) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register USB_CLK_RECOVER_CTRL, field RESET_RESUME_ROUGH_EN[6] (RW)
+ *
+ * The clock recovery block tracks the IRC48Mhz to get an accurate 48Mhz clock.
+ * It has two phases after user enables clock_recover_en bit, rough phase and
+ * tracking phase. The step to fine tune the IRC 48Mhz by adjusting the trim fine
+ * value is different during these two phases. The step in rough phase is larger
+ * than that in tracking phase. Switch back to rough stage whenever USB bus reset
+ * or bus resume occurs.
+ *
+ * Values:
+ * - 0 - Always works in tracking phase after the 1st time rough to track
+ *     transition (default)
+ * - 1 - Go back to rough stage whenever bus reset or bus resume occurs
+ */
+//@{
+#define BP_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN (6U) //!< Bit position for USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN.
+#define BM_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN (0x40U) //!< Bit mask for USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN.
+#define BS_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN (1U) //!< Bit field size in bits for USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN field.
+#define BR_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_CTRL_ADDR, BP_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN))
+#endif
+
+//! @brief Format value for bitfield USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN.
+#define BF_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN), uint8_t) & BM_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the RESET_RESUME_ROUGH_EN field to a new value.
+#define BW_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN(v) (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_CTRL_ADDR, BP_USB_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register USB_CLK_RECOVER_CTRL, field CLOCK_RECOVER_EN[7] (RW)
+ *
+ * This bit must be enabled if user wants to use the crystal-less USB mode for
+ * the Full Speed USB controller and transceiver. This bit should not be set for
+ * USB host mode or OTG.
+ *
+ * Values:
+ * - 0 - Disable clock recovery block (default)
+ * - 1 - Enable clock recovery block
+ */
+//@{
+#define BP_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN (7U) //!< Bit position for USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN.
+#define BM_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN (0x80U) //!< Bit mask for USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN.
+#define BS_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN (1U) //!< Bit field size in bits for USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN field.
+#define BR_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_CTRL_ADDR, BP_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN))
+#endif
+
+//! @brief Format value for bitfield USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN.
+#define BF_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN), uint8_t) & BM_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the CLOCK_RECOVER_EN field to a new value.
+#define BW_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN(v) (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_CTRL_ADDR, BP_USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN) = (v))
+#endif
+//@}
+
+//-------------------------------------------------------------------------------------------
+// HW_USB_CLK_RECOVER_IRC_EN - IRC48M oscillator enable register
+//-------------------------------------------------------------------------------------------
+
+#ifndef __LANGUAGE_ASM__
+/*!
+ * @brief HW_USB_CLK_RECOVER_IRC_EN - IRC48M oscillator enable register (RW)
+ *
+ * Reset value: 0x01U
+ *
+ * Controls basic operation of the on-chip IRC48M module used to produce nominal
+ * 48MHz clocks for USB crystal-less operation and other functions. See
+ * additional information about the IRC48M operation in the Clock Distribution chapter.
+ */
+typedef union _hw_usb_clk_recover_irc_en
+{
+    uint8_t U;
+    struct _hw_usb_clk_recover_irc_en_bitfields
+    {
+        uint8_t REG_EN : 1;            //!< [0] IRC48M regulator enable
+        uint8_t IRC_EN : 1;            //!< [1] IRC48M enable
+        uint8_t RESERVED0 : 6;         //!< [7:2]
+    } B;
+} hw_usb_clk_recover_irc_en_t;
+#endif
+
+/*!
+ * @name Constants and macros for entire USB_CLK_RECOVER_IRC_EN register
+ */
+//@{
+#define HW_USB_CLK_RECOVER_IRC_EN_ADDR (REGS_USB_BASE + 0x144U)
+
+#ifndef __LANGUAGE_ASM__
+#define HW_USB_CLK_RECOVER_IRC_EN (*(__IO hw_usb_clk_recover_irc_en_t *) HW_USB_CLK_RECOVER_IRC_EN_ADDR)
+#define HW_USB_CLK_RECOVER_IRC_EN_RD() (HW_USB_CLK_RECOVER_IRC_EN.U)
+#define HW_USB_CLK_RECOVER_IRC_EN_WR(v) (HW_USB_CLK_RECOVER_IRC_EN.U = (v))
+#define HW_USB_CLK_RECOVER_IRC_EN_SET(v) (HW_USB_CLK_RECOVER_IRC_EN_WR(HW_USB_CLK_RECOVER_IRC_EN_RD() |  (v)))
+#define HW_USB_CLK_RECOVER_IRC_EN_CLR(v) (HW_USB_CLK_RECOVER_IRC_EN_WR(HW_USB_CLK_RECOVER_IRC_EN_RD() & ~(v)))
+#define HW_USB_CLK_RECOVER_IRC_EN_TOG(v) (HW_USB_CLK_RECOVER_IRC_EN_WR(HW_USB_CLK_RECOVER_IRC_EN_RD() ^  (v)))
+#endif
+//@}
+
+/*
+ * Constants & macros for individual USB_CLK_RECOVER_IRC_EN bitfields
+ */
+
+/*!
+ * @name Register USB_CLK_RECOVER_IRC_EN, field REG_EN[0] (RW)
+ *
+ * This bit is used to enable the local analog regulator for IRC48Mhz module.
+ * This bit must be set if user wants to use the crystal-less USB clock
+ * configuration.
+ *
+ * Values:
+ * - 0 - IRC48M local regulator is disabled
+ * - 1 - IRC48M local regulator is enabled (default)
+ */
+//@{
+#define BP_USB_CLK_RECOVER_IRC_EN_REG_EN (0U) //!< Bit position for USB_CLK_RECOVER_IRC_EN_REG_EN.
+#define BM_USB_CLK_RECOVER_IRC_EN_REG_EN (0x01U) //!< Bit mask for USB_CLK_RECOVER_IRC_EN_REG_EN.
+#define BS_USB_CLK_RECOVER_IRC_EN_REG_EN (1U) //!< Bit field size in bits for USB_CLK_RECOVER_IRC_EN_REG_EN.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_CLK_RECOVER_IRC_EN_REG_EN field.
+#define BR_USB_CLK_RECOVER_IRC_EN_REG_EN (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_IRC_EN_ADDR, BP_USB_CLK_RECOVER_IRC_EN_REG_EN))
+#endif
+
+//! @brief Format value for bitfield USB_CLK_RECOVER_IRC_EN_REG_EN.
+#define BF_USB_CLK_RECOVER_IRC_EN_REG_EN(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_CLK_RECOVER_IRC_EN_REG_EN), uint8_t) & BM_USB_CLK_RECOVER_IRC_EN_REG_EN)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the REG_EN field to a new value.
+#define BW_USB_CLK_RECOVER_IRC_EN_REG_EN(v) (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_IRC_EN_ADDR, BP_USB_CLK_RECOVER_IRC_EN_REG_EN) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register USB_CLK_RECOVER_IRC_EN, field IRC_EN[1] (RW)
+ *
+ * This bit is used to enable the on-chip IRC48Mhz module to generate clocks for
+ * crystal-less USB. It can only be used for FS USB device mode operation. This
+ * bit must be set before using the crystal-less USB clock configuration.
+ *
+ * Values:
+ * - 0 - Disable the IRC48M module (default)
+ * - 1 - Enable the IRC48M module
+ */
+//@{
+#define BP_USB_CLK_RECOVER_IRC_EN_IRC_EN (1U) //!< Bit position for USB_CLK_RECOVER_IRC_EN_IRC_EN.
+#define BM_USB_CLK_RECOVER_IRC_EN_IRC_EN (0x02U) //!< Bit mask for USB_CLK_RECOVER_IRC_EN_IRC_EN.
+#define BS_USB_CLK_RECOVER_IRC_EN_IRC_EN (1U) //!< Bit field size in bits for USB_CLK_RECOVER_IRC_EN_IRC_EN.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_CLK_RECOVER_IRC_EN_IRC_EN field.
+#define BR_USB_CLK_RECOVER_IRC_EN_IRC_EN (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_IRC_EN_ADDR, BP_USB_CLK_RECOVER_IRC_EN_IRC_EN))
+#endif
+
+//! @brief Format value for bitfield USB_CLK_RECOVER_IRC_EN_IRC_EN.
+#define BF_USB_CLK_RECOVER_IRC_EN_IRC_EN(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_CLK_RECOVER_IRC_EN_IRC_EN), uint8_t) & BM_USB_CLK_RECOVER_IRC_EN_IRC_EN)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the IRC_EN field to a new value.
+#define BW_USB_CLK_RECOVER_IRC_EN_IRC_EN(v) (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_IRC_EN_ADDR, BP_USB_CLK_RECOVER_IRC_EN_IRC_EN) = (v))
+#endif
+//@}
+
+//-------------------------------------------------------------------------------------------
+// HW_USB_CLK_RECOVER_INT_STATUS - Clock recovery separated interrupt status
+//-------------------------------------------------------------------------------------------
+
+#ifndef __LANGUAGE_ASM__
+/*!
+ * @brief HW_USB_CLK_RECOVER_INT_STATUS - Clock recovery separated interrupt status (W1C)
+ *
+ * Reset value: 0x00U
+ *
+ * A Write operation with value high at 1'b1 on any combination of individual
+ * bits will clear those bits.
+ */
+typedef union _hw_usb_clk_recover_int_status
+{
+    uint8_t U;
+    struct _hw_usb_clk_recover_int_status_bitfields
+    {
+        uint8_t RESERVED0 : 4;         //!< [3:0]
+        uint8_t OVF_ERROR : 1;         //!< [4]
+        uint8_t RESERVED1 : 3;         //!< [7:5]
+    } B;
+} hw_usb_clk_recover_int_status_t;
+#endif
+
+/*!
+ * @name Constants and macros for entire USB_CLK_RECOVER_INT_STATUS register
+ */
+//@{
+#define HW_USB_CLK_RECOVER_INT_STATUS_ADDR (REGS_USB_BASE + 0x15CU)
+
+#ifndef __LANGUAGE_ASM__
+#define HW_USB_CLK_RECOVER_INT_STATUS (*(__IO hw_usb_clk_recover_int_status_t *) HW_USB_CLK_RECOVER_INT_STATUS_ADDR)
+#define HW_USB_CLK_RECOVER_INT_STATUS_RD() (HW_USB_CLK_RECOVER_INT_STATUS.U)
+#define HW_USB_CLK_RECOVER_INT_STATUS_WR(v) (HW_USB_CLK_RECOVER_INT_STATUS.U = (v))
+#define HW_USB_CLK_RECOVER_INT_STATUS_SET(v) (HW_USB_CLK_RECOVER_INT_STATUS_WR(HW_USB_CLK_RECOVER_INT_STATUS_RD() |  (v)))
+#define HW_USB_CLK_RECOVER_INT_STATUS_CLR(v) (HW_USB_CLK_RECOVER_INT_STATUS_WR(HW_USB_CLK_RECOVER_INT_STATUS_RD() & ~(v)))
+#define HW_USB_CLK_RECOVER_INT_STATUS_TOG(v) (HW_USB_CLK_RECOVER_INT_STATUS_WR(HW_USB_CLK_RECOVER_INT_STATUS_RD() ^  (v)))
+#endif
+//@}
+
+/*
+ * Constants & macros for individual USB_CLK_RECOVER_INT_STATUS bitfields
+ */
+
+/*!
+ * @name Register USB_CLK_RECOVER_INT_STATUS, field OVF_ERROR[4] (W1C)
+ *
+ * Indicates that the USB clock recovery algorithm has detected that the
+ * frequency trim adjustment needed for the IRC48M output clock is outside the available
+ * TRIM_FINE adjustment range for the IRC48M module.
+ *
+ * Values:
+ * - 0 - No interrupt is reported
+ * - 1 - Unmasked interrupt has been generated
+ */
+//@{
+#define BP_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR (4U) //!< Bit position for USB_CLK_RECOVER_INT_STATUS_OVF_ERROR.
+#define BM_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR (0x10U) //!< Bit mask for USB_CLK_RECOVER_INT_STATUS_OVF_ERROR.
+#define BS_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR (1U) //!< Bit field size in bits for USB_CLK_RECOVER_INT_STATUS_OVF_ERROR.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the USB_CLK_RECOVER_INT_STATUS_OVF_ERROR field.
+#define BR_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_INT_STATUS_ADDR, BP_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR))
+#endif
+
+//! @brief Format value for bitfield USB_CLK_RECOVER_INT_STATUS_OVF_ERROR.
+#define BF_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR), uint8_t) & BM_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the OVF_ERROR field to a new value.
+#define BW_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR(v) (BITBAND_ACCESS8(HW_USB_CLK_RECOVER_INT_STATUS_ADDR, BP_USB_CLK_RECOVER_INT_STATUS_OVF_ERROR) = (v))
 #endif
 //@}
 
@@ -3899,6 +4256,12 @@ typedef struct _hw_usb
     __IO hw_usb_usbtrc0_t USBTRC0;         //!< [0x10C] USB Transceiver Control register 0
     uint8_t _reserved25[7];
     __IO hw_usb_usbfrmadjust_t USBFRMADJUST; //!< [0x114] Frame Adjust Register
+    uint8_t _reserved26[43];
+    __IO hw_usb_clk_recover_ctrl_t CLK_RECOVER_CTRL; //!< [0x140] USB Clock recovery control
+    uint8_t _reserved27[3];
+    __IO hw_usb_clk_recover_irc_en_t CLK_RECOVER_IRC_EN; //!< [0x144] IRC48M oscillator enable register
+    uint8_t _reserved28[23];
+    __IO hw_usb_clk_recover_int_status_t CLK_RECOVER_INT_STATUS; //!< [0x15C] Clock recovery separated interrupt status
 } hw_usb_t;
 #pragma pack()
 

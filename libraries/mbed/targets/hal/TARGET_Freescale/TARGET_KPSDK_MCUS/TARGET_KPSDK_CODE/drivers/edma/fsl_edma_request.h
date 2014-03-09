@@ -41,28 +41,28 @@
  ******************************************************************************/
 
 /*!
- * @brief Structure for DMA hardware Request.
+ * @brief Structure for the DMA hardware request
  *
- * Define structure for collections of DMA hardware request. User can configure the
+ * Defines the structure for the DMA hardware request collections. The user can configure the
  * hardware request into DMAMUX to trigger the DMA transfer accordingly. The index 
- * of hardware request varies according the to SOC.
+ * of the hardware request varies according  to the to SoC.
  */
 #if defined(CPU_MK70FN1M0VMJ12) || defined(CPU_MK70FN1M0VMJ15)
 typedef enum _dma_request_source {
-    kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the dma request. */
+    kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the DMA request. */
     kDmaRequestMux0Reserved1 = 1|0x100,       /*!< Reserved slot. */
-    kDmaRequestMux0UART0Rx = 2|0x100,         /*!< Uart 0 receiver. */
-    kDmaRequestMux0UART0Tx = 3|0x100,         /*!< Uart0 transmitter. */
-    kDmaRequestMux0UART1Rx = 4|0x100,         /*!< Uart1 receiver. */
-    kDmaRequestMux0UART1Tx = 5|0x100,         /*!< Uart1 transmitter.. */
-    kDmaRequestMux0UART2Rx = 6|0x100,         /*!< Uart2 receiver. */
-    kDmaRequestMux0UART2Tx = 7|0x100,         /*!< Uart2 transmitter. */
-    kDmaRequestMux0UART3Rx = 8|0x100,         /*!< Uart3 receiver. */
-    kDmaRequestMux0UART3Tx = 9|0x100,         /*!< Uart3 transmitter. */
-    kDmaRequestMux0UART4Rx = 10|0x100,        /*!< Uart4 receiver. */
-    kDmaRequestMux0UART4Tx = 11|0x100,        /*!< Uart4 transmitter. */
-    kDmaRequestMux0UART5Rx = 12|0x100,        /*!< Uart5 receiver. */
-    kDmaRequestMux0UART5Tx = 13|0x100,        /*!< Uart5 transmitter. */
+    kDmaRequestMux0UART0Rx = 2|0x100,         /*!< UART 0 receiver. */
+    kDmaRequestMux0UART0Tx = 3|0x100,         /*!< UART0 transmitter. */
+    kDmaRequestMux0UART1Rx = 4|0x100,         /*!< UART1 receiver. */
+    kDmaRequestMux0UART1Tx = 5|0x100,         /*!< UART1 transmitter.. */
+    kDmaRequestMux0UART2Rx = 6|0x100,         /*!< UART2 receiver. */
+    kDmaRequestMux0UART2Tx = 7|0x100,         /*!< UART2 transmitter. */
+    kDmaRequestMux0UART3Rx = 8|0x100,         /*!< UART3 receiver. */
+    kDmaRequestMux0UART3Tx = 9|0x100,         /*!< UART3 transmitter. */
+    kDmaRequestMux0UART4Rx = 10|0x100,        /*!< UART4 receiver. */
+    kDmaRequestMux0UART4Tx = 11|0x100,        /*!< UART4 transmitter. */
+    kDmaRequestMux0UART5Rx = 12|0x100,        /*!< UART5 receiver. */
+    kDmaRequestMux0UART5Tx = 13|0x100,        /*!< UART5 transmitter. */
     kDmaRequestMux0I2S0Rx = 14|0x100,         /*!< I2S0 receiver. */
     kDmaRequestMux0I2S0Tx = 15|0x100,         /*!< I2S0 transmitter. */
     kDmaRequestMux0SPI0Rx = 16|0x100,         /*!< SPI0 receiver. */
@@ -113,20 +113,20 @@ typedef enum _dma_request_source {
     kDmaRequestMux0AlwaysOn61 = 61|0x100,     /*!< Always on. */
     kDmaRequestMux0AlwaysOn62 = 62|0x100,     /*!< Always on. */
     kDmaRequestMux0AlwaysOn63 = 63|0x100,     /*!< Always on. */
-    kDmaRequestMux1Disable = 64|0x200,        /*!< Disable the dma request. */
+    kDmaRequestMux1Disable = 64|0x200,        /*!< Disable the DMA request. */
     kDmaRequestMux1Reserved1 = 65|0x200,      /*!< Reserved slot. */
-    kDmaRequestMux1UART0Rx = 66|0x200,         /*!< Uart 0 receiver. */
-    kDmaRequestMux1UART0Tx = 67|0x200,         /*!< Uart0 transmitter. */
-    kDmaRequestMux1UART1Rx = 68|0x200,         /*!< Uart1 receiver. */
-    kDmaRequestMux1UART1Tx = 69|0x200,         /*!< Uart1 transmitter.. */
-    kDmaRequestMux1UART2Rx = 70|0x200,         /*!< Uart2 receiver. */
-    kDmaRequestMux1UART2Tx = 71|0x200,         /*!< Uart2 transmitter. */
-    kDmaRequestMux1UART3Rx = 72|0x200,         /*!< Uart3 receiver. */
-    kDmaRequestMux1UART3Tx = 73|0x200,         /*!< Uart3 transmitter. */
-    kDmaRequestMux1UART4Rx = 74|0x200,        /*!< Uart4 receiver. */
-    kDmaRequestMux1UART4Tx = 75|0x200,        /*!< Uart4 transmitter. */
-    kDmaRequestMux1UART5Rx = 76|0x200,        /*!< Uart5 receiver. */
-    kDmaRequestMux1UART5Tx = 77|0x200,        /*!< Uart5 transmitter. */
+    kDmaRequestMux1UART0Rx = 66|0x200,         /*!< UART 0 receiver. */
+    kDmaRequestMux1UART0Tx = 67|0x200,         /*!< UART0 transmitter. */
+    kDmaRequestMux1UART1Rx = 68|0x200,         /*!< UART1 receiver. */
+    kDmaRequestMux1UART1Tx = 69|0x200,         /*!< UART1 transmitter.. */
+    kDmaRequestMux1UART2Rx = 70|0x200,         /*!< UART2 receiver. */
+    kDmaRequestMux1UART2Tx = 71|0x200,         /*!< UART2 transmitter. */
+    kDmaRequestMux1UART3Rx = 72|0x200,         /*!< UART3 receiver. */
+    kDmaRequestMux1UART3Tx = 73|0x200,         /*!< UART3 transmitter. */
+    kDmaRequestMux1UART4Rx = 74|0x200,        /*!< UART4 receiver. */
+    kDmaRequestMux1UART4Tx = 75|0x200,        /*!< UART4 transmitter. */
+    kDmaRequestMux1UART5Rx = 76|0x200,        /*!< UART5 receiver. */
+    kDmaRequestMux1UART5Tx = 77|0x200,        /*!< UART5 transmitter. */
     kDmaRequestMux1I2S1Rx = 78|0x200,         /*!< I2S1 receiver. */
     kDmaRequestMux1I2S1Tx = 79|0x200,         /*!< I2S1 transmitter. */
     kDmaRequestMux1SPI0Rx = 80|0x200,         /*!< SPI0 receiver. */
@@ -182,18 +182,18 @@ typedef enum _dma_request_source {
 #elif (defined(CPU_MK63FN1M0VMD12) || defined(CPU_MK63FN1M0VMD12WS) || \
        defined(CPU_MK64FN1M0VMD12) || defined(CPU_MK64FX512VMD12))
 typedef enum _dma_request_source {
-    kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the dma request. */
+    kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the DMA request. */
     kDmaRequestMux0Reserved1 = 1|0x100,       /*!< Reserved slot. */
-    kDmaRequestMux0UART0Rx = 2|0x100,         /*!< Uart 0 receiver. */
-    kDmaRequestMux0UART0Tx = 3|0x100,         /*!< Uart0 transmitter. */
-    kDmaRequestMux0UART1Rx = 4|0x100,         /*!< Uart1 receiver. */
-    kDmaRequestMux0UART1Tx = 5|0x100,         /*!< Uart1 transmitter.. */
-    kDmaRequestMux0UART2Rx = 6|0x100,         /*!< Uart2 receiver. */
-    kDmaRequestMux0UART2Tx = 7|0x100,         /*!< Uart2 transmitter. */
-    kDmaRequestMux0UART3Rx = 8|0x100,         /*!< Uart3 receiver. */
-    kDmaRequestMux0UART3Tx = 9|0x100,         /*!< Uart3 transmitter. */
-    kDmaRequestMux0UART4 = 10|0x100,        /*!< Uart4 receiver. */
-    kDmaRequestMux0UART5 = 11|0x100,        /*!< Uart4 transmitter. */
+    kDmaRequestMux0UART0Rx = 2|0x100,         /*!< UART 0 receiver. */
+    kDmaRequestMux0UART0Tx = 3|0x100,         /*!< UART0 transmitter. */
+    kDmaRequestMux0UART1Rx = 4|0x100,         /*!< UART1 receiver. */
+    kDmaRequestMux0UART1Tx = 5|0x100,         /*!< UART1 transmitter.. */
+    kDmaRequestMux0UART2Rx = 6|0x100,         /*!< UART2 receiver. */
+    kDmaRequestMux0UART2Tx = 7|0x100,         /*!< UART2 transmitter. */
+    kDmaRequestMux0UART3Rx = 8|0x100,         /*!< UART3 receiver. */
+    kDmaRequestMux0UART3Tx = 9|0x100,         /*!< UART3 transmitter. */
+    kDmaRequestMux0UART4 = 10|0x100,        /*!< UART4 receiver. */
+    kDmaRequestMux0UART5 = 11|0x100,        /*!< UART4 transmitter. */
     kDmaRequestMux0I2S0Rx = 12|0x100,         /*!< I2S0 receiver. */
     kDmaRequestMux0I2S0Tx = 13|0x100,         /*!< I2S0 transmitter. */
     kDmaRequestMux0SPI0Rx = 14|0x100,         /*!< SPI0 receiver. */
@@ -250,18 +250,18 @@ typedef enum _dma_request_source {
 
 #elif (defined(CPU_MK22FN512VDC12))
 typedef enum _dma_request_source {
-    kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the dma request. */
+    kDmaRequestMux0Disable = 0|0x100,         /*!< Disable the DMA request. */
     kDmaRequestMux0Reserved1 = 1|0x100,       /*!< Reserved slot. */
-    kDmaRequestMux0UART0Rx = 2|0x100,         /*!< Uart 0 receiver. */
-    kDmaRequestMux0UART0Tx = 3|0x100,         /*!< Uart0 transmitter. */
-    kDmaRequestMux0UART1Rx = 4|0x100,         /*!< Uart1 receiver. */
-    kDmaRequestMux0UART1Tx = 5|0x100,         /*!< Uart1 transmitter.. */
-    kDmaRequestMux0UART2Rx = 6|0x100,         /*!< Uart2 receiver. */
-    kDmaRequestMux0UART2Tx = 7|0x100,         /*!< Uart2 transmitter. */
-    kDmaRequestMux0UART3Rx = 8|0x100,         /*!< Uart3 receiver. */
-    kDmaRequestMux0UART3Tx = 9|0x100,         /*!< Uart3 transmitter. */
-    kDmaRequestMux0Reserved10 = 10|0x100,        /*!< Uart4 receiver. */
-    kDmaRequestMux0Reserved11 = 11|0x100,        /*!< Uart4 transmitter. */
+    kDmaRequestMux0UART0Rx = 2|0x100,         /*!< UART 0 receiver. */
+    kDmaRequestMux0UART0Tx = 3|0x100,         /*!< UART0 transmitter. */
+    kDmaRequestMux0UART1Rx = 4|0x100,         /*!< UART1 receiver. */
+    kDmaRequestMux0UART1Tx = 5|0x100,         /*!< UART1 transmitter.. */
+    kDmaRequestMux0UART2Rx = 6|0x100,         /*!< UART2 receiver. */
+    kDmaRequestMux0UART2Tx = 7|0x100,         /*!< UART2 transmitter. */
+    kDmaRequestMux0UART3Rx = 8|0x100,         /*!< UART3 receiver. */
+    kDmaRequestMux0UART3Tx = 9|0x100,         /*!< UART3 transmitter. */
+    kDmaRequestMux0Reserved10 = 10|0x100,        /*!< UART4 receiver. */
+    kDmaRequestMux0Reserved11 = 11|0x100,        /*!< UART4 transmitter. */
     kDmaRequestMux0I2S0Rx = 12|0x100,         /*!< I2S0 receiver. */
     kDmaRequestMux0I2S0Tx = 13|0x100,         /*!< I2S0 transmitter. */
     kDmaRequestMux0SPI0Rx = 14|0x100,         /*!< SPI0 receiver. */

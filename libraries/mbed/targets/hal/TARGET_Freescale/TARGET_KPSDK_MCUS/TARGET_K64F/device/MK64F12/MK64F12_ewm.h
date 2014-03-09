@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -81,11 +81,11 @@ typedef union _hw_ewm_ctrl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_EWM_CTRL              (*(__IO hw_ewm_ctrl_t *) HW_EWM_CTRL_ADDR)
-#define HW_EWM_CTRL_RD           (HW_EWM_CTRL.U)
+#define HW_EWM_CTRL_RD()         (HW_EWM_CTRL.U)
 #define HW_EWM_CTRL_WR(v)        (HW_EWM_CTRL.U = (v))
-#define HW_EWM_CTRL_SET(v)       (HW_EWM_CTRL_WR(HW_EWM_CTRL_RD |  (v)))
-#define HW_EWM_CTRL_CLR(v)       (HW_EWM_CTRL_WR(HW_EWM_CTRL_RD & ~(v)))
-#define HW_EWM_CTRL_TOG(v)       (HW_EWM_CTRL_WR(HW_EWM_CTRL_RD ^  (v)))
+#define HW_EWM_CTRL_SET(v)       (HW_EWM_CTRL_WR(HW_EWM_CTRL_RD() |  (v)))
+#define HW_EWM_CTRL_CLR(v)       (HW_EWM_CTRL_WR(HW_EWM_CTRL_RD() & ~(v)))
+#define HW_EWM_CTRL_TOG(v)       (HW_EWM_CTRL_WR(HW_EWM_CTRL_RD() ^  (v)))
 #endif
 //@}
 
@@ -200,7 +200,7 @@ typedef union _hw_ewm_ctrl
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_EWM_SERV - Service Register (WO)
+ * @brief HW_EWM_SERV - Service Register (WORZ)
  *
  * Reset value: 0x00U
  *
@@ -225,6 +225,7 @@ typedef union _hw_ewm_serv
 
 #ifndef __LANGUAGE_ASM__
 #define HW_EWM_SERV              (*(__O hw_ewm_serv_t *) HW_EWM_SERV_ADDR)
+#define HW_EWM_SERV_RD()         (HW_EWM_SERV.U)
 #define HW_EWM_SERV_WR(v)        (HW_EWM_SERV.U = (v))
 #endif
 //@}
@@ -248,17 +249,12 @@ typedef union _hw_ewm_serv
 #define BM_EWM_SERV_SERVICE  (0xFFU)       //!< Bit mask for EWM_SERV_SERVICE.
 #define BS_EWM_SERV_SERVICE  (8U)          //!< Bit field size in bits for EWM_SERV_SERVICE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the EWM_SERV_SERVICE field.
-#define BR_EWM_SERV_SERVICE  (HW_EWM_SERV.B.SERVICE)
-#endif
-
 //! @brief Format value for bitfield EWM_SERV_SERVICE.
 #define BF_EWM_SERV_SERVICE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_EWM_SERV_SERVICE), uint8_t) & BM_EWM_SERV_SERVICE)
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SERVICE field to a new value.
-#define BW_EWM_SERV_SERVICE(v) (HW_EWM_SERV_WR((HW_EWM_SERV_RD & ~BM_EWM_SERV_SERVICE) | BF_EWM_SERV_SERVICE(v)))
+#define BW_EWM_SERV_SERVICE(v) (HW_EWM_SERV_WR(v))
 #endif
 //@}
 
@@ -295,11 +291,11 @@ typedef union _hw_ewm_cmpl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_EWM_CMPL              (*(__IO hw_ewm_cmpl_t *) HW_EWM_CMPL_ADDR)
-#define HW_EWM_CMPL_RD           (HW_EWM_CMPL.U)
+#define HW_EWM_CMPL_RD()         (HW_EWM_CMPL.U)
 #define HW_EWM_CMPL_WR(v)        (HW_EWM_CMPL.U = (v))
-#define HW_EWM_CMPL_SET(v)       (HW_EWM_CMPL_WR(HW_EWM_CMPL_RD |  (v)))
-#define HW_EWM_CMPL_CLR(v)       (HW_EWM_CMPL_WR(HW_EWM_CMPL_RD & ~(v)))
-#define HW_EWM_CMPL_TOG(v)       (HW_EWM_CMPL_WR(HW_EWM_CMPL_RD ^  (v)))
+#define HW_EWM_CMPL_SET(v)       (HW_EWM_CMPL_WR(HW_EWM_CMPL_RD() |  (v)))
+#define HW_EWM_CMPL_CLR(v)       (HW_EWM_CMPL_WR(HW_EWM_CMPL_RD() & ~(v)))
+#define HW_EWM_CMPL_TOG(v)       (HW_EWM_CMPL_WR(HW_EWM_CMPL_RD() ^  (v)))
 #endif
 //@}
 
@@ -321,7 +317,7 @@ typedef union _hw_ewm_cmpl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the EWM_CMPL_COMPAREL field.
-#define BR_EWM_CMPL_COMPAREL (HW_EWM_CMPL.B.COMPAREL)
+#define BR_EWM_CMPL_COMPAREL (HW_EWM_CMPL.U)
 #endif
 
 //! @brief Format value for bitfield EWM_CMPL_COMPAREL.
@@ -329,7 +325,7 @@ typedef union _hw_ewm_cmpl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the COMPAREL field to a new value.
-#define BW_EWM_CMPL_COMPAREL(v) (HW_EWM_CMPL_WR((HW_EWM_CMPL_RD & ~BM_EWM_CMPL_COMPAREL) | BF_EWM_CMPL_COMPAREL(v)))
+#define BW_EWM_CMPL_COMPAREL(v) (HW_EWM_CMPL_WR(v))
 #endif
 //@}
 
@@ -368,11 +364,11 @@ typedef union _hw_ewm_cmph
 
 #ifndef __LANGUAGE_ASM__
 #define HW_EWM_CMPH              (*(__IO hw_ewm_cmph_t *) HW_EWM_CMPH_ADDR)
-#define HW_EWM_CMPH_RD           (HW_EWM_CMPH.U)
+#define HW_EWM_CMPH_RD()         (HW_EWM_CMPH.U)
 #define HW_EWM_CMPH_WR(v)        (HW_EWM_CMPH.U = (v))
-#define HW_EWM_CMPH_SET(v)       (HW_EWM_CMPH_WR(HW_EWM_CMPH_RD |  (v)))
-#define HW_EWM_CMPH_CLR(v)       (HW_EWM_CMPH_WR(HW_EWM_CMPH_RD & ~(v)))
-#define HW_EWM_CMPH_TOG(v)       (HW_EWM_CMPH_WR(HW_EWM_CMPH_RD ^  (v)))
+#define HW_EWM_CMPH_SET(v)       (HW_EWM_CMPH_WR(HW_EWM_CMPH_RD() |  (v)))
+#define HW_EWM_CMPH_CLR(v)       (HW_EWM_CMPH_WR(HW_EWM_CMPH_RD() & ~(v)))
+#define HW_EWM_CMPH_TOG(v)       (HW_EWM_CMPH_WR(HW_EWM_CMPH_RD() ^  (v)))
 #endif
 //@}
 
@@ -394,7 +390,7 @@ typedef union _hw_ewm_cmph
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the EWM_CMPH_COMPAREH field.
-#define BR_EWM_CMPH_COMPAREH (HW_EWM_CMPH.B.COMPAREH)
+#define BR_EWM_CMPH_COMPAREH (HW_EWM_CMPH.U)
 #endif
 
 //! @brief Format value for bitfield EWM_CMPH_COMPAREH.
@@ -402,7 +398,7 @@ typedef union _hw_ewm_cmph
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the COMPAREH field to a new value.
-#define BW_EWM_CMPH_COMPAREH(v) (HW_EWM_CMPH_WR((HW_EWM_CMPH_RD & ~BM_EWM_CMPH_COMPAREH) | BF_EWM_CMPH_COMPAREH(v)))
+#define BW_EWM_CMPH_COMPAREH(v) (HW_EWM_CMPH_WR(v))
 #endif
 //@}
 

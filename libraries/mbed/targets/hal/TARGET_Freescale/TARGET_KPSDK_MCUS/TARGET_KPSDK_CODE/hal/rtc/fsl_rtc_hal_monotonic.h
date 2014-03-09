@@ -63,19 +63,19 @@ extern "C" {
 /* RTC Monotonic Counter Register Reset Functions*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      resets RTC Monotonic Enable Register (RTC_MER).*/
+/*! @brief      Resets the RTC Monotonic Enable Register (RTC_MER).*/
 static inline void rtc_hal_reset_reg_MER(void)
 {
   HW_RTC_MER_WR((uint32_t)0x00000000U);
 }
 
-/*! @brief      resets RTC Monotonic Counter Low Register (RTC_MCLR).*/
+/*! @brief      Resets the RTC Monotonic Counter Low Register (RTC_MCLR).*/
 static inline void rtc_hal_reset_reg_MCLR(void)
 {
   HW_RTC_MCLR_WR((uint32_t)0x00000000U);
 }
 
-/*! @brief      resets RTC Monotonic Counter High Register (RTC_MCHR).*/
+/*! @brief      Resets the RTC Monotonic Counter High Register (RTC_MCHR).*/
 static inline void rtc_hal_reset_reg_MCHR(void)
 {
   HW_RTC_MCHR_WR((uint32_t)0x00000000U);
@@ -85,9 +85,9 @@ static inline void rtc_hal_reset_reg_MCHR(void)
 /* RTC Monotonic Enable*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      for the monotonic counter reads the mode writting.
- *  @return     true: enables writing to the monotonic counter increment the counter.
- *              false: enables writing to the monotonic counter load the counter with the
+/*! @brief      For the monotonic counter reads the mode writing.
+ *  @return     true: Enables writing to the monotonic counter increment the counter.
+ *              false: Enables writing to the monotonic counter load the counter with the
  *              value written.
  */
 static inline bool rtc_hal_read_monotonic_enable(void)
@@ -97,7 +97,7 @@ static inline bool rtc_hal_read_monotonic_enable(void)
   return (bool)BR_RTC_MER_MCE;
 }
 
-/*! @brief      changes the state of Monotonic Counter Enable.
+/*! @brief      Changes the state of the Monotonic Counter Enable.
  *  @param      enable true: Writes to the monotonic counter increment the counter.
  *              false: Writes to the monotonic counter load the counter with the
  *              value written.
@@ -113,9 +113,9 @@ static inline void rtc_hal_config_monotonic_enable(bool enable)
 /* RTC Monotonic Counter*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      reads the values of Monotonic Counter High and Monotonic Counter
+/*! @brief      Reads the values of the Monotonic Counter High and the Monotonic Counter
  *              Low and returns them into a single value.
- *  @param      counter [out] pointer to variable where the value will be stored.
+ *  @param      counter [out] pointer to variable where the value  is stored.
  */
 static inline void rtc_hal_get_monotonic_counter(uint64_t * counter)
 {
@@ -133,9 +133,9 @@ static inline void rtc_hal_get_monotonic_counter(uint64_t * counter)
   *counter = (((uint64_t)(tmpCountHigh) << 32) | ((uint64_t)(BR_RTC_MCLR_MCL)));
 }
 
-/*! @brief      writes values Monotonic Counter High and Monotonic Counter Low
+/*! @brief      Writes values Monotonic Counter High and Monotonic Counter Low
  *              by decomposing the given single value.
- *  @param      counter [in] pointer to variable where the value will be stored.
+ *  @param      counter [in] pointer to the variable where the value  is stored.
  */
 static inline void rtc_hal_set_monotonic_counter(const uint64_t * counter)
 {
@@ -156,16 +156,16 @@ static inline void rtc_hal_set_monotonic_counter(const uint64_t * counter)
   BW_RTC_MCHR_MCH((uint32_t)((*counter) >> 32));
 }
 
-/*! @brief      increments one to the Monotonic Counter.*/
-/*! @return     true: success; false: error, time invalid flag found*/
+/*! @brief      Increments one to the Monotonic Counter.*/
+/*! @return     true: success; false: error, time invalid flag found.*/
 static inline bool rtc_hal_monotonic_counter_increment(void)
 {
   bool result = false;
   
- /* increments the Monotonic Counter (registers RTC_MCLR and RTC_MCHR
+ /* Increments the Monotonic Counter (registers RTC_MCLR and RTC_MCHR
   * accordingly); by setting the monotonic counter enable (MER[MCE]) and then
   * writing to RTC_MCLR register. A write to monotonic counter low that causes
-  * it to overflow will also increment monotonic counter high. */
+  * it to overflow  also increments the monotonic counter high. */
   
   if((!(BR_RTC_SR_TIF)) && (!(BR_RTC_SR_MOF)))
   {
@@ -185,10 +185,10 @@ static inline bool rtc_hal_monotonic_counter_increment(void)
 /* RTC Status*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      reads the value of Monotonic Overflow Flag (MOF). This flag is
+/*! @brief      Reads the value of the Monotonic Overflow Flag (MOF). This flag is
  *              set when the monotonic counter is enabled and the monotonic
  *              counter high overflows. The monotonic counter does not increment
- *              and will read as zero when this bit is set. This bit is cleared
+ *              and  reads as zero when this bit is set. This bit is cleared
  *              by writing the monotonic counter high register when the monotonic
  *              counter is disabled.
  *  @return     true: monotonic counter overflow has occurred and monotonic
@@ -204,72 +204,72 @@ static inline bool rtc_hal_is_monotonic_counter_overflow(void)
 /* RTC Lock*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      reads the value of the Monotonic Counter High Lock.
+/*! @brief      Reads the value of the Monotonic Counter High Lock.
  *  @return     true: Monotonic counter high register is not locked and writes
- *              complete as normal.
+ *              complete  normally.
  *              false: Monotonic counter high register is locked and writes are
  *              ignored.
  */
 static inline bool rtc_hal_read_monotonic_hcounter_lock(void)
 {
- /* reads the RTC Lock Register (RTC_LR), field Monotonic Counter High Lock
+ /* Reads the RTC Lock Register (RTC_LR), field Monotonic Counter High Lock
   * (MCHL). */
   return (bool)BR_RTC_LR_MCHL;
 }
 
-/*! @brief      clears the Monotonic Counter High Lock. Once done, this
- *              flag can only be set by VBAT POR or software reset.
+/*! @brief      Clears the Monotonic Counter High Lock. Once done, this
+ *              flag can only be set by VBAT POR orthe software reset.
  */
 static inline void rtc_hal_clear_monotonic_hcounter_lock(void)
 {
- /* writes 0 to the RTC Lock Register (RTC_LR), field Monotonic Counter High Lock
+ /* Writes 0 to the RTC Lock Register (RTC_LR), field Monotonic Counter High Lock
   * (MCHL). Once cleared, this flag can only be set by VBAT POR or software
   * reset. */
   BW_RTC_LR_MCHL(0U);
 }
 
-/*! @brief      reads the value of the Monotonic Counter Low Lock.
+/*! @brief      Reads the value of the Monotonic Counter Low Lock.
  *  @return     true: Monotonic counter low register is not locked and writes
- *              complete as normal.
+ *              complete  normally.
  *              false: Monotonic counter low register is locked and writes are
  *              ignored.
  */
 static inline bool rtc_hal_read_lcounter_lock(void)
 {
- /* reads the value of the RTC Lock Register (RTC_LR), field Monotonic Counter
+ /* Reads the value of the RTC Lock Register (RTC_LR), field Monotonic Counter
   * Low Lock (MCLL). */
   return (bool)BR_RTC_LR_MCLL;
 }
 
-/*! @brief      clears the Monotonic Counter Low Lock. Once done, this flag
- *              can only be set by VBAT POR or software reset.
+/*! @brief      Clears the Monotonic Counter Low Lock. Once done, this flag
+ *              can only be set by the VBAT POR or the software reset.
  */
 static inline void rtc_hal_clear_lcounter_lock(bool set_to)
 {
   BW_RTC_LR_MCLL(0U);
 }
 
-/*! @brief      reads the value of the Monotonic Enable Lock.
+/*! @brief      Reads the value of the Monotonic Enable Lock.
  *  @return     true: Monotonic enable register is not locked and writes
- *              complete as normal.
+ *              complete  normally.
  *              false: Monotonic enable register is locked and writes are
  *              ignored.
  */
 static inline bool rtc_hal_read_monotonic_enable_lock(void)
 {
- /* reads the value of the RTC Lock Register (RTC_LR), field Monotonic Enable
-  * Lock (MEL). Once cleared, this flag can only be set by VBAT POR or software
+ /* Reads the value of the RTC Lock Register (RTC_LR), field Monotonic Enable
+  * Lock (MEL). Once cleared, this flag can only be set by the VBAT POR or the software
   * reset. */
   return (bool)BR_RTC_LR_MEL;
 }
 
-/*! @brief      clears the Monotonic Enable Lock. Once done, this flag can
- *              only be set by VBAT POR or software reset.
+/*! @brief      Clears the Monotonic Enable Lock. Once done, this flag can
+ *              only be set by the VBAT POR or the software reset.
  */
 static inline void rtc_hal_clear_monotonic_enable_lock(void)
 {
- /* writes to the RTC Lock Register (RTC_LR), field Monotonic Enable Lock (MEL).
-  * Once cleared, this flag can only be set by VBAT POR or software reset. */
+ /* Writes to the RTC Lock Register (RTC_LR), field Monotonic Enable Lock (MEL).
+  * Once cleared, this flag can only be set by the VBAT POR or the software reset. */
   BW_RTC_LR_MEL(0U);
 }
 
@@ -277,19 +277,19 @@ static inline void rtc_hal_clear_monotonic_enable_lock(void)
 /* RTC Interrupt Enable*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      checks if the Monotonic Overflow Interrupt is enabled/disabled.
- *  @return     true: Monotonic overflow flag does generate an interrupt.
+/*! @brief      Checks whether the Monotonic Overflow Interrupt is enabled/disabled.
+ *  @return     true: Monotonic overflow flag generates an interrupt.
  *              false: Monotonic overflow flag does not generate an interrupt.
  */
 static inline bool rtc_hal_read_monot_overflow_int_enable(void)
 {
- /* reads the value of the RTC Interrupt Enable Register (RTC_IER), field 
+ /* Reads the value of the RTC Interrupt Enable Register (RTC_IER), field 
   * Monotonic Overflow Interrupt Enable (MOIE). */
   return (bool)BR_RTC_IER_MOIE;
 }
 
-/*! @brief      enables/disables the Monotonic Overflow Interrupt Enable.
- *  @param      enable true: Monotonic overflow flag does generate an interrupt.
+/*! @brief      Enables/disables the Monotonic Overflow Interrupt Enable.
+ *  @param      enable true: Monotonic overflow flag  generates an interrupt.
  *              false: Monotonic overflow flag does not generate an interrupt.
  */
 static inline void rtc_hal_config_monot_overflow_int_enable(bool enable)

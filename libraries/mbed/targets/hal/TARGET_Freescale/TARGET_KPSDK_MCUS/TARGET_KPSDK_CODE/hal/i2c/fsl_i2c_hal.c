@@ -27,10 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include "fsl_i2c_hal.h"
-#include "fsl_device_registers.h"
-#include "fsl_i2c_features.h"
-#include <assert.h>
 
 /* Computes the number of elements in an array.*/
 #define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))

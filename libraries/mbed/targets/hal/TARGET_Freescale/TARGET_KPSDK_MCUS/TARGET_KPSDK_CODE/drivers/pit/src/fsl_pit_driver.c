@@ -84,7 +84,7 @@ void pit_init_module(bool isRunInDebug)
  * Call pit_set_timer_period_us to re-set the period.
  *
  *END**************************************************************************/
-void pit_init_channel(uint32_t timer, const pit_config_t * config)
+void pit_init_channel(uint32_t timer, const pit_user_config_t * config)
 {
     /* Set timer period.*/
     pit_set_timer_period_us(timer, config->periodUs);
@@ -187,7 +187,7 @@ void pit_set_timer_period_us(uint32_t timer, uint32_t us)
  *END**************************************************************************/
 uint32_t pit_read_timer_us(uint32_t timer)
 {
-    /* Get current lifetime timer count, and reverse it to up-counting.*/
+    /* Get current timer count, and reverse it to up-counting.*/
     uint64_t currentTime = (~pit_hal_read_timer_count(timer));
 
     /* Convert count numbers to microseconds unit.*/

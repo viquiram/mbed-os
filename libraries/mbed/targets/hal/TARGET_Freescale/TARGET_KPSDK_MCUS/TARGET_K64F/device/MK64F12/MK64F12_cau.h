@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -155,18 +155,8 @@ typedef union _hw_cau_ldr_casr
 #define BM_CAU_LDR_CASR_IC   (0x00000001U) //!< Bit mask for CAU_LDR_CASR_IC.
 #define BS_CAU_LDR_CASR_IC   (1U)          //!< Bit field size in bits for CAU_LDR_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_LDR_CASR_IC field.
-#define BR_CAU_LDR_CASR_IC   (BITBAND_ACCESS32(HW_CAU_LDR_CASR_ADDR, BP_CAU_LDR_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_LDR_CASR_IC.
 #define BF_CAU_LDR_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_LDR_CASR_IC), uint32_t) & BM_CAU_LDR_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_LDR_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_LDR_CASR_ADDR, BP_CAU_LDR_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -181,18 +171,8 @@ typedef union _hw_cau_ldr_casr
 #define BM_CAU_LDR_CASR_DPE  (0x00000002U) //!< Bit mask for CAU_LDR_CASR_DPE.
 #define BS_CAU_LDR_CASR_DPE  (1U)          //!< Bit field size in bits for CAU_LDR_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_LDR_CASR_DPE field.
-#define BR_CAU_LDR_CASR_DPE  (BITBAND_ACCESS32(HW_CAU_LDR_CASR_ADDR, BP_CAU_LDR_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_LDR_CASR_DPE.
 #define BF_CAU_LDR_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_LDR_CASR_DPE), uint32_t) & BM_CAU_LDR_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_LDR_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_LDR_CASR_ADDR, BP_CAU_LDR_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -208,18 +188,8 @@ typedef union _hw_cau_ldr_casr
 #define BM_CAU_LDR_CASR_VER  (0xF0000000U) //!< Bit mask for CAU_LDR_CASR_VER.
 #define BS_CAU_LDR_CASR_VER  (4U)          //!< Bit field size in bits for CAU_LDR_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_LDR_CASR_VER field.
-#define BR_CAU_LDR_CASR_VER  (HW_CAU_LDR_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_LDR_CASR_VER.
 #define BF_CAU_LDR_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_LDR_CASR_VER), uint32_t) & BM_CAU_LDR_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_LDR_CASR_VER(v) (HW_CAU_LDR_CASR_WR((HW_CAU_LDR_CASR_RD & ~BM_CAU_LDR_CASR_VER) | BF_CAU_LDR_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -327,7 +297,7 @@ typedef union _hw_cau_str_casr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_CAU_STR_CASR          (*(__I hw_cau_str_casr_t *) HW_CAU_STR_CASR_ADDR)
-#define HW_CAU_STR_CASR_RD       (HW_CAU_STR_CASR.U)
+#define HW_CAU_STR_CASR_RD()     (HW_CAU_STR_CASR.U)
 #endif
 //@}
 
@@ -418,7 +388,7 @@ typedef union _hw_cau_str_caa
 
 #ifndef __LANGUAGE_ASM__
 #define HW_CAU_STR_CAA           (*(__I hw_cau_str_caa_t *) HW_CAU_STR_CAA_ADDR)
-#define HW_CAU_STR_CAA_RD        (HW_CAU_STR_CAA.U)
+#define HW_CAU_STR_CAA_RD()      (HW_CAU_STR_CAA.U)
 #endif
 //@}
 
@@ -515,18 +485,8 @@ typedef union _hw_cau_adr_casr
 #define BM_CAU_ADR_CASR_IC   (0x00000001U) //!< Bit mask for CAU_ADR_CASR_IC.
 #define BS_CAU_ADR_CASR_IC   (1U)          //!< Bit field size in bits for CAU_ADR_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_ADR_CASR_IC field.
-#define BR_CAU_ADR_CASR_IC   (BITBAND_ACCESS32(HW_CAU_ADR_CASR_ADDR, BP_CAU_ADR_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_ADR_CASR_IC.
 #define BF_CAU_ADR_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_ADR_CASR_IC), uint32_t) & BM_CAU_ADR_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_ADR_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_ADR_CASR_ADDR, BP_CAU_ADR_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -541,18 +501,8 @@ typedef union _hw_cau_adr_casr
 #define BM_CAU_ADR_CASR_DPE  (0x00000002U) //!< Bit mask for CAU_ADR_CASR_DPE.
 #define BS_CAU_ADR_CASR_DPE  (1U)          //!< Bit field size in bits for CAU_ADR_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_ADR_CASR_DPE field.
-#define BR_CAU_ADR_CASR_DPE  (BITBAND_ACCESS32(HW_CAU_ADR_CASR_ADDR, BP_CAU_ADR_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_ADR_CASR_DPE.
 #define BF_CAU_ADR_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_ADR_CASR_DPE), uint32_t) & BM_CAU_ADR_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_ADR_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_ADR_CASR_ADDR, BP_CAU_ADR_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -568,18 +518,8 @@ typedef union _hw_cau_adr_casr
 #define BM_CAU_ADR_CASR_VER  (0xF0000000U) //!< Bit mask for CAU_ADR_CASR_VER.
 #define BS_CAU_ADR_CASR_VER  (4U)          //!< Bit field size in bits for CAU_ADR_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_ADR_CASR_VER field.
-#define BR_CAU_ADR_CASR_VER  (HW_CAU_ADR_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_ADR_CASR_VER.
 #define BF_CAU_ADR_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_ADR_CASR_VER), uint32_t) & BM_CAU_ADR_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_ADR_CASR_VER(v) (HW_CAU_ADR_CASR_WR((HW_CAU_ADR_CASR_RD & ~BM_CAU_ADR_CASR_VER) | BF_CAU_ADR_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -707,18 +647,8 @@ typedef union _hw_cau_radr_casr
 #define BM_CAU_RADR_CASR_IC  (0x00000001U) //!< Bit mask for CAU_RADR_CASR_IC.
 #define BS_CAU_RADR_CASR_IC  (1U)          //!< Bit field size in bits for CAU_RADR_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_RADR_CASR_IC field.
-#define BR_CAU_RADR_CASR_IC  (BITBAND_ACCESS32(HW_CAU_RADR_CASR_ADDR, BP_CAU_RADR_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_RADR_CASR_IC.
 #define BF_CAU_RADR_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_RADR_CASR_IC), uint32_t) & BM_CAU_RADR_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_RADR_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_RADR_CASR_ADDR, BP_CAU_RADR_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -733,18 +663,8 @@ typedef union _hw_cau_radr_casr
 #define BM_CAU_RADR_CASR_DPE (0x00000002U) //!< Bit mask for CAU_RADR_CASR_DPE.
 #define BS_CAU_RADR_CASR_DPE (1U)          //!< Bit field size in bits for CAU_RADR_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_RADR_CASR_DPE field.
-#define BR_CAU_RADR_CASR_DPE (BITBAND_ACCESS32(HW_CAU_RADR_CASR_ADDR, BP_CAU_RADR_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_RADR_CASR_DPE.
 #define BF_CAU_RADR_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_RADR_CASR_DPE), uint32_t) & BM_CAU_RADR_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_RADR_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_RADR_CASR_ADDR, BP_CAU_RADR_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -760,18 +680,8 @@ typedef union _hw_cau_radr_casr
 #define BM_CAU_RADR_CASR_VER (0xF0000000U) //!< Bit mask for CAU_RADR_CASR_VER.
 #define BS_CAU_RADR_CASR_VER (4U)          //!< Bit field size in bits for CAU_RADR_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_RADR_CASR_VER field.
-#define BR_CAU_RADR_CASR_VER (HW_CAU_RADR_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_RADR_CASR_VER.
 #define BF_CAU_RADR_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_RADR_CASR_VER), uint32_t) & BM_CAU_RADR_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_RADR_CASR_VER(v) (HW_CAU_RADR_CASR_WR((HW_CAU_RADR_CASR_RD & ~BM_CAU_RADR_CASR_VER) | BF_CAU_RADR_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -899,18 +809,8 @@ typedef union _hw_cau_xor_casr
 #define BM_CAU_XOR_CASR_IC   (0x00000001U) //!< Bit mask for CAU_XOR_CASR_IC.
 #define BS_CAU_XOR_CASR_IC   (1U)          //!< Bit field size in bits for CAU_XOR_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_XOR_CASR_IC field.
-#define BR_CAU_XOR_CASR_IC   (BITBAND_ACCESS32(HW_CAU_XOR_CASR_ADDR, BP_CAU_XOR_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_XOR_CASR_IC.
 #define BF_CAU_XOR_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_XOR_CASR_IC), uint32_t) & BM_CAU_XOR_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_XOR_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_XOR_CASR_ADDR, BP_CAU_XOR_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -925,18 +825,8 @@ typedef union _hw_cau_xor_casr
 #define BM_CAU_XOR_CASR_DPE  (0x00000002U) //!< Bit mask for CAU_XOR_CASR_DPE.
 #define BS_CAU_XOR_CASR_DPE  (1U)          //!< Bit field size in bits for CAU_XOR_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_XOR_CASR_DPE field.
-#define BR_CAU_XOR_CASR_DPE  (BITBAND_ACCESS32(HW_CAU_XOR_CASR_ADDR, BP_CAU_XOR_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_XOR_CASR_DPE.
 #define BF_CAU_XOR_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_XOR_CASR_DPE), uint32_t) & BM_CAU_XOR_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_XOR_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_XOR_CASR_ADDR, BP_CAU_XOR_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -952,18 +842,8 @@ typedef union _hw_cau_xor_casr
 #define BM_CAU_XOR_CASR_VER  (0xF0000000U) //!< Bit mask for CAU_XOR_CASR_VER.
 #define BS_CAU_XOR_CASR_VER  (4U)          //!< Bit field size in bits for CAU_XOR_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_XOR_CASR_VER field.
-#define BR_CAU_XOR_CASR_VER  (HW_CAU_XOR_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_XOR_CASR_VER.
 #define BF_CAU_XOR_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_XOR_CASR_VER), uint32_t) & BM_CAU_XOR_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_XOR_CASR_VER(v) (HW_CAU_XOR_CASR_WR((HW_CAU_XOR_CASR_RD & ~BM_CAU_XOR_CASR_VER) | BF_CAU_XOR_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -1091,18 +971,8 @@ typedef union _hw_cau_rotl_casr
 #define BM_CAU_ROTL_CASR_IC  (0x00000001U) //!< Bit mask for CAU_ROTL_CASR_IC.
 #define BS_CAU_ROTL_CASR_IC  (1U)          //!< Bit field size in bits for CAU_ROTL_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_ROTL_CASR_IC field.
-#define BR_CAU_ROTL_CASR_IC  (BITBAND_ACCESS32(HW_CAU_ROTL_CASR_ADDR, BP_CAU_ROTL_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_ROTL_CASR_IC.
 #define BF_CAU_ROTL_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_ROTL_CASR_IC), uint32_t) & BM_CAU_ROTL_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_ROTL_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_ROTL_CASR_ADDR, BP_CAU_ROTL_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -1117,18 +987,8 @@ typedef union _hw_cau_rotl_casr
 #define BM_CAU_ROTL_CASR_DPE (0x00000002U) //!< Bit mask for CAU_ROTL_CASR_DPE.
 #define BS_CAU_ROTL_CASR_DPE (1U)          //!< Bit field size in bits for CAU_ROTL_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_ROTL_CASR_DPE field.
-#define BR_CAU_ROTL_CASR_DPE (BITBAND_ACCESS32(HW_CAU_ROTL_CASR_ADDR, BP_CAU_ROTL_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_ROTL_CASR_DPE.
 #define BF_CAU_ROTL_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_ROTL_CASR_DPE), uint32_t) & BM_CAU_ROTL_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_ROTL_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_ROTL_CASR_ADDR, BP_CAU_ROTL_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -1144,18 +1004,8 @@ typedef union _hw_cau_rotl_casr
 #define BM_CAU_ROTL_CASR_VER (0xF0000000U) //!< Bit mask for CAU_ROTL_CASR_VER.
 #define BS_CAU_ROTL_CASR_VER (4U)          //!< Bit field size in bits for CAU_ROTL_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_ROTL_CASR_VER field.
-#define BR_CAU_ROTL_CASR_VER (HW_CAU_ROTL_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_ROTL_CASR_VER.
 #define BF_CAU_ROTL_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_ROTL_CASR_VER), uint32_t) & BM_CAU_ROTL_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_ROTL_CASR_VER(v) (HW_CAU_ROTL_CASR_WR((HW_CAU_ROTL_CASR_RD & ~BM_CAU_ROTL_CASR_VER) | BF_CAU_ROTL_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -1283,18 +1133,8 @@ typedef union _hw_cau_aesc_casr
 #define BM_CAU_AESC_CASR_IC  (0x00000001U) //!< Bit mask for CAU_AESC_CASR_IC.
 #define BS_CAU_AESC_CASR_IC  (1U)          //!< Bit field size in bits for CAU_AESC_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_AESC_CASR_IC field.
-#define BR_CAU_AESC_CASR_IC  (BITBAND_ACCESS32(HW_CAU_AESC_CASR_ADDR, BP_CAU_AESC_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_AESC_CASR_IC.
 #define BF_CAU_AESC_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_AESC_CASR_IC), uint32_t) & BM_CAU_AESC_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_AESC_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_AESC_CASR_ADDR, BP_CAU_AESC_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -1309,18 +1149,8 @@ typedef union _hw_cau_aesc_casr
 #define BM_CAU_AESC_CASR_DPE (0x00000002U) //!< Bit mask for CAU_AESC_CASR_DPE.
 #define BS_CAU_AESC_CASR_DPE (1U)          //!< Bit field size in bits for CAU_AESC_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_AESC_CASR_DPE field.
-#define BR_CAU_AESC_CASR_DPE (BITBAND_ACCESS32(HW_CAU_AESC_CASR_ADDR, BP_CAU_AESC_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_AESC_CASR_DPE.
 #define BF_CAU_AESC_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_AESC_CASR_DPE), uint32_t) & BM_CAU_AESC_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_AESC_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_AESC_CASR_ADDR, BP_CAU_AESC_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -1336,18 +1166,8 @@ typedef union _hw_cau_aesc_casr
 #define BM_CAU_AESC_CASR_VER (0xF0000000U) //!< Bit mask for CAU_AESC_CASR_VER.
 #define BS_CAU_AESC_CASR_VER (4U)          //!< Bit field size in bits for CAU_AESC_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_AESC_CASR_VER field.
-#define BR_CAU_AESC_CASR_VER (HW_CAU_AESC_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_AESC_CASR_VER.
 #define BF_CAU_AESC_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_AESC_CASR_VER), uint32_t) & BM_CAU_AESC_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_AESC_CASR_VER(v) (HW_CAU_AESC_CASR_WR((HW_CAU_AESC_CASR_RD & ~BM_CAU_AESC_CASR_VER) | BF_CAU_AESC_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------
@@ -1475,18 +1295,8 @@ typedef union _hw_cau_aesic_casr
 #define BM_CAU_AESIC_CASR_IC (0x00000001U) //!< Bit mask for CAU_AESIC_CASR_IC.
 #define BS_CAU_AESIC_CASR_IC (1U)          //!< Bit field size in bits for CAU_AESIC_CASR_IC.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_AESIC_CASR_IC field.
-#define BR_CAU_AESIC_CASR_IC (BITBAND_ACCESS32(HW_CAU_AESIC_CASR_ADDR, BP_CAU_AESIC_CASR_IC))
-#endif
-
 //! @brief Format value for bitfield CAU_AESIC_CASR_IC.
 #define BF_CAU_AESIC_CASR_IC(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_AESIC_CASR_IC), uint32_t) & BM_CAU_AESIC_CASR_IC)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the IC field to a new value.
-#define BW_CAU_AESIC_CASR_IC(v) (BITBAND_ACCESS32(HW_CAU_AESIC_CASR_ADDR, BP_CAU_AESIC_CASR_IC) = (v))
-#endif
 //@}
 
 /*!
@@ -1501,18 +1311,8 @@ typedef union _hw_cau_aesic_casr
 #define BM_CAU_AESIC_CASR_DPE (0x00000002U) //!< Bit mask for CAU_AESIC_CASR_DPE.
 #define BS_CAU_AESIC_CASR_DPE (1U)         //!< Bit field size in bits for CAU_AESIC_CASR_DPE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_AESIC_CASR_DPE field.
-#define BR_CAU_AESIC_CASR_DPE (BITBAND_ACCESS32(HW_CAU_AESIC_CASR_ADDR, BP_CAU_AESIC_CASR_DPE))
-#endif
-
 //! @brief Format value for bitfield CAU_AESIC_CASR_DPE.
 #define BF_CAU_AESIC_CASR_DPE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_AESIC_CASR_DPE), uint32_t) & BM_CAU_AESIC_CASR_DPE)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the DPE field to a new value.
-#define BW_CAU_AESIC_CASR_DPE(v) (BITBAND_ACCESS32(HW_CAU_AESIC_CASR_ADDR, BP_CAU_AESIC_CASR_DPE) = (v))
-#endif
 //@}
 
 /*!
@@ -1528,18 +1328,8 @@ typedef union _hw_cau_aesic_casr
 #define BM_CAU_AESIC_CASR_VER (0xF0000000U) //!< Bit mask for CAU_AESIC_CASR_VER.
 #define BS_CAU_AESIC_CASR_VER (4U)         //!< Bit field size in bits for CAU_AESIC_CASR_VER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the CAU_AESIC_CASR_VER field.
-#define BR_CAU_AESIC_CASR_VER (HW_CAU_AESIC_CASR.B.VER)
-#endif
-
 //! @brief Format value for bitfield CAU_AESIC_CASR_VER.
 #define BF_CAU_AESIC_CASR_VER(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_CAU_AESIC_CASR_VER), uint32_t) & BM_CAU_AESIC_CASR_VER)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the VER field to a new value.
-#define BW_CAU_AESIC_CASR_VER(v) (HW_CAU_AESIC_CASR_WR((HW_CAU_AESIC_CASR_RD & ~BM_CAU_AESIC_CASR_VER) | BF_CAU_AESIC_CASR_VER(v)))
-#endif
 //@}
 
 //-------------------------------------------------------------------------------------------

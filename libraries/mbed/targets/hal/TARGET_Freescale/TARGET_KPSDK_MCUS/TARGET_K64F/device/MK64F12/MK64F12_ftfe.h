@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -86,7 +86,7 @@ typedef union _hw_ftfe_fstat
     struct _hw_ftfe_fstat_bitfields
     {
         uint8_t MGSTAT0 : 1;           //!< [0] Memory Controller Command Completion
-                                       //!< Status Flag
+                                       //! Status Flag
         uint8_t RESERVED0 : 3;         //!< [3:1]
         uint8_t FPVIOL : 1;            //!< [4] Flash Protection Violation Flag
         uint8_t ACCERR : 1;            //!< [5] Flash Access Error Flag
@@ -104,11 +104,11 @@ typedef union _hw_ftfe_fstat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FSTAT            (*(__IO hw_ftfe_fstat_t *) HW_FTFE_FSTAT_ADDR)
-#define HW_FTFE_FSTAT_RD         (HW_FTFE_FSTAT.U)
+#define HW_FTFE_FSTAT_RD()       (HW_FTFE_FSTAT.U)
 #define HW_FTFE_FSTAT_WR(v)      (HW_FTFE_FSTAT.U = (v))
-#define HW_FTFE_FSTAT_SET(v)     (HW_FTFE_FSTAT_WR(HW_FTFE_FSTAT_RD |  (v)))
-#define HW_FTFE_FSTAT_CLR(v)     (HW_FTFE_FSTAT_WR(HW_FTFE_FSTAT_RD & ~(v)))
-#define HW_FTFE_FSTAT_TOG(v)     (HW_FTFE_FSTAT_WR(HW_FTFE_FSTAT_RD ^  (v)))
+#define HW_FTFE_FSTAT_SET(v)     (HW_FTFE_FSTAT_WR(HW_FTFE_FSTAT_RD() |  (v)))
+#define HW_FTFE_FSTAT_CLR(v)     (HW_FTFE_FSTAT_WR(HW_FTFE_FSTAT_RD() & ~(v)))
+#define HW_FTFE_FSTAT_TOG(v)     (HW_FTFE_FSTAT_WR(HW_FTFE_FSTAT_RD() ^  (v)))
 #endif
 //@}
 
@@ -312,11 +312,11 @@ typedef union _hw_ftfe_fcnfg
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCNFG            (*(__IO hw_ftfe_fcnfg_t *) HW_FTFE_FCNFG_ADDR)
-#define HW_FTFE_FCNFG_RD         (HW_FTFE_FCNFG.U)
+#define HW_FTFE_FCNFG_RD()       (HW_FTFE_FCNFG.U)
 #define HW_FTFE_FCNFG_WR(v)      (HW_FTFE_FCNFG.U = (v))
-#define HW_FTFE_FCNFG_SET(v)     (HW_FTFE_FCNFG_WR(HW_FTFE_FCNFG_RD |  (v)))
-#define HW_FTFE_FCNFG_CLR(v)     (HW_FTFE_FCNFG_WR(HW_FTFE_FCNFG_RD & ~(v)))
-#define HW_FTFE_FCNFG_TOG(v)     (HW_FTFE_FCNFG_WR(HW_FTFE_FCNFG_RD ^  (v)))
+#define HW_FTFE_FCNFG_SET(v)     (HW_FTFE_FCNFG_WR(HW_FTFE_FCNFG_RD() |  (v)))
+#define HW_FTFE_FCNFG_CLR(v)     (HW_FTFE_FCNFG_WR(HW_FTFE_FCNFG_RD() & ~(v)))
+#define HW_FTFE_FCNFG_TOG(v)     (HW_FTFE_FCNFG_WR(HW_FTFE_FCNFG_RD() ^  (v)))
 #endif
 //@}
 
@@ -357,12 +357,12 @@ typedef union _hw_ftfe_fcnfg
  * This flag indicates the current status of the FlexRAM/ programming
  * acceleration RAM. For devices with FlexNVM: The state of the RAMRDY flag is normally
  * controlled by the Set FlexRAM Function command. During the reset sequence, the
- * RAMRDY flag is cleared if the FlexNVM block is partitioned for EEPROM and is set
- * if the FlexNVM block is not partitioned for EEPROM. The RAMRDY flag is
- * cleared if the Program Partition command is run to partition the FlexNVM block for
- * EEPROM. The RAMRDY flag sets after completion of the Erase All Blocks command
- * or execution of the erase-all operation triggered external to the FTFE. For
- * devices without FlexNVM: This bit should always be set.
+ * RAMRDY flag is cleared if the FlexNVM block is partitioned for EEPROM and will
+ * be set if the FlexNVM block is not partitioned for EEPROM . The RAMRDY flag is
+ * cleared if the Program Partition command is run to partition the FlexNVM block
+ * for EEPROM. The RAMRDY flag sets after completion of the Erase All Blocks
+ * command or execution of the erase-all operation triggered external to the FTFE.
+ * For devices without FlexNVM: This bit should always be set.
  *
  * Values:
  * - 0 - For devices with FlexNVM: FlexRAM is not available for traditional RAM
@@ -387,11 +387,11 @@ typedef union _hw_ftfe_fcnfg
  * @name Register FTFE_FCNFG, field PFLSH[2] (RO)
  *
  * Values:
- * - 0 - For devices with FlexNVM: FTFE configuration supports two logical
- *     program flash blocks and two logical FlexNVM blocks For devices with program
- *     flash only: Reserved
+ * - 0 - For devices with FlexNVM: FTFE configuration supports two program flash
+ *     blocks and two FlexNVM blocks For devices with program flash only:
+ *     Reserved
  * - 1 - For devices with FlexNVM: Reserved For devices with program flash only:
- *     FTFE configuration supports four logical program flash blocks
+ *     FTFE configuration supports four program flash blocks
  */
 //@{
 #define BP_FTFE_FCNFG_PFLSH  (2U)          //!< Bit position for FTFE_FCNFG_PFLSH.
@@ -412,11 +412,11 @@ typedef union _hw_ftfe_fcnfg
  * the reset sequence. See for information on swap management.
  *
  * Values:
- * - 0 - For devices with FlexNVM: Logical program flash 0 block is located at
- *     relative address 0x0000 For devices with program flash only: Logical
- *     program flash 0 block is located at relative address 0x0000
+ * - 0 - For devices with FlexNVM: Program flash 0 block is located at relative
+ *     address 0x0000 For devices with program flash only: Program flash 0 block
+ *     is located at relative address 0x0000
  * - 1 - For devices with FlexNVM: Reserved For devices with program flash only:
- *     Logical program flash 1 block is located at relative address 0x0000
+ *     Program flash 1 block is located at relative address 0x0000
  */
 //@{
 #define BP_FTFE_FCNFG_SWAP   (3U)          //!< Bit position for FTFE_FCNFG_SWAP.
@@ -583,7 +583,7 @@ typedef union _hw_ftfe_fsec
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FSEC             (*(__I hw_ftfe_fsec_t *) HW_FTFE_FSEC_ADDR)
-#define HW_FTFE_FSEC_RD          (HW_FTFE_FSEC.U)
+#define HW_FTFE_FSEC_RD()        (HW_FTFE_FSEC.U)
 #endif
 //@}
 
@@ -731,7 +731,7 @@ typedef union _hw_ftfe_fopt
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FOPT             (*(__I hw_ftfe_fopt_t *) HW_FTFE_FOPT_ADDR)
-#define HW_FTFE_FOPT_RD          (HW_FTFE_FOPT.U)
+#define HW_FTFE_FOPT_RD()        (HW_FTFE_FOPT.U)
 #endif
 //@}
 
@@ -752,7 +752,7 @@ typedef union _hw_ftfe_fopt
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FOPT_OPT field.
-#define BR_FTFE_FOPT_OPT     (HW_FTFE_FOPT.B.OPT)
+#define BR_FTFE_FOPT_OPT     (HW_FTFE_FOPT.U)
 #endif
 //@}
 
@@ -788,11 +788,11 @@ typedef union _hw_ftfe_fccob3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB3           (*(__IO hw_ftfe_fccob3_t *) HW_FTFE_FCCOB3_ADDR)
-#define HW_FTFE_FCCOB3_RD        (HW_FTFE_FCCOB3.U)
+#define HW_FTFE_FCCOB3_RD()      (HW_FTFE_FCCOB3.U)
 #define HW_FTFE_FCCOB3_WR(v)     (HW_FTFE_FCCOB3.U = (v))
-#define HW_FTFE_FCCOB3_SET(v)    (HW_FTFE_FCCOB3_WR(HW_FTFE_FCCOB3_RD |  (v)))
-#define HW_FTFE_FCCOB3_CLR(v)    (HW_FTFE_FCCOB3_WR(HW_FTFE_FCCOB3_RD & ~(v)))
-#define HW_FTFE_FCCOB3_TOG(v)    (HW_FTFE_FCCOB3_WR(HW_FTFE_FCCOB3_RD ^  (v)))
+#define HW_FTFE_FCCOB3_SET(v)    (HW_FTFE_FCCOB3_WR(HW_FTFE_FCCOB3_RD() |  (v)))
+#define HW_FTFE_FCCOB3_CLR(v)    (HW_FTFE_FCCOB3_WR(HW_FTFE_FCCOB3_RD() & ~(v)))
+#define HW_FTFE_FCCOB3_TOG(v)    (HW_FTFE_FCCOB3_WR(HW_FTFE_FCCOB3_RD() ^  (v)))
 #endif
 //@}
 
@@ -837,7 +837,7 @@ typedef union _hw_ftfe_fccob3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB3_CCOBn field.
-#define BR_FTFE_FCCOB3_CCOBn (HW_FTFE_FCCOB3.B.CCOBn)
+#define BR_FTFE_FCCOB3_CCOBn (HW_FTFE_FCCOB3.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB3_CCOBn.
@@ -845,7 +845,7 @@ typedef union _hw_ftfe_fccob3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB3_CCOBn(v) (HW_FTFE_FCCOB3_WR((HW_FTFE_FCCOB3_RD & ~BM_FTFE_FCCOB3_CCOBn) | BF_FTFE_FCCOB3_CCOBn(v)))
+#define BW_FTFE_FCCOB3_CCOBn(v) (HW_FTFE_FCCOB3_WR(v))
 #endif
 //@}
 
@@ -881,11 +881,11 @@ typedef union _hw_ftfe_fccob2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB2           (*(__IO hw_ftfe_fccob2_t *) HW_FTFE_FCCOB2_ADDR)
-#define HW_FTFE_FCCOB2_RD        (HW_FTFE_FCCOB2.U)
+#define HW_FTFE_FCCOB2_RD()      (HW_FTFE_FCCOB2.U)
 #define HW_FTFE_FCCOB2_WR(v)     (HW_FTFE_FCCOB2.U = (v))
-#define HW_FTFE_FCCOB2_SET(v)    (HW_FTFE_FCCOB2_WR(HW_FTFE_FCCOB2_RD |  (v)))
-#define HW_FTFE_FCCOB2_CLR(v)    (HW_FTFE_FCCOB2_WR(HW_FTFE_FCCOB2_RD & ~(v)))
-#define HW_FTFE_FCCOB2_TOG(v)    (HW_FTFE_FCCOB2_WR(HW_FTFE_FCCOB2_RD ^  (v)))
+#define HW_FTFE_FCCOB2_SET(v)    (HW_FTFE_FCCOB2_WR(HW_FTFE_FCCOB2_RD() |  (v)))
+#define HW_FTFE_FCCOB2_CLR(v)    (HW_FTFE_FCCOB2_WR(HW_FTFE_FCCOB2_RD() & ~(v)))
+#define HW_FTFE_FCCOB2_TOG(v)    (HW_FTFE_FCCOB2_WR(HW_FTFE_FCCOB2_RD() ^  (v)))
 #endif
 //@}
 
@@ -930,7 +930,7 @@ typedef union _hw_ftfe_fccob2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB2_CCOBn field.
-#define BR_FTFE_FCCOB2_CCOBn (HW_FTFE_FCCOB2.B.CCOBn)
+#define BR_FTFE_FCCOB2_CCOBn (HW_FTFE_FCCOB2.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB2_CCOBn.
@@ -938,7 +938,7 @@ typedef union _hw_ftfe_fccob2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB2_CCOBn(v) (HW_FTFE_FCCOB2_WR((HW_FTFE_FCCOB2_RD & ~BM_FTFE_FCCOB2_CCOBn) | BF_FTFE_FCCOB2_CCOBn(v)))
+#define BW_FTFE_FCCOB2_CCOBn(v) (HW_FTFE_FCCOB2_WR(v))
 #endif
 //@}
 
@@ -974,11 +974,11 @@ typedef union _hw_ftfe_fccob1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB1           (*(__IO hw_ftfe_fccob1_t *) HW_FTFE_FCCOB1_ADDR)
-#define HW_FTFE_FCCOB1_RD        (HW_FTFE_FCCOB1.U)
+#define HW_FTFE_FCCOB1_RD()      (HW_FTFE_FCCOB1.U)
 #define HW_FTFE_FCCOB1_WR(v)     (HW_FTFE_FCCOB1.U = (v))
-#define HW_FTFE_FCCOB1_SET(v)    (HW_FTFE_FCCOB1_WR(HW_FTFE_FCCOB1_RD |  (v)))
-#define HW_FTFE_FCCOB1_CLR(v)    (HW_FTFE_FCCOB1_WR(HW_FTFE_FCCOB1_RD & ~(v)))
-#define HW_FTFE_FCCOB1_TOG(v)    (HW_FTFE_FCCOB1_WR(HW_FTFE_FCCOB1_RD ^  (v)))
+#define HW_FTFE_FCCOB1_SET(v)    (HW_FTFE_FCCOB1_WR(HW_FTFE_FCCOB1_RD() |  (v)))
+#define HW_FTFE_FCCOB1_CLR(v)    (HW_FTFE_FCCOB1_WR(HW_FTFE_FCCOB1_RD() & ~(v)))
+#define HW_FTFE_FCCOB1_TOG(v)    (HW_FTFE_FCCOB1_WR(HW_FTFE_FCCOB1_RD() ^  (v)))
 #endif
 //@}
 
@@ -1023,7 +1023,7 @@ typedef union _hw_ftfe_fccob1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB1_CCOBn field.
-#define BR_FTFE_FCCOB1_CCOBn (HW_FTFE_FCCOB1.B.CCOBn)
+#define BR_FTFE_FCCOB1_CCOBn (HW_FTFE_FCCOB1.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB1_CCOBn.
@@ -1031,7 +1031,7 @@ typedef union _hw_ftfe_fccob1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB1_CCOBn(v) (HW_FTFE_FCCOB1_WR((HW_FTFE_FCCOB1_RD & ~BM_FTFE_FCCOB1_CCOBn) | BF_FTFE_FCCOB1_CCOBn(v)))
+#define BW_FTFE_FCCOB1_CCOBn(v) (HW_FTFE_FCCOB1_WR(v))
 #endif
 //@}
 
@@ -1067,11 +1067,11 @@ typedef union _hw_ftfe_fccob0
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB0           (*(__IO hw_ftfe_fccob0_t *) HW_FTFE_FCCOB0_ADDR)
-#define HW_FTFE_FCCOB0_RD        (HW_FTFE_FCCOB0.U)
+#define HW_FTFE_FCCOB0_RD()      (HW_FTFE_FCCOB0.U)
 #define HW_FTFE_FCCOB0_WR(v)     (HW_FTFE_FCCOB0.U = (v))
-#define HW_FTFE_FCCOB0_SET(v)    (HW_FTFE_FCCOB0_WR(HW_FTFE_FCCOB0_RD |  (v)))
-#define HW_FTFE_FCCOB0_CLR(v)    (HW_FTFE_FCCOB0_WR(HW_FTFE_FCCOB0_RD & ~(v)))
-#define HW_FTFE_FCCOB0_TOG(v)    (HW_FTFE_FCCOB0_WR(HW_FTFE_FCCOB0_RD ^  (v)))
+#define HW_FTFE_FCCOB0_SET(v)    (HW_FTFE_FCCOB0_WR(HW_FTFE_FCCOB0_RD() |  (v)))
+#define HW_FTFE_FCCOB0_CLR(v)    (HW_FTFE_FCCOB0_WR(HW_FTFE_FCCOB0_RD() & ~(v)))
+#define HW_FTFE_FCCOB0_TOG(v)    (HW_FTFE_FCCOB0_WR(HW_FTFE_FCCOB0_RD() ^  (v)))
 #endif
 //@}
 
@@ -1116,7 +1116,7 @@ typedef union _hw_ftfe_fccob0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB0_CCOBn field.
-#define BR_FTFE_FCCOB0_CCOBn (HW_FTFE_FCCOB0.B.CCOBn)
+#define BR_FTFE_FCCOB0_CCOBn (HW_FTFE_FCCOB0.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB0_CCOBn.
@@ -1124,7 +1124,7 @@ typedef union _hw_ftfe_fccob0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB0_CCOBn(v) (HW_FTFE_FCCOB0_WR((HW_FTFE_FCCOB0_RD & ~BM_FTFE_FCCOB0_CCOBn) | BF_FTFE_FCCOB0_CCOBn(v)))
+#define BW_FTFE_FCCOB0_CCOBn(v) (HW_FTFE_FCCOB0_WR(v))
 #endif
 //@}
 
@@ -1160,11 +1160,11 @@ typedef union _hw_ftfe_fccob7
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB7           (*(__IO hw_ftfe_fccob7_t *) HW_FTFE_FCCOB7_ADDR)
-#define HW_FTFE_FCCOB7_RD        (HW_FTFE_FCCOB7.U)
+#define HW_FTFE_FCCOB7_RD()      (HW_FTFE_FCCOB7.U)
 #define HW_FTFE_FCCOB7_WR(v)     (HW_FTFE_FCCOB7.U = (v))
-#define HW_FTFE_FCCOB7_SET(v)    (HW_FTFE_FCCOB7_WR(HW_FTFE_FCCOB7_RD |  (v)))
-#define HW_FTFE_FCCOB7_CLR(v)    (HW_FTFE_FCCOB7_WR(HW_FTFE_FCCOB7_RD & ~(v)))
-#define HW_FTFE_FCCOB7_TOG(v)    (HW_FTFE_FCCOB7_WR(HW_FTFE_FCCOB7_RD ^  (v)))
+#define HW_FTFE_FCCOB7_SET(v)    (HW_FTFE_FCCOB7_WR(HW_FTFE_FCCOB7_RD() |  (v)))
+#define HW_FTFE_FCCOB7_CLR(v)    (HW_FTFE_FCCOB7_WR(HW_FTFE_FCCOB7_RD() & ~(v)))
+#define HW_FTFE_FCCOB7_TOG(v)    (HW_FTFE_FCCOB7_WR(HW_FTFE_FCCOB7_RD() ^  (v)))
 #endif
 //@}
 
@@ -1209,7 +1209,7 @@ typedef union _hw_ftfe_fccob7
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB7_CCOBn field.
-#define BR_FTFE_FCCOB7_CCOBn (HW_FTFE_FCCOB7.B.CCOBn)
+#define BR_FTFE_FCCOB7_CCOBn (HW_FTFE_FCCOB7.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB7_CCOBn.
@@ -1217,7 +1217,7 @@ typedef union _hw_ftfe_fccob7
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB7_CCOBn(v) (HW_FTFE_FCCOB7_WR((HW_FTFE_FCCOB7_RD & ~BM_FTFE_FCCOB7_CCOBn) | BF_FTFE_FCCOB7_CCOBn(v)))
+#define BW_FTFE_FCCOB7_CCOBn(v) (HW_FTFE_FCCOB7_WR(v))
 #endif
 //@}
 
@@ -1253,11 +1253,11 @@ typedef union _hw_ftfe_fccob6
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB6           (*(__IO hw_ftfe_fccob6_t *) HW_FTFE_FCCOB6_ADDR)
-#define HW_FTFE_FCCOB6_RD        (HW_FTFE_FCCOB6.U)
+#define HW_FTFE_FCCOB6_RD()      (HW_FTFE_FCCOB6.U)
 #define HW_FTFE_FCCOB6_WR(v)     (HW_FTFE_FCCOB6.U = (v))
-#define HW_FTFE_FCCOB6_SET(v)    (HW_FTFE_FCCOB6_WR(HW_FTFE_FCCOB6_RD |  (v)))
-#define HW_FTFE_FCCOB6_CLR(v)    (HW_FTFE_FCCOB6_WR(HW_FTFE_FCCOB6_RD & ~(v)))
-#define HW_FTFE_FCCOB6_TOG(v)    (HW_FTFE_FCCOB6_WR(HW_FTFE_FCCOB6_RD ^  (v)))
+#define HW_FTFE_FCCOB6_SET(v)    (HW_FTFE_FCCOB6_WR(HW_FTFE_FCCOB6_RD() |  (v)))
+#define HW_FTFE_FCCOB6_CLR(v)    (HW_FTFE_FCCOB6_WR(HW_FTFE_FCCOB6_RD() & ~(v)))
+#define HW_FTFE_FCCOB6_TOG(v)    (HW_FTFE_FCCOB6_WR(HW_FTFE_FCCOB6_RD() ^  (v)))
 #endif
 //@}
 
@@ -1302,7 +1302,7 @@ typedef union _hw_ftfe_fccob6
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB6_CCOBn field.
-#define BR_FTFE_FCCOB6_CCOBn (HW_FTFE_FCCOB6.B.CCOBn)
+#define BR_FTFE_FCCOB6_CCOBn (HW_FTFE_FCCOB6.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB6_CCOBn.
@@ -1310,7 +1310,7 @@ typedef union _hw_ftfe_fccob6
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB6_CCOBn(v) (HW_FTFE_FCCOB6_WR((HW_FTFE_FCCOB6_RD & ~BM_FTFE_FCCOB6_CCOBn) | BF_FTFE_FCCOB6_CCOBn(v)))
+#define BW_FTFE_FCCOB6_CCOBn(v) (HW_FTFE_FCCOB6_WR(v))
 #endif
 //@}
 
@@ -1346,11 +1346,11 @@ typedef union _hw_ftfe_fccob5
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB5           (*(__IO hw_ftfe_fccob5_t *) HW_FTFE_FCCOB5_ADDR)
-#define HW_FTFE_FCCOB5_RD        (HW_FTFE_FCCOB5.U)
+#define HW_FTFE_FCCOB5_RD()      (HW_FTFE_FCCOB5.U)
 #define HW_FTFE_FCCOB5_WR(v)     (HW_FTFE_FCCOB5.U = (v))
-#define HW_FTFE_FCCOB5_SET(v)    (HW_FTFE_FCCOB5_WR(HW_FTFE_FCCOB5_RD |  (v)))
-#define HW_FTFE_FCCOB5_CLR(v)    (HW_FTFE_FCCOB5_WR(HW_FTFE_FCCOB5_RD & ~(v)))
-#define HW_FTFE_FCCOB5_TOG(v)    (HW_FTFE_FCCOB5_WR(HW_FTFE_FCCOB5_RD ^  (v)))
+#define HW_FTFE_FCCOB5_SET(v)    (HW_FTFE_FCCOB5_WR(HW_FTFE_FCCOB5_RD() |  (v)))
+#define HW_FTFE_FCCOB5_CLR(v)    (HW_FTFE_FCCOB5_WR(HW_FTFE_FCCOB5_RD() & ~(v)))
+#define HW_FTFE_FCCOB5_TOG(v)    (HW_FTFE_FCCOB5_WR(HW_FTFE_FCCOB5_RD() ^  (v)))
 #endif
 //@}
 
@@ -1395,7 +1395,7 @@ typedef union _hw_ftfe_fccob5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB5_CCOBn field.
-#define BR_FTFE_FCCOB5_CCOBn (HW_FTFE_FCCOB5.B.CCOBn)
+#define BR_FTFE_FCCOB5_CCOBn (HW_FTFE_FCCOB5.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB5_CCOBn.
@@ -1403,7 +1403,7 @@ typedef union _hw_ftfe_fccob5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB5_CCOBn(v) (HW_FTFE_FCCOB5_WR((HW_FTFE_FCCOB5_RD & ~BM_FTFE_FCCOB5_CCOBn) | BF_FTFE_FCCOB5_CCOBn(v)))
+#define BW_FTFE_FCCOB5_CCOBn(v) (HW_FTFE_FCCOB5_WR(v))
 #endif
 //@}
 
@@ -1439,11 +1439,11 @@ typedef union _hw_ftfe_fccob4
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB4           (*(__IO hw_ftfe_fccob4_t *) HW_FTFE_FCCOB4_ADDR)
-#define HW_FTFE_FCCOB4_RD        (HW_FTFE_FCCOB4.U)
+#define HW_FTFE_FCCOB4_RD()      (HW_FTFE_FCCOB4.U)
 #define HW_FTFE_FCCOB4_WR(v)     (HW_FTFE_FCCOB4.U = (v))
-#define HW_FTFE_FCCOB4_SET(v)    (HW_FTFE_FCCOB4_WR(HW_FTFE_FCCOB4_RD |  (v)))
-#define HW_FTFE_FCCOB4_CLR(v)    (HW_FTFE_FCCOB4_WR(HW_FTFE_FCCOB4_RD & ~(v)))
-#define HW_FTFE_FCCOB4_TOG(v)    (HW_FTFE_FCCOB4_WR(HW_FTFE_FCCOB4_RD ^  (v)))
+#define HW_FTFE_FCCOB4_SET(v)    (HW_FTFE_FCCOB4_WR(HW_FTFE_FCCOB4_RD() |  (v)))
+#define HW_FTFE_FCCOB4_CLR(v)    (HW_FTFE_FCCOB4_WR(HW_FTFE_FCCOB4_RD() & ~(v)))
+#define HW_FTFE_FCCOB4_TOG(v)    (HW_FTFE_FCCOB4_WR(HW_FTFE_FCCOB4_RD() ^  (v)))
 #endif
 //@}
 
@@ -1488,7 +1488,7 @@ typedef union _hw_ftfe_fccob4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB4_CCOBn field.
-#define BR_FTFE_FCCOB4_CCOBn (HW_FTFE_FCCOB4.B.CCOBn)
+#define BR_FTFE_FCCOB4_CCOBn (HW_FTFE_FCCOB4.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB4_CCOBn.
@@ -1496,7 +1496,7 @@ typedef union _hw_ftfe_fccob4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB4_CCOBn(v) (HW_FTFE_FCCOB4_WR((HW_FTFE_FCCOB4_RD & ~BM_FTFE_FCCOB4_CCOBn) | BF_FTFE_FCCOB4_CCOBn(v)))
+#define BW_FTFE_FCCOB4_CCOBn(v) (HW_FTFE_FCCOB4_WR(v))
 #endif
 //@}
 
@@ -1532,11 +1532,11 @@ typedef union _hw_ftfe_fccobb
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOBB           (*(__IO hw_ftfe_fccobb_t *) HW_FTFE_FCCOBB_ADDR)
-#define HW_FTFE_FCCOBB_RD        (HW_FTFE_FCCOBB.U)
+#define HW_FTFE_FCCOBB_RD()      (HW_FTFE_FCCOBB.U)
 #define HW_FTFE_FCCOBB_WR(v)     (HW_FTFE_FCCOBB.U = (v))
-#define HW_FTFE_FCCOBB_SET(v)    (HW_FTFE_FCCOBB_WR(HW_FTFE_FCCOBB_RD |  (v)))
-#define HW_FTFE_FCCOBB_CLR(v)    (HW_FTFE_FCCOBB_WR(HW_FTFE_FCCOBB_RD & ~(v)))
-#define HW_FTFE_FCCOBB_TOG(v)    (HW_FTFE_FCCOBB_WR(HW_FTFE_FCCOBB_RD ^  (v)))
+#define HW_FTFE_FCCOBB_SET(v)    (HW_FTFE_FCCOBB_WR(HW_FTFE_FCCOBB_RD() |  (v)))
+#define HW_FTFE_FCCOBB_CLR(v)    (HW_FTFE_FCCOBB_WR(HW_FTFE_FCCOBB_RD() & ~(v)))
+#define HW_FTFE_FCCOBB_TOG(v)    (HW_FTFE_FCCOBB_WR(HW_FTFE_FCCOBB_RD() ^  (v)))
 #endif
 //@}
 
@@ -1581,7 +1581,7 @@ typedef union _hw_ftfe_fccobb
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOBB_CCOBn field.
-#define BR_FTFE_FCCOBB_CCOBn (HW_FTFE_FCCOBB.B.CCOBn)
+#define BR_FTFE_FCCOBB_CCOBn (HW_FTFE_FCCOBB.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOBB_CCOBn.
@@ -1589,7 +1589,7 @@ typedef union _hw_ftfe_fccobb
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOBB_CCOBn(v) (HW_FTFE_FCCOBB_WR((HW_FTFE_FCCOBB_RD & ~BM_FTFE_FCCOBB_CCOBn) | BF_FTFE_FCCOBB_CCOBn(v)))
+#define BW_FTFE_FCCOBB_CCOBn(v) (HW_FTFE_FCCOBB_WR(v))
 #endif
 //@}
 
@@ -1625,11 +1625,11 @@ typedef union _hw_ftfe_fccoba
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOBA           (*(__IO hw_ftfe_fccoba_t *) HW_FTFE_FCCOBA_ADDR)
-#define HW_FTFE_FCCOBA_RD        (HW_FTFE_FCCOBA.U)
+#define HW_FTFE_FCCOBA_RD()      (HW_FTFE_FCCOBA.U)
 #define HW_FTFE_FCCOBA_WR(v)     (HW_FTFE_FCCOBA.U = (v))
-#define HW_FTFE_FCCOBA_SET(v)    (HW_FTFE_FCCOBA_WR(HW_FTFE_FCCOBA_RD |  (v)))
-#define HW_FTFE_FCCOBA_CLR(v)    (HW_FTFE_FCCOBA_WR(HW_FTFE_FCCOBA_RD & ~(v)))
-#define HW_FTFE_FCCOBA_TOG(v)    (HW_FTFE_FCCOBA_WR(HW_FTFE_FCCOBA_RD ^  (v)))
+#define HW_FTFE_FCCOBA_SET(v)    (HW_FTFE_FCCOBA_WR(HW_FTFE_FCCOBA_RD() |  (v)))
+#define HW_FTFE_FCCOBA_CLR(v)    (HW_FTFE_FCCOBA_WR(HW_FTFE_FCCOBA_RD() & ~(v)))
+#define HW_FTFE_FCCOBA_TOG(v)    (HW_FTFE_FCCOBA_WR(HW_FTFE_FCCOBA_RD() ^  (v)))
 #endif
 //@}
 
@@ -1674,7 +1674,7 @@ typedef union _hw_ftfe_fccoba
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOBA_CCOBn field.
-#define BR_FTFE_FCCOBA_CCOBn (HW_FTFE_FCCOBA.B.CCOBn)
+#define BR_FTFE_FCCOBA_CCOBn (HW_FTFE_FCCOBA.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOBA_CCOBn.
@@ -1682,7 +1682,7 @@ typedef union _hw_ftfe_fccoba
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOBA_CCOBn(v) (HW_FTFE_FCCOBA_WR((HW_FTFE_FCCOBA_RD & ~BM_FTFE_FCCOBA_CCOBn) | BF_FTFE_FCCOBA_CCOBn(v)))
+#define BW_FTFE_FCCOBA_CCOBn(v) (HW_FTFE_FCCOBA_WR(v))
 #endif
 //@}
 
@@ -1718,11 +1718,11 @@ typedef union _hw_ftfe_fccob9
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB9           (*(__IO hw_ftfe_fccob9_t *) HW_FTFE_FCCOB9_ADDR)
-#define HW_FTFE_FCCOB9_RD        (HW_FTFE_FCCOB9.U)
+#define HW_FTFE_FCCOB9_RD()      (HW_FTFE_FCCOB9.U)
 #define HW_FTFE_FCCOB9_WR(v)     (HW_FTFE_FCCOB9.U = (v))
-#define HW_FTFE_FCCOB9_SET(v)    (HW_FTFE_FCCOB9_WR(HW_FTFE_FCCOB9_RD |  (v)))
-#define HW_FTFE_FCCOB9_CLR(v)    (HW_FTFE_FCCOB9_WR(HW_FTFE_FCCOB9_RD & ~(v)))
-#define HW_FTFE_FCCOB9_TOG(v)    (HW_FTFE_FCCOB9_WR(HW_FTFE_FCCOB9_RD ^  (v)))
+#define HW_FTFE_FCCOB9_SET(v)    (HW_FTFE_FCCOB9_WR(HW_FTFE_FCCOB9_RD() |  (v)))
+#define HW_FTFE_FCCOB9_CLR(v)    (HW_FTFE_FCCOB9_WR(HW_FTFE_FCCOB9_RD() & ~(v)))
+#define HW_FTFE_FCCOB9_TOG(v)    (HW_FTFE_FCCOB9_WR(HW_FTFE_FCCOB9_RD() ^  (v)))
 #endif
 //@}
 
@@ -1767,7 +1767,7 @@ typedef union _hw_ftfe_fccob9
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB9_CCOBn field.
-#define BR_FTFE_FCCOB9_CCOBn (HW_FTFE_FCCOB9.B.CCOBn)
+#define BR_FTFE_FCCOB9_CCOBn (HW_FTFE_FCCOB9.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB9_CCOBn.
@@ -1775,7 +1775,7 @@ typedef union _hw_ftfe_fccob9
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB9_CCOBn(v) (HW_FTFE_FCCOB9_WR((HW_FTFE_FCCOB9_RD & ~BM_FTFE_FCCOB9_CCOBn) | BF_FTFE_FCCOB9_CCOBn(v)))
+#define BW_FTFE_FCCOB9_CCOBn(v) (HW_FTFE_FCCOB9_WR(v))
 #endif
 //@}
 
@@ -1811,11 +1811,11 @@ typedef union _hw_ftfe_fccob8
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FCCOB8           (*(__IO hw_ftfe_fccob8_t *) HW_FTFE_FCCOB8_ADDR)
-#define HW_FTFE_FCCOB8_RD        (HW_FTFE_FCCOB8.U)
+#define HW_FTFE_FCCOB8_RD()      (HW_FTFE_FCCOB8.U)
 #define HW_FTFE_FCCOB8_WR(v)     (HW_FTFE_FCCOB8.U = (v))
-#define HW_FTFE_FCCOB8_SET(v)    (HW_FTFE_FCCOB8_WR(HW_FTFE_FCCOB8_RD |  (v)))
-#define HW_FTFE_FCCOB8_CLR(v)    (HW_FTFE_FCCOB8_WR(HW_FTFE_FCCOB8_RD & ~(v)))
-#define HW_FTFE_FCCOB8_TOG(v)    (HW_FTFE_FCCOB8_WR(HW_FTFE_FCCOB8_RD ^  (v)))
+#define HW_FTFE_FCCOB8_SET(v)    (HW_FTFE_FCCOB8_WR(HW_FTFE_FCCOB8_RD() |  (v)))
+#define HW_FTFE_FCCOB8_CLR(v)    (HW_FTFE_FCCOB8_WR(HW_FTFE_FCCOB8_RD() & ~(v)))
+#define HW_FTFE_FCCOB8_TOG(v)    (HW_FTFE_FCCOB8_WR(HW_FTFE_FCCOB8_RD() ^  (v)))
 #endif
 //@}
 
@@ -1860,7 +1860,7 @@ typedef union _hw_ftfe_fccob8
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FCCOB8_CCOBn field.
-#define BR_FTFE_FCCOB8_CCOBn (HW_FTFE_FCCOB8.B.CCOBn)
+#define BR_FTFE_FCCOB8_CCOBn (HW_FTFE_FCCOB8.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FCCOB8_CCOBn.
@@ -1868,7 +1868,7 @@ typedef union _hw_ftfe_fccob8
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CCOBn field to a new value.
-#define BW_FTFE_FCCOB8_CCOBn(v) (HW_FTFE_FCCOB8_WR((HW_FTFE_FCCOB8_RD & ~BM_FTFE_FCCOB8_CCOBn) | BF_FTFE_FCCOB8_CCOBn(v)))
+#define BW_FTFE_FCCOB8_CCOBn(v) (HW_FTFE_FCCOB8_WR(v))
 #endif
 //@}
 
@@ -1882,19 +1882,19 @@ typedef union _hw_ftfe_fccob8
  *
  * Reset value: 0x00U
  *
- * The FPROT registers define which logical program flash regions are protected
- * from program and erase operations. Protected flash regions cannot have their
- * content changed; that is, these regions cannot be programmed and cannot be
- * erased by any FTFE command. Unprotected regions can be changed by program and
- * erase operations. The four FPROT registers allow up to 32 protectable regions of
- * equal memory size. Program flash protection register Program flash protection
- * bits FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0]
- * During the reset sequence, the FPROT registers are loaded with the contents of
- * the program flash protection bytes in the Flash Configuration Field as
- * indicated in the following table. Program flash protection register Flash
- * Configuration Field offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3
- * 0x0008 To change the program flash protection that is loaded during the reset
- * sequence, unprotect the sector of program flash memory that contains the Flash
+ * The FPROT registers define which program flash regions are protected from
+ * program and erase operations. Protected flash regions cannot have their content
+ * changed; that is, these regions cannot be programmed and cannot be erased by
+ * any FTFE command. Unprotected regions can be changed by program and erase
+ * operations. The four FPROT registers allow up to 32 protectable regions of equal
+ * memory size. Program flash protection register Program flash protection bits
+ * FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0] During
+ * the reset sequence, the FPROT registers are loaded with the contents of the
+ * program flash protection bytes in the Flash Configuration Field as indicated in
+ * the following table. Program flash protection register Flash Configuration Field
+ * offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3 0x0008 To
+ * change the program flash protection that is loaded during the reset sequence,
+ * unprotect the sector of program flash memory that contains the Flash
  * Configuration Field. Then, reprogram the program flash protection byte.
  */
 typedef union _hw_ftfe_fprot3
@@ -1915,11 +1915,11 @@ typedef union _hw_ftfe_fprot3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FPROT3           (*(__IO hw_ftfe_fprot3_t *) HW_FTFE_FPROT3_ADDR)
-#define HW_FTFE_FPROT3_RD        (HW_FTFE_FPROT3.U)
+#define HW_FTFE_FPROT3_RD()      (HW_FTFE_FPROT3.U)
 #define HW_FTFE_FPROT3_WR(v)     (HW_FTFE_FPROT3.U = (v))
-#define HW_FTFE_FPROT3_SET(v)    (HW_FTFE_FPROT3_WR(HW_FTFE_FPROT3_RD |  (v)))
-#define HW_FTFE_FPROT3_CLR(v)    (HW_FTFE_FPROT3_WR(HW_FTFE_FPROT3_RD & ~(v)))
-#define HW_FTFE_FPROT3_TOG(v)    (HW_FTFE_FPROT3_WR(HW_FTFE_FPROT3_RD ^  (v)))
+#define HW_FTFE_FPROT3_SET(v)    (HW_FTFE_FPROT3_WR(HW_FTFE_FPROT3_RD() |  (v)))
+#define HW_FTFE_FPROT3_CLR(v)    (HW_FTFE_FPROT3_WR(HW_FTFE_FPROT3_RD() & ~(v)))
+#define HW_FTFE_FPROT3_TOG(v)    (HW_FTFE_FPROT3_WR(HW_FTFE_FPROT3_RD() ^  (v)))
 #endif
 //@}
 
@@ -1956,7 +1956,7 @@ typedef union _hw_ftfe_fprot3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FPROT3_PROT field.
-#define BR_FTFE_FPROT3_PROT  (HW_FTFE_FPROT3.B.PROT)
+#define BR_FTFE_FPROT3_PROT  (HW_FTFE_FPROT3.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FPROT3_PROT.
@@ -1964,7 +1964,7 @@ typedef union _hw_ftfe_fprot3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PROT field to a new value.
-#define BW_FTFE_FPROT3_PROT(v) (HW_FTFE_FPROT3_WR((HW_FTFE_FPROT3_RD & ~BM_FTFE_FPROT3_PROT) | BF_FTFE_FPROT3_PROT(v)))
+#define BW_FTFE_FPROT3_PROT(v) (HW_FTFE_FPROT3_WR(v))
 #endif
 //@}
 
@@ -1978,19 +1978,19 @@ typedef union _hw_ftfe_fprot3
  *
  * Reset value: 0x00U
  *
- * The FPROT registers define which logical program flash regions are protected
- * from program and erase operations. Protected flash regions cannot have their
- * content changed; that is, these regions cannot be programmed and cannot be
- * erased by any FTFE command. Unprotected regions can be changed by program and
- * erase operations. The four FPROT registers allow up to 32 protectable regions of
- * equal memory size. Program flash protection register Program flash protection
- * bits FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0]
- * During the reset sequence, the FPROT registers are loaded with the contents of
- * the program flash protection bytes in the Flash Configuration Field as
- * indicated in the following table. Program flash protection register Flash
- * Configuration Field offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3
- * 0x0008 To change the program flash protection that is loaded during the reset
- * sequence, unprotect the sector of program flash memory that contains the Flash
+ * The FPROT registers define which program flash regions are protected from
+ * program and erase operations. Protected flash regions cannot have their content
+ * changed; that is, these regions cannot be programmed and cannot be erased by
+ * any FTFE command. Unprotected regions can be changed by program and erase
+ * operations. The four FPROT registers allow up to 32 protectable regions of equal
+ * memory size. Program flash protection register Program flash protection bits
+ * FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0] During
+ * the reset sequence, the FPROT registers are loaded with the contents of the
+ * program flash protection bytes in the Flash Configuration Field as indicated in
+ * the following table. Program flash protection register Flash Configuration Field
+ * offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3 0x0008 To
+ * change the program flash protection that is loaded during the reset sequence,
+ * unprotect the sector of program flash memory that contains the Flash
  * Configuration Field. Then, reprogram the program flash protection byte.
  */
 typedef union _hw_ftfe_fprot2
@@ -2011,11 +2011,11 @@ typedef union _hw_ftfe_fprot2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FPROT2           (*(__IO hw_ftfe_fprot2_t *) HW_FTFE_FPROT2_ADDR)
-#define HW_FTFE_FPROT2_RD        (HW_FTFE_FPROT2.U)
+#define HW_FTFE_FPROT2_RD()      (HW_FTFE_FPROT2.U)
 #define HW_FTFE_FPROT2_WR(v)     (HW_FTFE_FPROT2.U = (v))
-#define HW_FTFE_FPROT2_SET(v)    (HW_FTFE_FPROT2_WR(HW_FTFE_FPROT2_RD |  (v)))
-#define HW_FTFE_FPROT2_CLR(v)    (HW_FTFE_FPROT2_WR(HW_FTFE_FPROT2_RD & ~(v)))
-#define HW_FTFE_FPROT2_TOG(v)    (HW_FTFE_FPROT2_WR(HW_FTFE_FPROT2_RD ^  (v)))
+#define HW_FTFE_FPROT2_SET(v)    (HW_FTFE_FPROT2_WR(HW_FTFE_FPROT2_RD() |  (v)))
+#define HW_FTFE_FPROT2_CLR(v)    (HW_FTFE_FPROT2_WR(HW_FTFE_FPROT2_RD() & ~(v)))
+#define HW_FTFE_FPROT2_TOG(v)    (HW_FTFE_FPROT2_WR(HW_FTFE_FPROT2_RD() ^  (v)))
 #endif
 //@}
 
@@ -2052,7 +2052,7 @@ typedef union _hw_ftfe_fprot2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FPROT2_PROT field.
-#define BR_FTFE_FPROT2_PROT  (HW_FTFE_FPROT2.B.PROT)
+#define BR_FTFE_FPROT2_PROT  (HW_FTFE_FPROT2.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FPROT2_PROT.
@@ -2060,7 +2060,7 @@ typedef union _hw_ftfe_fprot2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PROT field to a new value.
-#define BW_FTFE_FPROT2_PROT(v) (HW_FTFE_FPROT2_WR((HW_FTFE_FPROT2_RD & ~BM_FTFE_FPROT2_PROT) | BF_FTFE_FPROT2_PROT(v)))
+#define BW_FTFE_FPROT2_PROT(v) (HW_FTFE_FPROT2_WR(v))
 #endif
 //@}
 
@@ -2074,19 +2074,19 @@ typedef union _hw_ftfe_fprot2
  *
  * Reset value: 0x00U
  *
- * The FPROT registers define which logical program flash regions are protected
- * from program and erase operations. Protected flash regions cannot have their
- * content changed; that is, these regions cannot be programmed and cannot be
- * erased by any FTFE command. Unprotected regions can be changed by program and
- * erase operations. The four FPROT registers allow up to 32 protectable regions of
- * equal memory size. Program flash protection register Program flash protection
- * bits FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0]
- * During the reset sequence, the FPROT registers are loaded with the contents of
- * the program flash protection bytes in the Flash Configuration Field as
- * indicated in the following table. Program flash protection register Flash
- * Configuration Field offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3
- * 0x0008 To change the program flash protection that is loaded during the reset
- * sequence, unprotect the sector of program flash memory that contains the Flash
+ * The FPROT registers define which program flash regions are protected from
+ * program and erase operations. Protected flash regions cannot have their content
+ * changed; that is, these regions cannot be programmed and cannot be erased by
+ * any FTFE command. Unprotected regions can be changed by program and erase
+ * operations. The four FPROT registers allow up to 32 protectable regions of equal
+ * memory size. Program flash protection register Program flash protection bits
+ * FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0] During
+ * the reset sequence, the FPROT registers are loaded with the contents of the
+ * program flash protection bytes in the Flash Configuration Field as indicated in
+ * the following table. Program flash protection register Flash Configuration Field
+ * offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3 0x0008 To
+ * change the program flash protection that is loaded during the reset sequence,
+ * unprotect the sector of program flash memory that contains the Flash
  * Configuration Field. Then, reprogram the program flash protection byte.
  */
 typedef union _hw_ftfe_fprot1
@@ -2107,11 +2107,11 @@ typedef union _hw_ftfe_fprot1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FPROT1           (*(__IO hw_ftfe_fprot1_t *) HW_FTFE_FPROT1_ADDR)
-#define HW_FTFE_FPROT1_RD        (HW_FTFE_FPROT1.U)
+#define HW_FTFE_FPROT1_RD()      (HW_FTFE_FPROT1.U)
 #define HW_FTFE_FPROT1_WR(v)     (HW_FTFE_FPROT1.U = (v))
-#define HW_FTFE_FPROT1_SET(v)    (HW_FTFE_FPROT1_WR(HW_FTFE_FPROT1_RD |  (v)))
-#define HW_FTFE_FPROT1_CLR(v)    (HW_FTFE_FPROT1_WR(HW_FTFE_FPROT1_RD & ~(v)))
-#define HW_FTFE_FPROT1_TOG(v)    (HW_FTFE_FPROT1_WR(HW_FTFE_FPROT1_RD ^  (v)))
+#define HW_FTFE_FPROT1_SET(v)    (HW_FTFE_FPROT1_WR(HW_FTFE_FPROT1_RD() |  (v)))
+#define HW_FTFE_FPROT1_CLR(v)    (HW_FTFE_FPROT1_WR(HW_FTFE_FPROT1_RD() & ~(v)))
+#define HW_FTFE_FPROT1_TOG(v)    (HW_FTFE_FPROT1_WR(HW_FTFE_FPROT1_RD() ^  (v)))
 #endif
 //@}
 
@@ -2148,7 +2148,7 @@ typedef union _hw_ftfe_fprot1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FPROT1_PROT field.
-#define BR_FTFE_FPROT1_PROT  (HW_FTFE_FPROT1.B.PROT)
+#define BR_FTFE_FPROT1_PROT  (HW_FTFE_FPROT1.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FPROT1_PROT.
@@ -2156,7 +2156,7 @@ typedef union _hw_ftfe_fprot1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PROT field to a new value.
-#define BW_FTFE_FPROT1_PROT(v) (HW_FTFE_FPROT1_WR((HW_FTFE_FPROT1_RD & ~BM_FTFE_FPROT1_PROT) | BF_FTFE_FPROT1_PROT(v)))
+#define BW_FTFE_FPROT1_PROT(v) (HW_FTFE_FPROT1_WR(v))
 #endif
 //@}
 
@@ -2170,19 +2170,19 @@ typedef union _hw_ftfe_fprot1
  *
  * Reset value: 0x00U
  *
- * The FPROT registers define which logical program flash regions are protected
- * from program and erase operations. Protected flash regions cannot have their
- * content changed; that is, these regions cannot be programmed and cannot be
- * erased by any FTFE command. Unprotected regions can be changed by program and
- * erase operations. The four FPROT registers allow up to 32 protectable regions of
- * equal memory size. Program flash protection register Program flash protection
- * bits FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0]
- * During the reset sequence, the FPROT registers are loaded with the contents of
- * the program flash protection bytes in the Flash Configuration Field as
- * indicated in the following table. Program flash protection register Flash
- * Configuration Field offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3
- * 0x0008 To change the program flash protection that is loaded during the reset
- * sequence, unprotect the sector of program flash memory that contains the Flash
+ * The FPROT registers define which program flash regions are protected from
+ * program and erase operations. Protected flash regions cannot have their content
+ * changed; that is, these regions cannot be programmed and cannot be erased by
+ * any FTFE command. Unprotected regions can be changed by program and erase
+ * operations. The four FPROT registers allow up to 32 protectable regions of equal
+ * memory size. Program flash protection register Program flash protection bits
+ * FPROT0 PROT[31:24] FPROT1 PROT[23:16] FPROT2 PROT[15:8] FPROT3 PROT[7:0] During
+ * the reset sequence, the FPROT registers are loaded with the contents of the
+ * program flash protection bytes in the Flash Configuration Field as indicated in
+ * the following table. Program flash protection register Flash Configuration Field
+ * offset address FPROT0 0x000B FPROT1 0x000A FPROT2 0x0009 FPROT3 0x0008 To
+ * change the program flash protection that is loaded during the reset sequence,
+ * unprotect the sector of program flash memory that contains the Flash
  * Configuration Field. Then, reprogram the program flash protection byte.
  */
 typedef union _hw_ftfe_fprot0
@@ -2203,11 +2203,11 @@ typedef union _hw_ftfe_fprot0
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FPROT0           (*(__IO hw_ftfe_fprot0_t *) HW_FTFE_FPROT0_ADDR)
-#define HW_FTFE_FPROT0_RD        (HW_FTFE_FPROT0.U)
+#define HW_FTFE_FPROT0_RD()      (HW_FTFE_FPROT0.U)
 #define HW_FTFE_FPROT0_WR(v)     (HW_FTFE_FPROT0.U = (v))
-#define HW_FTFE_FPROT0_SET(v)    (HW_FTFE_FPROT0_WR(HW_FTFE_FPROT0_RD |  (v)))
-#define HW_FTFE_FPROT0_CLR(v)    (HW_FTFE_FPROT0_WR(HW_FTFE_FPROT0_RD & ~(v)))
-#define HW_FTFE_FPROT0_TOG(v)    (HW_FTFE_FPROT0_WR(HW_FTFE_FPROT0_RD ^  (v)))
+#define HW_FTFE_FPROT0_SET(v)    (HW_FTFE_FPROT0_WR(HW_FTFE_FPROT0_RD() |  (v)))
+#define HW_FTFE_FPROT0_CLR(v)    (HW_FTFE_FPROT0_WR(HW_FTFE_FPROT0_RD() & ~(v)))
+#define HW_FTFE_FPROT0_TOG(v)    (HW_FTFE_FPROT0_WR(HW_FTFE_FPROT0_RD() ^  (v)))
 #endif
 //@}
 
@@ -2244,7 +2244,7 @@ typedef union _hw_ftfe_fprot0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FPROT0_PROT field.
-#define BR_FTFE_FPROT0_PROT  (HW_FTFE_FPROT0.B.PROT)
+#define BR_FTFE_FPROT0_PROT  (HW_FTFE_FPROT0.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FPROT0_PROT.
@@ -2252,7 +2252,7 @@ typedef union _hw_ftfe_fprot0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PROT field to a new value.
-#define BW_FTFE_FPROT0_PROT(v) (HW_FTFE_FPROT0_WR((HW_FTFE_FPROT0_RD & ~BM_FTFE_FPROT0_PROT) | BF_FTFE_FPROT0_PROT(v)))
+#define BW_FTFE_FPROT0_PROT(v) (HW_FTFE_FPROT0_WR(v))
 #endif
 //@}
 
@@ -2290,11 +2290,11 @@ typedef union _hw_ftfe_feprot
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FEPROT           (*(__IO hw_ftfe_feprot_t *) HW_FTFE_FEPROT_ADDR)
-#define HW_FTFE_FEPROT_RD        (HW_FTFE_FEPROT.U)
+#define HW_FTFE_FEPROT_RD()      (HW_FTFE_FEPROT.U)
 #define HW_FTFE_FEPROT_WR(v)     (HW_FTFE_FEPROT.U = (v))
-#define HW_FTFE_FEPROT_SET(v)    (HW_FTFE_FEPROT_WR(HW_FTFE_FEPROT_RD |  (v)))
-#define HW_FTFE_FEPROT_CLR(v)    (HW_FTFE_FEPROT_WR(HW_FTFE_FEPROT_RD & ~(v)))
-#define HW_FTFE_FEPROT_TOG(v)    (HW_FTFE_FEPROT_WR(HW_FTFE_FEPROT_RD ^  (v)))
+#define HW_FTFE_FEPROT_SET(v)    (HW_FTFE_FEPROT_WR(HW_FTFE_FEPROT_RD() |  (v)))
+#define HW_FTFE_FEPROT_CLR(v)    (HW_FTFE_FEPROT_WR(HW_FTFE_FEPROT_RD() & ~(v)))
+#define HW_FTFE_FEPROT_TOG(v)    (HW_FTFE_FEPROT_WR(HW_FTFE_FEPROT_RD() ^  (v)))
 #endif
 //@}
 
@@ -2342,7 +2342,7 @@ typedef union _hw_ftfe_feprot
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FEPROT_EPROT field.
-#define BR_FTFE_FEPROT_EPROT (HW_FTFE_FEPROT.B.EPROT)
+#define BR_FTFE_FEPROT_EPROT (HW_FTFE_FEPROT.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FEPROT_EPROT.
@@ -2350,7 +2350,7 @@ typedef union _hw_ftfe_feprot
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the EPROT field to a new value.
-#define BW_FTFE_FEPROT_EPROT(v) (HW_FTFE_FEPROT_WR((HW_FTFE_FEPROT_RD & ~BM_FTFE_FEPROT_EPROT) | BF_FTFE_FEPROT_EPROT(v)))
+#define BW_FTFE_FEPROT_EPROT(v) (HW_FTFE_FEPROT_WR(v))
 #endif
 //@}
 
@@ -2388,11 +2388,11 @@ typedef union _hw_ftfe_fdprot
 
 #ifndef __LANGUAGE_ASM__
 #define HW_FTFE_FDPROT           (*(__IO hw_ftfe_fdprot_t *) HW_FTFE_FDPROT_ADDR)
-#define HW_FTFE_FDPROT_RD        (HW_FTFE_FDPROT.U)
+#define HW_FTFE_FDPROT_RD()      (HW_FTFE_FDPROT.U)
 #define HW_FTFE_FDPROT_WR(v)     (HW_FTFE_FDPROT.U = (v))
-#define HW_FTFE_FDPROT_SET(v)    (HW_FTFE_FDPROT_WR(HW_FTFE_FDPROT_RD |  (v)))
-#define HW_FTFE_FDPROT_CLR(v)    (HW_FTFE_FDPROT_WR(HW_FTFE_FDPROT_RD & ~(v)))
-#define HW_FTFE_FDPROT_TOG(v)    (HW_FTFE_FDPROT_WR(HW_FTFE_FDPROT_RD ^  (v)))
+#define HW_FTFE_FDPROT_SET(v)    (HW_FTFE_FDPROT_WR(HW_FTFE_FDPROT_RD() |  (v)))
+#define HW_FTFE_FDPROT_CLR(v)    (HW_FTFE_FDPROT_WR(HW_FTFE_FDPROT_RD() & ~(v)))
+#define HW_FTFE_FDPROT_TOG(v)    (HW_FTFE_FDPROT_WR(HW_FTFE_FDPROT_RD() ^  (v)))
 #endif
 //@}
 
@@ -2441,7 +2441,7 @@ typedef union _hw_ftfe_fdprot
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the FTFE_FDPROT_DPROT field.
-#define BR_FTFE_FDPROT_DPROT (HW_FTFE_FDPROT.B.DPROT)
+#define BR_FTFE_FDPROT_DPROT (HW_FTFE_FDPROT.U)
 #endif
 
 //! @brief Format value for bitfield FTFE_FDPROT_DPROT.
@@ -2449,7 +2449,7 @@ typedef union _hw_ftfe_fdprot
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DPROT field to a new value.
-#define BW_FTFE_FDPROT_DPROT(v) (HW_FTFE_FDPROT_WR((HW_FTFE_FDPROT_RD & ~BM_FTFE_FDPROT_DPROT) | BF_FTFE_FDPROT_DPROT(v)))
+#define BW_FTFE_FDPROT_DPROT(v) (HW_FTFE_FDPROT_WR(v))
 #endif
 //@}
 

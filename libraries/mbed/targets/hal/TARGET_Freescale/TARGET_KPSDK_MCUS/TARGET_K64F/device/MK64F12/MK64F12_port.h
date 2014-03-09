@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -82,14 +82,13 @@ static const uint32_t __g_regs_PORT_base_addresses[] = {
 /*!
  * @brief HW_PORT_PCRn - Pin Control Register n (RW)
  *
- * Reset value: 0x00000001U
+ * Reset value: 0x00000742U
  *
- * Refer to the Signal Multiplexing and Pin Assignment chapter for the reset
- * value of this device. See the GPIO Configuration section for details on the
- * available functions for each pin. Do not modify pin configuration registers
- * associated with pins not available in your selected package. All un-bonded pins not
- * available in your package will default to DISABLE state for lowest power
- * consumption.
+ * See the Signal Multiplexing and Pin Assignment chapter for the reset value of
+ * this device. See the GPIO Configuration section for details on the available
+ * functions for each pin. Do not modify pin configuration registers associated
+ * with pins not available in your selected package. All unbonded pins not
+ * available in your package will default to DISABLE state for lowest power consumption.
  */
 typedef union _hw_port_pcrn
 {
@@ -144,9 +143,9 @@ typedef union _hw_port_pcrn
  *
  * Values:
  * - 0 - Internal pulldown resistor is enabled on the corresponding pin, if the
- *     corresponding Port Pull Enable field is set.
+ *     corresponding PE field is set.
  * - 1 - Internal pullup resistor is enabled on the corresponding pin, if the
- *     corresponding Port Pull Enable field is set.
+ *     corresponding PE field is set.
  */
 //@{
 #define BP_PORT_PCRn_PS      (0U)          //!< Bit position for PORT_PCRn_PS.
@@ -391,11 +390,11 @@ typedef union _hw_port_pcrn
  * - 0001 - DMA request on rising edge.
  * - 0010 - DMA request on falling edge.
  * - 0011 - DMA request on either edge.
- * - 1000 - Interrupt when logic zero.
- * - 1001 - Interrupt on rising edge.
- * - 1010 - Interrupt on falling edge.
+ * - 1000 - Interrupt when logic 0.
+ * - 1001 - Interrupt on rising-edge.
+ * - 1010 - Interrupt on falling-edge.
  * - 1011 - Interrupt on either edge.
- * - 1100 - Interrupt when logic one.
+ * - 1100 - Interrupt when logic 1.
  */
 //@{
 #define BP_PORT_PCRn_IRQC    (16U)         //!< Bit position for PORT_PCRn_IRQC.
@@ -426,8 +425,8 @@ typedef union _hw_port_pcrn
  * - 1 - Configured interrupt is detected. If the pin is configured to generate
  *     a DMA request, then the corresponding flag will be cleared automatically
  *     at the completion of the requested DMA transfer. Otherwise, the flag
- *     remains set until a logic one is written to the flag. If the pin is configured
- *     for a level sensitive interrupt and the pin remains asserted, then the flag
+ *     remains set until a logic 1 is written to the flag. If the pin is configured for
+ *     a level sensitive interrupt and the pin remains asserted, then the flag
  *     is set again immediately after it is cleared.
  */
 //@{
@@ -455,7 +454,7 @@ typedef union _hw_port_pcrn
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_PORT_GPCLR - Global Pin Control Low Register (WO)
+ * @brief HW_PORT_GPCLR - Global Pin Control Low Register (WORZ)
  *
  * Reset value: 0x00000000U
  *
@@ -480,6 +479,7 @@ typedef union _hw_port_gpclr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_PORT_GPCLR(x)         (*(__O hw_port_gpclr_t *) HW_PORT_GPCLR_ADDR(x))
+#define HW_PORT_GPCLR_RD(x)      (HW_PORT_GPCLR(x).U)
 #define HW_PORT_GPCLR_WR(x, v)   (HW_PORT_GPCLR(x).U = (v))
 #endif
 //@}
@@ -498,11 +498,6 @@ typedef union _hw_port_gpclr
 #define BP_PORT_GPCLR_GPWD   (0U)          //!< Bit position for PORT_GPCLR_GPWD.
 #define BM_PORT_GPCLR_GPWD   (0x0000FFFFU) //!< Bit mask for PORT_GPCLR_GPWD.
 #define BS_PORT_GPCLR_GPWD   (16U)         //!< Bit field size in bits for PORT_GPCLR_GPWD.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the PORT_GPCLR_GPWD field.
-#define BR_PORT_GPCLR_GPWD(x) (HW_PORT_GPCLR(x).B.GPWD)
-#endif
 
 //! @brief Format value for bitfield PORT_GPCLR_GPWD.
 #define BF_PORT_GPCLR_GPWD(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_PORT_GPCLR_GPWD), uint32_t) & BM_PORT_GPCLR_GPWD)
@@ -530,11 +525,6 @@ typedef union _hw_port_gpclr
 #define BM_PORT_GPCLR_GPWE   (0xFFFF0000U) //!< Bit mask for PORT_GPCLR_GPWE.
 #define BS_PORT_GPCLR_GPWE   (16U)         //!< Bit field size in bits for PORT_GPCLR_GPWE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the PORT_GPCLR_GPWE field.
-#define BR_PORT_GPCLR_GPWE(x) (HW_PORT_GPCLR(x).B.GPWE)
-#endif
-
 //! @brief Format value for bitfield PORT_GPCLR_GPWE.
 #define BF_PORT_GPCLR_GPWE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_PORT_GPCLR_GPWE), uint32_t) & BM_PORT_GPCLR_GPWE)
 
@@ -550,7 +540,7 @@ typedef union _hw_port_gpclr
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_PORT_GPCHR - Global Pin Control High Register (WO)
+ * @brief HW_PORT_GPCHR - Global Pin Control High Register (WORZ)
  *
  * Reset value: 0x00000000U
  *
@@ -575,6 +565,7 @@ typedef union _hw_port_gpchr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_PORT_GPCHR(x)         (*(__O hw_port_gpchr_t *) HW_PORT_GPCHR_ADDR(x))
+#define HW_PORT_GPCHR_RD(x)      (HW_PORT_GPCHR(x).U)
 #define HW_PORT_GPCHR_WR(x, v)   (HW_PORT_GPCHR(x).U = (v))
 #endif
 //@}
@@ -593,11 +584,6 @@ typedef union _hw_port_gpchr
 #define BP_PORT_GPCHR_GPWD   (0U)          //!< Bit position for PORT_GPCHR_GPWD.
 #define BM_PORT_GPCHR_GPWD   (0x0000FFFFU) //!< Bit mask for PORT_GPCHR_GPWD.
 #define BS_PORT_GPCHR_GPWD   (16U)         //!< Bit field size in bits for PORT_GPCHR_GPWD.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the PORT_GPCHR_GPWD field.
-#define BR_PORT_GPCHR_GPWD(x) (HW_PORT_GPCHR(x).B.GPWD)
-#endif
 
 //! @brief Format value for bitfield PORT_GPCHR_GPWD.
 #define BF_PORT_GPCHR_GPWD(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_PORT_GPCHR_GPWD), uint32_t) & BM_PORT_GPCHR_GPWD)
@@ -625,11 +611,6 @@ typedef union _hw_port_gpchr
 #define BM_PORT_GPCHR_GPWE   (0xFFFF0000U) //!< Bit mask for PORT_GPCHR_GPWE.
 #define BS_PORT_GPCHR_GPWE   (16U)         //!< Bit field size in bits for PORT_GPCHR_GPWE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the PORT_GPCHR_GPWE field.
-#define BR_PORT_GPCHR_GPWE(x) (HW_PORT_GPCHR(x).B.GPWE)
-#endif
-
 //! @brief Format value for bitfield PORT_GPCHR_GPWE.
 #define BF_PORT_GPCHR_GPWE(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_PORT_GPCHR_GPWE), uint32_t) & BM_PORT_GPCHR_GPWE)
 
@@ -645,7 +626,7 @@ typedef union _hw_port_gpchr
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_PORT_ISFR - Interrupt Status Flag Register (RW)
+ * @brief HW_PORT_ISFR - Interrupt Status Flag Register (W1C)
  *
  * Reset value: 0x00000000U
  *
@@ -694,8 +675,8 @@ typedef union _hw_port_isfr
  * - 1 - Configured interrupt is detected. If the pin is configured to generate
  *     a DMA request, then the corresponding flag will be cleared automatically
  *     at the completion of the requested DMA transfer. Otherwise, the flag
- *     remains set until a logic one is written to the flag. If the pin is configured
- *     for a level sensitive interrupt and the pin remains asserted, then the flag
+ *     remains set until a logic 1 is written to the flag. If the pin is configured for
+ *     a level sensitive interrupt and the pin remains asserted, then the flag
  *     is set again immediately after it is cleared.
  */
 //@{
@@ -705,7 +686,7 @@ typedef union _hw_port_isfr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the PORT_ISFR_ISF field.
-#define BR_PORT_ISFR_ISF(x)  (HW_PORT_ISFR(x).B.ISF)
+#define BR_PORT_ISFR_ISF(x)  (HW_PORT_ISFR(x).U)
 #endif
 
 //! @brief Format value for bitfield PORT_ISFR_ISF.
@@ -713,7 +694,7 @@ typedef union _hw_port_isfr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ISF field to a new value.
-#define BW_PORT_ISFR_ISF(x, v) (HW_PORT_ISFR_WR(x, (HW_PORT_ISFR_RD(x) & ~BM_PORT_ISFR_ISF) | BF_PORT_ISFR_ISF(v)))
+#define BW_PORT_ISFR_ISF(x, v) (HW_PORT_ISFR_WR(x, v))
 #endif
 //@}
 
@@ -783,7 +764,7 @@ typedef union _hw_port_dfer
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the PORT_DFER_DFE field.
-#define BR_PORT_DFER_DFE(x)  (HW_PORT_DFER(x).B.DFE)
+#define BR_PORT_DFER_DFE(x)  (HW_PORT_DFER(x).U)
 #endif
 
 //! @brief Format value for bitfield PORT_DFER_DFE.
@@ -791,7 +772,7 @@ typedef union _hw_port_dfer
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DFE field to a new value.
-#define BW_PORT_DFER_DFE(x, v) (HW_PORT_DFER_WR(x, (HW_PORT_DFER_RD(x) & ~BM_PORT_DFER_DFE) | BF_PORT_DFER_DFE(v)))
+#define BW_PORT_DFER_DFE(x, v) (HW_PORT_DFER_WR(x, v))
 #endif
 //@}
 

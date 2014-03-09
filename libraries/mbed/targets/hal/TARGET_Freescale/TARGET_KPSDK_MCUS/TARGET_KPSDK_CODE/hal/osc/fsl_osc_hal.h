@@ -45,7 +45,7 @@
  * Definitions
  ******************************************************************************/
 
-/*! @brief oscillator instance.*/
+/*! @brief Oscillator instance.*/
 typedef enum _osc_instance {
     kOsc0 = 0,           /*!< Oscillator 0*/
 #if FSL_FEATURE_OSC_HAS_OSC1
@@ -53,7 +53,7 @@ typedef enum _osc_instance {
 #endif
 } osc_instance_t;
 
-/*! @brief oscillator capacitor load configurations.*/
+/*! @brief Oscillator capacitor load configurations.*/
 typedef enum _osc_capacitor_config {
     kOscCapacitor2p = OSC_CR_SC2P_MASK,     /*!< 2 pF capacitor load */
     kOscCapacitor4p = OSC_CR_SC4P_MASK,     /*!< 4 pF capacitor load */
@@ -61,7 +61,7 @@ typedef enum _osc_capacitor_config {
     kOscCapacitor16p = OSC_CR_SC16P_MASK    /*!< 16 pF capacitor load */
 } osc_capacitor_config_t;
 
-/*! @brief oscillator capacitor load configurations mask*/
+/*! @brief Oscillator capacitor load configurations mask*/
 #define kOscCapacitorMask (OSC_CR_SC2P_MASK | OSC_CR_SC4P_MASK | OSC_CR_SC8P_MASK | OSC_CR_SC16P_MASK) 
 
 
@@ -78,11 +78,11 @@ extern "C" {
 
 
 /*!
- * @brief Enable the external reference clock for oscillator
+ * @brief Enables the external reference clock for oscillator
  *
- * This function will enable the external reference clock output 
- * for oscillator - that is the OSCERCLK. This clock will be used
- * by many peripherals. It should be enabled at early system init
+ * This function  enables the external reference clock output 
+ * for the oscillator - that is the OSCERCLK. This clock  is used
+ * by many peripherals. It should be enabled at an early system initialization
  * stage to ensure the peripherals could select it and use it.
  *
  * @param instance Oscillator instance
@@ -90,21 +90,21 @@ extern "C" {
 void osc_hal_enable_external_reference_clock(osc_instance_t instance);
 
 /*!
- * @brief Disable the external reference clock for oscillator
+ * @brief Disables the external reference clock for oscillator.
  *
- * This function will disable the external reference clock output 
- * for oscillator - that is the OSCERCLK. This clock will be used
- * by many peripherals. It should be enabled at early system init
- * stage to ensure the peripherals could select it and use it.
+ * This function  disables the external reference clock output 
+ * for oscillator - that is the OSCERCLK. This clock  is used
+ * by many peripherals. It should be enabled at an early system initialization
+ * stage to ensure the peripherals could select  and use it.
  * 
  * @param instance Oscillator instance
  */
 void osc_hal_disable_external_reference_clock(osc_instance_t instance);
 
 /*!
- * @brief Enable the external reference clock in stop mode
+ * @brief Enables the external reference clock in stop mode.
  *
- * This function will enable the external reference clock (OSCERCLK) when
+ * This function  enables the external reference clock (OSCERCLK) when
  * MCU enters Stop mode. 
  *
  * @param instance Oscillator instance
@@ -112,9 +112,9 @@ void osc_hal_disable_external_reference_clock(osc_instance_t instance);
 void osc_hal_enable_external_reference_clock_in_stop_mode(osc_instance_t instance);
 
 /*!
- * @brief Disable the external reference clock in stop mode
+ * @brief Disables the external reference clock in stop mode.
  *
- * This function will disable the external reference clock (OSCERCLK) when 
+ * This function  disables the external reference clock (OSCERCLK) when 
  * MCU enters Stop mode. 
  *
  * @param instance Oscillator instance
@@ -122,10 +122,10 @@ void osc_hal_enable_external_reference_clock_in_stop_mode(osc_instance_t instanc
 void osc_hal_disable_external_reference_clock_in_stop_mode(osc_instance_t instance);
 
 /*!
- * @brief Enable the capacitor configuration for oscillator
+ * @brief Enables the capacitor configuration for oscillator.
  *
- * This function will enable the specified capacitors configuration for the 
- * oscillator. This should be done in early system level init function call
+ * This function  enables the specified capacitors configuration for the 
+ * oscillator. This should be done in the early system level initialization function call
  * based on system configuration.
  *
  * @param instance        Oscillator instance
@@ -134,9 +134,9 @@ void osc_hal_disable_external_reference_clock_in_stop_mode(osc_instance_t instan
 void osc_hal_enable_capacitor_config(osc_instance_t instance, uint32_t capacitorConfigs);
 
 /*!
- * @brief Disable the capacitor configuration for specific oscillator
+ * @brief Disables the capacitor configuration for specific oscillator.
  *
- * This function will enable the specified capacitors configuration for the 
+ * This function  enables the specified capacitors configuration for the 
  * oscillator.
  *
  * @param instance        Oscillator instance

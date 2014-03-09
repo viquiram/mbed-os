@@ -38,37 +38,6 @@
  *Definitation
  ******************************************************************************/
 
-/* The states for the ring buffer */
-typedef struct Audio_Buffer{
-
-    uint8_t	*buff;/* Buffer address */
-    
-    uint8_t	blocks;/* Block number of the buffer. */
-    uint16_t	size;/* The size of a block */
-    
-    uint32_t	requested;/* The request data number to transfer */
-    uint32_t	queued;/* Data which is in buffer, but not processed */
-    uint32_t	processed;/* Data which is have been put into FIFO, 
-                             this is used to judge if the sai is underrun */
-    
-    uint8_t	input_index;
-    uint8_t	output_index;
-    uint8_t*	input_curbuff;
-    uint8_t*	output_curbuff;
-
-    snd_state_t status;
-
-    bool first_io;/* Means the first time the transfer */
-
-    uint32_t fifo_error;
-    uint32_t buffer_error;
-
-}audio_buffer_t;
-
-/* Two global buffers, the buffer can only be seen by the soundcard level. */
-static audio_buffer_t *tx_buffer;
-static audio_buffer_t *rx_buffer;
-
 #if USEDMA
 void snd_tx_dma_callback(void *param, edma_channel_status_t status);
 void snd_rx_dma_callback(void *param, edma_channel_status_t status);
@@ -107,77 +76,44 @@ audio_codec_operation_t g_sgtl_ops =
 
 /*FUNCTION**********************************************************************
 *
-* Function Name : snd_init_buffer
-* Description	: Initialize the tx buffer and rx buffer, allocate space for them.
-*  
-*END**************************************************************************/
-void snd_init_buffer(bool direction)
-{
-    /* tx buffer */
-    if(direction)
-    {
-        tx_buffer = (audio_buffer_t *)mem_allocate_zero(sizeof(audio_buffer_t));
-        tx_buffer->blocks = AUDIO_BUFFER_BLOCK;
-        tx_buffer->size = AUDIO_BUFFER_BLOCK_SIZE;
-        tx_buffer->first_io = true;
-        tx_buffer->buff = (uint8_t *)mem_allocate_zero((uint16_t)tx_buffer->size * tx_buffer->blocks);
-        tx_buffer->input_curbuff = tx_buffer->buff;
-        tx_buffer->output_curbuff = tx_buffer->buff;
-    }
-    /* rx buffer */
-    else
-    {
-        rx_buffer = (audio_buffer_t *)mem_allocate_zero(sizeof(audio_buffer_t));
-        rx_buffer->blocks = AUDIO_BUFFER_BLOCK;
-        rx_buffer->size = AUDIO_BUFFER_BLOCK_SIZE;
-        rx_buffer->first_io = true;
-        rx_buffer->buff = (uint8_t *)mem_allocate_zero((uint16_t)rx_buffer->blocks * rx_buffer->size);
-        rx_buffer->input_curbuff = rx_buffer->buff;
-    }
-
-}
-
-/*FUNCTION**********************************************************************
-*
 * Function Name : snd_init
 * Description	: Initialize the soundcard.
 *  The soundcard includes a controller and a codec.
 *END**************************************************************************/
-snd_status_t snd_init(sound_card_t * card, void * ctrl_config, void * codec_config, bool direction)
+snd_status_t snd_init(sound_card_t * card, void * ctrl_config, void * codec_config)
 {
     audio_controller_t *ctrl = &card->controller;
     audio_codec_t *codec = &card->codec;
-    /* Initialize the global buffer */
-    snd_init_buffer(direction);
+    /* Allocate space for buffer */
+    audio_buffer_t *buffer = &card->buffer;
+    /* Buffer size and block settings */
+    buffer->blocks = AUDIO_BUFFER_BLOCK;
+    buffer->size = AUDIO_BUFFER_BLOCK_SIZE;
+    buffer->buff = (uint8_t *)mem_allocate_zero(buffer->size * buffer->blocks);
+    if(!buffer->buff)
+    {
+        return kStatus_SND_BufferAllocateFail;
+    }
+    buffer->input_curbuff = buffer->buff;
+    buffer->output_curbuff = buffer->buff;
+    /* Initialize the status structure */
+    buffer->empty_block = buffer->blocks;
+    buffer->full_block = 0;
 #if USEDMA
     edma_request_channel(kEdmaAnyChannel, ctrl->dma_source, &ctrl->dma_channel);
 #endif
-    if(direction)
+    if(card->direction == AUDIO_TX)
     {
-        /* Initialize the controller and codec */
-        snd_state_t *tx_status = &tx_buffer->status;  
-        /* Initialize the status staucture */
-        tx_status->size = AUDIO_BUFFER_BLOCK_SIZE;
-        tx_status->empty_block = AUDIO_BUFFER_BLOCK;
-        tx_status->full_block = 0;
-        tx_status->input_address = tx_buffer->buff;
-        tx_status->output_address = tx_buffer->buff;
-        sync_create(&tx_status->sem, AUDIO_BUFFER_BLOCK); 
+        sync_create(&buffer->sem, buffer->blocks); 
 #if USEDMA
-        edma_register_callback(&ctrl->dma_channel, snd_tx_dma_callback, (void *)ctrl);
+        edma_register_callback(&ctrl->dma_channel, snd_tx_dma_callback, (void *)card);
 #endif
     }
     else
     {
-        snd_state_t *rx_status = &rx_buffer->status;
-        rx_status->size = AUDIO_BUFFER_BLOCK_SIZE;
-        rx_status->empty_block = AUDIO_BUFFER_BLOCK;
-        rx_status->full_block = 0;
-        rx_status->input_address = rx_buffer->buff;
-        rx_status->output_address = rx_buffer->buff;
-        sync_create(&rx_status->sem, 0);
+        sync_create(&buffer->sem, 0);
 #if USEDMA
-        edma_register_callback(&ctrl->dma_channel, snd_rx_dma_callback, (void *)ctrl);
+        edma_register_callback(&ctrl->dma_channel, snd_rx_dma_callback, (void *)card);
 #endif
      }
     /* Initialize audio controller and codec */
@@ -192,10 +128,11 @@ snd_status_t snd_init(sound_card_t * card, void * ctrl_config, void * codec_conf
 * Description	: Deinit the soundcard.
 *  The soundcard includes a controller and a codec.
 *END**************************************************************************/
-snd_status_t snd_deinit(sound_card_t *card, bool direction)
+snd_status_t snd_deinit(sound_card_t *card)
 {
     audio_controller_t *ctrl = &card->controller;
     audio_codec_t *codec = &card->codec;
+    audio_buffer_t *buffer = &card->buffer;
     /* Call the deinit function of the ctrl and codec. */
     ctrl->ops->ctrl_deinit((void *)(ctrl->handler));
     codec->ops->codec_deinit((void *)codec->handler);
@@ -204,17 +141,9 @@ snd_status_t snd_deinit(sound_card_t *card, bool direction)
     edma_stop_channel(&ctrl->dma_channel);
     edma_free_channel(&ctrl->dma_channel);
 #endif
+    sync_destroy(&buffer->sem);
     /* Free the tx and rx buffer. */
-    if(direction)
-    {
-        free(tx_buffer->buff);
-        free(tx_buffer);
-    }
-    else
-    {
-        free(rx_buffer->buff);
-        free(rx_buffer);
-    }
+    mem_free(buffer->buff);
     return kStatus_SND_Success;
 }
 
@@ -225,7 +154,7 @@ snd_status_t snd_deinit(sound_card_t *card, bool direction)
 *  The soundcard includes a controller and a codec. The audio format includes 
 *  sample rate, bit length and so on.
 *END**************************************************************************/
-snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *format, bool direction)
+snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *format)
 {
     audio_controller_t *ctrl = &card->controller;
     audio_codec_t *codec = &card->codec;
@@ -235,7 +164,8 @@ snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *f
                                                                     format->bits);
     /* Configure dma */
 #if USEDMA
-    if(direction)
+    audio_buffer_t *buffer = &card->buffer;
+    if(card->direction == AUDIO_TX)
     {
         uint8_t sample_size = format->bits/8;
         if((sample_size == 3) || (format->bits & 0x7))
@@ -246,7 +176,7 @@ snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *f
         edma_software_tcd_t * stcd_temp = (edma_software_tcd_t *)(((uint32_t )ctrl->stcd + 32) & 0xFFFFFFE0);
         edma_config_loop(
                 stcd_temp, &ctrl->dma_channel,kEdmaMemoryToPeripheral,
-                (uint32_t)tx_buffer->buff, (uint32_t)desAddr, sample_size,
+                (uint32_t)buffer->buff, (uint32_t)desAddr, sample_size,
                 (sample_size * (SAI_FIFO_LEN - format->watermark)), 
                 AUDIO_BUFFER_SIZE, AUDIO_BUFFER_BLOCK);
         edma_start_channel(&ctrl->dma_channel);
@@ -262,18 +192,18 @@ snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *f
         edma_software_tcd_t * stcd_temp = (edma_software_tcd_t *)(((uint32_t )ctrl->stcd + 32) & 0xFFFFFFE0);
         edma_config_loop(
                 stcd_temp, &ctrl->dma_channel,kEdmaPeripheralToMemory,
-                 (uint32_t)desAddr, (uint32_t)rx_buffer->buff, sample_size,
+                 (uint32_t)desAddr, (uint32_t)buffer->buff, sample_size,
                 (sample_size *format->watermark), AUDIO_BUFFER_SIZE, AUDIO_BUFFER_BLOCK);
         edma_start_channel(&ctrl->dma_channel);
     }
 #else
-    if(direction)
+    if(card->direction == AUDIO_TX)
     {
-        ctrl->ops->ctrl_register_callback(ctrl->handler, snd_tx_callback, ctrl);
+        ctrl->ops->ctrl_register_callback(ctrl->handler, snd_tx_callback, card);
     }
     else
     {
-        ctrl->ops->ctrl_register_callback(ctrl->handler, snd_rx_callback, ctrl);    
+        ctrl->ops->ctrl_register_callback(ctrl->handler, snd_rx_callback, card);
     }
 #endif
 
@@ -290,8 +220,7 @@ snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *f
 *END**************************************************************************/
 uint32_t snd_update_tx_status(sound_card_t * card, uint32_t len)
 {
-    audio_buffer_t * buffer = tx_buffer;
-    snd_state_t *status = &tx_buffer->status;
+    audio_buffer_t * buffer = &card->buffer;
     uint32_t input_blocks = len/buffer->size;
     /* Update the buffer information */
     buffer->requested += len;
@@ -306,11 +235,8 @@ uint32_t snd_update_tx_status(sound_card_t * card, uint32_t len)
         buffer->input_index = input_blocks - (buffer->blocks - 1 - buffer->input_index) - 1;
     }
     buffer->input_curbuff = buffer->buff + buffer->input_index * buffer->size;
-
-    /*Update the status */
-    status->input_address = buffer->input_curbuff;
-    status->empty_block -= input_blocks;
-    status->full_block += input_blocks;
+    buffer->empty_block -= input_blocks;
+    buffer->full_block += input_blocks;
     /* If sai is not enable, enable the sai */
     if (buffer->first_io)
     {
@@ -329,45 +255,42 @@ uint32_t snd_update_tx_status(sound_card_t * card, uint32_t len)
 *END**************************************************************************/
 void snd_tx_callback(void *param)
 {
-    audio_controller_t *ctrl = (audio_controller_t *)param;
-    snd_state_t *status = &tx_buffer->status;
-    if(tx_buffer->queued == 0)
+    sound_card_t *card = (sound_card_t *)param;
+    audio_controller_t * ctrl = &card->controller;
+    audio_buffer_t *buffer = &card->buffer;
+    if(buffer->queued == 0)
     {
         return;
     }
-    tx_buffer->processed += tx_buffer->size;
-    tx_buffer->queued -= tx_buffer->size;
+    buffer->processed += buffer->size;
+    buffer->queued -= buffer->size;
 
     /* Change the current buffer */
-    if (tx_buffer->output_index == tx_buffer->blocks - 1)
+    if (buffer->output_index == buffer->blocks - 1)
     {
-        tx_buffer->output_curbuff = tx_buffer->buff;
-        tx_buffer->output_index = 0;
+        buffer->output_curbuff = buffer->buff;
+        buffer->output_index = 0;
     }
     else
     {
-        tx_buffer->output_index ++;
-        tx_buffer->output_curbuff += tx_buffer->size;
+        buffer->output_index ++;
+        buffer->output_curbuff += buffer->size;
     }
     /* Update the status */
-    status->empty_block += 1;
-    status->full_block -= 1;
-    status->output_address = tx_buffer->output_curbuff;
+    buffer->empty_block += 1;
+    buffer->full_block -= 1;
     /* Judge if need to close the SAI transfer. */
-    if (tx_buffer->input_index == tx_buffer->output_index)
+    if (buffer->input_index == buffer->output_index)
     {
         ctrl->ops->ctrl_stop_write(ctrl->handler);
-        tx_buffer->buffer_error ++;
-        tx_buffer->first_io = true;
+        buffer->buffer_error ++;
+        buffer->first_io = true;
     }
 #if !USEDMA
-    else
-    {
-        ctrl->ops->ctrl_send_data(ctrl->handler, status->output_address, status->size);
-    }
+    ctrl->ops->ctrl_send_data(ctrl->handler, buffer->output_curbuff, buffer->size);
 #endif
     /* post the sync */
-    sync_signal_from_isr(&status->sem);
+    sync_signal_from_isr(&buffer->sem);
 }
 
 /*FUNCTION**********************************************************************
@@ -380,9 +303,8 @@ void snd_tx_callback(void *param)
 *END**************************************************************************/
 uint32_t snd_update_rx_status(sound_card_t *card,  uint32_t len)
 {
-    snd_state_t *status = &rx_buffer->status;
-    audio_buffer_t *buffer = rx_buffer;
-    uint8_t output_blocks = len/status->size;
+    audio_buffer_t *buffer = &card->buffer;
+    uint8_t output_blocks = len/buffer->size;
     /* Update inner information */
     buffer->requested += len;
     buffer->processed += len;
@@ -397,10 +319,8 @@ uint32_t snd_update_rx_status(sound_card_t *card,  uint32_t len)
         buffer->output_index = output_blocks - (buffer->blocks - 1 - buffer->output_index) - 1;
     }
     buffer->output_curbuff = buffer->buff + buffer->output_index * buffer->size;
-
-    status->full_block -= output_blocks;
-    status->empty_block += output_blocks;
-    status->output_address = buffer->output_curbuff;
+    buffer->full_block -= output_blocks;
+    buffer->empty_block += output_blocks;
     /* The first time should start the progress. */
     if (buffer->first_io)
     {
@@ -419,39 +339,35 @@ uint32_t snd_update_rx_status(sound_card_t *card,  uint32_t len)
 *END**************************************************************************/
 void snd_rx_callback(void *param)
 {
-    audio_controller_t *ctrl = (audio_controller_t *)param;
-    snd_state_t *status = &rx_buffer->status;
-    rx_buffer->queued += rx_buffer->size;	
+    sound_card_t *card = (sound_card_t *)param;
+    audio_controller_t *ctrl = &card->controller;
+    audio_buffer_t *buffer = &card->buffer;
+    buffer->queued += buffer->size;
     /* Change the current buffer. */
-    if (rx_buffer->input_index == rx_buffer->blocks - 1)
+    if (buffer->input_index == buffer->blocks - 1)
     {  
-        rx_buffer->input_curbuff = rx_buffer->buff;
-        rx_buffer->input_index = 0;
+        buffer->input_curbuff = buffer->buff;
+        buffer->input_index = 0;
     }
     else
     {
-        rx_buffer->input_index ++;
-        rx_buffer->input_curbuff += rx_buffer->size;
+        buffer->input_index ++;
+        buffer->input_curbuff += buffer->size;
     }
-    /* Update the status */
-    status->input_address = rx_buffer->input_curbuff;
-    status->empty_block -= 1;
-    status->full_block += 1;
+    buffer->empty_block -= 1;
+    buffer->full_block += 1;
     /* Judge if need to close the SAI transfer, while the buffer is full, 
      * we need to close the SAI */
-    if (rx_buffer->input_index == rx_buffer->output_index)
+    if (buffer->input_index == buffer->output_index)
     {
         ctrl->ops->ctrl_stop_read(ctrl->handler);
-        rx_buffer->buffer_error ++;
-        rx_buffer->first_io = true;
+        buffer->buffer_error ++;
+        buffer->first_io = true;
     }
 #if !USEDMA
-    else
-    {
-         ctrl->ops->ctrl_receive_data(ctrl->handler, status->input_address, status->size);
-    }
+    ctrl->ops->ctrl_receive_data(ctrl->handler, buffer->input_curbuff, buffer->size);
 #endif
-    sync_signal_from_isr(&status->sem);
+    sync_signal_from_isr(&buffer->sem);
 }
 
 /*FUNCTION**********************************************************************
@@ -460,16 +376,14 @@ void snd_rx_callback(void *param)
  * Description   : Format the audio data to 32bits length complement before into FIFO
  *  
  *END**************************************************************************/
- void snd_get_status(snd_state_t *status, bool direction)
-{	
-    if(direction)
-    {
-        *status = tx_buffer->status;
-    }
-    else
-    {
-        *status = rx_buffer->status;
-    }
+ void snd_get_status(snd_state_t *status, sound_card_t *card)
+{
+    audio_buffer_t *buffer = &card->buffer;
+    status->size = buffer->size;
+    status->empty_block = buffer->empty_block;
+    status->full_block = buffer->full_block;
+    status->input_address = buffer->input_curbuff;
+    status->output_address = buffer->output_curbuff;
 }
 
 /*FUNCTION**********************************************************************
@@ -478,21 +392,13 @@ void snd_rx_callback(void *param)
  * Description   : This function is used for appliaction to wait for the semaphore
  * to copy data in/out the sai buffer.
  *END**************************************************************************/
-void snd_wait_event(bool direction)
+void snd_wait_event(sound_card_t *card)
 {
     fsl_rtos_status syncStatus;
-    snd_state_t *status;
-    if(direction)
-    {
-        status = &tx_buffer->status;
-    }
-    else
-    {
-        status = &rx_buffer->status;
-    }
+    audio_buffer_t *buffer = &card->buffer;
     do
     {
-        syncStatus = sync_wait(&status->sem, kSyncWaitForever);
+        syncStatus = sync_wait(&buffer->sem, kSyncWaitForever);
     }while(syncStatus == kIdle);
 }
 
@@ -505,7 +411,8 @@ void snd_start_tx(sound_card_t *card)
 {
     audio_controller_t *ctrl = &card->controller;
 #if !USEDMA
-    ctrl->ops->ctrl_send_data(ctrl->handler, tx_buffer->output_curbuff, tx_buffer->size);
+    audio_buffer_t *buffer = &card->buffer;
+    ctrl->ops->ctrl_send_data(ctrl->handler, buffer->output_curbuff, buffer->size);
 #endif
     ctrl->ops->ctrl_start_write(ctrl->handler);
 }
@@ -519,7 +426,8 @@ void snd_start_rx(sound_card_t *card)
 {
     audio_controller_t *ctrl = &card->controller;
 #if !USEDMA
-    ctrl->ops->ctrl_receive_data(ctrl->handler, rx_buffer->input_curbuff, rx_buffer->size);
+    audio_buffer_t *buffer = &card->buffer;
+    ctrl->ops->ctrl_receive_data(ctrl->handler, buffer->input_curbuff, buffer->size);
 #endif
     ctrl->ops->ctrl_start_read(ctrl->handler);
 }

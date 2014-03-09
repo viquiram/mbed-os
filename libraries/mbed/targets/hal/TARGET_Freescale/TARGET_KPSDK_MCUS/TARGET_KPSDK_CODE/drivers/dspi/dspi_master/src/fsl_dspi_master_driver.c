@@ -28,11 +28,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string.h>
 #include "fsl_dspi_master_driver.h"
 #include "fsl_dspi_shared_irqs.h"
 #include "fsl_clock_manager.h"
 #include "fsl_interrupt_manager.h"
-#include <string.h>
 
 /*******************************************************************************
  * Definitions
@@ -81,8 +81,10 @@ static void dspi_master_complete_transfer(dspi_master_state_t * dspiState);
  *   dspi_master_init(masterInstance, &dspiMasterState, &userConfig, &calculatedBaudRate);
  *
  *END**************************************************************************/
-dspi_status_t dspi_master_init(uint32_t instance,  dspi_master_state_t * dspiState,
-                      dspi_master_user_config_t * userConfig, uint32_t * calculatedBaudRate)
+dspi_status_t dspi_master_init(uint32_t instance,
+                               dspi_master_state_t * dspiState,
+                               const dspi_master_user_config_t * userConfig,
+                               uint32_t * calculatedBaudRate)
 
 {
     uint32_t dspiSourceClock;
@@ -258,8 +260,9 @@ void dspi_master_configure_modified_transfer_format(dspi_master_state_t * dspiSt
  *   dspi_master_configure_bus(&dspiMasterState, &spiDevice, &calculatedBaudRate);
  *
  *END**************************************************************************/
-dspi_status_t dspi_master_configure_bus(dspi_master_state_t * dspiState, const dspi_device_t * device,
-                                   uint32_t * calculatedBaudRate)
+dspi_status_t dspi_master_configure_bus(dspi_master_state_t * dspiState,
+                                        const dspi_device_t * device,
+                                        uint32_t * calculatedBaudRate)
 {
     assert(device);
     uint32_t instance = dspiState->instance;
@@ -339,7 +342,7 @@ dspi_status_t dspi_master_transfer_async(dspi_master_state_t * dspiState,
 {
     /* fill in members of the run-time state struct*/
     dspiState->isTransferAsync = true;
-    dspiState->sendBuffer = (const uint8_t *)sendBuffer;
+    dspiState->sendBuffer = sendBuffer;
     dspiState->receiveBuffer = (uint8_t *)receiveBuffer;
     dspiState->remainingSendByteCount = transferByteCount;
     dspiState->remainingReceiveByteCount = transferByteCount;
@@ -412,9 +415,11 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
     uint32_t calculatedBaudRate;
     dspi_command_config_t command;  /* create an instance of the data command struct*/
     uint16_t wordToSend = 0;
+    /* Declare variables for storing volatile data later in the code */
+    uint32_t remainingReceiveByteCount, remainingSendByteCount;
 
     /* Check the transfer byte count. If bits/frame > 8, meaning 2 bytes, then
-     * the transfer byte count must not be an odd count, if so, drop the aslt odd byte.
+     * the transfer byte count must not be an odd count, if so, drop the last odd byte.
      * Perform this operation here to ensure we get the latest bits/frame setting.
      */
     if (dspiState->bitsPerFrame > 8)
@@ -485,9 +490,21 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
     {
         /* Fill the fifo until it is full or until the send word count is 0 or until the difference
          * between the remainingReceiveByteCount and remainingSendByteCount equals the FIFO depth.
+         * The reason for checking the difference is to ensure we only send as much as the
+         * RX FIFO can receive.
+         * For this case wher bitsPerFrame > 8, each entry in the FIFO contains 2 bytes of the
+         * send data, hence the difference between the remainingReceiveByteCount and
+         * remainingSendByteCount must be divided by 2 to convert this difference into a
+         * 16-bit (2 byte) value.
          */
+        /* Store the DSPI state struct volatile member variables into temporary
+         * non-volatile variables to allow for MISRA compliant calculations
+         */
+        remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+        remainingSendByteCount = dspiState->remainingSendByteCount;
+
         while((dspi_hal_get_status_flag(instance, kDspiTxFifoFillRequest) == 1) &&
-              ((dspiState->remainingReceiveByteCount - dspiState->remainingSendByteCount) <
+              ((remainingReceiveByteCount - remainingSendByteCount)/2 <
                 FSL_FEATURE_SPI_FIFO_SIZEn(instance)))
         {
             /* On the last word to be sent, set the end of queue flag in the data command struct
@@ -540,6 +557,12 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
             /* try to clear TFFF by writing a one to it; it will not clear if TX FIFO not full*/
             dspi_hal_clear_status_flag(instance, kDspiTxFifoFillRequest);
 
+            /* Store the DSPI state struct volatile member variables into temporary
+             * non-volatile variables to allow for MISRA compliant calculations
+             */
+            remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+            remainingSendByteCount = dspiState->remainingSendByteCount;
+
             /* exit loop if send count is zero */
             if (dspiState->remainingSendByteCount == 0)
             {
@@ -552,9 +575,17 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
     {
         /* Fill the fifo until it is full or until the send word count is 0 or until the difference
          * between the remainingReceiveByteCount and remainingSendByteCount equals the FIFO depth.
+         * The reason for checking the difference is to ensure we only send as much as the
+         * RX FIFO can receive.
          */
+        /* Store the DSPI state struct volatile member variables into temporary
+         * non-volatile variables to allow for MISRA compliant calculations
+         */
+        remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+        remainingSendByteCount = dspiState->remainingSendByteCount;
+
         while((dspi_hal_get_status_flag(instance, kDspiTxFifoFillRequest) == 1) &&
-              ((dspiState->remainingReceiveByteCount - dspiState->remainingSendByteCount) <
+              ((remainingReceiveByteCount - remainingSendByteCount) <
                 FSL_FEATURE_SPI_FIFO_SIZEn(instance)))
         {
             /* On the last word to be sent, set the end of queue flag in the data command struct
@@ -578,14 +609,6 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
                 {
                     wordToSend = *(dspiState->sendBuffer);
                     ++dspiState->sendBuffer; /* increment to next data byte */
-                    /* If bits/frame is greater than one byte, then need to get the next byte
-                     * in the buffer and left shift it by 8 and OR it to the previous byte
-                     */
-                    if (dspiState->bitsPerFrame > 8)
-                    {
-                        wordToSend |= (unsigned)(*(dspiState->sendBuffer)) << 8U;
-                        ++dspiState->sendBuffer; /* increment to next data byte */
-                    }
                 }
                 dspi_hal_write_data_master_mode(instance, &command, wordToSend);
                 --dspiState->remainingSendByteCount; /* decrement remainingSendByteCount */
@@ -602,14 +625,6 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
                 {
                     wordToSend = *(dspiState->sendBuffer);
                     ++dspiState->sendBuffer; /* increment to next data word*/
-                    /* If bits/frame is greater than one byte, then need to get the next byte
-                     * in the buffer and left shift it by 8 and OR it to the previous byte
-                     */
-                    if (dspiState->bitsPerFrame > 8)
-                    {
-                        wordToSend |= (unsigned)(*(dspiState->sendBuffer)) << 8U;
-                        ++dspiState->sendBuffer; /* increment to next data byte */
-                    }
                 }
                 dspi_hal_write_data_master_mode(instance, &command, wordToSend);
                 --dspiState->remainingSendByteCount; /* decrement remainingSendByteCount*/
@@ -617,6 +632,12 @@ static dspi_status_t dspi_master_start_transfer(dspi_master_state_t * dspiState,
 
             /* try to clear TFFF by writing a one to it; it will not clear if TX FIFO not full*/
             dspi_hal_clear_status_flag(instance, kDspiTxFifoFillRequest);
+
+            /* Store the DSPI state struct volatile member variables into temporary
+             * non-volatile variables to allow for MISRA compliant calculations
+             */
+            remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+            remainingSendByteCount = dspiState->remainingSendByteCount;
 
             /* exit loop if send count is zero */
             if (dspiState->remainingSendByteCount == 0)
@@ -673,6 +694,9 @@ void dspi_master_irq_handler(void * state)
     dspi_command_config_t command;
 
     uint32_t instance = dspiState->instance;
+
+    /* Declare variables for storing volatile data later in the code */
+    uint32_t remainingReceiveByteCount, remainingSendByteCount;
 
     /* Check read buffer.*/
     uint16_t wordReceived; /* Maximum supported data bit length in master mode is 16-bits */
@@ -757,12 +781,24 @@ void dspi_master_irq_handler(void * state)
             /* Fill the fifo until it is full or until the send word count is 0 or until the
              * difference between the remainingReceiveByteCount and remainingSendByteCount equals
              * the FIFO depth.
+             * The reason for checking the difference is to ensure we only send as much as the
+             * RX FIFO can receive.
+             * For this case wher bitsPerFrame > 8, each entry in the FIFO contains 2 bytes of the
+             * send data, hence the difference between the remainingReceiveByteCount and
+             * remainingSendByteCount must be divided by 2 to convert this difference into a
+             * 16-bit (2 byte) value.
              */
-            while((dspiState->remainingSendByteCount != 0) &&
+            /* Store the DSPI state struct volatile member variables into temporary
+             * non-volatile variables to allow for MISRA compliant calculations
+             */
+            remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+            remainingSendByteCount = dspiState->remainingSendByteCount;
+
+          while((dspiState->remainingSendByteCount != 0) &&
                   (dspi_hal_get_status_flag(instance, kDspiTxFifoFillRequest)==1) &&
-                  ((dspiState->remainingReceiveByteCount - dspiState->remainingSendByteCount) <
+                  ((remainingReceiveByteCount - remainingSendByteCount)/2 <
                 FSL_FEATURE_SPI_FIFO_SIZEn(instance)))
-            {
+          {
                 /* On the last word to be sent, set the end of queue flag in the data command struct
                  * and ensure that the CONT bit in the PUSHR is also cleared even if it was cleared
                  * to begin with. If CONT is set it means continuous chip select operation and to
@@ -790,6 +826,13 @@ void dspi_master_irq_handler(void * state)
 
                 /* try to clear TFFF by writing a one to it; it will not clear if TX FIFO not full*/
                 dspi_hal_clear_status_flag(instance, kDspiTxFifoFillRequest);
+
+                /* Store the DSPI state struct volatile member variables into temporary
+                 * non-volatile variables to allow for MISRA compliant calculations
+                 */
+                remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+                remainingSendByteCount = dspiState->remainingSendByteCount;
+
             } /* End of TX FIFO fill while loop */
         }
         /* Optimized for bits/frame less than or equal to one byte. */
@@ -798,10 +841,18 @@ void dspi_master_irq_handler(void * state)
             /* Fill the fifo until it is full or until the send word count is 0 or until the
              * difference between the remainingReceiveByteCount and remainingSendByteCount equals
              * the FIFO depth.
+             * The reason for checking the difference is to ensure we only send as much as the
+             * RX FIFO can receive.
              */
+            /* Store the DSPI state struct volatile member variables into temporary
+             * non-volatile variables to allow for MISRA compliant calculations
+             */
+            remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+            remainingSendByteCount = dspiState->remainingSendByteCount;
+
             while((dspiState->remainingSendByteCount != 0) &&
                   (dspi_hal_get_status_flag(instance, kDspiTxFifoFillRequest)==1) &&
-                  ((dspiState->remainingReceiveByteCount - dspiState->remainingSendByteCount) <
+                  ((remainingReceiveByteCount - remainingSendByteCount) <
                 FSL_FEATURE_SPI_FIFO_SIZEn(instance)))
             {
                 /* On the last word to be sent, set the end of queue flag in the data command struct
@@ -829,6 +880,13 @@ void dspi_master_irq_handler(void * state)
 
                 /* try to clear TFFF by writing a one to it; it will not clear if TX FIFO not full*/
                 dspi_hal_clear_status_flag(instance, kDspiTxFifoFillRequest);
+
+                /* Store the DSPI state struct volatile member variables into temporary
+                 * non-volatile variables to allow for MISRA compliant calculations
+                 */
+                remainingReceiveByteCount = dspiState->remainingReceiveByteCount;
+                remainingSendByteCount = dspiState->remainingSendByteCount;
+
             } /* End of TX FIFO fill while loop */
         }
     }

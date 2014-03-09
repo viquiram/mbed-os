@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -41,7 +41,6 @@
  * - HW_MCG_ATCVL - MCG Auto Trim Compare Value Low Register
  * - HW_MCG_C7 - MCG Control 7 Register
  * - HW_MCG_C8 - MCG Control 8 Register
- * - HW_MCG_C9 - MCG Control 9 Register
  *
  * - hw_mcg_t - Struct containing all module registers.
  */
@@ -86,11 +85,11 @@ typedef union _hw_mcg_c1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C1                (*(__IO hw_mcg_c1_t *) HW_MCG_C1_ADDR)
-#define HW_MCG_C1_RD             (HW_MCG_C1.U)
+#define HW_MCG_C1_RD()           (HW_MCG_C1.U)
 #define HW_MCG_C1_WR(v)          (HW_MCG_C1.U = (v))
-#define HW_MCG_C1_SET(v)         (HW_MCG_C1_WR(HW_MCG_C1_RD |  (v)))
-#define HW_MCG_C1_CLR(v)         (HW_MCG_C1_WR(HW_MCG_C1_RD & ~(v)))
-#define HW_MCG_C1_TOG(v)         (HW_MCG_C1_WR(HW_MCG_C1_RD ^  (v)))
+#define HW_MCG_C1_SET(v)         (HW_MCG_C1_WR(HW_MCG_C1_RD() |  (v)))
+#define HW_MCG_C1_CLR(v)         (HW_MCG_C1_WR(HW_MCG_C1_RD() & ~(v)))
+#define HW_MCG_C1_TOG(v)         (HW_MCG_C1_WR(HW_MCG_C1_RD() ^  (v)))
 #endif
 //@}
 
@@ -194,22 +193,22 @@ typedef union _hw_mcg_c1
  * to enter a FLL mode from FBE).
  *
  * Values:
- * - 000 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 1; for all other RANGE
- *     0 values, Divide Factor is 32.
- * - 001 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 2; for all other RANGE
- *     0 values, Divide Factor is 64.
- * - 010 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 4; for all other RANGE
- *     0 values, Divide Factor is 128.
- * - 011 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 8; for all other RANGE
- *     0 values, Divide Factor is 256.
- * - 100 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 16; for all other RANGE
- *     0 values, Divide Factor is 512.
- * - 101 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 32; for all other RANGE
- *     0 values, Divide Factor is 1024.
- * - 110 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 64; for all other RANGE
- *     0 values, Divide Factor is 1280 .
- * - 111 - If RANGE 0 = 0 or OSCSEL=1 , Divide Factor is 128; for all other
- *     RANGE 0 values, Divide Factor is 1536 .
+ * - 000 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 1; for all other RANGE
+ *     values, Divide Factor is 32.
+ * - 001 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 2; for all other RANGE
+ *     values, Divide Factor is 64.
+ * - 010 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 4; for all other RANGE
+ *     values, Divide Factor is 128.
+ * - 011 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 8; for all other RANGE
+ *     values, Divide Factor is 256.
+ * - 100 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 16; for all other RANGE
+ *     values, Divide Factor is 512.
+ * - 101 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 32; for all other RANGE
+ *     values, Divide Factor is 1024.
+ * - 110 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 64; for all other RANGE
+ *     values, Divide Factor is 1280 .
+ * - 111 - If RANGE = 0 or OSCSEL=1 , Divide Factor is 128; for all other RANGE
+ *     values, Divide Factor is 1536 .
  */
 //@{
 #define BP_MCG_C1_FRDIV      (3U)          //!< Bit position for MCG_C1_FRDIV.
@@ -226,7 +225,7 @@ typedef union _hw_mcg_c1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FRDIV field to a new value.
-#define BW_MCG_C1_FRDIV(v)   (HW_MCG_C1_WR((HW_MCG_C1_RD & ~BM_MCG_C1_FRDIV) | BF_MCG_C1_FRDIV(v)))
+#define BW_MCG_C1_FRDIV(v)   (HW_MCG_C1_WR((HW_MCG_C1_RD() & ~BM_MCG_C1_FRDIV) | BF_MCG_C1_FRDIV(v)))
 #endif
 //@}
 
@@ -257,7 +256,7 @@ typedef union _hw_mcg_c1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CLKS field to a new value.
-#define BW_MCG_C1_CLKS(v)    (HW_MCG_C1_WR((HW_MCG_C1_RD & ~BM_MCG_C1_CLKS) | BF_MCG_C1_CLKS(v)))
+#define BW_MCG_C1_CLKS(v)    (HW_MCG_C1_WR((HW_MCG_C1_RD() & ~BM_MCG_C1_CLKS) | BF_MCG_C1_CLKS(v)))
 #endif
 //@}
 
@@ -278,9 +277,9 @@ typedef union _hw_mcg_c2
     {
         uint8_t IRCS : 1;              //!< [0] Internal Reference Clock Select
         uint8_t LP : 1;                //!< [1] Low Power Select
-        uint8_t EREFS0 : 1;            //!< [2] External Reference Select
-        uint8_t HGO0 : 1;              //!< [3] High Gain Oscillator Select
-        uint8_t RANGE0 : 2;            //!< [5:4] Frequency Range Select
+        uint8_t EREFS : 1;             //!< [2] External Reference Select
+        uint8_t HGO : 1;               //!< [3] High Gain Oscillator Select
+        uint8_t RANGE : 2;             //!< [5:4] Frequency Range Select
         uint8_t FCFTRIM : 1;           //!< [6] Fast Internal Reference Clock Fine Trim
         uint8_t LOCRE0 : 1;            //!< [7] Loss of Clock Reset Enable
     } B;
@@ -295,11 +294,11 @@ typedef union _hw_mcg_c2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C2                (*(__IO hw_mcg_c2_t *) HW_MCG_C2_ADDR)
-#define HW_MCG_C2_RD             (HW_MCG_C2.U)
+#define HW_MCG_C2_RD()           (HW_MCG_C2.U)
 #define HW_MCG_C2_WR(v)          (HW_MCG_C2.U = (v))
-#define HW_MCG_C2_SET(v)         (HW_MCG_C2_WR(HW_MCG_C2_RD |  (v)))
-#define HW_MCG_C2_CLR(v)         (HW_MCG_C2_WR(HW_MCG_C2_RD & ~(v)))
-#define HW_MCG_C2_TOG(v)         (HW_MCG_C2_WR(HW_MCG_C2_RD ^  (v)))
+#define HW_MCG_C2_SET(v)         (HW_MCG_C2_WR(HW_MCG_C2_RD() |  (v)))
+#define HW_MCG_C2_CLR(v)         (HW_MCG_C2_WR(HW_MCG_C2_RD() & ~(v)))
+#define HW_MCG_C2_TOG(v)         (HW_MCG_C2_WR(HW_MCG_C2_RD() ^  (v)))
 #endif
 //@}
 
@@ -367,7 +366,7 @@ typedef union _hw_mcg_c2
 //@}
 
 /*!
- * @name Register MCG_C2, field EREFS0[2] (RW)
+ * @name Register MCG_C2, field EREFS[2] (RW)
  *
  * Selects the source for the external reference clock. See the Oscillator (OSC)
  * chapter for more details.
@@ -377,26 +376,26 @@ typedef union _hw_mcg_c2
  * - 1 - Oscillator requested.
  */
 //@{
-#define BP_MCG_C2_EREFS0     (2U)          //!< Bit position for MCG_C2_EREFS0.
-#define BM_MCG_C2_EREFS0     (0x04U)       //!< Bit mask for MCG_C2_EREFS0.
-#define BS_MCG_C2_EREFS0     (1U)          //!< Bit field size in bits for MCG_C2_EREFS0.
+#define BP_MCG_C2_EREFS      (2U)          //!< Bit position for MCG_C2_EREFS.
+#define BM_MCG_C2_EREFS      (0x04U)       //!< Bit mask for MCG_C2_EREFS.
+#define BS_MCG_C2_EREFS      (1U)          //!< Bit field size in bits for MCG_C2_EREFS.
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the MCG_C2_EREFS0 field.
-#define BR_MCG_C2_EREFS0     (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_EREFS0))
+//! @brief Read current value of the MCG_C2_EREFS field.
+#define BR_MCG_C2_EREFS      (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_EREFS))
 #endif
 
-//! @brief Format value for bitfield MCG_C2_EREFS0.
-#define BF_MCG_C2_EREFS0(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C2_EREFS0), uint8_t) & BM_MCG_C2_EREFS0)
+//! @brief Format value for bitfield MCG_C2_EREFS.
+#define BF_MCG_C2_EREFS(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C2_EREFS), uint8_t) & BM_MCG_C2_EREFS)
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Set the EREFS0 field to a new value.
-#define BW_MCG_C2_EREFS0(v)  (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_EREFS0) = (v))
+//! @brief Set the EREFS field to a new value.
+#define BW_MCG_C2_EREFS(v)   (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_EREFS) = (v))
 #endif
 //@}
 
 /*!
- * @name Register MCG_C2, field HGO0[3] (RW)
+ * @name Register MCG_C2, field HGO[3] (RW)
  *
  * Controls the crystal oscillator mode of operation. See the Oscillator (OSC)
  * chapter for more details.
@@ -406,26 +405,26 @@ typedef union _hw_mcg_c2
  * - 1 - Configure crystal oscillator for high-gain operation.
  */
 //@{
-#define BP_MCG_C2_HGO0       (3U)          //!< Bit position for MCG_C2_HGO0.
-#define BM_MCG_C2_HGO0       (0x08U)       //!< Bit mask for MCG_C2_HGO0.
-#define BS_MCG_C2_HGO0       (1U)          //!< Bit field size in bits for MCG_C2_HGO0.
+#define BP_MCG_C2_HGO        (3U)          //!< Bit position for MCG_C2_HGO.
+#define BM_MCG_C2_HGO        (0x08U)       //!< Bit mask for MCG_C2_HGO.
+#define BS_MCG_C2_HGO        (1U)          //!< Bit field size in bits for MCG_C2_HGO.
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the MCG_C2_HGO0 field.
-#define BR_MCG_C2_HGO0       (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_HGO0))
+//! @brief Read current value of the MCG_C2_HGO field.
+#define BR_MCG_C2_HGO        (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_HGO))
 #endif
 
-//! @brief Format value for bitfield MCG_C2_HGO0.
-#define BF_MCG_C2_HGO0(v)    (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C2_HGO0), uint8_t) & BM_MCG_C2_HGO0)
+//! @brief Format value for bitfield MCG_C2_HGO.
+#define BF_MCG_C2_HGO(v)     (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C2_HGO), uint8_t) & BM_MCG_C2_HGO)
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Set the HGO0 field to a new value.
-#define BW_MCG_C2_HGO0(v)    (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_HGO0) = (v))
+//! @brief Set the HGO field to a new value.
+#define BW_MCG_C2_HGO(v)     (BITBAND_ACCESS8(HW_MCG_C2_ADDR, BP_MCG_C2_HGO) = (v))
 #endif
 //@}
 
 /*!
- * @name Register MCG_C2, field RANGE0[5:4] (RW)
+ * @name Register MCG_C2, field RANGE[5:4] (RW)
  *
  * Selects the frequency range for the crystal oscillator or external clock
  * source. See the Oscillator (OSC) chapter for more details and the device data
@@ -436,21 +435,21 @@ typedef union _hw_mcg_c2
  * - 01 - Encoding 1 - High frequency range selected for the crystal oscillator .
  */
 //@{
-#define BP_MCG_C2_RANGE0     (4U)          //!< Bit position for MCG_C2_RANGE0.
-#define BM_MCG_C2_RANGE0     (0x30U)       //!< Bit mask for MCG_C2_RANGE0.
-#define BS_MCG_C2_RANGE0     (2U)          //!< Bit field size in bits for MCG_C2_RANGE0.
+#define BP_MCG_C2_RANGE      (4U)          //!< Bit position for MCG_C2_RANGE.
+#define BM_MCG_C2_RANGE      (0x30U)       //!< Bit mask for MCG_C2_RANGE.
+#define BS_MCG_C2_RANGE      (2U)          //!< Bit field size in bits for MCG_C2_RANGE.
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the MCG_C2_RANGE0 field.
-#define BR_MCG_C2_RANGE0     (HW_MCG_C2.B.RANGE0)
+//! @brief Read current value of the MCG_C2_RANGE field.
+#define BR_MCG_C2_RANGE      (HW_MCG_C2.B.RANGE)
 #endif
 
-//! @brief Format value for bitfield MCG_C2_RANGE0.
-#define BF_MCG_C2_RANGE0(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C2_RANGE0), uint8_t) & BM_MCG_C2_RANGE0)
+//! @brief Format value for bitfield MCG_C2_RANGE.
+#define BF_MCG_C2_RANGE(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C2_RANGE), uint8_t) & BM_MCG_C2_RANGE)
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Set the RANGE0 field to a new value.
-#define BW_MCG_C2_RANGE0(v)  (HW_MCG_C2_WR((HW_MCG_C2_RD & ~BM_MCG_C2_RANGE0) | BF_MCG_C2_RANGE0(v)))
+//! @brief Set the RANGE field to a new value.
+#define BW_MCG_C2_RANGE(v)   (HW_MCG_C2_WR((HW_MCG_C2_RD() & ~BM_MCG_C2_RANGE) | BF_MCG_C2_RANGE(v)))
 #endif
 //@}
 
@@ -529,7 +528,7 @@ typedef union _hw_mcg_c3
     struct _hw_mcg_c3_bitfields
     {
         uint8_t SCTRIM : 8;            //!< [7:0] Slow Internal Reference Clock Trim
-                                       //!< Setting
+                                       //! Setting
     } B;
 } hw_mcg_c3_t;
 #endif
@@ -542,11 +541,11 @@ typedef union _hw_mcg_c3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C3                (*(__IO hw_mcg_c3_t *) HW_MCG_C3_ADDR)
-#define HW_MCG_C3_RD             (HW_MCG_C3.U)
+#define HW_MCG_C3_RD()           (HW_MCG_C3.U)
 #define HW_MCG_C3_WR(v)          (HW_MCG_C3.U = (v))
-#define HW_MCG_C3_SET(v)         (HW_MCG_C3_WR(HW_MCG_C3_RD |  (v)))
-#define HW_MCG_C3_CLR(v)         (HW_MCG_C3_WR(HW_MCG_C3_RD & ~(v)))
-#define HW_MCG_C3_TOG(v)         (HW_MCG_C3_WR(HW_MCG_C3_RD ^  (v)))
+#define HW_MCG_C3_SET(v)         (HW_MCG_C3_WR(HW_MCG_C3_RD() |  (v)))
+#define HW_MCG_C3_CLR(v)         (HW_MCG_C3_WR(HW_MCG_C3_RD() & ~(v)))
+#define HW_MCG_C3_TOG(v)         (HW_MCG_C3_WR(HW_MCG_C3_RD() ^  (v)))
 #endif
 //@}
 
@@ -574,7 +573,7 @@ typedef union _hw_mcg_c3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the MCG_C3_SCTRIM field.
-#define BR_MCG_C3_SCTRIM     (HW_MCG_C3.B.SCTRIM)
+#define BR_MCG_C3_SCTRIM     (HW_MCG_C3.U)
 #endif
 
 //! @brief Format value for bitfield MCG_C3_SCTRIM.
@@ -582,7 +581,7 @@ typedef union _hw_mcg_c3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SCTRIM field to a new value.
-#define BW_MCG_C3_SCTRIM(v)  (HW_MCG_C3_WR((HW_MCG_C3_RD & ~BM_MCG_C3_SCTRIM) | BF_MCG_C3_SCTRIM(v)))
+#define BW_MCG_C3_SCTRIM(v)  (HW_MCG_C3_WR(v))
 #endif
 //@}
 
@@ -605,10 +604,10 @@ typedef union _hw_mcg_c4
     {
         uint8_t SCFTRIM : 1;           //!< [0] Slow Internal Reference Clock Fine Trim
         uint8_t FCTRIM : 4;            //!< [4:1] Fast Internal Reference Clock Trim
-                                       //!< Setting
+                                       //! Setting
         uint8_t DRST_DRS : 2;          //!< [6:5] DCO Range Select
         uint8_t DMX32 : 1;             //!< [7] DCO Maximum Frequency with 32.768 kHz
-                                       //!< Reference
+                                       //! Reference
     } B;
 } hw_mcg_c4_t;
 #endif
@@ -621,11 +620,11 @@ typedef union _hw_mcg_c4
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C4                (*(__IO hw_mcg_c4_t *) HW_MCG_C4_ADDR)
-#define HW_MCG_C4_RD             (HW_MCG_C4.U)
+#define HW_MCG_C4_RD()           (HW_MCG_C4.U)
 #define HW_MCG_C4_WR(v)          (HW_MCG_C4.U = (v))
-#define HW_MCG_C4_SET(v)         (HW_MCG_C4_WR(HW_MCG_C4_RD |  (v)))
-#define HW_MCG_C4_CLR(v)         (HW_MCG_C4_WR(HW_MCG_C4_RD & ~(v)))
-#define HW_MCG_C4_TOG(v)         (HW_MCG_C4_WR(HW_MCG_C4_RD ^  (v)))
+#define HW_MCG_C4_SET(v)         (HW_MCG_C4_WR(HW_MCG_C4_RD() |  (v)))
+#define HW_MCG_C4_CLR(v)         (HW_MCG_C4_WR(HW_MCG_C4_RD() & ~(v)))
+#define HW_MCG_C4_TOG(v)         (HW_MCG_C4_WR(HW_MCG_C4_RD() ^  (v)))
 #endif
 //@}
 
@@ -688,7 +687,7 @@ typedef union _hw_mcg_c4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FCTRIM field to a new value.
-#define BW_MCG_C4_FCTRIM(v)  (HW_MCG_C4_WR((HW_MCG_C4_RD & ~BM_MCG_C4_FCTRIM) | BF_MCG_C4_FCTRIM(v)))
+#define BW_MCG_C4_FCTRIM(v)  (HW_MCG_C4_WR((HW_MCG_C4_RD() & ~BM_MCG_C4_FCTRIM) | BF_MCG_C4_FCTRIM(v)))
 #endif
 //@}
 
@@ -722,7 +721,7 @@ typedef union _hw_mcg_c4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DRST_DRS field to a new value.
-#define BW_MCG_C4_DRST_DRS(v) (HW_MCG_C4_WR((HW_MCG_C4_RD & ~BM_MCG_C4_DRST_DRS) | BF_MCG_C4_DRST_DRS(v)))
+#define BW_MCG_C4_DRST_DRS(v) (HW_MCG_C4_WR((HW_MCG_C4_RD() & ~BM_MCG_C4_DRST_DRS) | BF_MCG_C4_DRST_DRS(v)))
 #endif
 //@}
 
@@ -792,11 +791,11 @@ typedef union _hw_mcg_c5
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C5                (*(__IO hw_mcg_c5_t *) HW_MCG_C5_ADDR)
-#define HW_MCG_C5_RD             (HW_MCG_C5.U)
+#define HW_MCG_C5_RD()           (HW_MCG_C5.U)
 #define HW_MCG_C5_WR(v)          (HW_MCG_C5.U = (v))
-#define HW_MCG_C5_SET(v)         (HW_MCG_C5_WR(HW_MCG_C5_RD |  (v)))
-#define HW_MCG_C5_CLR(v)         (HW_MCG_C5_WR(HW_MCG_C5_RD & ~(v)))
-#define HW_MCG_C5_TOG(v)         (HW_MCG_C5_WR(HW_MCG_C5_RD ^  (v)))
+#define HW_MCG_C5_SET(v)         (HW_MCG_C5_WR(HW_MCG_C5_RD() |  (v)))
+#define HW_MCG_C5_CLR(v)         (HW_MCG_C5_WR(HW_MCG_C5_RD() & ~(v)))
+#define HW_MCG_C5_TOG(v)         (HW_MCG_C5_WR(HW_MCG_C5_RD() ^  (v)))
 #endif
 //@}
 
@@ -833,7 +832,7 @@ typedef union _hw_mcg_c5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PRDIV0 field to a new value.
-#define BW_MCG_C5_PRDIV0(v)  (HW_MCG_C5_WR((HW_MCG_C5_RD & ~BM_MCG_C5_PRDIV0) | BF_MCG_C5_PRDIV0(v)))
+#define BW_MCG_C5_PRDIV0(v)  (HW_MCG_C5_WR((HW_MCG_C5_RD() & ~BM_MCG_C5_PRDIV0) | BF_MCG_C5_PRDIV0(v)))
 #endif
 //@}
 
@@ -932,11 +931,11 @@ typedef union _hw_mcg_c6
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C6                (*(__IO hw_mcg_c6_t *) HW_MCG_C6_ADDR)
-#define HW_MCG_C6_RD             (HW_MCG_C6.U)
+#define HW_MCG_C6_RD()           (HW_MCG_C6.U)
 #define HW_MCG_C6_WR(v)          (HW_MCG_C6.U = (v))
-#define HW_MCG_C6_SET(v)         (HW_MCG_C6_WR(HW_MCG_C6_RD |  (v)))
-#define HW_MCG_C6_CLR(v)         (HW_MCG_C6_WR(HW_MCG_C6_RD & ~(v)))
-#define HW_MCG_C6_TOG(v)         (HW_MCG_C6_WR(HW_MCG_C6_RD ^  (v)))
+#define HW_MCG_C6_SET(v)         (HW_MCG_C6_WR(HW_MCG_C6_RD() |  (v)))
+#define HW_MCG_C6_CLR(v)         (HW_MCG_C6_WR(HW_MCG_C6_RD() & ~(v)))
+#define HW_MCG_C6_TOG(v)         (HW_MCG_C6_WR(HW_MCG_C6_RD() ^  (v)))
 #endif
 //@}
 
@@ -972,7 +971,7 @@ typedef union _hw_mcg_c6
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the VDIV0 field to a new value.
-#define BW_MCG_C6_VDIV0(v)   (HW_MCG_C6_WR((HW_MCG_C6_RD & ~BM_MCG_C6_VDIV0) | BF_MCG_C6_VDIV0(v)))
+#define BW_MCG_C6_VDIV0(v)   (HW_MCG_C6_WR((HW_MCG_C6_RD() & ~BM_MCG_C6_VDIV0) | BF_MCG_C6_VDIV0(v)))
 #endif
 //@}
 
@@ -1107,11 +1106,11 @@ typedef union _hw_mcg_s
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_S                 (*(__IO hw_mcg_s_t *) HW_MCG_S_ADDR)
-#define HW_MCG_S_RD              (HW_MCG_S.U)
+#define HW_MCG_S_RD()            (HW_MCG_S.U)
 #define HW_MCG_S_WR(v)           (HW_MCG_S.U = (v))
-#define HW_MCG_S_SET(v)          (HW_MCG_S_WR(HW_MCG_S_RD |  (v)))
-#define HW_MCG_S_CLR(v)          (HW_MCG_S_WR(HW_MCG_S_RD & ~(v)))
-#define HW_MCG_S_TOG(v)          (HW_MCG_S_WR(HW_MCG_S_RD ^  (v)))
+#define HW_MCG_S_SET(v)          (HW_MCG_S_WR(HW_MCG_S_RD() |  (v)))
+#define HW_MCG_S_CLR(v)          (HW_MCG_S_WR(HW_MCG_S_RD() & ~(v)))
+#define HW_MCG_S_TOG(v)          (HW_MCG_S_WR(HW_MCG_S_RD() ^  (v)))
 #endif
 //@}
 
@@ -1264,7 +1263,7 @@ typedef union _hw_mcg_s
 //@}
 
 /*!
- * @name Register MCG_S, field LOLS0[7] (RW)
+ * @name Register MCG_S, field LOLS0[7] (W1C)
  *
  * This bit is a sticky bit indicating the lock status for the PLL. LOLS is set
  * if after acquiring lock, the PLL output frequency has fallen outside the lock
@@ -1329,11 +1328,11 @@ typedef union _hw_mcg_sc
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_SC                (*(__IO hw_mcg_sc_t *) HW_MCG_SC_ADDR)
-#define HW_MCG_SC_RD             (HW_MCG_SC.U)
+#define HW_MCG_SC_RD()           (HW_MCG_SC.U)
 #define HW_MCG_SC_WR(v)          (HW_MCG_SC.U = (v))
-#define HW_MCG_SC_SET(v)         (HW_MCG_SC_WR(HW_MCG_SC_RD |  (v)))
-#define HW_MCG_SC_CLR(v)         (HW_MCG_SC_WR(HW_MCG_SC_RD & ~(v)))
-#define HW_MCG_SC_TOG(v)         (HW_MCG_SC_WR(HW_MCG_SC_RD ^  (v)))
+#define HW_MCG_SC_SET(v)         (HW_MCG_SC_WR(HW_MCG_SC_RD() |  (v)))
+#define HW_MCG_SC_CLR(v)         (HW_MCG_SC_WR(HW_MCG_SC_RD() & ~(v)))
+#define HW_MCG_SC_TOG(v)         (HW_MCG_SC_WR(HW_MCG_SC_RD() ^  (v)))
 #endif
 //@}
 
@@ -1342,7 +1341,7 @@ typedef union _hw_mcg_sc
  */
 
 /*!
- * @name Register MCG_SC, field LOCS0[0] (RO)
+ * @name Register MCG_SC, field LOCS0[0] (W1C)
  *
  * The LOCS0 indicates when a loss of OSC0 reference clock has occurred. The
  * LOCS0 bit only has an effect when CME0 is set. This bit is cleared by writing a
@@ -1360,6 +1359,14 @@ typedef union _hw_mcg_sc
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the MCG_SC_LOCS0 field.
 #define BR_MCG_SC_LOCS0      (BITBAND_ACCESS8(HW_MCG_SC_ADDR, BP_MCG_SC_LOCS0))
+#endif
+
+//! @brief Format value for bitfield MCG_SC_LOCS0.
+#define BF_MCG_SC_LOCS0(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_SC_LOCS0), uint8_t) & BM_MCG_SC_LOCS0)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the LOCS0 field to a new value.
+#define BW_MCG_SC_LOCS0(v)   (BITBAND_ACCESS8(HW_MCG_SC_ADDR, BP_MCG_SC_LOCS0) = (v))
 #endif
 //@}
 
@@ -1395,7 +1402,7 @@ typedef union _hw_mcg_sc
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FCRDIV field to a new value.
-#define BW_MCG_SC_FCRDIV(v)  (HW_MCG_SC_WR((HW_MCG_SC_RD & ~BM_MCG_SC_FCRDIV) | BF_MCG_SC_FCRDIV(v)))
+#define BW_MCG_SC_FCRDIV(v)  (HW_MCG_SC_WR((HW_MCG_SC_RD() & ~BM_MCG_SC_FCRDIV) | BF_MCG_SC_FCRDIV(v)))
 #endif
 //@}
 
@@ -1434,7 +1441,7 @@ typedef union _hw_mcg_sc
 //@}
 
 /*!
- * @name Register MCG_SC, field ATMF[5] (RO)
+ * @name Register MCG_SC, field ATMF[5] (RW)
  *
  * Fail flag for the Automatic Trim Machine (ATM). This bit asserts when the
  * Automatic Trim Machine is enabled, ATME=1, and a write to the C1, C3, C4, and SC
@@ -1455,8 +1462,11 @@ typedef union _hw_mcg_sc
 #define BR_MCG_SC_ATMF       (BITBAND_ACCESS8(HW_MCG_SC_ADDR, BP_MCG_SC_ATMF))
 #endif
 
+//! @brief Format value for bitfield MCG_SC_ATMF.
+#define BF_MCG_SC_ATMF(v)    (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_SC_ATMF), uint8_t) & BM_MCG_SC_ATMF)
+
 #ifndef __LANGUAGE_ASM__
-//! @brief Write the ATMF field to clear the flag
+//! @brief Set the ATMF field to a new value.
 #define BW_MCG_SC_ATMF(v)    (BITBAND_ACCESS8(HW_MCG_SC_ADDR, BP_MCG_SC_ATMF) = (v))
 #endif
 //@}
@@ -1549,11 +1559,11 @@ typedef union _hw_mcg_atcvh
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_ATCVH             (*(__IO hw_mcg_atcvh_t *) HW_MCG_ATCVH_ADDR)
-#define HW_MCG_ATCVH_RD          (HW_MCG_ATCVH.U)
+#define HW_MCG_ATCVH_RD()        (HW_MCG_ATCVH.U)
 #define HW_MCG_ATCVH_WR(v)       (HW_MCG_ATCVH.U = (v))
-#define HW_MCG_ATCVH_SET(v)      (HW_MCG_ATCVH_WR(HW_MCG_ATCVH_RD |  (v)))
-#define HW_MCG_ATCVH_CLR(v)      (HW_MCG_ATCVH_WR(HW_MCG_ATCVH_RD & ~(v)))
-#define HW_MCG_ATCVH_TOG(v)      (HW_MCG_ATCVH_WR(HW_MCG_ATCVH_RD ^  (v)))
+#define HW_MCG_ATCVH_SET(v)      (HW_MCG_ATCVH_WR(HW_MCG_ATCVH_RD() |  (v)))
+#define HW_MCG_ATCVH_CLR(v)      (HW_MCG_ATCVH_WR(HW_MCG_ATCVH_RD() & ~(v)))
+#define HW_MCG_ATCVH_TOG(v)      (HW_MCG_ATCVH_WR(HW_MCG_ATCVH_RD() ^  (v)))
 #endif
 //@}
 
@@ -1574,7 +1584,7 @@ typedef union _hw_mcg_atcvh
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the MCG_ATCVH_ATCVH field.
-#define BR_MCG_ATCVH_ATCVH   (HW_MCG_ATCVH.B.ATCVH)
+#define BR_MCG_ATCVH_ATCVH   (HW_MCG_ATCVH.U)
 #endif
 
 //! @brief Format value for bitfield MCG_ATCVH_ATCVH.
@@ -1582,7 +1592,7 @@ typedef union _hw_mcg_atcvh
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ATCVH field to a new value.
-#define BW_MCG_ATCVH_ATCVH(v) (HW_MCG_ATCVH_WR((HW_MCG_ATCVH_RD & ~BM_MCG_ATCVH_ATCVH) | BF_MCG_ATCVH_ATCVH(v)))
+#define BW_MCG_ATCVH_ATCVH(v) (HW_MCG_ATCVH_WR(v))
 #endif
 //@}
 
@@ -1614,11 +1624,11 @@ typedef union _hw_mcg_atcvl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_ATCVL             (*(__IO hw_mcg_atcvl_t *) HW_MCG_ATCVL_ADDR)
-#define HW_MCG_ATCVL_RD          (HW_MCG_ATCVL.U)
+#define HW_MCG_ATCVL_RD()        (HW_MCG_ATCVL.U)
 #define HW_MCG_ATCVL_WR(v)       (HW_MCG_ATCVL.U = (v))
-#define HW_MCG_ATCVL_SET(v)      (HW_MCG_ATCVL_WR(HW_MCG_ATCVL_RD |  (v)))
-#define HW_MCG_ATCVL_CLR(v)      (HW_MCG_ATCVL_WR(HW_MCG_ATCVL_RD & ~(v)))
-#define HW_MCG_ATCVL_TOG(v)      (HW_MCG_ATCVL_WR(HW_MCG_ATCVL_RD ^  (v)))
+#define HW_MCG_ATCVL_SET(v)      (HW_MCG_ATCVL_WR(HW_MCG_ATCVL_RD() |  (v)))
+#define HW_MCG_ATCVL_CLR(v)      (HW_MCG_ATCVL_WR(HW_MCG_ATCVL_RD() & ~(v)))
+#define HW_MCG_ATCVL_TOG(v)      (HW_MCG_ATCVL_WR(HW_MCG_ATCVL_RD() ^  (v)))
 #endif
 //@}
 
@@ -1639,7 +1649,7 @@ typedef union _hw_mcg_atcvl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the MCG_ATCVL_ATCVL field.
-#define BR_MCG_ATCVL_ATCVL   (HW_MCG_ATCVL.B.ATCVL)
+#define BR_MCG_ATCVL_ATCVL   (HW_MCG_ATCVL.U)
 #endif
 
 //! @brief Format value for bitfield MCG_ATCVL_ATCVL.
@@ -1647,7 +1657,7 @@ typedef union _hw_mcg_atcvl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ATCVL field to a new value.
-#define BW_MCG_ATCVL_ATCVL(v) (HW_MCG_ATCVL_WR((HW_MCG_ATCVL_RD & ~BM_MCG_ATCVL_ATCVL) | BF_MCG_ATCVL_ATCVL(v)))
+#define BW_MCG_ATCVL_ATCVL(v) (HW_MCG_ATCVL_WR(v))
 #endif
 //@}
 
@@ -1680,11 +1690,11 @@ typedef union _hw_mcg_c7
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C7                (*(__IO hw_mcg_c7_t *) HW_MCG_C7_ADDR)
-#define HW_MCG_C7_RD             (HW_MCG_C7.U)
+#define HW_MCG_C7_RD()           (HW_MCG_C7.U)
 #define HW_MCG_C7_WR(v)          (HW_MCG_C7.U = (v))
-#define HW_MCG_C7_SET(v)         (HW_MCG_C7_WR(HW_MCG_C7_RD |  (v)))
-#define HW_MCG_C7_CLR(v)         (HW_MCG_C7_WR(HW_MCG_C7_RD & ~(v)))
-#define HW_MCG_C7_TOG(v)         (HW_MCG_C7_WR(HW_MCG_C7_RD ^  (v)))
+#define HW_MCG_C7_SET(v)         (HW_MCG_C7_WR(HW_MCG_C7_RD() |  (v)))
+#define HW_MCG_C7_CLR(v)         (HW_MCG_C7_WR(HW_MCG_C7_RD() & ~(v)))
+#define HW_MCG_C7_TOG(v)         (HW_MCG_C7_WR(HW_MCG_C7_RD() ^  (v)))
 #endif
 //@}
 
@@ -1718,7 +1728,7 @@ typedef union _hw_mcg_c7
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OSCSEL field to a new value.
-#define BW_MCG_C7_OSCSEL(v)  (HW_MCG_C7_WR((HW_MCG_C7_RD & ~BM_MCG_C7_OSCSEL) | BF_MCG_C7_OSCSEL(v)))
+#define BW_MCG_C7_OSCSEL(v)  (HW_MCG_C7_WR((HW_MCG_C7_RD() & ~BM_MCG_C7_OSCSEL) | BF_MCG_C7_OSCSEL(v)))
 #endif
 //@}
 
@@ -1754,11 +1764,11 @@ typedef union _hw_mcg_c8
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCG_C8                (*(__IO hw_mcg_c8_t *) HW_MCG_C8_ADDR)
-#define HW_MCG_C8_RD             (HW_MCG_C8.U)
+#define HW_MCG_C8_RD()           (HW_MCG_C8.U)
 #define HW_MCG_C8_WR(v)          (HW_MCG_C8.U = (v))
-#define HW_MCG_C8_SET(v)         (HW_MCG_C8_WR(HW_MCG_C8_RD |  (v)))
-#define HW_MCG_C8_CLR(v)         (HW_MCG_C8_WR(HW_MCG_C8_RD & ~(v)))
-#define HW_MCG_C8_TOG(v)         (HW_MCG_C8_WR(HW_MCG_C8_RD ^  (v)))
+#define HW_MCG_C8_SET(v)         (HW_MCG_C8_WR(HW_MCG_C8_RD() |  (v)))
+#define HW_MCG_C8_CLR(v)         (HW_MCG_C8_WR(HW_MCG_C8_RD() & ~(v)))
+#define HW_MCG_C8_TOG(v)         (HW_MCG_C8_WR(HW_MCG_C8_RD() ^  (v)))
 #endif
 //@}
 
@@ -1767,7 +1777,7 @@ typedef union _hw_mcg_c8
  */
 
 /*!
- * @name Register MCG_C8, field LOCS1[0] (RO)
+ * @name Register MCG_C8, field LOCS1[0] (W1C)
  *
  * This bit indicates when a loss of clock has occurred. This bit is cleared by
  * writing a logic 1 to it when set.
@@ -1784,6 +1794,14 @@ typedef union _hw_mcg_c8
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the MCG_C8_LOCS1 field.
 #define BR_MCG_C8_LOCS1      (BITBAND_ACCESS8(HW_MCG_C8_ADDR, BP_MCG_C8_LOCS1))
+#endif
+
+//! @brief Format value for bitfield MCG_C8_LOCS1.
+#define BF_MCG_C8_LOCS1(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_MCG_C8_LOCS1), uint8_t) & BM_MCG_C8_LOCS1)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the LOCS1 field to a new value.
+#define BW_MCG_C8_LOCS1(v)   (BITBAND_ACCESS8(HW_MCG_C8_ADDR, BP_MCG_C8_LOCS1) = (v))
 #endif
 //@}
 
@@ -1825,7 +1843,7 @@ typedef union _hw_mcg_c8
 /*!
  * @name Register MCG_C8, field LOLRE[6] (RW)
  *
- * Determines if a interrupt or a reset request is made following a PLL loss of
+ * Determines if an interrupt or a reset request is made following a PLL loss of
  * lock.
  *
  * Values:
@@ -1884,42 +1902,6 @@ typedef union _hw_mcg_c8
 //@}
 
 //-------------------------------------------------------------------------------------------
-// HW_MCG_C9 - MCG Control 9 Register
-//-------------------------------------------------------------------------------------------
-
-#ifndef __LANGUAGE_ASM__
-/*!
- * @brief HW_MCG_C9 - MCG Control 9 Register (RO)
- *
- * Reset value: 0x00U
- */
-typedef union _hw_mcg_c9
-{
-    uint8_t U;
-    struct _hw_mcg_c9_bitfields
-    {
-        uint8_t RESERVED0 : 8;         //!< [7:0]
-    } B;
-} hw_mcg_c9_t;
-#endif
-
-/*!
- * @name Constants and macros for entire MCG_C9 register
- */
-//@{
-#define HW_MCG_C9_ADDR           (REGS_MCG_BASE + 0xEU)
-
-#ifndef __LANGUAGE_ASM__
-#define HW_MCG_C9                (*(__I hw_mcg_c9_t *) HW_MCG_C9_ADDR)
-#define HW_MCG_C9_RD             (HW_MCG_C9.U)
-#endif
-//@}
-
-/*
- * Constants & macros for individual MCG_C9 bitfields
- */
-
-//-------------------------------------------------------------------------------------------
 // hw_mcg_t - module struct
 //-------------------------------------------------------------------------------------------
 /*!
@@ -1943,7 +1925,6 @@ typedef struct _hw_mcg
     __IO hw_mcg_atcvl_t ATCVL;             //!< [0xB] MCG Auto Trim Compare Value Low Register
     __IO hw_mcg_c7_t C7;                   //!< [0xC] MCG Control 7 Register
     __IO hw_mcg_c8_t C8;                   //!< [0xD] MCG Control 8 Register
-    __I hw_mcg_c9_t C9;                    //!< [0xE] MCG Control 9 Register
 } hw_mcg_t;
 #pragma pack()
 

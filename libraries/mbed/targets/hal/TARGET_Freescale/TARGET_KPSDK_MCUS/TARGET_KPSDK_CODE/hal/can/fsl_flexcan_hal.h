@@ -30,11 +30,11 @@
 #ifndef __FSL_FLEXCAN_HAL_H__
 #define __FSL_FLEXCAN_HAL_H__
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "fsl_flexcan_features.h"
 #include "fsl_device_registers.h"
-#include <assert.h>
 
 /*!
  * @addtogroup flexcan_hal
@@ -64,7 +64,7 @@ enum _flexcan_err_status
     kFlexCan_Bit1Err = 0x4000, /*!< Unable to send recessive bit*/
 };
 
-/*! @brief FlexCAN status return codes.*/
+/*! @brief FlexCAN status return codes*/
 typedef enum _flexcan_status
 {
     kStatus_FLEXCAN_Success = 0,
@@ -78,45 +78,45 @@ typedef enum _flexcan_status
 
 /*! @brief FlexCAN operation modes*/
 typedef enum _flexcan_operation_modes {
-    kFlexCanNormalMode,        /*!< normal mode or user mode*/
-    kFlexCanListenOnlyMode,    /*!< listen-only mode*/
-    kFlexCanLoopBackMode,      /*!< loop-back mode*/
+    kFlexCanNormalMode,        /*!< Normal mode or user mode*/
+    kFlexCanListenOnlyMode,    /*!< Listen-only mode*/
+    kFlexCanLoopBackMode,      /*!< Loop-back mode*/
     kFlexCanFreezeMode,        /*!< Freeze mode*/
     kFlexCanDisableMode,       /*!< Module disable mode*/
 } flexcan_operation_modes_t;
 
-/*! @brief FlexCAN message buffer CODE for Rx buffers.*/
+/*! @brief FlexCAN message buffer CODE for Rx buffers*/
 typedef enum _flexcan_mb_code_rx {
-    kFlexCanRX_Inactive  = 0x0, /*!< MB is not active*/
-    kFlexCanRX_Full      = 0x2, /*!< MB is full*/
-    kFlexCanRX_Empty     = 0x4, /*!< MB is active and empty*/
-    kFlexCanRX_Overrun   = 0x6, /*!< MB is being overwritten into a full buffer*/
+    kFlexCanRX_Inactive  = 0x0, /*!< MB is not active.*/
+    kFlexCanRX_Full      = 0x2, /*!< MB is full.*/
+    kFlexCanRX_Empty     = 0x4, /*!< MB is active and empty.*/
+    kFlexCanRX_Overrun   = 0x6, /*!< MB is overwritten into a full buffer.*/
     kFlexCanRX_Busy      = 0x8, /*!< FlexCAN is updating the contents of the MB.*/
                                 /*!  The CPU must not access the MB.*/
     kFlexCanRX_Ranswer   = 0xA, /*!< A frame was configured to recognize a Remote Request Frame*/
-                                /*!  and transmit a Response Frame in return*/
+                                /*!  and transmit a Response Frame in return.*/
     kFlexCanRX_NotUsed   = 0xF, /*!< Not used*/
 } flexcan_mb_code_rx_t;
 
-/*! @brief FlexCAN message buffer CODE FOR Tx buffers.*/
+/*! @brief FlexCAN message buffer CODE FOR Tx buffers*/
 typedef enum _flexcan_mb_code_tx {
-    kFlexCanTX_Inactive  = 0x08, /*!< MB is not active*/
-    kFlexCanTX_Abort     = 0x09, /*!< MB is aborted*/
-    kFlexCanTX_Data      = 0x0C, /*!< MB is a TX Data Frame(MB RTR must be 0)*/
-    kFlexCanTX_Remote    = 0x1C, /*!< MB is a TX Remote Request Frame (MB RTR must be 1)*/
-    kFlexCanTX_Tanswer   = 0x0E, /*!< MB is a TX Response Request Frame from*/
-                                 /*!  an incoming Remote Request Frame*/
+    kFlexCanTX_Inactive  = 0x08, /*!< MB is not active.*/
+    kFlexCanTX_Abort     = 0x09, /*!< MB is aborted.*/
+    kFlexCanTX_Data      = 0x0C, /*!< MB is a TX Data Frame(MB RTR must be 0).*/
+    kFlexCanTX_Remote    = 0x1C, /*!< MB is a TX Remote Request Frame (MB RTR must be 1).*/
+    kFlexCanTX_Tanswer   = 0x0E, /*!< MB is a TX Response Request Frame from.*/
+                                 /*!  an incoming Remote Request Frame.*/
     kFlexCanTX_NotUsed   = 0xF,  /*!< Not used*/
 } flexcan_mb_code_tx_t;
 
-/*! @brief FlexCAN message buffer transmission types.*/
+/*! @brief FlexCAN message buffer transmission types*/
 typedef enum _flexcan_mb_transmission_type {
-    kFlexCanMBStatusType_TX,          /*!< transmit MB*/
-    kFlexCanMBStatusType_TXRemote,    /*!< transmit remote request MB*/
-    kFlexCanMBStatusType_RX,          /*!< receive MB*/
-    kFlexCanMBStatusType_RXRemote,    /*!< receive remote request MB*/
-    kFlexCanMBStatusType_RXTXRemote,  /*!< FlexCAN remote frame receives remote request,*/
-                                      /*!  then transmit MB*/
+    kFlexCanMBStatusType_TX,          /*!< Transmit MB*/
+    kFlexCanMBStatusType_TXRemote,    /*!< Transmit remote request MB*/
+    kFlexCanMBStatusType_RX,          /*!< Receive MB*/
+    kFlexCanMBStatusType_RXRemote,    /*!< Receive remote request MB*/
+    kFlexCanMBStatusType_RXTXRemote,  /*!< FlexCAN remote frame receives remote request and*/
+                                      /*!  transmits MB.*/
 } flexcan_mb_transmission_type_t;
 
 typedef enum _flexcan_rx_fifo_id_element_format {
@@ -129,7 +129,7 @@ typedef enum _flexcan_rx_fifo_id_element_format {
     kFlexCanRxFifoIdElementFormat_D, /*!< All frames rejected.*/
 } flexcan_rx_fifo_id_element_format_t;
 
-/*! @brief FlexCAN Rx FIFO filters number.*/
+/*! @brief FlexCAN Rx FIFO filters number*/
 typedef enum _flexcan_rx_fifo_id_filter_number {
     kFlexCanRxFifoIDFilters_8   = 0x0,         /*!<   8 Rx FIFO Filters*/
     kFlexCanRxFifoIDFilters_16  = 0x1,         /*!<  16 Rx FIFO Filters*/
@@ -153,13 +153,13 @@ typedef enum _flexcan_rx_fifo_id_filter_number {
 typedef struct FLEXCANIdTable {
     bool is_remote_mb;      /*!< Remote frame*/
     bool is_extended_mb;    /*!< Extended frame*/
-    uint32_t *id_filter;    /*!< RX FITO ID filter elements*/
+    uint32_t *id_filter;    /*!< Rx FIFO ID filter elements*/
 } flexcan_id_table_t;
 
 /*! @brief FlexCAN RX mask type.*/
 typedef enum _flexcan_rx_mask_type {
-    kFlexCanRxMask_Global,      /*!< RX global mask*/
-    kFlexCanRxMask_Individual,  /*!< RX individual mask*/
+    kFlexCanRxMask_Global,      /*!< Rx global mask*/
+    kFlexCanRxMask_Individual,  /*!< Rx individual mask*/
 } flexcan_rx_mask_type_t;
 
 /*! @brief FlexCAN MB ID type*/
@@ -170,8 +170,8 @@ typedef enum _flexcan_mb_id_type {
 
 /*! @brief FlexCAN clock source*/
 typedef enum _flexcan_clk_source {
-    kFlexCanClkSource_Osc,    /*!< the Oscillator clock*/
-    kFlexCanClkSource_Ipbus,  /*!< the peripheral clock*/
+    kFlexCanClkSource_Osc,    /*!< Oscillator clock*/
+    kFlexCanClkSource_Ipbus,  /*!< Peripheral clock*/
 } flexcan_clk_source_t;
 
 /*! @brief FlexCAN error interrupt types*/
@@ -180,6 +180,8 @@ typedef enum _flexcan_int_type {
     kFlexCanInt_Err,           /*!< Error interrupt*/
     kFlexCanInt_Boff,          /*!< Bus off interrupt*/
     kFlexCanInt_Wakeup,        /*!< Wakeup interrupt*/
+    kFlexCanInt_Txwarning,     /*!< TX warning interrupt*/
+    kFlexCanInt_Rxwarning,     /*!< RX warning interrupt*/
 } flexcan_int_type_t;
 
 /*! @brief FlexCAN bus error counters*/
@@ -188,9 +190,9 @@ typedef struct FLEXCANBerrCounter {
     uint16_t rxerr;           /*!< Receive error counter*/
 } flexcan_berr_counter_t;
 
-/*! @brief FlexCAN MB CODE and status for transmitting*/
+/*! @brief FlexCAN MB code and status for transmitting*/
 typedef struct FLEXCANMbCodeStatusTx {
-    flexcan_mb_code_tx_t code;                   /*!< MB code for TX buffers*/
+    flexcan_mb_code_tx_t code;                   /*!< MB code for Tx buffers*/
     flexcan_mb_id_type_t msg_id_type;            /*!< Type of message ID (standard or extended)*/
     uint32_t data_length;                        /*!< Length of Data in Bytes*/
     uint32_t substitute_remote;                  /*!< Substitute remote request (used only in*/
@@ -200,9 +202,9 @@ typedef struct FLEXCANMbCodeStatusTx {
     uint32_t local_priority_val;                 /*!< Local priority value [0..2]*/
 } flexcan_mb_code_status_tx_t;
 
-/*! @brief FlexCAN MB CODE and status for receiving*/
+/*! @brief FlexCAN MB code and status for receiving*/
 typedef struct FLEXCANMbCodeStatusRx {
-    flexcan_mb_code_rx_t code;                   /*!< MB code for RX buffers*/
+    flexcan_mb_code_rx_t code;                   /*!< MB code for Rx buffers*/
     flexcan_mb_id_type_t msg_id_type;            /*!< Type of message ID (standard or extended)*/
     uint32_t data_length;                        /*!< Length of Data in Bytes*/
     uint32_t substitute_remote;                  /*!< Substitute remote request (used only in*/
@@ -212,32 +214,32 @@ typedef struct FLEXCANMbCodeStatusRx {
     uint32_t local_priority_val;                 /*!< Local priority value [0..2]*/
 } flexcan_mb_code_status_rx_t;
 
-/*! @brief FlexCAN RX FIFO config*/
+/*! @brief FlexCAN Rx FIFO configuration*/
 typedef struct FLEXCANRxFifoConfig {
     flexcan_mb_id_type_t msg_id_type;                     /*!< Type of message ID*/
-                                                          /*!  (standard or extended)*/
+                                                          /*! (standard or extended)*/
     uint32_t data_length;                                 /*!< Length of Data in Bytes*/
     uint32_t substitute_remote;                           /*!< Substitute remote request (used*/
                                                           /*!  only in extended format)*/
     uint32_t remote_transmission;                         /*!< Remote transmission request*/
-    flexcan_rx_fifo_id_element_format_t id_filter_number; /*!< The number of RX FIFO ID filters*/
+    flexcan_rx_fifo_id_element_format_t id_filter_number; /*!< The number of Rx FIFO ID filters*/
 } flexcan_rx_fifo_config_t;
 
 /*! @brief FlexCAN message buffer structure*/
 typedef struct FLEXCANMb {
     uint32_t cs;                        /*!< Code and Status*/
     uint32_t msg_id;                    /*!< Message Buffer ID*/
-    uint8_t data[kFlexCanMessageSize];  /*!< bytes of the FlexCAN message*/
+    uint8_t data[kFlexCanMessageSize];  /*!< Bytes of the FlexCAN message*/
 } flexcan_mb_t;
 
 /*! @brief FlexCAN configuration*/
-typedef struct FLEXCANConfig {
+typedef struct FLEXCANUserConfig {
     uint32_t num_mb;                                /*!< The number of Message Buffers needed*/
     uint32_t max_num_mb;                            /*!< The maximum number of Message Buffers*/
-    flexcan_rx_fifo_id_filter_num_t num_id_filters; /*!< The number of RX FIFO ID filters needed*/
-    bool is_rx_fifo_needed;                         /*!< 1 if need it; 0 if not*/
-    bool is_rx_mb_needed;                        /*!< 1 if need it; 0 if not*/
-} flexcan_config_t;
+    flexcan_rx_fifo_id_filter_num_t num_id_filters; /*!< The number of Rx FIFO ID filters needed*/
+    bool is_rx_fifo_needed;                         /*!< 1 if needed; 0 if not*/
+    bool is_rx_mb_needed;                        /*!< 1 if needed; 0 if not*/
+} flexcan_user_config_t;
 
 /*! @brief FlexCAN timing related structures*/
 typedef struct FLEXCANTimeSegment {
@@ -263,25 +265,25 @@ extern "C" {
  */
 
 /*!
- * @brief Enable FlexCAN controller
+ * @brief Enables FlexCAN controller.
  *
- * @param   instance    The FlexCAN instance number.
+ * @param   instance    The FlexCAN instance number
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_enable(uint8_t instance);
 
 /*!
- * @brief Disable FlexCAN controller
+ * @brief Disables FlexCAN controller.
  *
- * @param   instance    The FlexCAN instance number.
+ * @param   instance    The FlexCAN instance number
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_disable(uint8_t instance);
 
 /*!
- * @brief Check if FlexCAN is enabled/disabled.
+ * @brief Checks whether the FlexCAN is enabled or disabled.
  *
- * @param   instance    The FlexCAN instance number.
+ * @param   instance    The FlexCAN instance number
  * @return  State of FlexCAN enable(0)/disable(1)
  */
 static inline bool flexcan_hal_is_enabled(uint8_t instance)
@@ -292,69 +294,69 @@ static inline bool flexcan_hal_is_enabled(uint8_t instance)
 }
 
 /*!
- * @brief Reset FlexCAN controller
+ * @brief Resets the FlexCAN controller.
  *
- * @param   instance    The FlexCAN instance number.
+ * @param   instance    The FlexCAN instance number
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_sw_reset(uint8_t instance);
 
 /*!
- * @brief Select the clock source for FlexCAN
+ * @brief Selects the clock source for FlexCAN.
  *
- * @param   instance    The FlexCAN instance number.
- * @param   clk         The FlexCAN clock source.
+ * @param   instance    The FlexCAN instance number
+ * @param   clk         The FlexCAN clock source
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_select_clk(uint8_t instance, flexcan_clk_source_t clk);
 
 /*!
- * @brief Initialize FlexCAN controller
+ * @brief Initializes the FlexCAN controller.
  *
- * @param   instance    The FlexCAN instance number.
+ * @param   instance    The FlexCAN instance number
  * @param   data   The FlexCAN platform data.
  * @return  0 if successful; non-zero failed
  */
-flexcan_status_t flexcan_hal_init(uint8_t instance, flexcan_config_t *data);
+flexcan_status_t flexcan_hal_init(uint8_t instance, const flexcan_user_config_t *data);
 
 /*!
- * @brief Set FlexCAN time segments for setting up bit rate
+ * @brief Sets the FlexCAN time segments for setting up bit rate.
  *
- * @param   instance    The FlexCAN instance number.
- * @param   time_seg    FlexCAN time segments need to be set for bit rate.
+ * @param   instance    The FlexCAN instance number
+ * @param   time_seg    FlexCAN time segments, which need to be set for the bit rate.
  * @return  0 if successful; non-zero failed
  */
 void flexcan_hal_set_time_segments(uint8_t instance, flexcan_time_segment_t *time_seg);
 
 /*!
- * @brief Get FlexCAN time segments for calculating the bitrate.
+ * @brief Gets the  FlexCAN time segments to calculate the bit rate.
  *
- * @param   instance    The FlexCAN instance number.
- * @param   time_seg    FlexCAN time segments read for bitrate.
+ * @param   instance    The FlexCAN instance number
+ * @param   time_seg    FlexCAN time segments read for bit rate
  * @return  0 if successful; non-zero failed
  */
 void flexcan_hal_get_time_segments(uint8_t instance, flexcan_time_segment_t *time_seg);
 
 /*!
- * @brief Un-freeze the FlexCAN module
+ * @brief Un freezes the FlexCAN module.
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  * @return  0 if successful; non-zero failed.
  */
 void flexcan_hal_exit_freeze_mode(uint8_t instance);
 
 /*!
- * @brief Freeze the FlexCAN module
+ * @brief Freezes the FlexCAN module.
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  */
 void flexcan_hal_enter_freeze_mode(uint8_t instance);
 
 /*!
- * @brief Enable an operation mode.
+ * @brief Enables operation mode.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   mode         An operation mode to be enabled.
+ * @param   instance     The FlexCAN instance number
+ * @param   mode         An operation mode to be enabled
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t flexcan_hal_enable_operation_mode(
@@ -362,10 +364,10 @@ flexcan_status_t flexcan_hal_enable_operation_mode(
     flexcan_operation_modes_t mode);
 
 /*!
- * @brief Disable an operation mode.
+ * @brief Disables operation mode.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   mode         An operation mode to be disabled.
+ * @param   instance     The FlexCAN instance number
+ * @param   mode         An operation mode to be disabled
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t flexcan_hal_disable_operation_mode(
@@ -380,10 +382,10 @@ flexcan_status_t flexcan_hal_disable_operation_mode(
  */
 
 /*!
- * @brief Set FlexCAN message buffer fields for transmitting
+ * @brief Sets the FlexCAN message buffer fields for transmitting.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
  * @param   mb_idx       Index of the message buffer
  * @param   cs           CODE/status values (TX)
  * @param   msg_id       ID of the message to transmit
@@ -392,17 +394,17 @@ flexcan_status_t flexcan_hal_disable_operation_mode(
  */
 flexcan_status_t flexcan_hal_set_mb_tx(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
     flexcan_mb_code_status_tx_t *cs,
     uint32_t msg_id,
     uint8_t *mb_data);
 
 /*!
- * @brief Set FlexCAN message buffer fields for receiving
+ * @brief Set the FlexCAN message buffer fields for receiving.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
  * @param   mb_idx       Index of the message buffer
  * @param   cs           CODE/status values (RX)
  * @param   msg_id       ID of the message to receive
@@ -410,43 +412,43 @@ flexcan_status_t flexcan_hal_set_mb_tx(
  */
 flexcan_status_t flexcan_hal_set_mb_rx(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
     flexcan_mb_code_status_rx_t *cs,
     uint32_t msg_id);
 
 /*!
- * @brief Get FlexCAN message buffer fields
+ * @brief Gets the FlexCAN message buffer fields.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
  * @param   mb_idx       Index of the message buffer
  * @param   mb           The fields of the message buffer
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_get_mb(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
     flexcan_mb_t *mb);
 
 /*!
- * @brief Lock FlexCAN RX message buffer
+ * @brief Locks the FlexCAN Rx message buffer.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
  * @param   mb_idx       Index of the message buffer
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_lock_rx_mb(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx);
 
 /*!
- * @brief Unlock FlexCAN RX message buffer
+ * @brief Unlocks the FlexCAN Rx message buffer.
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  * @return  0 if successful; non-zero failed
  */
 static inline void flexcan_hal_unlock_rx_mb(uint8_t instance)
@@ -458,74 +460,74 @@ static inline void flexcan_hal_unlock_rx_mb(uint8_t instance)
 }
 
 /*!
- * @brief Enable Rx FIFO.
+ * @brief Enables the Rx FIFO.
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  */
 void flexcan_hal_enable_rx_fifo(uint8_t instance);
 
 /*!
- * @brief Disable Rx FIFO.
+ * @brief Disables the Rx FIFO.
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  */
 void flexcan_hal_disable_rx_fifo(uint8_t instance);
 
 /*!
- * @brief Set the number of Rx FIFO filters.
+ * @brief Sets the number of the Rx FIFO filters.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   number       The number of Rx FIFO filters.
+ * @param   instance     The FlexCAN instance number
+ * @param   number       The number of Rx FIFO filters
  */
 void flexcan_hal_set_rx_fifo_filters_number(uint8_t instance, uint32_t number);
 
 /*!
- * @brief Set the maximum number of Message Buffers.
+ * @brief Sets  the maximum number of Message Buffers.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
  */
 void flexcan_hal_set_max_mb_number(
     uint8_t instance,
-    flexcan_config_t *data);
+    const flexcan_user_config_t *data);
 
 /*!
- * @brief Set RX FIFO ID filter table elements.
+ * @brief Sets the Rx FIFO ID filter table elements.
  *
- * @param   instance                The FlexCAN instance number.
- * @param   data                    The FlexCAN platform data.
- * @param   id_format               The format of the Rx FIFO ID Filter Table Elements.
+ * @param   instance                The FlexCAN instance number
+ * @param   data                    The FlexCAN platform data
+ * @param   id_format               The format of the Rx FIFO ID Filter Table Elements
  * @param   id_filter_table         The ID filter table elements which contain if RTR bit,
- *                                  IDE bit need to be set, and RX message ID.
+ *                                  IDE bit and RX message ID need to be set.
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t flexcan_hal_set_id_filter_table_elements(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     flexcan_rx_fifo_id_element_format_t id_format,
     flexcan_id_table_t *id_filter_table);
 
 /*!
- * @brief Set FlexCAN RX FIFO fields
+ * @brief Sets the FlexCAN Rx FIFO fields.
  *
- * @param   instance                The FlexCAN instance number.
- * @param   data                    The FlexCAN platform data.
- * @param   id_format               The format of the Rx FIFO ID Filter Table Elements.
+ * @param   instance                The FlexCAN instance number
+ * @param   data                    The FlexCAN platform data
+ * @param   id_format               The format of the Rx FIFO ID Filter Table Elements
  * @param   id_filter_table         The ID filter table elements which contain RTR bit, IDE bit,
  *                                  and RX message ID.
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t flexcan_hal_set_rx_fifo(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     flexcan_rx_fifo_id_element_format_t id_format,
     flexcan_id_table_t *id_filter_table);
 
 /*!
- * @brief Get FlexCAN RX FIFO data
+ * @brief Gets the FlexCAN Rx FIFO data.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   rx_fifo      The FlexCAN receive FIFO data.
+ * @param   instance     The FlexCAN instance number
+ * @param   rx_fifo      The FlexCAN receive FIFO data
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t flexcan_hal_read_fifo(
@@ -540,48 +542,99 @@ flexcan_status_t flexcan_hal_read_fifo(
  */
 
 /*!
- * @brief Enable the FlexCAN Message Buffer interrupt
+ * @brief Enables the FlexCAN Message Buffer interrupt.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
- * @param   mb_idx       Index of the message buffer.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
+ * @param   mb_idx       Index of the message buffer
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_enable_mb_interrupt(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx);
 
 /*!
- * @brief Disable the FlexCAN Message Buffer interrupt
+ * @brief Disables the FlexCAN Message Buffer interrupt.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
- * @param   mb_idx       Index of the message buffer.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
+ * @param   mb_idx       Index of the message buffer
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t flexcan_hal_disable_mb_interrupt(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx);
 
 /*!
- * @brief Enable all error interrupts of the FlexCAN module
- *
- * It enables the related HW module interrupt.
- *
- * @param   instance     The FlexCAN instance number.
+ * @brief Enables error interrupt of the FlexCAN module.
+ * @param   instance     The FlexCAN instance number
  */
 void flexcan_hal_enable_error_interrupt(uint8_t instance);
 
 /*!
- * @brief Disable all error interrupts of the FlexCAN module
+ * @brief Disables error interrupt of the FlexCAN module.
  *
- * It disables the related HW module interrupt.
- *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  */
 void flexcan_hal_disable_error_interrupt(uint8_t instance);
+
+/*!
+ * @brief Enables Bus off interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_enable_bus_off_interrupt(uint8_t instance);
+
+/*!
+ * @brief Disables Bus off interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_disable_bus_off_interrupt(uint8_t instance);
+
+/*!
+ * @brief Enables Wakeup interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_enable_wakeup_interrupt(uint8_t instance);
+
+/*!
+ * @brief Disables Wakeup interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_disable_wakeup_interrupt(uint8_t instance);
+
+/*!
+ * @brief Enables TX warning interrupt of the FlexCAN module
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_enable_tx_warning_interrupt(uint8_t instance);
+
+/*!
+ * @brief Disables TX warning interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_disable_tx_warning_interrupt(uint8_t instance);
+
+/*!
+ * @brief Enables RX warning interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_enable_rx_warning_interrupt(uint8_t instance);
+
+/*!
+ * @brief Disables RX warning interrupt of the FlexCAN module.
+ *
+ * @param   instance     The FlexCAN instance number
+ */
+void flexcan_hal_disable_rx_warning_interrupt(uint8_t instance);
 
 /*@}*/
 
@@ -591,10 +644,10 @@ void flexcan_hal_disable_error_interrupt(uint8_t instance);
  */
 
 /*!
- * @brief Get the value of FlexCAN freeze ack.
+ * @brief Gets the value of FlexCAN freeze ACK.
  *
- * @param   instance     The FlexCAN instance number.
- * @return  freeze ack state (1-freeze mode, 0-not in freeze mode).
+ * @param   instance     The FlexCAN instance number
+ * @return  freeze ACK state (1-freeze mode, 0-not in freeze mode).
  */
 static inline uint32_t flexcan_hal_get_freeze_ack(uint8_t instance)
 {
@@ -603,22 +656,22 @@ static inline uint32_t flexcan_hal_get_freeze_ack(uint8_t instance)
 }
 
 /*!
- * @brief Get the individual FlexCAN MB interrupt flag
+ * @brief Gets the individual FlexCAN MB interrupt flag.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
- * @param   mb_idx       Index of the message buffer.
- * @return  the individual MB interrupt flag (0 and 1 are the flag value).
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
+ * @param   mb_idx       Index of the message buffer
+ * @return  the individual MB interrupt flag (0 and 1 are the flag value)
  */
 uint8_t flexcan_hal_get_mb_int_flag(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx);
 
 /*!
- * @brief Get all FlexCAN MB interrupt flags
+ * @brief Gets all FlexCAN MB interrupt flags.
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  * @return  all MB interrupt flags
  */
 static inline uint32_t flexcan_hal_get_all_mb_int_flags(uint8_t instance)
@@ -628,10 +681,10 @@ static inline uint32_t flexcan_hal_get_all_mb_int_flags(uint8_t instance)
 }
 
 /*!
- * @brief Clear the interrupt flag of the message buffers
+ * @brief Clears the interrupt flag of the message buffers.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   reg_val      The value to be writen to the interrupt flag1 register.
+ * @param   instance     The FlexCAN instance number
+ * @param   reg_val      The value to be written to the interrupt flag1 register.
  */
 /* See fsl_flexcan_hal.h for documentation of this function.*/
 static inline void flexcan_hal_clear_mb_int_flag(
@@ -645,20 +698,20 @@ static inline void flexcan_hal_clear_mb_int_flag(
 }
 
 /*!
- * @brief Get transmit error counter and receive error counter
+ * @brief Gets the transmit error counter and receives the error counter.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   err_cnt      Transmit error counter and receive error counter.
+ * @param   instance     The FlexCAN instance number
+ * @param   err_cnt      Transmit error counter and receive error counter
  */
 void flexcan_hal_get_err_counter(
     uint8_t instance,
     flexcan_berr_counter_t *err_cnt);
 
 /*!
- * @brief Get error and status
+ * @brief Gets error and status.
  *
- * @param   instance     The FlexCAN instance number.
- * @return  The current error and status.
+ * @param   instance     The FlexCAN instance number
+ * @return  The current error and status
  */
 static inline uint32_t flexcan_hal_get_err_status(uint8_t instance)
 {
@@ -667,9 +720,9 @@ static inline uint32_t flexcan_hal_get_err_status(uint8_t instance)
 }
 
 /*!
- * @brief Clear all other interrupts in ERRSTAT register (Error, Busoff, Wakeup
+ * @brief Clears all other interrupts in ERRSTAT register (Error, Busoff, Wakeup).
  *
- * @param   instance     The FlexCAN instance number.
+ * @param   instance     The FlexCAN instance number
  */
 void flexcan_hal_clear_err_interrupt_status(uint8_t instance);
 
@@ -681,129 +734,129 @@ void flexcan_hal_clear_err_interrupt_status(uint8_t instance);
  */
 
 /*!
- * @brief Set RX masking type
+ * @brief Sets the Rx masking type.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   type         The FlexCAN RX mask type.
+ * @param   instance     The FlexCAN instance number
+ * @param   type         The FlexCAN Rx mask type
  */
 void flexcan_hal_set_mask_type(uint8_t instance, flexcan_rx_mask_type_t type);
 
 /*!
- * @brief Set FlexCAN RX FIFO global standard mask.
+ * @brief Sets the FlexCAN RX FIFO global standard mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   std_mask     Standard mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   std_mask     Standard mask
  */
 void flexcan_hal_set_rx_fifo_global_std_mask(
     uint8_t instance,
     uint32_t std_mask);
 
 /*!
- * @brief Set FlexCAN RX FIFO global extended mask.
+ * @brief Sets the FlexCAN Rx FIFO global extended mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   ext_mask     Extended mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   ext_mask     Extended mask
  */
 void flexcan_hal_set_rx_fifo_global_ext_mask(
     uint8_t instance,
     uint32_t ext_mask);
 
 /*!
- * @brief Set FlexCAN RX individual standard mask for ID filtering in the Rx MBs and the Rx FIFO.
+ * @brief Sets the FlexCAN Rx individual standard mask for ID filtering in the Rx MBs and the Rx FIFO.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
- * @param   mb_idx       Index of the message buffer.
- * @param   std_mask     Individual standard mask.
- * @return  0 if successful; non-zero failed.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
+ * @param   mb_idx       Index of the message buffer
+ * @param   std_mask     Individual standard mask
+ * @return  0 if successful; non-zero failed
 */
 flexcan_status_t flexcan_hal_set_rx_individual_std_mask(
     uint8_t instance,
-    flexcan_config_t * data,
+    const flexcan_user_config_t * data,
     uint32_t mb_idx,
     uint32_t std_mask);
 
 /*!
- * @brief Set FlexCAN RX individual extended mask for ID filtering in the Rx MBs and the Rx FIFO.
+ * @brief Sets the FlexCAN Rx individual extended mask for ID filtering in the Rx MBs and the Rx FIFO.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   data         The FlexCAN platform data.
- * @param   mb_idx       Index of the message buffer.
- * @param   ext_mask     Individual extended mask.
- * @return  0 if successful; non-zero failed.
+ * @param   instance     The FlexCAN instance number
+ * @param   data         The FlexCAN platform data
+ * @param   mb_idx       Index of the message buffer
+ * @param   ext_mask     Individual extended mask
+ * @return  0 if successful; non-zero failed
 */
 flexcan_status_t flexcan_hal_set_rx_individual_ext_mask(
     uint8_t instance,
-    flexcan_config_t * data,
+    const flexcan_user_config_t * data,
     uint32_t mb_idx,
     uint32_t ext_mask);
 
 /*!
- * @brief Set FlexCAN RX MB global standard mask.
+ * @brief Sets the FlexCAN Rx MB global standard mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   std_mask     Standard mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   std_mask     Standard mask
  */
 void flexcan_hal_set_rx_mb_global_std_mask(
     uint8_t instance,
     uint32_t std_mask);
 
 /*!
- * @brief Set FlexCAN RX MB BUF14 standard mask.
+ * @brief Sets the FlexCAN RX MB BUF14 standard mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   std_mask     Standard mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   std_mask     Standard mask
  */
 void flexcan_hal_set_rx_mb_buf14_std_mask(
     uint8_t instance,
     uint32_t std_mask);
 
 /*!
- * @brief Set FlexCAN RX MB BUF15 standard mask.
+ * @brief Sets the FlexCAN Rx MB BUF15 standard mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   std_mask     Standard mask.
- * @return  0 if successful; non-zero failed.
+ * @param   instance     The FlexCAN instance number
+ * @param   std_mask     Standard mask
+ * @return  0 if successful; non-zero failed
  */
 void flexcan_hal_set_rx_mb_buf15_std_mask(
     uint8_t instance,
     uint32_t std_mask);
 
 /*!
- * @brief Set FlexCAN RX MB global extended mask.
+ * @brief Sets the FlexCAN RX MB global extended mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   ext_mask     Extended mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   ext_mask     Extended mask
  */
 void flexcan_hal_set_rx_mb_global_ext_mask(
     uint8_t instance,
     uint32_t ext_mask);
 
 /*!
- * @brief Set FlexCAN RX MB BUF14 extended mask.
+ * @brief Sets the FlexCAN RX MB BUF14 extended mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   ext_mask     Extended mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   ext_mask     Extended mask
  */
 void flexcan_hal_set_rx_mb_buf14_ext_mask(
     uint8_t instance,
     uint32_t ext_mask);
 
 /*!
- * @brief Set FlexCAN RX MB BUF15 extended mask.
+ * @brief Sets the FlexCAN RX MB BUF15 extended mask.
  *
- * @param   instance     The FlexCAN instance number.
- * @param   ext_mask     Extended mask.
+ * @param   instance     The FlexCAN instance number
+ * @param   ext_mask     Extended mask
  */
 void flexcan_hal_set_rx_mb_buf15_ext_mask(
     uint8_t instance,
     uint32_t ext_mask);
 
 /*!
- * @brief Get the FlexCAN ID acceptance filter hit indicator on Rx FIFO.
+ * @brief Gets the FlexCAN ID acceptance filter hit indicator on Rx FIFO.
  *
- * @param   instance     The FlexCAN instance number.
- * @return  RX FIFO information.
+ * @param   instance     The FlexCAN instance number
+ * @return  RX FIFO information
  */
 static inline uint32_t  flexcan_hal_get_rx_fifo_id_acceptance_filter(uint8_t instance)
 {

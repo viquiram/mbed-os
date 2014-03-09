@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,20 +27,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __FSL_SDHC_FEATURES_H__
+#if !defined(__FSL_SDHC_FEATURES_H__)
 #define __FSL_SDHC_FEATURES_H__
 
+#if defined(CPU_MK24FN1M0VDC12) || defined(CPU_MK24FN1M0VLQ12) || defined(CPU_MK63FN1M0VLQ12) || defined(CPU_MK63FN1M0VMD12) || \
+    defined(CPU_MK64FX512VDC12) || defined(CPU_MK64FN1M0VDC12) || defined(CPU_MK64FX512VLL12) || defined(CPU_MK64FN1M0VLL12) || \
+    defined(CPU_MK64FX512VLQ12) || defined(CPU_MK64FN1M0VLQ12) || defined(CPU_MK64FX512VMD12) || defined(CPU_MK64FN1M0VMD12) || \
+    defined(CPU_MK70FN1M0VMF12) || defined(CPU_MK70FX512VMF12) || defined(CPU_MK70FN1M0VMF15) || defined(CPU_MK70FX512VMF15) || \
+    defined(CPU_MK70FN1M0VMJ12) || defined(CPU_MK70FX512VMJ12) || defined(CPU_MK70FN1M0VMJ15) || defined(CPU_MK70FX512VMJ15)
+    /* @brief Has external DMA support (register bit VENDOR[EXTDMAEN]). */
+    #define FSL_FEATURE_SDHC_HAS_EXTERNAL_DMA_SUPPORT (1)
 #if defined(CPU_MK70FN1M0VMJ12) || defined(CPU_MK70FN1M0VMJ15)
-    #define KINETIS_SDHC_MODULE_COUNT       (1)
+    #define FSL_FEATURE_SDHC_HAS_V300_SUPPORT         (1)
+    #define FSL_FEATURE_SDHC_HAS_V180_SUPPORT         (1)
 #elif (defined(CPU_MK63FN1M0VMD12) || defined(CPU_MK63FN1M0VMD12WS) || \
        defined(CPU_MK64FN1M0VMD12) || defined(CPU_MK64FX512VMD12))
-    #define KINETIS_SDHC_MODULE_COUNT       (1)
+    #define FSL_FEATURE_SDHC_HAS_V300_SUPPORT         (0)
+    #define FSL_FEATURE_SDHC_HAS_V180_SUPPORT         (0)
+#endif
+#elif defined(CPU_MK65FN2M0CAC18) || defined(CPU_MK65FX1M0CAC18) || defined(CPU_MK65FN2M0VMI18) || defined(CPU_MK65FX1M0VMI18) || \
+    defined(CPU_MK66FN2M0VLQ18) || defined(CPU_MK66FX1M0VLQ18) || defined(CPU_MK66FN2M0VMD18) || defined(CPU_MK66FX1M0VMD18)
+    /* @brief Has external DMA support (register bit VENDOR[EXTDMAEN]). */
+    #define FSL_FEATURE_SDHC_HAS_EXTERNAL_DMA_SUPPORT (0)
 #else
-    #error "No valid CPU defined"
+    #error "No valid CPU defined!"
 #endif
 
-#endif /* __FSL_SDHC_FEATURES_H__*/
-
+#endif /* __FSL_SDHC_FEATURES_H__ */
 /*******************************************************************************
  * EOF
  ******************************************************************************/

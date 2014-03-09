@@ -32,32 +32,32 @@
 #include "fsl_enet_hal.h"
 #include "fsl_clock_manager.h"
 #include "fsl_interrupt_manager.h"
-#include "fsl_phy_driver.h"
 #include <string.h>
 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 /*! @brief Define ENET's IRQ list */
-extern IRQn_Type enet_irq_ids[HW_PIT_INSTANCE_COUNT][FSL_FEATURE_ENET_INTERRUPT_COUNT];
+extern IRQn_Type enet_irq_ids[HW_ENET_INSTANCE_COUNT][FSL_FEATURE_ENET_INTERRUPT_COUNT];
 extern uint8_t enetIntMap[kEnetIntNum];
 
 /*! @brief Define global value for ISR input parameter*/
 void *enetIfHandle;
 
-/*! @brief Define external osc clk frequency*/
-#define ENET_OSCCLK_OUTCLK_SRC   50000000  
-
 #if FSL_FEATURE_ENET_SUPPORT_PTP
 /*! @brief Define ptp mastertimer information*/
 enet_ptp_master_time_data_t g_ptpMasterTime;
+/*! @brief Define clk frequency for 1588 timer*/
+uint32_t g_ptpClkFrq;
+/*! @brief Define buffers for ptp layer2 frames send*/
+uint8_t txPtpL2buffer[kEnetMaxFrameVlanSize];
 #endif
 
 /*! @brief Define MAC driver API structure and for application of stack adaptor layer*/
 const enet_mac_api_t g_enetMacApi = 
 {
     enet_mac_init,
-    enet_mac_close,
+    enet_mac_deinit,
     enet_mac_send,
 #if !ENET_RECEIVE_ALL_INTERRUPT
     enet_mac_receive,
@@ -66,9 +66,6 @@ const enet_mac_api_t g_enetMacApi =
     enet_mii_write,
     enet_mac_add_multicast_group,
     enet_mac_leave_multicast_group,
-#if FSL_FEATURE_ENET_SUPPORT_PTP
-    enet_ptp_ioctl,
-#endif
 };
 /*******************************************************************************
  * Code
@@ -76,64 +73,31 @@ const enet_mac_api_t g_enetMacApi =
 #if FSL_FEATURE_ENET_SUPPORT_PTP
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_ptp_ring_init
- * Return Value: The execution status.
- * Description:Initialize ENET ptp(Precision Time Synchronization Protocol) 
- * data buffer ring. ptp data buffer is used to store ptp message context and
- * the timestamp of the ptp message.
- *
- *END*********************************************************************/
-uint32_t enet_ptp_ring_init(enet_mac_ptp_ts_ring_t *ptpTsRingPtr)
-{
-    /* Check input parameter*/
-    if (!ptpTsRingPtr)
-    {
-        return kStatus_ENET_InvalidInput;
-    }
-	
-    /* Allocate memory for ENET private ptp ring*/
-    ptpTsRingPtr->ptpTsDataPtr = (enet_mac_ptp_ts_data_t *)mem_allocate(ptpTsRingPtr->size * sizeof(enet_mac_ptp_ts_data_t));
-    if (!ptpTsRingPtr->ptpTsDataPtr)
-    {
-        return kStatus_ENET_MemoryAllocateFail;
-    }
-
-    ptpTsRingPtr->front = 0;
-    ptpTsRingPtr->end = 0;
-
-    return kStatus_ENET_Success;
-}
-
-/*FUNCTION****************************************************************
- *
  * Function Name: enet_ptp_init
  * Return Value: The execution status.
  * Description:Initialize the ENET private ptp(Precision Time Synchronization Protocol)
- * data structure with basic configuration. All ptp data are stored there.
+ * data structure.
  *
  *END*********************************************************************/
-uint32_t enet_ptp_init(enet_dev_if_t *enetIfPtr)
+uint32_t enet_ptp_init(enet_private_ptp_buffer_t *privatePtpPtr, 
+                  uint32_t ptpRxBufferNum, enet_mac_ptp_ts_data_t *ptpTsRxDataPtr, 
+                  uint32_t ptpTxBufferNum, enet_mac_ptp_ts_data_t *ptpTsTxDataPtr)
 {
     /* Check the input parameters */
-    if (!enetIfPtr)
+    if (!privatePtpPtr || !ptpTsRxDataPtr || !ptpTsTxDataPtr)
     {
         return kStatus_ENET_InvalidInput;
     }
 
-    /* Allocate memory for private ptp buffer*/
-    enetIfPtr->macContextPtr->privatePtpPtr = mem_allocate(sizeof(enet_private_ptp_buffer_t));
-    if (!enetIfPtr->macContextPtr->privatePtpPtr)
-    {
-        return kStatus_ENET_MemoryAllocateFail;
-    }
-
-    /* Initialize some ring parameter*/
-    enetIfPtr->macContextPtr->privatePtpPtr->rxTimeStamp.size = enetIfPtr->macCfgPtr->ptpRingBufferNumber;
-    enetIfPtr->macContextPtr->privatePtpPtr->txTimeStamp.size = enetIfPtr->macCfgPtr->ptpRingBufferNumber;
-
-    /* Initialize required ring buffers*/
-    enet_ptp_ring_init(&(enetIfPtr->macContextPtr->privatePtpPtr->rxTimeStamp));
-    enet_ptp_ring_init(&(enetIfPtr->macContextPtr->privatePtpPtr->txTimeStamp));
+    /* Initialize ptp receive and transmit ring buffers*/
+    privatePtpPtr->rxTimeStamp.ptpTsDataPtr = ptpTsRxDataPtr;
+    privatePtpPtr->rxTimeStamp.size = ptpRxBufferNum;
+    privatePtpPtr->rxTimeStamp.front = 0;
+    privatePtpPtr->rxTimeStamp.end = 0;
+    privatePtpPtr->txTimeStamp.ptpTsDataPtr = ptpTsTxDataPtr;
+    privatePtpPtr->txTimeStamp.size = ptpTxBufferNum;
+    privatePtpPtr->txTimeStamp.front = 0;
+    privatePtpPtr->txTimeStamp.end = 0;
 
     return kStatus_ENET_Success;
 }
@@ -148,29 +112,39 @@ uint32_t enet_ptp_init(enet_dev_if_t *enetIfPtr)
  *END*********************************************************************/
 uint32_t enet_ptp_start(uint32_t instance, bool isSlaveEnabled)
 {
+    uint32_t clockFreq = 0;
     enet_config_ptp_timer_t ptpCfg;
+    if(!ptpCfg)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
 	
     /* Check if this is the master ptp timer*/
-    if (isSlaveEnabled)
+    if (!isSlaveEnabled)
     {
         g_ptpMasterTime.masterPtpInstance = instance;
     }
-
-    /* Initialize timer configuration struct*/
-    ptpCfg.isSlaveEnabled = isSlaveEnabled;
-    ptpCfg.period = kEnetPtpAtperVaule;
-    ptpCfg.clockIncease = ptpCfg.period / ENET_OSCCLK_OUTCLK_SRC;
 	
     /* Restart ptp timer*/
     enet_hal_restart_ptp_timer(instance);
     /* Initialize ptp timer */
+    if ((clock_manager_get_frequency_by_source(kClockTimeSrc, &clockFreq) != kClockManagerSuccess)
+         || (!clockFreq))
+    {
+        return kStatus_ENET_GetClockFreqFail;
+    }
+    ptpCfg.isSlaveEnabled = isSlaveEnabled;
+    ptpCfg.period = kEnetPtpAtperVaule;
+    ptpCfg.clockIncease = ptpCfg.period/clockFreq;
+    /* Set the gloabl 1588 timer frequency*/
+    g_ptpClkFrq = clockFreq;
     enet_hal_init_ptp_timer(instance, &ptpCfg);
     /* Start ptp timer*/
-    enet_hal_start_ptp_timer(instance, true);
+    enet_hal_enable_ptp_timer(instance, true);
 
 #if FSL_FEATURE_ENET_PTP_TIMER_CHANNEL_INTERRUPT
     /* Initialize timer channel for timestamp interrupt for old silicon*/
-    uint32_t compareValue = kEnetPtpAtperVaule - ptpCfg.clockIncease;
+    uint32_t compareValue = ptpCfg.period - ptpCfg.clockIncease;
     enet_hal_set_timer_channel_compare(instance, ENET_TIMER_CHANNEL_NUM, compareValue);
     enet_hal_init_timer_channel(instance, ENET_TIMER_CHANNEL_NUM, kEnetChannelToggleCompare);
     enet_hal_set_timer_channel_compare(instance, ENET_TIMER_CHANNEL_NUM, compareValue);
@@ -185,59 +159,6 @@ uint32_t enet_ptp_start(uint32_t instance, bool isSlaveEnabled)
 	
     return kStatus_ENET_Success;
 }
-/*FUNCTION****************************************************************
- *
- * Function Name: enet_ptp_quick_parse
- * Return Value: The execution status.
- * Description: Quickly parse the packet and set the ptp message flag if 
- * this is a ptp message. It is called by ENET transmit interface.
- *
- *END*********************************************************************/
-uint32_t enet_ptp_quick_parse(uint8_t *packet,bool *isPtpMsg)
-{
-    uint8_t *buffer = packet;
-
-    /* Set default value false*/
-    *isPtpMsg = false;
-
-    /* Check for vlan frame*/
-    if (*(uint16_t *)(buffer+kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocol8021QVlan))
-    {
-        buffer += (sizeof(enet_8021vlan_header_t) - sizeof(enet_ethernet_header_t));
-    }
-
-    if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocolIeee8023))
-    {
-        if (*(uint8_t *)(buffer + kEnetPtpEtherMsgTypeOffset) <= kEnetPtpEventMsgType)
-        {
-            *isPtpMsg = true;  
-        }
-    }
-    else if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocolIpv4))
-    {
-        if ((*(uint8_t *)(buffer + kEnetPtpIpVersionOffset) >> 4 ) == kEnetPacketIpv4Version)
-        {
-            if (((*(uint16_t *)(buffer + kEnetPtpUdpPortOffset)) == HTONS(kEnetPtpEventPort))&&
-				(*(uint8_t *)(buffer + kEnetPtpUdpProtocolOffset) == kEnetPacketUdpVersion))
-            {
-                *isPtpMsg = true;  
-            }
-        }
-    }
-    else if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocolIpv6))
-    {
-        if ((*(uint8_t *)(buffer + kEnetPtpIpVersionOffset) >> 4 ) == kEnetPacketIpv6Version)
-        {
-            if (((*(uint16_t *)(buffer + kEnetPtpIpv6UdpPortOffset)) == HTONS(kEnetPtpEventPort))&&
-            (*(uint8_t *)(buffer + kEnetPtpIpv6UdpProtocolOffset) == kEnetPacketUdpVersion))
-            {
-                *isPtpMsg = true;  
-            }
-        }
-    }
-
-    return kStatus_ENET_Success;
-}
 
 /*FUNCTION****************************************************************
  *
@@ -247,65 +168,84 @@ uint32_t enet_ptp_quick_parse(uint8_t *packet,bool *isPtpMsg)
  * it is a ptp message. this is called by the tx/rx store timestamp interface. 
  *
  *END*********************************************************************/
-uint32_t enet_ptp_parse(uint8_t *packet, enet_mac_ptp_ts_data_t *ptpTsPtr, bool *isPtpMsg)
+uint32_t enet_ptp_parse(uint8_t *packet, enet_mac_ptp_ts_data_t *ptpTsPtr, 
+                         bool *isPtpMsg, bool isFastEnabled)
 {
+    /* Check input parameter*/
+    if((!packet) || ((!ptpTsPtr) && (!isFastEnabled)))
+    {
+        return kStatus_ENET_InvalidInput;
+    }
     uint8_t *buffer = packet;
-
-    /* Set default value false*/
+    uint16_t ptpType;
     *isPtpMsg = false;
  
     /* Check for vlan frame*/
-    if (*(uint16_t *)(buffer+kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocol8021QVlan))
+    if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocol8021QVlan))
     {
-        buffer += (sizeof(enet_8021vlan_header_t) - sizeof(enet_ethernet_header_t));
+        buffer += (sizeof(enet_8021vlan_header_t) - kEnetEthernetHeadLen);
     }
+	
+    ptpType = *(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset);
+    switch(HTONS(ptpType))
+    {
+        case kEnetProtocolIeee8023:
+            if (*(uint8_t *)(buffer + kEnetPtpEtherMsgTypeOffset) <= kEnetPtpEventMsgType)
+            {
+                /* Set the ptp message flag*/
+                *isPtpMsg = true; 
+                if(!isFastEnabled)
+                {
+                    /* It's a ptpv2 message and store the ptp header information*/
+                    ptpTsPtr->version = (*(uint8_t *)(buffer + kEnetPtpEtherVersionOffset))&0x0F;
+                    ptpTsPtr->messageType = (*(uint8_t *)(buffer + kEnetPtpEtherMsgTypeOffset))& 0x0F;
+                    ptpTsPtr->sequenceId = HTONS(*(uint16_t *)(buffer + kEnetPtpEtherSequenceIdOffset));
+                    memcpy((void *)&ptpTsPtr->sourcePortId[0],(void *)(buffer + kEnetPtpEtherClockIdOffset),kEnetPtpSourcePortIdLen);
+                }
+            }
+        break;
 
-    if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocolIeee8023))
-    {
-        if (*(uint8_t *)(buffer + kEnetPtpEtherMsgTypeOffset) <= kEnetPtpEventMsgType)
-        {
-            /* It's a ptpv2 message and store the ptp header information*/
-            ptpTsPtr->version = (*(uint8_t *)(buffer + kEnetPtpEtherVersionOffset))&0x0F;
-            ptpTsPtr->messageType = (*(uint8_t *)(buffer + kEnetPtpEtherMsgTypeOffset))& 0x0F;
-            ptpTsPtr->sequenceId = HTONS(*(uint16_t *)(buffer + kEnetPtpEtherSequenceIdOffset));
-            memcpy((void *)&ptpTsPtr->sourcePortId[0],(void *)(buffer + kEnetPtpEtherClockIdOffset),kEnetPtpSourcePortIdLen);
-            /* Set the ptp message flag*/
-            *isPtpMsg = true;  
-        }
-    }
-    else if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocolIpv4))
-    {
-        if ((*(uint8_t *)(buffer + kEnetPtpIpVersionOffset) >> 4 ) == kEnetPacketIpv4Version)
-        {
-            if (((*(uint16_t *)(buffer + kEnetPtpUdpPortOffset)) == HTONS(kEnetPtpEventPort))&&
-            (*(uint8_t *)(buffer + kEnetPtpUdpProtocolOffset) == kEnetPacketUdpVersion))
+        case kEnetProtocolIpv4:
+            if ((*(uint8_t *)(buffer + kEnetPtpIpVersionOffset) >> 4 ) == kEnetPacketIpv4Version)
             {
-                /* It's a IPV4 ptp message and store the ptp header information*/
-                ptpTsPtr->version = (*(uint8_t *)(buffer + kEnetPtpUdpVersionoffset))&0x0F;
-                ptpTsPtr->messageType = (*(uint8_t *)(buffer + kEnetPtpUdpMsgTypeOffset))& 0x0F;
-                ptpTsPtr->sequenceId = HTONS(*(uint16_t *)(buffer + kEnetPtpUdpSequenIdOffset));
-                memcpy(( void *)&ptpTsPtr->sourcePortId[0],( void *)(buffer + kEnetPtpUdpClockIdOffset),kEnetPtpSourcePortIdLen);
-                /* Set the ptp message flag*/
-                *isPtpMsg = true;  
-            }
-        }
-    }
-    else if (*(uint16_t *)(buffer + kEnetPtpEtherPktTypeOffset) == HTONS(kEnetProtocolIpv6))
-    {
-        if ((*(uint8_t *)(buffer + kEnetPtpIpVersionOffset) >> 4 ) == kEnetPacketIpv6Version)
-        {
-            if (((*(uint16_t *)(buffer + kEnetPtpIpv6UdpPortOffset)) == HTONS(kEnetPtpEventPort))&&
-              (*(uint8_t *)(buffer + kEnetPtpIpv6UdpProtocolOffset) == kEnetPacketUdpVersion))
+                if (((*(uint16_t *)(buffer + kEnetPtpUdpPortOffset)) == HTONS(kEnetPtpEventPort))&&
+                (*(uint8_t *)(buffer + kEnetPtpUdpProtocolOffset) == kEnetPacketUdpVersion))
+                {
+                    /* Set the ptp message flag*/
+                    *isPtpMsg = true;  
+                    if(!isFastEnabled)
+                    {
+                        /* It's a IPV4 ptp message and store the ptp header information*/
+                        ptpTsPtr->version = (*(uint8_t *)(buffer + kEnetPtpUdpVersionoffset))&0x0F;
+                        ptpTsPtr->messageType = (*(uint8_t *)(buffer + kEnetPtpUdpMsgTypeOffset))& 0x0F;
+                        ptpTsPtr->sequenceId = HTONS(*(uint16_t *)(buffer + kEnetPtpUdpSequenIdOffset));
+                        memcpy(( void *)&ptpTsPtr->sourcePortId[0],( void *)(buffer + kEnetPtpUdpClockIdOffset),kEnetPtpSourcePortIdLen);
+                    }
+                }
+            }        
+        break;
+        case kEnetProtocolIpv6:
+            if ((*(uint8_t *)(buffer + kEnetPtpIpVersionOffset) >> 4 ) == kEnetPacketIpv6Version)
             {
-                /* It's a IPV6 ptp message and store the ptp header information*/
-                ptpTsPtr->version = (*(uint8_t *)(buffer + kEnetPtpIpv6UdpVersionOffset))&0x0F;
-                ptpTsPtr->messageType = (*(uint8_t *)(buffer + kEnetPtpIpv6UdpMsgTypeOffset))& 0x0F;
-                ptpTsPtr->sequenceId = HTONS(*(uint16_t *)(buffer + kEnetPtpIpv6UdpSequenceIdOffset));
-                memcpy(( void *)&ptpTsPtr->sourcePortId[0],( void *)(buffer + kEnetPtpIpv6UdpClockIdOffset),kEnetPtpSourcePortIdLen);
-                /* Set the ptp message flag*/
-                *isPtpMsg = true;  
+                if (((*(uint16_t *)(buffer + kEnetPtpIpv6UdpPortOffset)) == HTONS(kEnetPtpEventPort))&&
+                  (*(uint8_t *)(buffer + kEnetPtpIpv6UdpProtocolOffset) == kEnetPacketUdpVersion))
+                {
+                    /* Set the ptp message flag*/
+                    *isPtpMsg = true;
+                    if(!isFastEnabled)
+                    {
+                        /* It's a IPV6 ptp message and store the ptp header information*/
+                        ptpTsPtr->version = (*(uint8_t *)(buffer + kEnetPtpIpv6UdpVersionOffset))&0x0F;
+                        ptpTsPtr->messageType = (*(uint8_t *)(buffer + kEnetPtpIpv6UdpMsgTypeOffset))& 0x0F;
+                        ptpTsPtr->sequenceId = HTONS(*(uint16_t *)(buffer + kEnetPtpIpv6UdpSequenceIdOffset));
+                        memcpy(( void *)&ptpTsPtr->sourcePortId[0],( void *)(buffer + kEnetPtpIpv6UdpClockIdOffset),kEnetPtpSourcePortIdLen);
+                    }  
+                }
             }
-        }
+        break;
+        default:
+        break;
+
     }
 
     return kStatus_ENET_Success;
@@ -378,35 +318,28 @@ uint32_t enet_ptp_set_time(enet_mac_ptp_time_t *ptpTimerPtr)
  *END*********************************************************************/
 uint32_t enet_ptp_correction_time(uint32_t instance, int32_t drift)
 {
-    uint32_t clockFreq,clockIncrease,adjIncrease,corrPeriod,corrIncrease,count;
+    uint32_t clockIncrease,adjIncrease,corrPeriod,corrIncrease,count;
     uint32_t gapMax = 0xFFFFFFFF,gapTemp,adjPeriod = 1;
 
-    /* Get the ptp clock source frequency*/
-    if (clock_manager_get_frequency_by_source(kClockTimeSrc, &clockFreq) != kClockManagerSuccess)
-    {
-        return kStatus_ENET_GetClockFreqFail;
-    }
-	
     /* Calculate clock period of the ptp timer*/
-    clockIncrease = kEnetPtpAtperVaule / clockFreq ;
+    clockIncrease = kEnetPtpAtperVaule / g_ptpClkFrq ;
 	
     if (drift != 0)
     {
-        if (abs(drift) >= clockFreq)
+        if (abs(drift) >= g_ptpClkFrq)
         {
-            /* Drift is greater than the 1588 clock frequency the correction should be done
-			every tick of the timer*/   
+            /* Drift is greater than the 1588 clock frequency the correction should be done every tick of the timer*/   
             corrPeriod = 1;	
-            corrIncrease = (uint32_t)(abs(drift)/clockFreq);
+            corrIncrease = (uint32_t)(abs(drift)/g_ptpClkFrq);
         }
         else
         {
             /* Drift is smaller than the 1588 clock frequency*/
-            if (abs(drift) > (clockFreq / clockIncrease))
+            if (abs(drift) > (g_ptpClkFrq / clockIncrease))
             {
                 adjIncrease = clockIncrease / kEnetBaseIncreaseUnit;
             }
-            else if (abs(drift) > (clockFreq / (2*kEnetBaseIncreaseUnit*clockIncrease)))
+            else if (abs(drift) > (g_ptpClkFrq / (2*kEnetBaseIncreaseUnit*clockIncrease)))
             {
                 adjIncrease = clockIncrease / (2*kEnetBaseIncreaseUnit);
                 adjPeriod =  kEnetBaseIncreaseUnit;
@@ -418,17 +351,17 @@ uint32_t enet_ptp_correction_time(uint32_t instance, int32_t drift)
             }
             for(count = 1; count < adjIncrease; count++)
             {
-                gapTemp = (clockFreq * adjPeriod * count) % abs(drift);
+                gapTemp = (g_ptpClkFrq * adjPeriod * count) % abs(drift);
                 if (!gapTemp)
                 {
                     corrIncrease = count;
-                    corrPeriod = (uint32_t)((clockFreq * adjPeriod * count) / abs(drift));
+                    corrPeriod = (uint32_t)((g_ptpClkFrq * adjPeriod * count) / abs(drift));
                     break;
                 }
                 else if (gapTemp < gapMax)
                 { 
                     corrIncrease = count;
-                    corrPeriod = (uint32_t)((clockFreq * adjPeriod * count) / abs(drift));
+                    corrPeriod = (uint32_t)((g_ptpClkFrq * adjPeriod * count) / abs(drift));
                     gapMax = gapTemp;
                 }
             }
@@ -461,7 +394,7 @@ uint32_t enet_ptp_correction_time(uint32_t instance, int32_t drift)
  * Description: Store the transmit ptp timestamp. 
  * This interface is to store transmit ptp timestamp and is called by transmit function.
  *END*********************************************************************/
-uint32_t enet_ptp_store_tx_timestamp(enet_private_ptp_buffer_t *ptpBuffer,void *bdPtr)
+uint32_t enet_ptp_store_tx_timestamp(enet_private_ptp_buffer_t *ptpBuffer, void *bdPtr)
 {
     bool isPtpMsg,ptpTimerWrap;
     enet_mac_ptp_ts_data_t ptpTsData;
@@ -477,7 +410,7 @@ uint32_t enet_ptp_store_tx_timestamp(enet_private_ptp_buffer_t *ptpBuffer,void *
   
     /* Parse the message packet to check if there is a ptp message*/	
     bdBufferPtr = enet_hal_get_bd_buffer(bdPtr);
-    result = enet_ptp_parse(bdBufferPtr, &ptpTsData, &isPtpMsg);
+    result = enet_ptp_parse(bdBufferPtr, &ptpTsData, &isPtpMsg, false);
     if (result != kStatus_ENET_Success)
     {
         return result;
@@ -538,7 +471,7 @@ uint32_t enet_ptp_store_rx_timestamp(enet_private_ptp_buffer_t *ptpBuffer, uint8
     }
 
     /* Check if the message is a ptp message */
-    result = enet_ptp_parse(packet, &ptpTsData, &isPtpMsg);
+    result = enet_ptp_parse(packet, &ptpTsData, &isPtpMsg, false);
     if (result != kStatus_ENET_Success)
     {
         return result;
@@ -586,22 +519,17 @@ uint32_t enet_ptp_store_rx_timestamp(enet_private_ptp_buffer_t *ptpBuffer, uint8
  * Description: Initialize buffer queue for ptp layer2 Ethernet packets. 
  * This interface is to initialize the layer2 Ethernet frame buffer queue.
  *END*********************************************************************/
-uint32_t enet_ptp_l2queue_init(enet_private_ptp_buffer_t *ptpBuffer)
+uint32_t enet_ptp_l2queue_init(enet_private_ptp_buffer_t *ptpBuffer, enet_ptp_l2queue_t *ptpL2QuePtr)
 {
     uint32_t index;
     enet_ptp_l2queue_t *ptpL2QuePtr;
 
     /* Check input parameters*/
-    if (!ptpBuffer)
+    if ((!ptpBuffer) || (!ptpL2QuePtr))
     {
         return kStatus_ENET_InvalidInput;
     }
 
-    ptpL2QuePtr = (enet_ptp_l2queue_t *)mem_allocate(sizeof(enet_ptp_l2queue_t));
-    if (!ptpL2QuePtr)
-    {
-        return kStatus_ENET_MemoryAllocateFail;
-    }
     ptpBuffer->l2QueuePtr = ptpL2QuePtr;
  	
     /* Initialize the queue*/
@@ -623,21 +551,14 @@ uint32_t enet_ptp_l2queue_init(enet_private_ptp_buffer_t *ptpBuffer)
  * This interface is the call back for Ethernet 1588 layer2 packets to 
  * add queue for ptp layer2 Ethernet packets. 
  *END*********************************************************************/
-uint32_t enet_ptp_service_l2packet(enet_dev_if_t * enetIfPtr, uint8_t *packet, uint16_t length)
+uint32_t enet_ptp_service_l2packet(enet_ptp_l2queue_t * ptpQuePtr, uint8_t *packet, uint16_t length)
 {
     enet_ptp_l2queue_t *ptpQuePtr;
 	
     /* Check input parameter*/
-    if ((!enetIfPtr) || (!packet))
+    if ((!ptpQuePtr) || (!packet))
     {
         return kStatus_ENET_InvalidInput;
-    }
-
-    /* Check the l2queue buffer*/
-    ptpQuePtr = enetIfPtr->macContextPtr->privatePtpPtr->l2QueuePtr;
-    if (!ptpQuePtr)
-    {
-        return kStatus_ENET_Layer2QueueNull;
     }
 	
     /* Check if the queue is full*/
@@ -667,7 +588,7 @@ uint32_t enet_ptp_service_l2packet(enet_dev_if_t * enetIfPtr, uint8_t *packet, u
 uint32_t enet_ptp_send_l2packet(enet_dev_if_t * enetIfPtr, void *paramPtr)
 {
     enet_ethernet_header_t *tempBuffer;
-    uint32_t result;
+    uint32_t result, len;
     
     /* Check input parameters*/
     if ((!enetIfPtr) || (!paramPtr))
@@ -675,23 +596,19 @@ uint32_t enet_ptp_send_l2packet(enet_dev_if_t * enetIfPtr, void *paramPtr)
         return kStatus_ENET_InvalidInput;
     }
 
-    /* Allocate memory*/
-    tempBuffer = (enet_ethernet_header_t *)mem_allocate(sizeof(enet_ethernet_header_t) + ((enet_ptp_l2_ethernet_t *)paramPtr)->length);
-    if (!tempBuffer)
-    {
-        return kStatus_ENET_MemoryAllocateFail;
-    }
-
     /* Add Ethernet header*/
-    memcpy(&tempBuffer->destAddr[0], &(((enet_ptp_l2_ethernet_t *)paramPtr)->hwAddr[0]), kEnetMacAddrLen);
-    memcpy(&tempBuffer->sourceAddr[0], &enetIfPtr->macCfgPtr->macAddr[0], kEnetMacAddrLen);
-    tempBuffer->type = HTONS(kEnetProtocolIeee8023);
+    memcpy(&txPtpL2buffer[0], &(((enet_ptp_l2_ethernet_t *)paramPtr)->hwAddr[0]), kEnetMacAddrLen);
+    memcpy(&txPtpL2buffer[kEnetMacAddrLen], &enetIfPtr->macCfgPtr->macAddr[0], kEnetMacAddrLen);
+    txPtpL2buffer[2*kEnetMacAddrLen] = HTONS(kEnetProtocolIeee8023) & 0xFF;
+    txPtpL2buffer[2*kEnetMacAddrLen + 1] = (HTONS(kEnetProtocolIeee8023)>>8) & 0xFF;
 
     /* Copy the real data*/
-    memcpy((void *)(((enet_ptp_l2_ethernet_t *)paramPtr)->ptpMsg),(void *)(tempBuffer + sizeof(enet_ethernet_header_t)),((enet_ptp_l2_ethernet_t *)paramPtr)->length);
+    memcpy((void *)(((enet_ptp_l2_ethernet_t *)paramPtr)->ptpMsg),
+        (void *)(&txPtpL2buffer[kEnetEthernetHeadLen]),((enet_ptp_l2_ethernet_t *)paramPtr)->length);
 
+    len = ((enet_ptp_l2_ethernet_t *)paramPtr)->length + kEnetEthernetHeadLen;
     /* Check transmit packets*/
-    if ((((enet_ptp_l2_ethernet_t *)paramPtr)->length + sizeof(enet_ethernet_header_t)) > enetIfPtr->maxFrameSize)
+    if (len > enetIfPtr->maxFrameSize)
     {
 #if ENET_ENABLE_DETAIL_STATS
        enetIfPtr->stats.statsTxLarge++;
@@ -701,13 +618,7 @@ uint32_t enet_ptp_send_l2packet(enet_dev_if_t * enetIfPtr, void *paramPtr)
     }
 
     /* Send packet to the device*/
-    result = enetIfPtr->macApiPtr->enet_mac_send(enetIfPtr, (uint8_t *)tempBuffer,
-        (((enet_ptp_l2_ethernet_t *)paramPtr)->length + sizeof(enet_ethernet_header_t)));
-    if (result != kStatus_ENET_Success)
-    {
-       mem_free(tempBuffer);
-       return result;
-    }
+    result = enetIfPtr->macApiPtr->enet_mac_send(enetIfPtr, &txPtpL2buffer[0], len);
 
     return kStatus_ENET_Success;
 }
@@ -727,12 +638,18 @@ uint32_t enet_ptp_receive_l2packet(enet_dev_if_t * enetIfPtr,void *paramPtr)
     uint16_t len;
    
     /* Check input parameters*/
-    if ((!enetIfPtr) || (!paramPtr) || (!enetIfPtr->macContextPtr->privatePtpPtr))
+    if ((!enetIfPtr) || (!paramPtr))
     {
         return kStatus_ENET_InvalidInput;
     }
 
-    ptpBuffer = enetIfPtr->macContextPtr->privatePtpPtr;
+    /* Check the input parameters*/
+    if(!enetIfPtr->macContextPtr)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+
+    ptpBuffer = &(enetIfPtr->macContextPtr->privatePtp);
 	
     /* Check if the queue is full*/
     if (ptpBuffer->l2QueuePtr->readIdx == ptpBuffer->l2QueuePtr->writeIdex)
@@ -764,7 +681,7 @@ uint32_t enet_ptp_receive_l2packet(enet_dev_if_t * enetIfPtr,void *paramPtr)
  * Description: The function provides the handler for 1588 stack to do ptp ioctl.
  * This interface provides ioctl for 1588 stack to get or set timestamp and do ptp  
  * version2 packets process. Additional user specified driver functionality may be 
- * added if necessary.
+ * added if necessary. This api will be changed to stack adapter.
  *END*********************************************************************/
 
 uint32_t enet_ptp_ioctl(enet_dev_if_t * enetIfPtr, uint32_t commandId, void *inOutPtr)
@@ -781,7 +698,7 @@ uint32_t enet_ptp_ioctl(enet_dev_if_t * enetIfPtr, uint32_t commandId, void *inO
     }
 
     /*Check private PTP buffer*/
-    buffer =  enetIfPtr->macContextPtr->privatePtpPtr;
+    buffer =  enetIfPtr->macContextPtr->privatePtp;
     if (!buffer)
     {
         return kStatus_ENET_InvalidInput;
@@ -849,7 +766,7 @@ uint32_t enet_ptp_ioctl(enet_dev_if_t * enetIfPtr, uint32_t commandId, void *inO
 uint32_t enet_ptp_stop(uint32_t instance)
 {	
     /* Disable ptp timer*/
-    enet_hal_start_ptp_timer(instance, false);
+    enet_hal_enable_ptp_timer(instance, false);
     enet_hal_restart_ptp_timer(instance);
 	
     return kStatus_ENET_Success;
@@ -988,16 +905,23 @@ uint32_t enet_ptp_ring_search(enet_mac_ptp_ts_ring_t *ptpTsRingPtr, enet_mac_ptp
  * Description: Free ENET ptp data buffers. 
  *
  *END*********************************************************************/
-uint32_t enet_ptp_deinit(enet_mac_context_t *enetContextPtr)
+uint32_t enet_ptp_deinit(enet_private_ptp_buffer_t *privatePtpPtr)
 {
     /* Check the input parameters*/
-    if (!enetContextPtr)
+    if (!privatePtpPtr)
     {
         return kStatus_ENET_InvalidInput;
     }
 
-    /* Free timestamp data buffer*/
-    mem_free(enetContextPtr->privatePtpPtr);
+    /* Clear ptp timestamp data buffer*/
+    privatePtpPtr->rxTimeStamp.ptpTsDataPtr = NULL;
+    privatePtpPtr->rxTimeStamp.size = 0;
+	privatePtpPtr->rxTimeStamp.front = 0;
+	privatePtpPtr->rxTimeStamp.end = 0;
+	privatePtpPtr->txTimeStamp.ptpTsDataPtr = NULL;
+    privatePtpPtr->txTimeStamp.size = 0;
+	privatePtpPtr->txTimeStamp.front = 0;
+	privatePtpPtr->txTimeStamp.end = 0;
 
     return kStatus_ENET_Success;
 }
@@ -1024,11 +948,8 @@ void enet_mac_ts_isr(void *enetIfPtr)
     if (enet_hal_get_interrupt_status(number, kEnetTsTimerInterrupt))
     {
 #if FSL_FEATURE_ENET_PTP_TIMER_CHANNEL_INTERRUPT
-        uint32_t frequency;
-        /* Get current clock frequency*/
-        clock_manager_get_frequency_by_source(kClockTimeSrc, &frequency);
         enet_hal_set_timer_channel_compare(number, ENET_TIMER_CHANNEL_NUM, 
-            (kEnetPtpAtperVaule - kEnetPtpAtperVaule/frequency));
+            (kEnetPtpAtperVaule - kEnetPtpAtperVaule/g_ptpClkFrq));
         enet_hal_clear_timer_channel_flag(number, ENET_TIMER_CHANNEL_NUM);
 #else
         /*Clear interrupt events*/
@@ -1139,191 +1060,226 @@ uint32_t enet_mii_write(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, ui
 	
     return kStatus_ENET_Success;
 }
-
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_mac_bd_init
+ * Function Name: enet_mac_mii_init
  * Return Value: The execution status.
- * Description:Initialize the ENET receive and transmit buffer descriptor
- * This function prepare all of the transmit and receive buffer descriptors
- * for the ENET module. it is called by the ENET Mac initialize interface.
+ * Description:Initialize the ENET Mac mii(mdc/mdio)interface.
  *END*********************************************************************/
-uint32_t enet_mac_bd_init(enet_dev_if_t * enetIfPtr)
+uint32_t enet_mac_mii_init(enet_dev_if_t * enetIfPtr)
 {
-    void  *bdPtr, *bdTempPtr;
-    uint16_t bdNumber, rxBufferNumber;
-    bool isLastBd = false;
-    uint8_t *bufferPtr, *bufferAlignedPtr, *bufferTempPtr, *largeBufferAlign, counter;
-    uint32_t bdSize, rxBuffer, rxBufferAlign,txBufferAlign, txBuffer;
+    uint32_t frequency;
 	
     /* Check the input parameters*/
     if (enetIfPtr == NULL)
     {
         return kStatus_ENET_InvalidInput;
-    }
+    }   
 
-    /* The receive buffer number*/
-#if ENET_RECEIVE_ALL_INTERRUPT
-    rxBufferNumber = enetIfPtr->macCfgPtr->rxBdNumber;
-#else
-    /* For poll add interrupt approach, because of asynchronous buffer free and
-        delay we need more receive buffers*/
-    rxBufferNumber = enetIfPtr->macCfgPtr->rxBdNumber + (3*enetIfPtr->macCfgPtr->rxBdNumber)/4;
-#endif
+    /* Configure mii speed*/
+    clock_manager_get_frequency(kSystemClock, &frequency);
+    enet_hal_config_mii(enetIfPtr->deviceNumber, (frequency/(2 * enetIfPtr->macCfgPtr->miiClock) + 1), 
+                 kEnetMdioHoldOneClkCycle, false);
+
+    return kStatus_ENET_Success;
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_mac_rxbd_init
+ * Return Value: The execution status.
+ * Description:Initialize the ENET receive buffer descriptors.
+ * Note: If you do receive on receive interrupt handler the receive 
+ * data buffer number can be the same as the receive descriptor numbers. 
+ * But if you are polling receive frames please make sure the receive data 
+ * buffers are more than buffer descriptors to guarantee a good performance.
+ *END*********************************************************************/
+uint32_t enet_mac_rxbd_init(enet_dev_if_t * enetIfPtr, enet_rxbd_config_t *rxbdCfg)
+{
+    void *bdTempPtr;
+    uint16_t bdNumber;
+    bool isLastBd = false;
+    uint8_t *bufferTempPtr, counter;
 	
-    /* Allocate buffer for ENET mac context*/
-    enetIfPtr->macContextPtr = 
-        (enet_mac_context_t *)mem_allocate_zero(sizeof(enet_mac_context_t));
-    if (!enetIfPtr->macContextPtr)
+    /* Check the input parameters*/
+    if ((!enetIfPtr) || (!rxbdCfg))
     {
         return kStatus_ENET_InvalidInput;
     }
- 
-    /* Get bd size*/
-    bdSize = enet_hal_get_bd_size();
-    enetIfPtr->macContextPtr->bufferdescSize = bdSize;
+
+    enetIfPtr->macContextPtr->bufferdescSize = enet_hal_get_bd_size();
 
     /* Initialize the bd status*/
     enetIfPtr->macContextPtr->isRxFull = false;
-    enetIfPtr->macContextPtr->isTxFull = false;
-	
-    /* Allocate ENET receive buffer descriptors*/
-    bdPtr = (void *)mem_allocate_zero((bdSize * (enetIfPtr->macCfgPtr->rxBdNumber + 
-        enetIfPtr->macCfgPtr->txBdNumber)) + enetIfPtr->macCfgPtr->bdAlignment);
-    if (!bdPtr)
-    {
-        mem_free(enetIfPtr->macContextPtr);
-        return kStatus_ENET_MemoryAllocateFail;
-    }
-    /* Store the bdPtr for mem free*/
-    enetIfPtr->macContextPtr->bdUnAligned = bdPtr;
-	
+		
     /* Initialize receive bd base address and current address*/
-    enetIfPtr->macContextPtr->rxBdBasePtr = (void *)ENET_ALIGN(((uint32_t)bdPtr),
-        enetIfPtr->macCfgPtr->bdAlignment);
+    enetIfPtr->macContextPtr->rxBdBasePtr = rxbdCfg->rxBdPtrAlign;
     enetIfPtr->macContextPtr->rxBdCurPtr = enetIfPtr->macContextPtr->rxBdBasePtr;
-    enetIfPtr->macContextPtr->rxBdDirtyPtr = enetIfPtr->macContextPtr->rxBdBasePtr;
-
-    /* Initialize transmit bd base address and current address*/
-    enetIfPtr->macContextPtr->txBdBasePtr = enetIfPtr->macContextPtr->rxBdBasePtr + 
-        enetIfPtr->macCfgPtr->rxBdNumber * bdSize;
-    enetIfPtr->macContextPtr->txBdCurPtr = enetIfPtr->macContextPtr->txBdBasePtr;
-    enetIfPtr->macContextPtr->txBdDirtyPtr = enetIfPtr->macContextPtr->txBdBasePtr;
-	
-    /* Allocate the transmit and receive date buffers*/
-    if(!enetIfPtr->macCfgPtr->rxBufferSize)
-    {
-        enetIfPtr->macCfgPtr->rxBufferSize = enetIfPtr->maxFrameSize;
-    }
-    rxBufferAlign = ENET_ALIGN(enetIfPtr->macCfgPtr->rxBufferSize,
-        enetIfPtr->macCfgPtr->rxBufferAlignment);
-	/* Transmit a frame a bd*/
-    txBufferAlign = ENET_ALIGN(enetIfPtr->maxFrameSize,
-        enetIfPtr->macCfgPtr->txBufferAlignment);
-    enetIfPtr->macContextPtr->rxBufferSizeAligned = rxBufferAlign;
-    rxBuffer = rxBufferNumber * rxBufferAlign + enetIfPtr->macCfgPtr->rxBufferAlignment;
-    txBuffer = enetIfPtr->macCfgPtr->txBdNumber * txBufferAlign + 
-        + enetIfPtr->macCfgPtr->txBufferAlignment;	
-    bufferPtr = mem_allocate_zero(rxBuffer + txBuffer);
-    if (!bufferPtr)
-    {
-        mem_free(enetIfPtr->macContextPtr);
-        mem_free(enetIfPtr->macContextPtr->bdUnAligned);
-        return kStatus_ENET_MemoryAllocateFail;
-    }
-    /* Store the bufferPtr to do buffer free*/
-    enetIfPtr->macContextPtr->bufferUnAligned = bufferPtr;
-    bufferAlignedPtr = (uint8_t *)ENET_ALIGN((uint32_t)bufferPtr, enetIfPtr->macCfgPtr->txBufferAlignment);
-    enetIfPtr->macContextPtr->txBufferPtr = NULL;
-    for (counter = 0; counter < enetIfPtr->macCfgPtr->txBdNumber; counter++)
-    {
-        enet_mac_enqueue_buffer((void **)&enetIfPtr->macContextPtr->txBufferPtr, 
-            bufferAlignedPtr);
-        bufferAlignedPtr += txBufferAlign;
-    }
-	
-    bufferAlignedPtr = (uint8_t *)ENET_ALIGN((uint32_t)bufferAlignedPtr, enetIfPtr->macCfgPtr->rxBufferAlignment);
+    enetIfPtr->macContextPtr->rxBdDirtyPtr = enetIfPtr->macContextPtr->rxBdBasePtr;	
     enetIfPtr->macContextPtr->rxBufferPtr = NULL;
-    for (counter = 0; counter < rxBufferNumber; counter++)
+    for (counter = 0; counter < rxbdCfg->rxBufferNum; counter++)
     {
-        enet_mac_enqueue_buffer((void **)&enetIfPtr->macContextPtr->rxBufferPtr, 
-            bufferAlignedPtr);
-        bufferAlignedPtr += rxBufferAlign;
+        enet_mac_enqueue_buffer((void **)&enetIfPtr->macContextPtr->rxBufferPtr, rxbdCfg->rxBufferAlign);
+        rxbdCfg->rxBufferAlign += enetIfPtr->macContextPtr->rxBufferSizeAligned;
     }
 
-    if(enetIfPtr->macCfgPtr->rxLargeBufferNumber)
+    if(rxbdCfg->rxLargeBufferNum)
     {    
-        /*Initialize the large receive buffer*/
-        rxBufferAlign = ENET_ALIGN(enetIfPtr->maxFrameSize,
-            enetIfPtr->macCfgPtr->rxBufferAlignment);
-        rxBuffer = enetIfPtr->macCfgPtr->rxLargeBufferNumber *rxBufferAlign + 
-            enetIfPtr->macCfgPtr->rxBufferAlignment;
-        bufferPtr = mem_allocate_zero(rxBuffer);
-        if (!bufferPtr)
-        {
-            mem_free(enetIfPtr->macContextPtr);
-            mem_free(enetIfPtr->macContextPtr->bdUnAligned);
-            mem_free(enetIfPtr->macContextPtr->bufferUnAligned);			
-            return kStatus_ENET_MemoryAllocateFail;
-        }
-        /* Store for buffer free*/
-        enetIfPtr->macContextPtr->largeBufferUnAligned = bufferPtr;
-        largeBufferAlign = (uint8_t *)ENET_ALIGN((uint32_t)bufferPtr, enetIfPtr->macCfgPtr->rxBufferAlignment);
         enetIfPtr->macContextPtr->rxLargeBufferPtr = NULL;
-        for (counter = 0; counter < enetIfPtr->macCfgPtr->rxLargeBufferNumber; counter++)
+        for (counter = 0; counter < rxbdCfg->rxLargeBufferNum; counter++)
         {
             enet_mac_enqueue_buffer((void **)&enetIfPtr->macContextPtr->rxLargeBufferPtr, 
-                largeBufferAlign);
-            largeBufferAlign += rxBufferAlign;
+                rxbdCfg->rxLargeBufferAlign);
+            rxbdCfg->rxLargeBufferAlign += rxbdCfg->rxLargeBufferSizeAlign;
         }
     }
-    /* Initialize transmit and receive buffer descriptor ring address*/
-    enet_hal_init_bd_address(enetIfPtr->deviceNumber, 
-        (uint32_t)(enetIfPtr->macContextPtr->rxBdBasePtr), 
-        (uint32_t)(enetIfPtr->macContextPtr->txBdBasePtr));
 
     /* Initialize the receive buffer descriptor ring*/
-    for ( bdNumber = 0; bdNumber < enetIfPtr->macCfgPtr->rxBdNumber; bdNumber++)
+    for ( bdNumber = 0; bdNumber < rxbdCfg->rxBdNum; bdNumber++)
     {
-        if (bdNumber == enetIfPtr->macCfgPtr->rxBdNumber - 1)
+        if (bdNumber == rxbdCfg->rxBdNum - 1)
         {
            isLastBd = true;
         }
-        bdTempPtr = enetIfPtr->macContextPtr->rxBdBasePtr + bdNumber * bdSize;
+        bdTempPtr = enetIfPtr->macContextPtr->rxBdBasePtr + bdNumber * enetIfPtr->macContextPtr->bufferdescSize;
         bufferTempPtr = enet_mac_dequeue_buffer((void **)&enetIfPtr->macContextPtr->rxBufferPtr);
         if (!bufferTempPtr)
         {
             return kStatus_ENET_MemoryAllocateFail;
         }
-        enet_hal_init_rxbds(bdTempPtr,bufferTempPtr,isLastBd);
+        enet_hal_init_rxbds(bdTempPtr, bufferTempPtr, isLastBd);
     }
-	
-    isLastBd = false;
-    /* Initialize transmit buffer descriptor ring*/
-    for (bdNumber = 0; bdNumber < enetIfPtr->macCfgPtr->txBdNumber;  bdNumber++)
-    {
-        if (bdNumber == enetIfPtr->macCfgPtr->txBdNumber-1)
-        {
-            isLastBd = true;
-        }
-        bdTempPtr = enetIfPtr->macContextPtr->txBdBasePtr + bdNumber * bdSize;
-        enet_hal_init_txbds(bdTempPtr,isLastBd);
-    }
+
+    /* Initialize the receive buffer descriptor start address*/
+    enet_hal_set_rxbd_address(enetIfPtr->deviceNumber, (uint32_t)(enetIfPtr->macContextPtr->rxBdBasePtr));
 	
     return kStatus_ENET_Success;
 }
 
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_mac_fifo_accelerator_init
+ * Function Name: enet_mac_rxbd_deinit
  * Return Value: The execution status.
- * Description:Initialize the ENET Accelerator with the basic configuration.
+ * Description: Deinitialize the ENET receive buffer descriptors.
  *END*********************************************************************/
-uint32_t enet_mac_fifo_accelerator_init(enet_dev_if_t * enetIfPtr)
+uint32_t enet_mac_rxbd_deinit(enet_dev_if_t * enetIfPtr)
+{
+    /* Check the input parameters*/
+    if (!enetIfPtr)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+
+    enetIfPtr->macContextPtr->bufferdescSize = 0;
+
+    /* Deinitialize the bd status*/
+    enetIfPtr->macContextPtr->isRxFull = false;
+		
+    /* Deinitialize receive bd base address and current address*/
+    enetIfPtr->macContextPtr->rxBdBasePtr = NULL;
+    enetIfPtr->macContextPtr->rxBdCurPtr = NULL;
+    enetIfPtr->macContextPtr->rxBdDirtyPtr = NULL;
+    enetIfPtr->macContextPtr->rxBufferSizeAligned = 0;
+    enetIfPtr->macContextPtr->rxBufferPtr = NULL;
+    enetIfPtr->macContextPtr->rxLargeBufferPtr = NULL;
+
+    enet_hal_set_rxbd_address(enetIfPtr->deviceNumber, (uint32_t)(enetIfPtr->macContextPtr->rxBdBasePtr));
+	
+    return kStatus_ENET_Success;
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_mac_txbd_init
+ * Return Value: The execution status.
+ * Description:Initialize the ENET transmit buffer descriptors.
+ * This function prepare all of the transmit buffer descriptors.
+ *END*********************************************************************/
+uint32_t enet_mac_txbd_init(enet_dev_if_t * enetIfPtr, enet_txbd_config_t *txbdCfg)
+{
+    void *bdTempPtr;
+    bool isLastBd = false;
+    uint32_t bdSize;
+    uint8_t counter;
+    uint16_t bdNumber;
+	
+    /* Check the input parameters*/
+    if ((!enetIfPtr) || (!txbdCfg))
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+
+    bdSize = enet_hal_get_bd_size();
+
+    /* Initialize the bd status*/
+    enetIfPtr->macContextPtr->isTxFull = false;
+
+    /* Initialize transmit bd base address and current address*/
+    enetIfPtr->macContextPtr->txBdBasePtr = txbdCfg->txBdPtrAlign;
+    enetIfPtr->macContextPtr->txBdCurPtr = enetIfPtr->macContextPtr->txBdBasePtr;
+    enetIfPtr->macContextPtr->txBdDirtyPtr = enetIfPtr->macContextPtr->txBdBasePtr;
+    enetIfPtr->macContextPtr->txBufferPtr = NULL;
+    for (counter = 0; counter < txbdCfg->txBufferNum; counter++)
+    {
+        enet_mac_enqueue_buffer((void **)&enetIfPtr->macContextPtr->txBufferPtr, 
+            txbdCfg->txBufferAlign);
+        txbdCfg->txBufferAlign += txbdCfg->txBufferSizeAlign;
+    }
+	
+    isLastBd = false;
+    /* Initialize transmit buffer descriptor ring*/
+    for (bdNumber = 0; bdNumber < txbdCfg->txBufferNum;  bdNumber++)
+    {
+        if (bdNumber == txbdCfg->txBufferNum - 1)
+        {
+            isLastBd = true;
+        }
+        bdTempPtr = enetIfPtr->macContextPtr->txBdBasePtr + bdNumber * bdSize;
+        enet_hal_init_txbds(bdTempPtr,isLastBd);
+    }
+
+    /* Initialize transmit buffer descriptor start address*/
+    enet_hal_set_txbd_address(enetIfPtr->deviceNumber, (uint32_t)(enetIfPtr->macContextPtr->txBdBasePtr));
+    return kStatus_ENET_Success;
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_mac_txbd_deinit
+ * Return Value: The execution status.
+ * Description: Deinitialize the ENET transmit buffer descriptors.
+ *END*********************************************************************/
+uint32_t enet_mac_txbd_deinit(enet_dev_if_t * enetIfPtr)
+{
+    /* Check the input parameters*/
+    if (!enetIfPtr)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+
+    /* Deinitialize the bd status*/
+    enetIfPtr->macContextPtr->isTxFull = false;
+
+    /* Deinitialize transmit bd base address and current address*/
+    enetIfPtr->macContextPtr->txBdBasePtr = NULL;
+    enetIfPtr->macContextPtr->txBdCurPtr = NULL;
+    enetIfPtr->macContextPtr->txBdDirtyPtr = NULL;
+    enetIfPtr->macContextPtr->txBufferPtr = NULL;
+
+    enet_hal_set_txbd_address(enetIfPtr->deviceNumber, (uint32_t)(enetIfPtr->macContextPtr->txBdBasePtr));
+    return kStatus_ENET_Success;
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_mac_configure_fifo_accel
+ * Return Value: The execution status.
+ * Description: Configure the ENET FIFO and Accelerator.
+ *END*********************************************************************/
+uint32_t enet_mac_configure_fifo_accel(enet_dev_if_t * enetIfPtr)
 {
     enet_config_rx_fifo_t rxFifo;
     enet_config_tx_fifo_t txFifo;
-    uint32_t bufferSize;
 	
     /* Check the input parameters*/
     if (!enetIfPtr)
@@ -1364,48 +1320,60 @@ uint32_t enet_mac_fifo_accelerator_init(enet_dev_if_t * enetIfPtr)
     enet_hal_config_rx_fifo(enetIfPtr->deviceNumber, &rxFifo);
     enet_hal_config_tx_fifo(enetIfPtr->deviceNumber, &txFifo); 
 
-    /* Configure receive buffer size*/
-    bufferSize = ENET_ALIGN(enetIfPtr->macCfgPtr->rxBufferSize,
-        enetIfPtr->macCfgPtr->rxBufferAlignment);
-    if (enetIfPtr->macCfgPtr->isVlanEnabled)
-    {
-        enetIfPtr->maxFrameSize = kEnetMaxFrameVlanSize;
-        enet_hal_set_rx_max_size(enetIfPtr->deviceNumber, bufferSize, kEnetMaxFrameVlanSize);
-    }
-    else
-    {   
-        enetIfPtr->maxFrameSize = kEnetMaxFrameSize;
-        enet_hal_set_rx_max_size(enetIfPtr->deviceNumber, bufferSize, kEnetMaxFrameSize); 
-    }
-
     return kStatus_ENET_Success;
 }
 
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_mac_mii_init
+ * Function Name: enet_mac_configure_controller
  * Return Value: The execution status.
- * Description:Initialize the ENET Mac rmii/mii interface.
+ * Description: Configure the ENET controller with the basic configuration.
  *END*********************************************************************/
-uint32_t enet_mac_mii_init(enet_dev_if_t * enetIfPtr)
+uint32_t enet_mac_configure_controller(enet_dev_if_t * enetIfPtr)
 {
-    uint32_t frequency;
-	
+    uint32_t macCtlCfg;
+
     /* Check the input parameters*/
     if (enetIfPtr == NULL)
     {
         return kStatus_ENET_InvalidInput;
     }   
 
+    macCtlCfg = enetIfPtr->macCfgPtr->macCtlConfigure;	
     /* Configure rmii/mii interface*/
     enet_hal_config_rmii(enetIfPtr->deviceNumber, enetIfPtr->macCfgPtr->rmiiCfgMode, 
         enetIfPtr->macCfgPtr->speed, enetIfPtr->macCfgPtr->duplex, false, 
-        enetIfPtr->macCfgPtr->isLoopEnabled);
+        (macCtlCfg & kEnetRxMiiLoopback));
+     /* Configure receive buffer size*/
+    if (enetIfPtr->macCfgPtr->isVlanEnabled)
+    {
+        enetIfPtr->maxFrameSize = kEnetMaxFrameVlanSize;
+        enet_hal_set_rx_max_size(enetIfPtr->deviceNumber, 
+              enetIfPtr->macContextPtr->rxBufferSizeAligned, kEnetMaxFrameVlanSize);
+    }
+    else
+    {   
+        enetIfPtr->maxFrameSize = kEnetMaxFrameSize;
+        enet_hal_set_rx_max_size(enetIfPtr->deviceNumber, 
+              enetIfPtr->macContextPtr->rxBufferSizeAligned, kEnetMaxFrameSize); 
+    }
 
-    /* Configure mii speed*/
-    clock_manager_get_frequency(kSystemClock, &frequency);
-    enet_hal_config_mii(enetIfPtr->deviceNumber, (frequency/(2 * enetIfPtr->macCfgPtr->miiClock) + 1), false);
-
+	/* Set receive controller promiscuous */
+    enet_hal_config_promiscuous(enetIfPtr->deviceNumber, macCtlCfg & kEnetRxPromiscuousEnable);
+    /* Set receive flow control*/
+    enet_hal_enable_flowcontrol(enetIfPtr->deviceNumber, (macCtlCfg & kEnetRxFlowControlEnable));
+    /* Set received PAUSE frames are forwarded/terminated*/
+    enet_hal_enable_pauseforward(enetIfPtr->deviceNumber, (macCtlCfg & kEnetRxPauseFwdEnable));
+    /* Set receive broadcast frame reject*/
+    enet_hal_enable_broadcastreject(enetIfPtr->deviceNumber, (macCtlCfg & kEnetRxBcRejectEnable));
+    /* Set padding is removed from the received frame*/
+    enet_hal_enable_padremove(enetIfPtr->deviceNumber, (macCtlCfg & kEnetRxPadRemoveEnable));
+    /* Set the crc of the received frame is stripped from the frame*/
+    enet_hal_enable_rxcrcforward(enetIfPtr->deviceNumber, (macCtlCfg & kEnetRxCrcFwdEnable));
+    /* Set receive payload length check*/
+    enet_hal_enable_payloadcheck(enetIfPtr->deviceNumber, (macCtlCfg & kEnetPayloadlenCheckEnable));
+    /* Set control sleep mode*/
+    enet_hal_enable_sleep(enetIfPtr->deviceNumber, (macCtlCfg & kEnetSleepModeEnable));
     return kStatus_ENET_Success;
 }
 
@@ -1417,7 +1385,8 @@ uint32_t enet_mac_mii_init(enet_dev_if_t * enetIfPtr)
  * When ENET is used, this function need to be called by the NET initialize 
  * interface.
  *END*********************************************************************/
-uint32_t enet_mac_init(enet_dev_if_t * enetIfPtr)
+uint32_t enet_mac_init(enet_dev_if_t * enetIfPtr, enet_rxbd_config_t *rxbdCfg,
+                            enet_txbd_config_t *txbdCfg)
 {   
     uint32_t timeOut = 0;
     uint32_t devNumber, result = 0; 
@@ -1465,45 +1434,40 @@ uint32_t enet_mac_init(enet_dev_if_t * enetIfPtr)
     enet_hal_set_group_hashtable(devNumber, 0, kEnetSpecialAddressInit);
     enet_hal_set_individual_hashtable(devNumber, 0, kEnetSpecialAddressInit);
 
-    /* Set promiscuous */
-    enet_hal_config_promiscuous(devNumber, enetIfPtr->macCfgPtr->isPromiscEnabled);
-	
+	/* Configure mac controller*/
+    result = enet_mac_configure_controller(enetIfPtr);
+    if(result != kStatus_ENET_Success)
+    {
+        return result;
+    }
     /* Clear mib zero counters*/
     enet_hal_clear_mib(devNumber, true);
 
     /* Initialize FIFO and accelerator*/
-    enet_mac_fifo_accelerator_init(enetIfPtr);
-		
-    /* Initialize buffer descriptor ring*/
-    result = enet_mac_bd_init(enetIfPtr);
-    if (result != kStatus_ENET_Success)
+    result = enet_mac_configure_fifo_accel(enetIfPtr);
+    if(result != kStatus_ENET_Success)
     {
         return result;
     }
-		
+    /* Initialize receive buffer descriptors*/
+    result = enet_mac_rxbd_init(enetIfPtr, rxbdCfg);
+    if(result != kStatus_ENET_Success)
+    {
+        return result;
+    }
+    /* Initialize transmit buffer descriptors*/
+	result = enet_mac_txbd_init(enetIfPtr, txbdCfg);
+    if(result != kStatus_ENET_Success)
+    {
+        return result;
+    }	
     /* Initialize rmii/mii interface*/
     result = enet_mac_mii_init(enetIfPtr);
     if (result != kStatus_ENET_Success)
     {
         return result;
     }
-	
-    /* Initialize PHY*/
-    if (enetIfPtr->macCfgPtr->isPhyAutoDiscover)
-    {
-        ((enet_phy_api_t *)(enetIfPtr->phyApiPtr))->phy_auto_discover(enetIfPtr);
-    }
-    ((enet_phy_api_t *)(enetIfPtr->phyApiPtr))->phy_init(enetIfPtr);
 
-#if FSL_FEATURE_ENET_SUPPORT_PTP
-    /* Initialize ptp timer feature*/
-    result = enet_ptp_init(enetIfPtr);
-    if(result != kStatus_ENET_Success)
-    {
-        return result;
-    }
-    enet_ptp_start(devNumber, enetIfPtr->macCfgPtr->isSlaveModeEnabled);
-#endif	
     /* Enable Ethernet rx and tx interrupt*/
     enet_hal_config_interrupt(devNumber, (kEnetTxByteInterrupt | kEnetRxFrameInterrupt), true);
 	interrupt_enable(enet_irq_ids[devNumber][enetIntMap[kEnetRxfInt]]);
@@ -1520,12 +1484,12 @@ uint32_t enet_mac_init(enet_dev_if_t * enetIfPtr)
 
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_mac_close
+ * Function Name: enet_mac_deinit
  * Return Value: The execution status.
  * Description: Close ENET device.
  * This function is used to shut down ENET device.
  *END*********************************************************************/
-uint32_t enet_mac_close(enet_dev_if_t * enetIfPtr)
+uint32_t enet_mac_deinit(enet_dev_if_t * enetIfPtr)
 {
     uint32_t count;
 	
@@ -1547,26 +1511,9 @@ uint32_t enet_mac_close(enet_dev_if_t * enetIfPtr)
     {
         interrupt_disable(enet_irq_ids[enetIfPtr->deviceNumber][count]);
     }
- 
-    /* Free bd buffer*/
-    if(enetIfPtr->macContextPtr->bdUnAligned)
-    {
-        mem_free(enetIfPtr->macContextPtr->bdUnAligned);
-	}
-    /* Free data buffer*/
-    if(enetIfPtr->macContextPtr->bufferUnAligned)
-    {
-        mem_free(enetIfPtr->macContextPtr->bufferUnAligned);
-    }
-    /* Free large data buffer*/
-    if(enetIfPtr->macContextPtr->largeBufferUnAligned)
-    {
-        mem_free(enetIfPtr->macContextPtr->largeBufferUnAligned);
-    }
-#if FSL_FEATURE_ENET_SUPPORT_PTP
-    enet_ptp_deinit(enetIfPtr->macContextPtr);
-#endif
-    mem_free(enetIfPtr->macContextPtr);
+
+    enet_mac_rxbd_deinit(enetIfPtr);
+	enet_mac_txbd_deinit(enetIfPtr);
     return kStatus_ENET_Success;
 }
 #if ENET_RECEIVE_ALL_INTERRUPT
@@ -2106,7 +2053,7 @@ uint32_t enet_mac_send(enet_dev_if_t * enetIfPtr, uint8_t *packet, uint32_t size
 
 #if FSL_FEATURE_ENET_SUPPORT_PTP
     /* Check if this is ptp message*/
-    enet_ptp_quick_parse(packet, &isPtpMsg);
+    enet_ptp_parse(packet, NULL, &isPtpMsg, true);
 #endif
 
     /* Packet the transmit frame to the buffer descriptor*/

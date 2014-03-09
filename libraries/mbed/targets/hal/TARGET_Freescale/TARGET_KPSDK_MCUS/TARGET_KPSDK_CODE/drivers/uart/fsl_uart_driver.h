@@ -56,16 +56,16 @@
  */
 typedef struct UartState {
     uint32_t instance;                  /*!< UART module instance number. */
-    bool isTransmitInProgress;          /*!< True if there is an active transmit. */
+    volatile bool isTransmitInProgress; /*!< True if there is an active transmit. */
     bool isTransmitAsync;               /*!< Whether the transmit is asynchronous or not. */
-    const uint8_t * sendBuffer;         /*!< The buffer of data being sent.*/
-    size_t remainingSendByteCount;      /*!< The remaining number of bytes to be transmitted. */
-    size_t transmittedByteCount;        /*!< Number of bytes transmitted so far. */
-    bool isReceiveInProgress;           /*!< True if there is an active receive. */
+    const uint8_t * sendBuffer;    /*!< The buffer of data being sent.*/
+    volatile size_t remainingSendByteCount; /*!< The remaining number of bytes to be transmitted. */
+    volatile size_t transmittedByteCount;   /*!< Number of bytes transmitted so far. */
+    volatile bool isReceiveInProgress;  /*!< True if there is an active receive. */
     bool isReceiveAsync;                /*!< Whether the receive is asynchronous or not. */
     uint8_t * receiveBuffer;            /*!< The buffer of received data. */
-    size_t remainingReceiveByteCount;   /*!< The remaining number of bytes to be received. */
-    size_t receivedByteCount;           /*!< Number of bytes received so far. */
+    volatile size_t remainingReceiveByteCount; /*!< The remaining number of bytes to be received. */
+    volatile size_t receivedByteCount;         /*!< Number of bytes received so far. */
     sync_object_t txIrqSync;            /*!< Used to wait for ISR to complete its TX business. */
     sync_object_t rxIrqSync;            /*!< Used to wait for ISR to complete its RX business. */
     uint8_t txFifoEntryCount;           /*!< Number of data word entries in TX FIFO. */
@@ -118,21 +118,21 @@ extern "C" {
     uartConfig.parityMode = kUartParityDisabled;
     uartConfig.stopBitCount = kUartOneStopBit;
     uart_state_t uartState;
-    uart_init(uartInstance, &uartConfig, &uartState);
+    uart_init(uartInstance, &uartState, &uartConfig);
     @endcode
  *
  * @param uartInstance The UART module instance number.
- * @param uartUserConfig The user configuration structure of type uart_user_config_t. The user
- *  is responsbile to fill out the members of this structure and to pass the pointer of this struct
- *  into this function.
  * @param uartState A pointer to the UART driver state structure memory. The user is only
  *  responsible to pass in the memory for this run-time state structure where the UART driver
  *  will take care of filling out the members. This run-time state structure keeps track of the
  *  current transfer in progress.
+ * @param uartUserConfig The user configuration structure of type uart_user_config_t. The user
+ *  is responsbile to fill out the members of this structure and to pass the pointer of this struct
+ *  into this function.
  * @return An error code or kStatus_UART_Success.
  */
-uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUserConfig,
-                   uart_state_t * uartState);
+uart_status_t uart_init(uint32_t uartInstance, uart_state_t * uartState,
+                        const uart_user_config_t * uartUserConfig);
 
 /*!
  * @brief This function sends (transmits) data out through the UART module using a blocking method.
@@ -146,8 +146,8 @@ uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUs
  * @param timeout A timeout value for RTOS abstraction sync control in milli-seconds (ms).
  * @return An error code or kStatus_UART_Success.
  */
-uart_status_t uart_send_data(uart_state_t * uartState, uint8_t * sendBuffer, uint32_t txByteCount,
-                        uint32_t timeout);
+uart_status_t uart_send_data(uart_state_t * uartState, const uint8_t * sendBuffer,
+                             uint32_t txByteCount, uint32_t timeout);
 
 /*!
  * @brief This function sends (transmits) data through the UART module using a non-blocking method.
@@ -165,8 +165,8 @@ uart_status_t uart_send_data(uart_state_t * uartState, uint8_t * sendBuffer, uin
  * @param txByteCount The number of bytes to send.
  * @return An error code or kStatus_UART_Success.
  */
-uart_status_t uart_send_data_async(uart_state_t * uartState, uint8_t * sendBuffer,
-                              uint32_t txByteCount);
+uart_status_t uart_send_data_async(uart_state_t * uartState, const uint8_t * sendBuffer,
+                                   uint32_t txByteCount);
 
 /*!
  * @brief This function returns whether the previous UART transmit has finished.
@@ -227,7 +227,7 @@ void uart_shutdown(uart_state_t * uartState);
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t uart_receive_data(uart_state_t * uartState, uint8_t * rxBuffer,
-                           uint32_t requestedByteCount, uint32_t timeout);
+                                uint32_t requestedByteCount, uint32_t timeout);
 
 /*!
  * @brief This function gets (receives) data from the UART module using a non-blocking method.
@@ -246,7 +246,7 @@ uart_status_t uart_receive_data(uart_state_t * uartState, uint8_t * rxBuffer,
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t uart_receive_data_async(uart_state_t * uartState, uint8_t * rxBuffer,
-                                 uint32_t requestedByteCount);
+                                      uint32_t requestedByteCount);
 
 /*!
  * @brief This function terminates an asynchronous UART transmission early.

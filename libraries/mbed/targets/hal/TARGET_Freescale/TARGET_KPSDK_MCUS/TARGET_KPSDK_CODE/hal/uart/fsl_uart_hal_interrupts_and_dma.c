@@ -60,13 +60,13 @@ void uart_hal_configure_interrupts(uint32_t uartInstance,
         /* 0 - disable interrupt, 1 - enable interrupt*/
 
         /* UART BDH register  */
-        temp = HW_UART0_BDH_RD & ~(BM_UART0_BDH_LBKDIE|BM_UART0_BDH_RXEDGIE);
+        temp = HW_UART0_BDH_RD() & ~(BM_UART0_BDH_LBKDIE|BM_UART0_BDH_RXEDGIE);
         temp |= BF_UART0_BDH_LBKDIE(interruptConfig->linBreakDetect)
                |BF_UART0_BDH_RXEDGIE(interruptConfig->rxActiveEdge);
         HW_UART0_BDH_WR(temp);
 
         /* UART C2 register  */
-        temp = HW_UART0_C2_RD & ~(BM_UART0_C2_TIE|BM_UART0_C2_TCIE|BM_UART0_C2_RIE|
+        temp = HW_UART0_C2_RD() & ~(BM_UART0_C2_TIE|BM_UART0_C2_TCIE|BM_UART0_C2_RIE|
                                     BM_UART0_C2_ILIE);
         temp |= BF_UART0_C2_TIE(interruptConfig->transmitDataRegisterEmpty)
                |BF_UART0_C2_TCIE(interruptConfig->transmitComplete)
@@ -75,7 +75,7 @@ void uart_hal_configure_interrupts(uint32_t uartInstance,
         HW_UART0_C2_WR(temp);
 
         /* UART C3 register  */
-        temp = HW_UART0_C3_RD & ~(BM_UART0_C3_ORIE|BM_UART0_C3_NEIE|BM_UART0_C3_FEIE|
+        temp = HW_UART0_C3_RD() & ~(BM_UART0_C3_ORIE|BM_UART0_C3_NEIE|BM_UART0_C3_FEIE|
                                     BM_UART0_C3_PEIE);
         temp |= BF_UART0_C3_ORIE(interruptConfig->receiverOverrun)
                |BF_UART0_C3_NEIE(interruptConfig->noiseErrorFlag)

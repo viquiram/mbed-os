@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -44,7 +44,6 @@
  * - HW_DMA_INT - Interrupt Request Register
  * - HW_DMA_ERR - Error Register
  * - HW_DMA_HRS - Hardware Request Status Register
- * - HW_DMA_EARS - Enable Asynchronous Request in Stop Register
  * - HW_DMA_DCHPRIn - Channel n Priority Register
  * - HW_DMA_TCDn_SADDR - TCD Source Address
  * - HW_DMA_TCDn_SOFF - TCD Signed Source Address Offset
@@ -103,8 +102,8 @@ static const uint32_t __g_regs_DMA_base_addresses[] = {
  * selected to execute. The channel priority registers assign the priorities; see
  * the DCHPRIn registers. For round-robin arbitration, the channel priorities are
  * ignored and channels are cycled through (from high to low channel number)
- * without regard to priority. For proper operation, writes to the CR register must be
- * performed only when the DMA channels are inactive; that is, when
+ * without regard to priority. For correct operation, writes to the CR register must
+ * be performed only when the DMA channels are inactive; that is, when
  * TCDn_CSR[ACTIVE] bits are cleared. Minor loop offsets are address offset values added to
  * the final source address (TCDn_SADDR) or destination address (TCDn_DADDR) upon
  * minor loop completion. When minor loop offsets are enabled, the minor loop
@@ -114,11 +113,11 @@ static const uint32_t __g_regs_DMA_base_addresses[] = {
  * ignored and the major loop address offsets (TCDn_SLAST and TCDn_DLAST_SGA) are
  * used to compute the next TCDn_SADDR and TCDn_DADDR values. When minor loop
  * mapping is enabled (EMLM is 1), TCDn word2 is redefined. A portion of TCDn word2
- * is used to specify multiple fields: a source enable bit (SMLOE) to specify the
- * minor loop offset should be applied to the source address (TCDn_SADDR) upon
+ * is used to specify multiple fields: a source enable bit (SMLOE) to specify
+ * the minor loop offset should be applied to the source address (TCDn_SADDR) upon
  * minor loop completion, a destination enable bit (DMLOE) to specify the minor
- * loop offset should be applied to the destination address (TCDn_DADDR) upon minor
- * loop completion, and the sign extended minor loop offset value (MLOFF). The
+ * loop offset should be applied to the destination address (TCDn_DADDR) upon
+ * minor loop completion, and the sign extended minor loop offset value (MLOFF). The
  * same offset value (MLOFF) is used for both source and destination minor loop
  * offsets. When either minor loop offset is enabled (SMLOE set or DMLOE set), the
  * NBYTES field is reduced to 10 bits. When both minor loop offsets are disabled
@@ -131,10 +130,10 @@ typedef union _hw_dma_cr
     uint32_t U;
     struct _hw_dma_cr_bitfields
     {
-        uint32_t RESERVED0 : 1;        //!< [0]
+        uint32_t RESERVED0 : 1;        //!< [0] Reserved.
         uint32_t EDBG : 1;             //!< [1] Enable Debug
         uint32_t ERCA : 1;             //!< [2] Enable Round Robin Channel Arbitration
-        uint32_t RESERVED1 : 1;        //!< [3]
+        uint32_t RESERVED1 : 1;        //!< [3] Reserved.
         uint32_t HOE : 1;              //!< [4] Halt On Error
         uint32_t HALT : 1;             //!< [5] Halt DMA Operations
         uint32_t CLM : 1;              //!< [6] Continuous Link Mode
@@ -428,7 +427,7 @@ typedef union _hw_dma_es
         uint32_t SOE : 1;              //!< [6] Source Offset Error
         uint32_t SAE : 1;              //!< [7] Source Address Error
         uint32_t ERRCHN : 4;           //!< [11:8] Error Channel Number or Canceled
-                                       //!< Channel Number
+                                       //! Channel Number
         uint32_t RESERVED0 : 2;        //!< [13:12]
         uint32_t CPE : 1;              //!< [14] Channel Priority Error
         uint32_t RESERVED1 : 1;        //!< [15]
@@ -1719,6 +1718,7 @@ typedef union _hw_dma_ceei
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_CEEI(x)           (*(__O hw_dma_ceei_t *) HW_DMA_CEEI_ADDR(x))
+#define HW_DMA_CEEI_RD(x)        (HW_DMA_CEEI(x).U)
 #define HW_DMA_CEEI_WR(x, v)     (HW_DMA_CEEI(x).U = (v))
 #endif
 //@}
@@ -1736,11 +1736,6 @@ typedef union _hw_dma_ceei
 #define BP_DMA_CEEI_CEEI     (0U)          //!< Bit position for DMA_CEEI_CEEI.
 #define BM_DMA_CEEI_CEEI     (0x0FU)       //!< Bit mask for DMA_CEEI_CEEI.
 #define BS_DMA_CEEI_CEEI     (4U)          //!< Bit field size in bits for DMA_CEEI_CEEI.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CEEI_CEEI field.
-#define BR_DMA_CEEI_CEEI(x)  (HW_DMA_CEEI(x).B.CEEI)
-#endif
 
 //! @brief Format value for bitfield DMA_CEEI_CEEI.
 #define BF_DMA_CEEI_CEEI(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CEEI_CEEI), uint8_t) & BM_DMA_CEEI_CEEI)
@@ -1763,11 +1758,6 @@ typedef union _hw_dma_ceei
 #define BM_DMA_CEEI_CAEE     (0x40U)       //!< Bit mask for DMA_CEEI_CAEE.
 #define BS_DMA_CEEI_CAEE     (1U)          //!< Bit field size in bits for DMA_CEEI_CAEE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CEEI_CAEE field.
-#define BR_DMA_CEEI_CAEE(x)  (BITBAND_ACCESS8(HW_DMA_CEEI_ADDR(x), BP_DMA_CEEI_CAEE))
-#endif
-
 //! @brief Format value for bitfield DMA_CEEI_CAEE.
 #define BF_DMA_CEEI_CAEE(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CEEI_CAEE), uint8_t) & BM_DMA_CEEI_CAEE)
 
@@ -1788,11 +1778,6 @@ typedef union _hw_dma_ceei
 #define BP_DMA_CEEI_NOP      (7U)          //!< Bit position for DMA_CEEI_NOP.
 #define BM_DMA_CEEI_NOP      (0x80U)       //!< Bit mask for DMA_CEEI_NOP.
 #define BS_DMA_CEEI_NOP      (1U)          //!< Bit field size in bits for DMA_CEEI_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CEEI_NOP field.
-#define BR_DMA_CEEI_NOP(x)   (BITBAND_ACCESS8(HW_DMA_CEEI_ADDR(x), BP_DMA_CEEI_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_CEEI_NOP.
 #define BF_DMA_CEEI_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CEEI_NOP), uint8_t) & BM_DMA_CEEI_NOP)
@@ -1842,6 +1827,7 @@ typedef union _hw_dma_seei
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_SEEI(x)           (*(__O hw_dma_seei_t *) HW_DMA_SEEI_ADDR(x))
+#define HW_DMA_SEEI_RD(x)        (HW_DMA_SEEI(x).U)
 #define HW_DMA_SEEI_WR(x, v)     (HW_DMA_SEEI(x).U = (v))
 #endif
 //@}
@@ -1859,11 +1845,6 @@ typedef union _hw_dma_seei
 #define BP_DMA_SEEI_SEEI     (0U)          //!< Bit position for DMA_SEEI_SEEI.
 #define BM_DMA_SEEI_SEEI     (0x0FU)       //!< Bit mask for DMA_SEEI_SEEI.
 #define BS_DMA_SEEI_SEEI     (4U)          //!< Bit field size in bits for DMA_SEEI_SEEI.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SEEI_SEEI field.
-#define BR_DMA_SEEI_SEEI(x)  (HW_DMA_SEEI(x).B.SEEI)
-#endif
 
 //! @brief Format value for bitfield DMA_SEEI_SEEI.
 #define BF_DMA_SEEI_SEEI(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SEEI_SEEI), uint8_t) & BM_DMA_SEEI_SEEI)
@@ -1886,11 +1867,6 @@ typedef union _hw_dma_seei
 #define BM_DMA_SEEI_SAEE     (0x40U)       //!< Bit mask for DMA_SEEI_SAEE.
 #define BS_DMA_SEEI_SAEE     (1U)          //!< Bit field size in bits for DMA_SEEI_SAEE.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SEEI_SAEE field.
-#define BR_DMA_SEEI_SAEE(x)  (BITBAND_ACCESS8(HW_DMA_SEEI_ADDR(x), BP_DMA_SEEI_SAEE))
-#endif
-
 //! @brief Format value for bitfield DMA_SEEI_SAEE.
 #define BF_DMA_SEEI_SAEE(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SEEI_SAEE), uint8_t) & BM_DMA_SEEI_SAEE)
 
@@ -1911,11 +1887,6 @@ typedef union _hw_dma_seei
 #define BP_DMA_SEEI_NOP      (7U)          //!< Bit position for DMA_SEEI_NOP.
 #define BM_DMA_SEEI_NOP      (0x80U)       //!< Bit mask for DMA_SEEI_NOP.
 #define BS_DMA_SEEI_NOP      (1U)          //!< Bit field size in bits for DMA_SEEI_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SEEI_NOP field.
-#define BR_DMA_SEEI_NOP(x)   (BITBAND_ACCESS8(HW_DMA_SEEI_ADDR(x), BP_DMA_SEEI_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_SEEI_NOP.
 #define BF_DMA_SEEI_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SEEI_NOP), uint8_t) & BM_DMA_SEEI_NOP)
@@ -1965,6 +1936,7 @@ typedef union _hw_dma_cerq
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_CERQ(x)           (*(__O hw_dma_cerq_t *) HW_DMA_CERQ_ADDR(x))
+#define HW_DMA_CERQ_RD(x)        (HW_DMA_CERQ(x).U)
 #define HW_DMA_CERQ_WR(x, v)     (HW_DMA_CERQ(x).U = (v))
 #endif
 //@}
@@ -1982,11 +1954,6 @@ typedef union _hw_dma_cerq
 #define BP_DMA_CERQ_CERQ     (0U)          //!< Bit position for DMA_CERQ_CERQ.
 #define BM_DMA_CERQ_CERQ     (0x0FU)       //!< Bit mask for DMA_CERQ_CERQ.
 #define BS_DMA_CERQ_CERQ     (4U)          //!< Bit field size in bits for DMA_CERQ_CERQ.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CERQ_CERQ field.
-#define BR_DMA_CERQ_CERQ(x)  (HW_DMA_CERQ(x).B.CERQ)
-#endif
 
 //! @brief Format value for bitfield DMA_CERQ_CERQ.
 #define BF_DMA_CERQ_CERQ(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CERQ_CERQ), uint8_t) & BM_DMA_CERQ_CERQ)
@@ -2009,11 +1976,6 @@ typedef union _hw_dma_cerq
 #define BM_DMA_CERQ_CAER     (0x40U)       //!< Bit mask for DMA_CERQ_CAER.
 #define BS_DMA_CERQ_CAER     (1U)          //!< Bit field size in bits for DMA_CERQ_CAER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CERQ_CAER field.
-#define BR_DMA_CERQ_CAER(x)  (BITBAND_ACCESS8(HW_DMA_CERQ_ADDR(x), BP_DMA_CERQ_CAER))
-#endif
-
 //! @brief Format value for bitfield DMA_CERQ_CAER.
 #define BF_DMA_CERQ_CAER(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CERQ_CAER), uint8_t) & BM_DMA_CERQ_CAER)
 
@@ -2034,11 +1996,6 @@ typedef union _hw_dma_cerq
 #define BP_DMA_CERQ_NOP      (7U)          //!< Bit position for DMA_CERQ_NOP.
 #define BM_DMA_CERQ_NOP      (0x80U)       //!< Bit mask for DMA_CERQ_NOP.
 #define BS_DMA_CERQ_NOP      (1U)          //!< Bit field size in bits for DMA_CERQ_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CERQ_NOP field.
-#define BR_DMA_CERQ_NOP(x)   (BITBAND_ACCESS8(HW_DMA_CERQ_ADDR(x), BP_DMA_CERQ_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_CERQ_NOP.
 #define BF_DMA_CERQ_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CERQ_NOP), uint8_t) & BM_DMA_CERQ_NOP)
@@ -2087,6 +2044,7 @@ typedef union _hw_dma_serq
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_SERQ(x)           (*(__O hw_dma_serq_t *) HW_DMA_SERQ_ADDR(x))
+#define HW_DMA_SERQ_RD(x)        (HW_DMA_SERQ(x).U)
 #define HW_DMA_SERQ_WR(x, v)     (HW_DMA_SERQ(x).U = (v))
 #endif
 //@}
@@ -2104,11 +2062,6 @@ typedef union _hw_dma_serq
 #define BP_DMA_SERQ_SERQ     (0U)          //!< Bit position for DMA_SERQ_SERQ.
 #define BM_DMA_SERQ_SERQ     (0x0FU)       //!< Bit mask for DMA_SERQ_SERQ.
 #define BS_DMA_SERQ_SERQ     (4U)          //!< Bit field size in bits for DMA_SERQ_SERQ.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SERQ_SERQ field.
-#define BR_DMA_SERQ_SERQ(x)  (HW_DMA_SERQ(x).B.SERQ)
-#endif
 
 //! @brief Format value for bitfield DMA_SERQ_SERQ.
 #define BF_DMA_SERQ_SERQ(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SERQ_SERQ), uint8_t) & BM_DMA_SERQ_SERQ)
@@ -2131,11 +2084,6 @@ typedef union _hw_dma_serq
 #define BM_DMA_SERQ_SAER     (0x40U)       //!< Bit mask for DMA_SERQ_SAER.
 #define BS_DMA_SERQ_SAER     (1U)          //!< Bit field size in bits for DMA_SERQ_SAER.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SERQ_SAER field.
-#define BR_DMA_SERQ_SAER(x)  (BITBAND_ACCESS8(HW_DMA_SERQ_ADDR(x), BP_DMA_SERQ_SAER))
-#endif
-
 //! @brief Format value for bitfield DMA_SERQ_SAER.
 #define BF_DMA_SERQ_SAER(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SERQ_SAER), uint8_t) & BM_DMA_SERQ_SAER)
 
@@ -2156,11 +2104,6 @@ typedef union _hw_dma_serq
 #define BP_DMA_SERQ_NOP      (7U)          //!< Bit position for DMA_SERQ_NOP.
 #define BM_DMA_SERQ_NOP      (0x80U)       //!< Bit mask for DMA_SERQ_NOP.
 #define BS_DMA_SERQ_NOP      (1U)          //!< Bit field size in bits for DMA_SERQ_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SERQ_NOP field.
-#define BR_DMA_SERQ_NOP(x)   (BITBAND_ACCESS8(HW_DMA_SERQ_ADDR(x), BP_DMA_SERQ_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_SERQ_NOP.
 #define BF_DMA_SERQ_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SERQ_NOP), uint8_t) & BM_DMA_SERQ_NOP)
@@ -2210,6 +2153,7 @@ typedef union _hw_dma_cdne
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_CDNE(x)           (*(__O hw_dma_cdne_t *) HW_DMA_CDNE_ADDR(x))
+#define HW_DMA_CDNE_RD(x)        (HW_DMA_CDNE(x).U)
 #define HW_DMA_CDNE_WR(x, v)     (HW_DMA_CDNE(x).U = (v))
 #endif
 //@}
@@ -2227,11 +2171,6 @@ typedef union _hw_dma_cdne
 #define BP_DMA_CDNE_CDNE     (0U)          //!< Bit position for DMA_CDNE_CDNE.
 #define BM_DMA_CDNE_CDNE     (0x0FU)       //!< Bit mask for DMA_CDNE_CDNE.
 #define BS_DMA_CDNE_CDNE     (4U)          //!< Bit field size in bits for DMA_CDNE_CDNE.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CDNE_CDNE field.
-#define BR_DMA_CDNE_CDNE(x)  (HW_DMA_CDNE(x).B.CDNE)
-#endif
 
 //! @brief Format value for bitfield DMA_CDNE_CDNE.
 #define BF_DMA_CDNE_CDNE(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CDNE_CDNE), uint8_t) & BM_DMA_CDNE_CDNE)
@@ -2254,11 +2193,6 @@ typedef union _hw_dma_cdne
 #define BM_DMA_CDNE_CADN     (0x40U)       //!< Bit mask for DMA_CDNE_CADN.
 #define BS_DMA_CDNE_CADN     (1U)          //!< Bit field size in bits for DMA_CDNE_CADN.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CDNE_CADN field.
-#define BR_DMA_CDNE_CADN(x)  (BITBAND_ACCESS8(HW_DMA_CDNE_ADDR(x), BP_DMA_CDNE_CADN))
-#endif
-
 //! @brief Format value for bitfield DMA_CDNE_CADN.
 #define BF_DMA_CDNE_CADN(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CDNE_CADN), uint8_t) & BM_DMA_CDNE_CADN)
 
@@ -2279,11 +2213,6 @@ typedef union _hw_dma_cdne
 #define BP_DMA_CDNE_NOP      (7U)          //!< Bit position for DMA_CDNE_NOP.
 #define BM_DMA_CDNE_NOP      (0x80U)       //!< Bit mask for DMA_CDNE_NOP.
 #define BS_DMA_CDNE_NOP      (1U)          //!< Bit field size in bits for DMA_CDNE_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CDNE_NOP field.
-#define BR_DMA_CDNE_NOP(x)   (BITBAND_ACCESS8(HW_DMA_CDNE_ADDR(x), BP_DMA_CDNE_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_CDNE_NOP.
 #define BF_DMA_CDNE_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CDNE_NOP), uint8_t) & BM_DMA_CDNE_NOP)
@@ -2332,6 +2261,7 @@ typedef union _hw_dma_ssrt
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_SSRT(x)           (*(__O hw_dma_ssrt_t *) HW_DMA_SSRT_ADDR(x))
+#define HW_DMA_SSRT_RD(x)        (HW_DMA_SSRT(x).U)
 #define HW_DMA_SSRT_WR(x, v)     (HW_DMA_SSRT(x).U = (v))
 #endif
 //@}
@@ -2349,11 +2279,6 @@ typedef union _hw_dma_ssrt
 #define BP_DMA_SSRT_SSRT     (0U)          //!< Bit position for DMA_SSRT_SSRT.
 #define BM_DMA_SSRT_SSRT     (0x0FU)       //!< Bit mask for DMA_SSRT_SSRT.
 #define BS_DMA_SSRT_SSRT     (4U)          //!< Bit field size in bits for DMA_SSRT_SSRT.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SSRT_SSRT field.
-#define BR_DMA_SSRT_SSRT(x)  (HW_DMA_SSRT(x).B.SSRT)
-#endif
 
 //! @brief Format value for bitfield DMA_SSRT_SSRT.
 #define BF_DMA_SSRT_SSRT(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SSRT_SSRT), uint8_t) & BM_DMA_SSRT_SSRT)
@@ -2376,11 +2301,6 @@ typedef union _hw_dma_ssrt
 #define BM_DMA_SSRT_SAST     (0x40U)       //!< Bit mask for DMA_SSRT_SAST.
 #define BS_DMA_SSRT_SAST     (1U)          //!< Bit field size in bits for DMA_SSRT_SAST.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SSRT_SAST field.
-#define BR_DMA_SSRT_SAST(x)  (BITBAND_ACCESS8(HW_DMA_SSRT_ADDR(x), BP_DMA_SSRT_SAST))
-#endif
-
 //! @brief Format value for bitfield DMA_SSRT_SAST.
 #define BF_DMA_SSRT_SAST(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SSRT_SAST), uint8_t) & BM_DMA_SSRT_SAST)
 
@@ -2401,11 +2321,6 @@ typedef union _hw_dma_ssrt
 #define BP_DMA_SSRT_NOP      (7U)          //!< Bit position for DMA_SSRT_NOP.
 #define BM_DMA_SSRT_NOP      (0x80U)       //!< Bit mask for DMA_SSRT_NOP.
 #define BS_DMA_SSRT_NOP      (1U)          //!< Bit field size in bits for DMA_SSRT_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_SSRT_NOP field.
-#define BR_DMA_SSRT_NOP(x)   (BITBAND_ACCESS8(HW_DMA_SSRT_ADDR(x), BP_DMA_SSRT_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_SSRT_NOP.
 #define BF_DMA_SSRT_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_SSRT_NOP), uint8_t) & BM_DMA_SSRT_NOP)
@@ -2455,6 +2370,7 @@ typedef union _hw_dma_cerr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_CERR(x)           (*(__O hw_dma_cerr_t *) HW_DMA_CERR_ADDR(x))
+#define HW_DMA_CERR_RD(x)        (HW_DMA_CERR(x).U)
 #define HW_DMA_CERR_WR(x, v)     (HW_DMA_CERR(x).U = (v))
 #endif
 //@}
@@ -2472,11 +2388,6 @@ typedef union _hw_dma_cerr
 #define BP_DMA_CERR_CERR     (0U)          //!< Bit position for DMA_CERR_CERR.
 #define BM_DMA_CERR_CERR     (0x0FU)       //!< Bit mask for DMA_CERR_CERR.
 #define BS_DMA_CERR_CERR     (4U)          //!< Bit field size in bits for DMA_CERR_CERR.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CERR_CERR field.
-#define BR_DMA_CERR_CERR(x)  (HW_DMA_CERR(x).B.CERR)
-#endif
 
 //! @brief Format value for bitfield DMA_CERR_CERR.
 #define BF_DMA_CERR_CERR(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CERR_CERR), uint8_t) & BM_DMA_CERR_CERR)
@@ -2499,11 +2410,6 @@ typedef union _hw_dma_cerr
 #define BM_DMA_CERR_CAEI     (0x40U)       //!< Bit mask for DMA_CERR_CAEI.
 #define BS_DMA_CERR_CAEI     (1U)          //!< Bit field size in bits for DMA_CERR_CAEI.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CERR_CAEI field.
-#define BR_DMA_CERR_CAEI(x)  (BITBAND_ACCESS8(HW_DMA_CERR_ADDR(x), BP_DMA_CERR_CAEI))
-#endif
-
 //! @brief Format value for bitfield DMA_CERR_CAEI.
 #define BF_DMA_CERR_CAEI(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CERR_CAEI), uint8_t) & BM_DMA_CERR_CAEI)
 
@@ -2524,11 +2430,6 @@ typedef union _hw_dma_cerr
 #define BP_DMA_CERR_NOP      (7U)          //!< Bit position for DMA_CERR_NOP.
 #define BM_DMA_CERR_NOP      (0x80U)       //!< Bit mask for DMA_CERR_NOP.
 #define BS_DMA_CERR_NOP      (1U)          //!< Bit field size in bits for DMA_CERR_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CERR_NOP field.
-#define BR_DMA_CERR_NOP(x)   (BITBAND_ACCESS8(HW_DMA_CERR_ADDR(x), BP_DMA_CERR_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_CERR_NOP.
 #define BF_DMA_CERR_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CERR_NOP), uint8_t) & BM_DMA_CERR_NOP)
@@ -2578,6 +2479,7 @@ typedef union _hw_dma_cint
 
 #ifndef __LANGUAGE_ASM__
 #define HW_DMA_CINT(x)           (*(__O hw_dma_cint_t *) HW_DMA_CINT_ADDR(x))
+#define HW_DMA_CINT_RD(x)        (HW_DMA_CINT(x).U)
 #define HW_DMA_CINT_WR(x, v)     (HW_DMA_CINT(x).U = (v))
 #endif
 //@}
@@ -2595,11 +2497,6 @@ typedef union _hw_dma_cint
 #define BP_DMA_CINT_CINT     (0U)          //!< Bit position for DMA_CINT_CINT.
 #define BM_DMA_CINT_CINT     (0x0FU)       //!< Bit mask for DMA_CINT_CINT.
 #define BS_DMA_CINT_CINT     (4U)          //!< Bit field size in bits for DMA_CINT_CINT.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CINT_CINT field.
-#define BR_DMA_CINT_CINT(x)  (HW_DMA_CINT(x).B.CINT)
-#endif
 
 //! @brief Format value for bitfield DMA_CINT_CINT.
 #define BF_DMA_CINT_CINT(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CINT_CINT), uint8_t) & BM_DMA_CINT_CINT)
@@ -2622,11 +2519,6 @@ typedef union _hw_dma_cint
 #define BM_DMA_CINT_CAIR     (0x40U)       //!< Bit mask for DMA_CINT_CAIR.
 #define BS_DMA_CINT_CAIR     (1U)          //!< Bit field size in bits for DMA_CINT_CAIR.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CINT_CAIR field.
-#define BR_DMA_CINT_CAIR(x)  (BITBAND_ACCESS8(HW_DMA_CINT_ADDR(x), BP_DMA_CINT_CAIR))
-#endif
-
 //! @brief Format value for bitfield DMA_CINT_CAIR.
 #define BF_DMA_CINT_CAIR(v)  (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CINT_CAIR), uint8_t) & BM_DMA_CINT_CAIR)
 
@@ -2647,11 +2539,6 @@ typedef union _hw_dma_cint
 #define BP_DMA_CINT_NOP      (7U)          //!< Bit position for DMA_CINT_NOP.
 #define BM_DMA_CINT_NOP      (0x80U)       //!< Bit mask for DMA_CINT_NOP.
 #define BS_DMA_CINT_NOP      (1U)          //!< Bit field size in bits for DMA_CINT_NOP.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_CINT_NOP field.
-#define BR_DMA_CINT_NOP(x)   (BITBAND_ACCESS8(HW_DMA_CINT_ADDR(x), BP_DMA_CINT_NOP))
-#endif
 
 //! @brief Format value for bitfield DMA_CINT_NOP.
 #define BF_DMA_CINT_NOP(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DMA_CINT_NOP), uint8_t) & BM_DMA_CINT_NOP)
@@ -3704,9 +3591,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS0[0] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 0 is not present
+ * - 1 - A hardware service request for channel 0 is present
  */
 //@{
 #define BP_DMA_HRS_HRS0      (0U)          //!< Bit position for DMA_HRS_HRS0.
@@ -3722,9 +3613,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS1[1] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 1 is not present
+ * - 1 - A hardware service request for channel 1 is present
  */
 //@{
 #define BP_DMA_HRS_HRS1      (1U)          //!< Bit position for DMA_HRS_HRS1.
@@ -3740,9 +3635,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS2[2] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 2 is not present
+ * - 1 - A hardware service request for channel 2 is present
  */
 //@{
 #define BP_DMA_HRS_HRS2      (2U)          //!< Bit position for DMA_HRS_HRS2.
@@ -3758,9 +3657,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS3[3] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 3 is not present
+ * - 1 - A hardware service request for channel 3 is present
  */
 //@{
 #define BP_DMA_HRS_HRS3      (3U)          //!< Bit position for DMA_HRS_HRS3.
@@ -3776,9 +3679,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS4[4] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 4 is not present
+ * - 1 - A hardware service request for channel 4 is present
  */
 //@{
 #define BP_DMA_HRS_HRS4      (4U)          //!< Bit position for DMA_HRS_HRS4.
@@ -3794,9 +3701,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS5[5] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 5 is not present
+ * - 1 - A hardware service request for channel 5 is present
  */
 //@{
 #define BP_DMA_HRS_HRS5      (5U)          //!< Bit position for DMA_HRS_HRS5.
@@ -3812,9 +3723,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS6[6] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 6 is not present
+ * - 1 - A hardware service request for channel 6 is present
  */
 //@{
 #define BP_DMA_HRS_HRS6      (6U)          //!< Bit position for DMA_HRS_HRS6.
@@ -3830,9 +3745,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS7[7] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 7 is not present
+ * - 1 - A hardware service request for channel 7 is present
  */
 //@{
 #define BP_DMA_HRS_HRS7      (7U)          //!< Bit position for DMA_HRS_HRS7.
@@ -3848,9 +3767,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS8[8] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 8 is not present
+ * - 1 - A hardware service request for channel 8 is present
  */
 //@{
 #define BP_DMA_HRS_HRS8      (8U)          //!< Bit position for DMA_HRS_HRS8.
@@ -3866,9 +3789,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS9[9] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 9 is not present
+ * - 1 - A hardware service request for channel 9 is present
  */
 //@{
 #define BP_DMA_HRS_HRS9      (9U)          //!< Bit position for DMA_HRS_HRS9.
@@ -3884,9 +3811,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS10[10] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 10 is not present
+ * - 1 - A hardware service request for channel 10 is present
  */
 //@{
 #define BP_DMA_HRS_HRS10     (10U)         //!< Bit position for DMA_HRS_HRS10.
@@ -3902,9 +3833,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS11[11] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 11 is not present
+ * - 1 - A hardware service request for channel 11 is present
  */
 //@{
 #define BP_DMA_HRS_HRS11     (11U)         //!< Bit position for DMA_HRS_HRS11.
@@ -3920,9 +3855,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS12[12] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 12 is not present
+ * - 1 - A hardware service request for channel 12 is present
  */
 //@{
 #define BP_DMA_HRS_HRS12     (12U)         //!< Bit position for DMA_HRS_HRS12.
@@ -3938,9 +3877,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS13[13] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 13 is not present
+ * - 1 - A hardware service request for channel 13 is present
  */
 //@{
 #define BP_DMA_HRS_HRS13     (13U)         //!< Bit position for DMA_HRS_HRS13.
@@ -3956,9 +3899,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS14[14] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 14 is not present
+ * - 1 - A hardware service request for channel 14 is present
  */
 //@{
 #define BP_DMA_HRS_HRS14     (14U)         //!< Bit position for DMA_HRS_HRS14.
@@ -3974,9 +3921,13 @@ typedef union _hw_dma_hrs
 /*!
  * @name Register DMA_HRS, field HRS15[15] (RO)
  *
+ * The HRS bit for its respective channel remains asserted for the period when a
+ * Hardware Request is Present on the Channel. After the Request is completed
+ * and Channel is free , the HRS bit is automatically cleared by hardware.
+ *
  * Values:
- * - 0 - A hardware service request for the corresponding channel is not present
- * - 1 - A hardware service request for the corresponding channel is present
+ * - 0 - A hardware service request for channel 15 is not present
+ * - 1 - A hardware service request for channel 15 is present
  */
 //@{
 #define BP_DMA_HRS_HRS15     (15U)         //!< Bit position for DMA_HRS_HRS15.
@@ -3986,494 +3937,6 @@ typedef union _hw_dma_hrs
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_HRS_HRS15 field.
 #define BR_DMA_HRS_HRS15(x)  (BITBAND_ACCESS32(HW_DMA_HRS_ADDR(x), BP_DMA_HRS_HRS15))
-#endif
-//@}
-
-//-------------------------------------------------------------------------------------------
-// HW_DMA_EARS - Enable Asynchronous Request in Stop Register
-//-------------------------------------------------------------------------------------------
-
-#ifndef __LANGUAGE_ASM__
-/*!
- * @brief HW_DMA_EARS - Enable Asynchronous Request in Stop Register (RW)
- *
- * Reset value: 0x00000000U
- */
-typedef union _hw_dma_ears
-{
-    uint32_t U;
-    struct _hw_dma_ears_bitfields
-    {
-        uint32_t EDREQ_0 : 1;          //!< [0] Enable asynchronous DMA request in
-                                       //!< stop for channel 0.
-        uint32_t EDREQ_1 : 1;          //!< [1] Enable asynchronous DMA request in
-                                       //!< stop for channel 1.
-        uint32_t EDREQ_2 : 1;          //!< [2] Enable asynchronous DMA request in
-                                       //!< stop for channel 2.
-        uint32_t EDREQ_3 : 1;          //!< [3] Enable asynchronous DMA request in
-                                       //!< stop for channel 3.
-        uint32_t EDREQ_4 : 1;          //!< [4] Enable asynchronous DMA request in
-                                       //!< stop for channel 4
-        uint32_t EDREQ_5 : 1;          //!< [5] Enable asynchronous DMA request in
-                                       //!< stop for channel 5
-        uint32_t EDREQ_6 : 1;          //!< [6] Enable asynchronous DMA request in
-                                       //!< stop for channel 6
-        uint32_t EDREQ_7 : 1;          //!< [7] Enable asynchronous DMA request in
-                                       //!< stop for channel 7
-        uint32_t EDREQ_8 : 1;          //!< [8] Enable asynchronous DMA request in
-                                       //!< stop for channel 8
-        uint32_t EDREQ_9 : 1;          //!< [9] Enable asynchronous DMA request in
-                                       //!< stop for channel 9
-        uint32_t EDREQ_10 : 1;         //!< [10] Enable asynchronous DMA request in
-                                       //!< stop for channel 10
-        uint32_t EDREQ_11 : 1;         //!< [11] Enable asynchronous DMA request in
-                                       //!< stop for channel 11
-        uint32_t EDREQ_12 : 1;         //!< [12] Enable asynchronous DMA request in
-                                       //!< stop for channel 12
-        uint32_t EDREQ_13 : 1;         //!< [13] Enable asynchronous DMA request in
-                                       //!< stop for channel 13
-        uint32_t EDREQ_14 : 1;         //!< [14] Enable asynchronous DMA request in
-                                       //!< stop for channel 14
-        uint32_t EDREQ_15 : 1;         //!< [15] Enable asynchronous DMA request in
-                                       //!< stop for channel 15
-        uint32_t RESERVED0 : 16;       //!< [31:16] Reserved.
-    } B;
-} hw_dma_ears_t;
-#endif
-
-/*!
- * @name Constants and macros for entire DMA_EARS register
- */
-//@{
-#define HW_DMA_EARS_ADDR(x)      (REGS_DMA_BASE(x) + 0x44U)
-
-#ifndef __LANGUAGE_ASM__
-#define HW_DMA_EARS(x)           (*(__IO hw_dma_ears_t *) HW_DMA_EARS_ADDR(x))
-#define HW_DMA_EARS_RD(x)        (HW_DMA_EARS(x).U)
-#define HW_DMA_EARS_WR(x, v)     (HW_DMA_EARS(x).U = (v))
-#define HW_DMA_EARS_SET(x, v)    (HW_DMA_EARS_WR(x, HW_DMA_EARS_RD(x) |  (v)))
-#define HW_DMA_EARS_CLR(x, v)    (HW_DMA_EARS_WR(x, HW_DMA_EARS_RD(x) & ~(v)))
-#define HW_DMA_EARS_TOG(x, v)    (HW_DMA_EARS_WR(x, HW_DMA_EARS_RD(x) ^  (v)))
-#endif
-//@}
-
-/*
- * Constants & macros for individual DMA_EARS bitfields
- */
-
-/*!
- * @name Register DMA_EARS, field EDREQ_0[0] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 0.
- * - 1 - Enable asynchronous DMA request for channel 0.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_0  (0U)          //!< Bit position for DMA_EARS_EDREQ_0.
-#define BM_DMA_EARS_EDREQ_0  (0x00000001U) //!< Bit mask for DMA_EARS_EDREQ_0.
-#define BS_DMA_EARS_EDREQ_0  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_0.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_0 field.
-#define BR_DMA_EARS_EDREQ_0(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_0))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_0.
-#define BF_DMA_EARS_EDREQ_0(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_0), uint32_t) & BM_DMA_EARS_EDREQ_0)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_0 field to a new value.
-#define BW_DMA_EARS_EDREQ_0(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_0) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_1[1] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 1
- * - 1 - Enable asynchronous DMA request for channel 1.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_1  (1U)          //!< Bit position for DMA_EARS_EDREQ_1.
-#define BM_DMA_EARS_EDREQ_1  (0x00000002U) //!< Bit mask for DMA_EARS_EDREQ_1.
-#define BS_DMA_EARS_EDREQ_1  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_1.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_1 field.
-#define BR_DMA_EARS_EDREQ_1(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_1))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_1.
-#define BF_DMA_EARS_EDREQ_1(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_1), uint32_t) & BM_DMA_EARS_EDREQ_1)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_1 field to a new value.
-#define BW_DMA_EARS_EDREQ_1(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_1) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_2[2] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 2.
- * - 1 - Enable asynchronous DMA request for channel 2.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_2  (2U)          //!< Bit position for DMA_EARS_EDREQ_2.
-#define BM_DMA_EARS_EDREQ_2  (0x00000004U) //!< Bit mask for DMA_EARS_EDREQ_2.
-#define BS_DMA_EARS_EDREQ_2  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_2.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_2 field.
-#define BR_DMA_EARS_EDREQ_2(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_2))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_2.
-#define BF_DMA_EARS_EDREQ_2(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_2), uint32_t) & BM_DMA_EARS_EDREQ_2)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_2 field to a new value.
-#define BW_DMA_EARS_EDREQ_2(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_2) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_3[3] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 3.
- * - 1 - Enable asynchronous DMA request for channel 3.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_3  (3U)          //!< Bit position for DMA_EARS_EDREQ_3.
-#define BM_DMA_EARS_EDREQ_3  (0x00000008U) //!< Bit mask for DMA_EARS_EDREQ_3.
-#define BS_DMA_EARS_EDREQ_3  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_3.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_3 field.
-#define BR_DMA_EARS_EDREQ_3(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_3))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_3.
-#define BF_DMA_EARS_EDREQ_3(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_3), uint32_t) & BM_DMA_EARS_EDREQ_3)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_3 field to a new value.
-#define BW_DMA_EARS_EDREQ_3(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_3) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_4[4] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 4.
- * - 1 - Enable asynchronous DMA request for channel 4.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_4  (4U)          //!< Bit position for DMA_EARS_EDREQ_4.
-#define BM_DMA_EARS_EDREQ_4  (0x00000010U) //!< Bit mask for DMA_EARS_EDREQ_4.
-#define BS_DMA_EARS_EDREQ_4  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_4.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_4 field.
-#define BR_DMA_EARS_EDREQ_4(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_4))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_4.
-#define BF_DMA_EARS_EDREQ_4(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_4), uint32_t) & BM_DMA_EARS_EDREQ_4)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_4 field to a new value.
-#define BW_DMA_EARS_EDREQ_4(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_4) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_5[5] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 5.
- * - 1 - Enable asynchronous DMA request for channel 5.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_5  (5U)          //!< Bit position for DMA_EARS_EDREQ_5.
-#define BM_DMA_EARS_EDREQ_5  (0x00000020U) //!< Bit mask for DMA_EARS_EDREQ_5.
-#define BS_DMA_EARS_EDREQ_5  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_5.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_5 field.
-#define BR_DMA_EARS_EDREQ_5(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_5))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_5.
-#define BF_DMA_EARS_EDREQ_5(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_5), uint32_t) & BM_DMA_EARS_EDREQ_5)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_5 field to a new value.
-#define BW_DMA_EARS_EDREQ_5(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_5) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_6[6] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 6.
- * - 1 - Enable asynchronous DMA request for channel 6.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_6  (6U)          //!< Bit position for DMA_EARS_EDREQ_6.
-#define BM_DMA_EARS_EDREQ_6  (0x00000040U) //!< Bit mask for DMA_EARS_EDREQ_6.
-#define BS_DMA_EARS_EDREQ_6  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_6.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_6 field.
-#define BR_DMA_EARS_EDREQ_6(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_6))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_6.
-#define BF_DMA_EARS_EDREQ_6(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_6), uint32_t) & BM_DMA_EARS_EDREQ_6)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_6 field to a new value.
-#define BW_DMA_EARS_EDREQ_6(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_6) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_7[7] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 7.
- * - 1 - Enable asynchronous DMA request for channel 7.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_7  (7U)          //!< Bit position for DMA_EARS_EDREQ_7.
-#define BM_DMA_EARS_EDREQ_7  (0x00000080U) //!< Bit mask for DMA_EARS_EDREQ_7.
-#define BS_DMA_EARS_EDREQ_7  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_7.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_7 field.
-#define BR_DMA_EARS_EDREQ_7(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_7))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_7.
-#define BF_DMA_EARS_EDREQ_7(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_7), uint32_t) & BM_DMA_EARS_EDREQ_7)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_7 field to a new value.
-#define BW_DMA_EARS_EDREQ_7(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_7) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_8[8] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 8.
- * - 1 - Enable asynchronous DMA request for channel 8.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_8  (8U)          //!< Bit position for DMA_EARS_EDREQ_8.
-#define BM_DMA_EARS_EDREQ_8  (0x00000100U) //!< Bit mask for DMA_EARS_EDREQ_8.
-#define BS_DMA_EARS_EDREQ_8  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_8.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_8 field.
-#define BR_DMA_EARS_EDREQ_8(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_8))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_8.
-#define BF_DMA_EARS_EDREQ_8(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_8), uint32_t) & BM_DMA_EARS_EDREQ_8)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_8 field to a new value.
-#define BW_DMA_EARS_EDREQ_8(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_8) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_9[9] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 9.
- * - 1 - Enable asynchronous DMA request for channel 9.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_9  (9U)          //!< Bit position for DMA_EARS_EDREQ_9.
-#define BM_DMA_EARS_EDREQ_9  (0x00000200U) //!< Bit mask for DMA_EARS_EDREQ_9.
-#define BS_DMA_EARS_EDREQ_9  (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_9.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_9 field.
-#define BR_DMA_EARS_EDREQ_9(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_9))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_9.
-#define BF_DMA_EARS_EDREQ_9(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_9), uint32_t) & BM_DMA_EARS_EDREQ_9)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_9 field to a new value.
-#define BW_DMA_EARS_EDREQ_9(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_9) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_10[10] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 10.
- * - 1 - Enable asynchronous DMA request for channel 10.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_10 (10U)         //!< Bit position for DMA_EARS_EDREQ_10.
-#define BM_DMA_EARS_EDREQ_10 (0x00000400U) //!< Bit mask for DMA_EARS_EDREQ_10.
-#define BS_DMA_EARS_EDREQ_10 (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_10.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_10 field.
-#define BR_DMA_EARS_EDREQ_10(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_10))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_10.
-#define BF_DMA_EARS_EDREQ_10(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_10), uint32_t) & BM_DMA_EARS_EDREQ_10)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_10 field to a new value.
-#define BW_DMA_EARS_EDREQ_10(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_10) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_11[11] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 11.
- * - 1 - Enable asynchronous DMA request for channel 11.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_11 (11U)         //!< Bit position for DMA_EARS_EDREQ_11.
-#define BM_DMA_EARS_EDREQ_11 (0x00000800U) //!< Bit mask for DMA_EARS_EDREQ_11.
-#define BS_DMA_EARS_EDREQ_11 (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_11.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_11 field.
-#define BR_DMA_EARS_EDREQ_11(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_11))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_11.
-#define BF_DMA_EARS_EDREQ_11(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_11), uint32_t) & BM_DMA_EARS_EDREQ_11)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_11 field to a new value.
-#define BW_DMA_EARS_EDREQ_11(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_11) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_12[12] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 12.
- * - 1 - Enable asynchronous DMA request for channel 12.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_12 (12U)         //!< Bit position for DMA_EARS_EDREQ_12.
-#define BM_DMA_EARS_EDREQ_12 (0x00001000U) //!< Bit mask for DMA_EARS_EDREQ_12.
-#define BS_DMA_EARS_EDREQ_12 (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_12.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_12 field.
-#define BR_DMA_EARS_EDREQ_12(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_12))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_12.
-#define BF_DMA_EARS_EDREQ_12(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_12), uint32_t) & BM_DMA_EARS_EDREQ_12)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_12 field to a new value.
-#define BW_DMA_EARS_EDREQ_12(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_12) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_13[13] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 13.
- * - 1 - Enable asynchronous DMA request for channel 13.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_13 (13U)         //!< Bit position for DMA_EARS_EDREQ_13.
-#define BM_DMA_EARS_EDREQ_13 (0x00002000U) //!< Bit mask for DMA_EARS_EDREQ_13.
-#define BS_DMA_EARS_EDREQ_13 (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_13.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_13 field.
-#define BR_DMA_EARS_EDREQ_13(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_13))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_13.
-#define BF_DMA_EARS_EDREQ_13(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_13), uint32_t) & BM_DMA_EARS_EDREQ_13)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_13 field to a new value.
-#define BW_DMA_EARS_EDREQ_13(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_13) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_14[14] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 14.
- * - 1 - Enable asynchronous DMA request for channel 14.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_14 (14U)         //!< Bit position for DMA_EARS_EDREQ_14.
-#define BM_DMA_EARS_EDREQ_14 (0x00004000U) //!< Bit mask for DMA_EARS_EDREQ_14.
-#define BS_DMA_EARS_EDREQ_14 (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_14.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_14 field.
-#define BR_DMA_EARS_EDREQ_14(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_14))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_14.
-#define BF_DMA_EARS_EDREQ_14(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_14), uint32_t) & BM_DMA_EARS_EDREQ_14)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_14 field to a new value.
-#define BW_DMA_EARS_EDREQ_14(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_14) = (v))
-#endif
-//@}
-
-/*!
- * @name Register DMA_EARS, field EDREQ_15[15] (RW)
- *
- * Values:
- * - 0 - Disable asynchronous DMA request for channel 15.
- * - 1 - Enable asynchronous DMA request for channel 15.
- */
-//@{
-#define BP_DMA_EARS_EDREQ_15 (15U)         //!< Bit position for DMA_EARS_EDREQ_15.
-#define BM_DMA_EARS_EDREQ_15 (0x00008000U) //!< Bit mask for DMA_EARS_EDREQ_15.
-#define BS_DMA_EARS_EDREQ_15 (1U)          //!< Bit field size in bits for DMA_EARS_EDREQ_15.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DMA_EARS_EDREQ_15 field.
-#define BR_DMA_EARS_EDREQ_15(x) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_15))
-#endif
-
-//! @brief Format value for bitfield DMA_EARS_EDREQ_15.
-#define BF_DMA_EARS_EDREQ_15(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_DMA_EARS_EDREQ_15), uint32_t) & BM_DMA_EARS_EDREQ_15)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the EDREQ_15 field to a new value.
-#define BW_DMA_EARS_EDREQ_15(x, v) (BITBAND_ACCESS32(HW_DMA_EARS_ADDR(x), BP_DMA_EARS_EDREQ_15) = (v))
 #endif
 //@}
 
@@ -4667,7 +4130,7 @@ typedef union _hw_dma_tcdn_saddr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_SADDR_SADDR field.
-#define BR_DMA_TCDn_SADDR_SADDR(x, n) (HW_DMA_TCDn_SADDR(x, n).B.SADDR)
+#define BR_DMA_TCDn_SADDR_SADDR(x, n) (HW_DMA_TCDn_SADDR(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_SADDR_SADDR.
@@ -4675,7 +4138,7 @@ typedef union _hw_dma_tcdn_saddr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SADDR field to a new value.
-#define BW_DMA_TCDn_SADDR_SADDR(x, n, v) (HW_DMA_TCDn_SADDR_WR(x, n, (HW_DMA_TCDn_SADDR_RD(x, n) & ~BM_DMA_TCDn_SADDR_SADDR) | BF_DMA_TCDn_SADDR_SADDR(v)))
+#define BW_DMA_TCDn_SADDR_SADDR(x, n, v) (HW_DMA_TCDn_SADDR_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -4733,7 +4196,7 @@ typedef union _hw_dma_tcdn_soff
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_SOFF_SOFF field.
-#define BR_DMA_TCDn_SOFF_SOFF(x, n) (HW_DMA_TCDn_SOFF(x, n).B.SOFF)
+#define BR_DMA_TCDn_SOFF_SOFF(x, n) (HW_DMA_TCDn_SOFF(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_SOFF_SOFF.
@@ -4741,7 +4204,7 @@ typedef union _hw_dma_tcdn_soff
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SOFF field to a new value.
-#define BW_DMA_TCDn_SOFF_SOFF(x, n, v) (HW_DMA_TCDn_SOFF_WR(x, n, (HW_DMA_TCDn_SOFF_RD(x, n) & ~BM_DMA_TCDn_SOFF_SOFF) | BF_DMA_TCDn_SOFF_SOFF(v)))
+#define BW_DMA_TCDn_SOFF_SOFF(x, n, v) (HW_DMA_TCDn_SOFF_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -4966,7 +4429,7 @@ typedef union _hw_dma_tcdn_nbytes_mlno
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_NBYTES_MLNO_NBYTES field.
-#define BR_DMA_TCDn_NBYTES_MLNO_NBYTES(x, n) (HW_DMA_TCDn_NBYTES_MLNO(x, n).B.NBYTES)
+#define BR_DMA_TCDn_NBYTES_MLNO_NBYTES(x, n) (HW_DMA_TCDn_NBYTES_MLNO(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_NBYTES_MLNO_NBYTES.
@@ -4974,7 +4437,7 @@ typedef union _hw_dma_tcdn_nbytes_mlno
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the NBYTES field to a new value.
-#define BW_DMA_TCDn_NBYTES_MLNO_NBYTES(x, n, v) (HW_DMA_TCDn_NBYTES_MLNO_WR(x, n, (HW_DMA_TCDn_NBYTES_MLNO_RD(x, n) & ~BM_DMA_TCDn_NBYTES_MLNO_NBYTES) | BF_DMA_TCDn_NBYTES_MLNO_NBYTES(v)))
+#define BW_DMA_TCDn_NBYTES_MLNO_NBYTES(x, n, v) (HW_DMA_TCDn_NBYTES_MLNO_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -5145,9 +4608,8 @@ typedef union _hw_dma_tcdn_nbytes_mloffyes
     {
         uint32_t NBYTES : 10;          //!< [9:0] Minor Byte Transfer Count
         uint32_t MLOFF : 20;           //!< [29:10] If SMLOE or DMLOE is set, this
-                                       //!< field represents a sign-extended offset applied to the source or
-                                       //!< destination address to form the next-state value after the minor loop
-                                       //!< completes.
+                                       //! field represents a sign-extended offset applied to the source or
+                                       //! destination address to form the next-state value after the minor loop completes.
         uint32_t DMLOE : 1;            //!< [30] Destination Minor Loop Offset enable
         uint32_t SMLOE : 1;            //!< [31] Source Minor Loop Offset Enable
     } B;
@@ -5344,7 +4806,7 @@ typedef union _hw_dma_tcdn_slast
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_SLAST_SLAST field.
-#define BR_DMA_TCDn_SLAST_SLAST(x, n) (HW_DMA_TCDn_SLAST(x, n).B.SLAST)
+#define BR_DMA_TCDn_SLAST_SLAST(x, n) (HW_DMA_TCDn_SLAST(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_SLAST_SLAST.
@@ -5352,7 +4814,7 @@ typedef union _hw_dma_tcdn_slast
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SLAST field to a new value.
-#define BW_DMA_TCDn_SLAST_SLAST(x, n, v) (HW_DMA_TCDn_SLAST_WR(x, n, (HW_DMA_TCDn_SLAST_RD(x, n) & ~BM_DMA_TCDn_SLAST_SLAST) | BF_DMA_TCDn_SLAST_SLAST(v)))
+#define BW_DMA_TCDn_SLAST_SLAST(x, n, v) (HW_DMA_TCDn_SLAST_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -5409,7 +4871,7 @@ typedef union _hw_dma_tcdn_daddr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_DADDR_DADDR field.
-#define BR_DMA_TCDn_DADDR_DADDR(x, n) (HW_DMA_TCDn_DADDR(x, n).B.DADDR)
+#define BR_DMA_TCDn_DADDR_DADDR(x, n) (HW_DMA_TCDn_DADDR(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_DADDR_DADDR.
@@ -5417,7 +4879,7 @@ typedef union _hw_dma_tcdn_daddr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DADDR field to a new value.
-#define BW_DMA_TCDn_DADDR_DADDR(x, n, v) (HW_DMA_TCDn_DADDR_WR(x, n, (HW_DMA_TCDn_DADDR_RD(x, n) & ~BM_DMA_TCDn_DADDR_DADDR) | BF_DMA_TCDn_DADDR_DADDR(v)))
+#define BW_DMA_TCDn_DADDR_DADDR(x, n, v) (HW_DMA_TCDn_DADDR_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -5475,7 +4937,7 @@ typedef union _hw_dma_tcdn_doff
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_DOFF_DOFF field.
-#define BR_DMA_TCDn_DOFF_DOFF(x, n) (HW_DMA_TCDn_DOFF(x, n).B.DOFF)
+#define BR_DMA_TCDn_DOFF_DOFF(x, n) (HW_DMA_TCDn_DOFF(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_DOFF_DOFF.
@@ -5483,7 +4945,7 @@ typedef union _hw_dma_tcdn_doff
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DOFF field to a new value.
-#define BW_DMA_TCDn_DOFF_DOFF(x, n, v) (HW_DMA_TCDn_DOFF_WR(x, n, (HW_DMA_TCDn_DOFF_RD(x, n) & ~BM_DMA_TCDn_DOFF_DOFF) | BF_DMA_TCDn_DOFF_DOFF(v)))
+#define BW_DMA_TCDn_DOFF_DOFF(x, n, v) (HW_DMA_TCDn_DOFF_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -5506,7 +4968,7 @@ typedef union _hw_dma_tcdn_citer_elinkno
     {
         uint16_t CITER : 15;           //!< [14:0] Current Major Iteration Count
         uint16_t ELINK : 1;            //!< [15] Enable channel-to-channel linking on
-                                       //!< minor-loop complete
+                                       //! minor-loop complete
     } B;
 } hw_dma_tcdn_citer_elinkno_t;
 #endif
@@ -5621,7 +5083,7 @@ typedef union _hw_dma_tcdn_citer_elinkyes
         uint16_t LINKCH : 4;           //!< [12:9] Link Channel Number
         uint16_t RESERVED0 : 2;        //!< [14:13]
         uint16_t ELINK : 1;            //!< [15] Enable channel-to-channel linking on
-                                       //!< minor-loop complete
+                                       //! minor-loop complete
     } B;
 } hw_dma_tcdn_citer_elinkyes_t;
 #endif
@@ -5805,7 +5267,7 @@ typedef union _hw_dma_tcdn_dlastsga
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DMA_TCDn_DLASTSGA_DLASTSGA field.
-#define BR_DMA_TCDn_DLASTSGA_DLASTSGA(x, n) (HW_DMA_TCDn_DLASTSGA(x, n).B.DLASTSGA)
+#define BR_DMA_TCDn_DLASTSGA_DLASTSGA(x, n) (HW_DMA_TCDn_DLASTSGA(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DMA_TCDn_DLASTSGA_DLASTSGA.
@@ -5813,7 +5275,7 @@ typedef union _hw_dma_tcdn_dlastsga
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DLASTSGA field to a new value.
-#define BW_DMA_TCDn_DLASTSGA_DLASTSGA(x, n, v) (HW_DMA_TCDn_DLASTSGA_WR(x, n, (HW_DMA_TCDn_DLASTSGA_RD(x, n) & ~BM_DMA_TCDn_DLASTSGA_DLASTSGA) | BF_DMA_TCDn_DLASTSGA_DLASTSGA(v)))
+#define BW_DMA_TCDn_DLASTSGA_DLASTSGA(x, n, v) (HW_DMA_TCDn_DLASTSGA_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -5833,13 +5295,13 @@ typedef union _hw_dma_tcdn_csr
     {
         uint16_t START : 1;            //!< [0] Channel Start
         uint16_t INTMAJOR : 1;         //!< [1] Enable an interrupt when major
-                                       //!< iteration count completes
+                                       //! iteration count completes
         uint16_t INTHALF : 1;          //!< [2] Enable an interrupt when major counter
-                                       //!< is half complete.
+                                       //! is half complete.
         uint16_t DREQ : 1;             //!< [3] Disable Request
         uint16_t ESG : 1;              //!< [4] Enable Scatter/Gather Processing
         uint16_t MAJORELINK : 1;       //!< [5] Enable channel-to-channel linking
-                                       //!< on major loop complete
+                                       //! on major loop complete
         uint16_t ACTIVE : 1;           //!< [6] Channel Active
         uint16_t DONE : 1;             //!< [7] Channel Done
         uint16_t MAJORLINKCH : 4;      //!< [11:8] Link Channel Number
@@ -6197,7 +5659,7 @@ typedef union _hw_dma_tcdn_biter_elinkno
     {
         uint16_t BITER : 15;           //!< [14:0] Starting Major Iteration Count
         uint16_t ELINK : 1;            //!< [15] Enables channel-to-channel linking on
-                                       //!< minor loop complete
+                                       //! minor loop complete
     } B;
 } hw_dma_tcdn_biter_elinkno_t;
 #endif
@@ -6314,7 +5776,7 @@ typedef union _hw_dma_tcdn_biter_elinkyes
         uint16_t LINKCH : 4;           //!< [12:9] Link Channel Number
         uint16_t RESERVED0 : 2;        //!< [14:13]
         uint16_t ELINK : 1;            //!< [15] Enables channel-to-channel linking on
-                                       //!< minor loop complete
+                                       //! minor loop complete
     } B;
 } hw_dma_tcdn_biter_elinkyes_t;
 #endif
@@ -6470,11 +5932,9 @@ typedef struct _hw_dma
     __IO hw_dma_err_t ERR;                 //!< [0x2C] Error Register
     uint8_t _reserved4[4];
     __I hw_dma_hrs_t HRS;                  //!< [0x34] Hardware Request Status Register
-    uint8_t _reserved5[12];
-    __IO hw_dma_ears_t EARS;               //!< [0x44] Enable Asynchronous Request in Stop Register
-    uint8_t _reserved6[184];
+    uint8_t _reserved5[200];
     __IO hw_dma_dchprin_t DCHPRIn[16];     //!< [0x100] Channel n Priority Register
-    uint8_t _reserved7[3824];
+    uint8_t _reserved6[3824];
     struct {
         __IO hw_dma_tcdn_saddr_t TCDn_SADDR; //!< [0x1000] TCD Source Address
         __IO hw_dma_tcdn_soff_t TCDn_SOFF; //!< [0x1004] TCD Signed Source Address Offset

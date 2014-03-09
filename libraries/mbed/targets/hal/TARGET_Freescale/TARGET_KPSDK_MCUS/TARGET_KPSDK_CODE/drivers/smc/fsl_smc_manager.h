@@ -61,22 +61,22 @@ typedef enum _power_modes {
 } power_modes_t;
 
 /*!
- * @brief error code definition for system mode controller manager APIs
+ * @brief Error code definition for the system mode controller manager APIs.
  */
 typedef enum _smc_manager_error_code {
-    kSmcManagerSuccess,                           /*!< success */
-    kSmcManagerNoSuchModeName,                    /*!< cannot find the mode name specified*/
-    kSmcManagerAlreadyInTheState,                 /*!< already in the required state*/
-    kSmcManagerFailed                             /*!< unknown error, operation failed*/
+    kSmcManagerSuccess,                           /*!< Success */
+    kSmcManagerNoSuchModeName,                    /*!< Cannot find the mode name specified*/
+    kSmcManagerAlreadyInTheState,                 /*!< Already in the required state*/
+    kSmcManagerFailed                             /*!< Unknown error, operation failed*/
 } smc_manager_error_code_t;
 
-/*! @brief power mode control configuration, used for calling smc_set_power_mode API */
+/*! @brief Power mode control configuration used for calling the smc_set_power_mode API. */
 typedef struct _smc_power_mode_config {
-    power_modes_t       powerModeName;      /*!< power mode(enum), see power_modes_t */
-    smc_stop_submode_t  stopSubMode;        /*!< stop submode(enum), see smc_stop_submode_t */
-    bool                lpwuiOption;        /*!< if LPWUI option is needed */
+    power_modes_t       powerModeName;      /*!< Power mode(enum), see power_modes_t */
+    smc_stop_submode_t  stopSubMode;        /*!< Stop submode(enum), see smc_stop_submode_t */
+    bool                lpwuiOption;        /*!< If LPWUI option is needed */
     smc_lpwui_option_t  lpwuiOptionValue;   /*!< LPWUI option(enum), see smc_lpwui_option_t */
-    bool                porOption;          /*!< if POR option is needed */
+    bool                porOption;          /*!< If POR option is needed */
     smc_por_option_t    porOptionValue;     /*!< POR option(enum), see smc_por_option_t */
 } smc_power_mode_config_t;
 
@@ -92,19 +92,18 @@ extern "C" {
 /*@{*/
 
 /*!
- * @brief Config the power mode
+ * @brief Configures the power mode
  *
- * This function will configure the power mode control for both run, stop and
- * stop submode if needed. Also it will configure the power options for specific
- * power mode. Application should follow the proper procedure to configure and 
- * switch power mode between the different run and stop mode. Refer to reference
- * manual for the proper procedure and supported power mode that can be configured
- * and switch between each other. Refert to smc_power_mode_config_t for required
+ * This function configures the power mode control for both run, stop, and
+ * stop sub mode if needed. Also it configures the power options for a specific
+ * power mode. An application should follow the proper procedure to configure and 
+ * switch power modes between  different run and stop modes. For proper procedures and supported power modes, see an appropriate chip reference
+ * manual. See the smc_power_mode_config_t for required
  * parameters to configure the power mode and the supported options. Other options
- * may need to configure through the hal driver individaully. Refer to hal driver
- * header for details.
+ * may need to be individually configured through the HAL driver. See the HAL driver
+ * header file for details.
  *
- * @param powerModeConfig Power mode config structure smc_power_mode_config_t 
+ * @param powerModeConfig Power mode configuration structure smc_power_mode_config_t 
  */
 smc_manager_error_code_t smc_set_power_mode(const smc_power_mode_config_t *powerModeConfig);
 

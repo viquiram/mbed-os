@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -128,7 +128,7 @@ typedef union _hw_uart_bdh
         uint8_t SBNS : 1;              //!< [5] Stop Bit Number Select
         uint8_t RXEDGIE : 1;           //!< [6] RxD Input Active Edge Interrupt Enable
         uint8_t LBKDIE : 1;            //!< [7] LIN Break Detect Interrupt or DMA
-                                       //!< Request Enable
+                                       //! Request Enable
     } B;
 } hw_uart_bdh_t;
 #endif
@@ -336,7 +336,7 @@ typedef union _hw_uart_bdl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_BDL_SBR field.
-#define BR_UART_BDL_SBR(x)   (HW_UART_BDL(x).B.SBR)
+#define BR_UART_BDL_SBR(x)   (HW_UART_BDL(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_BDL_SBR.
@@ -344,7 +344,7 @@ typedef union _hw_uart_bdl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SBR field to a new value.
-#define BW_UART_BDL_SBR(x, v) (HW_UART_BDL_WR(x, (HW_UART_BDL_RD(x) & ~BM_UART_BDL_SBR) | BF_UART_BDL_SBR(v)))
+#define BW_UART_BDL_SBR(x, v) (HW_UART_BDL_WR(x, v))
 #endif
 //@}
 
@@ -669,11 +669,11 @@ typedef union _hw_uart_c2
         uint8_t TE : 1;                //!< [3] Transmitter Enable
         uint8_t ILIE : 1;              //!< [4] Idle Line Interrupt DMA Transfer Enable
         uint8_t RIE : 1;               //!< [5] Receiver Full Interrupt or DMA Transfer
-                                       //!< Enable
+                                       //! Enable
         uint8_t TCIE : 1;              //!< [6] Transmission Complete Interrupt or DMA
-                                       //!< Transfer Enable
+                                       //! Transfer Enable
         uint8_t TIE : 1;               //!< [7] Transmitter Interrupt or DMA Transfer
-                                       //!< Enable.
+                                       //! Enable.
     } B;
 } hw_uart_c2_t;
 #endif
@@ -1315,7 +1315,7 @@ typedef union _hw_uart_s2
  * period of the start bit search. RAF is cleared when the receiver detects an idle
  * character when C7816[ISO7816E] is cleared/disabled. When C7816[ISO7816E] is
  * enabled, the RAF is cleared if the C7816[TTYPE] = 0 expires or the C7816[TTYPE] =
- * 1 expires. In case C7816[ISO7816E] is set and C7816[TTYPE] = 0, it is possible
+ * 1 expires.In case C7816[ISO7816E] is set and C7816[TTYPE] = 0, it is possible
  * to configure the guard time to 12. However, if a NACK is required to be
  * transmitted, the data transfer actually takes 13 ETU with the 13th ETU slot being a
  * inactive buffer. Therefore, in this situation, the RAF may deassert one ETU
@@ -1589,7 +1589,7 @@ typedef union _hw_uart_c3
         uint8_t ORIE : 1;              //!< [3] Overrun Error Interrupt Enable
         uint8_t TXINV : 1;             //!< [4] Transmit Data Inversion.
         uint8_t TXDIR : 1;             //!< [5] Transmitter Pin Data Direction in
-                                       //!< Single-Wire mode
+                                       //! Single-Wire mode
         uint8_t T8 : 1;                //!< [6] Transmit Bit 8
         uint8_t R8 : 1;                //!< [7] Received Bit 8
     } B;
@@ -1921,7 +1921,7 @@ typedef union _hw_uart_d
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_D_RT field.
-#define BR_UART_D_RT(x)      (HW_UART_D(x).B.RT)
+#define BR_UART_D_RT(x)      (HW_UART_D(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_D_RT.
@@ -1929,7 +1929,7 @@ typedef union _hw_uart_d
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RT field to a new value.
-#define BW_UART_D_RT(x, v)   (HW_UART_D_WR(x, (HW_UART_D_RD(x) & ~BM_UART_D_RT) | BF_UART_D_RT(v)))
+#define BW_UART_D_RT(x, v)   (HW_UART_D_WR(x, v))
 #endif
 //@}
 
@@ -1989,7 +1989,7 @@ typedef union _hw_uart_ma1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_MA1_MA field.
-#define BR_UART_MA1_MA(x)    (HW_UART_MA1(x).B.MA)
+#define BR_UART_MA1_MA(x)    (HW_UART_MA1(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_MA1_MA.
@@ -1997,7 +1997,7 @@ typedef union _hw_uart_ma1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the MA field to a new value.
-#define BW_UART_MA1_MA(x, v) (HW_UART_MA1_WR(x, (HW_UART_MA1_RD(x) & ~BM_UART_MA1_MA) | BF_UART_MA1_MA(v)))
+#define BW_UART_MA1_MA(x, v) (HW_UART_MA1_WR(x, v))
 #endif
 //@}
 
@@ -2057,7 +2057,7 @@ typedef union _hw_uart_ma2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_MA2_MA field.
-#define BR_UART_MA2_MA(x)    (HW_UART_MA2(x).B.MA)
+#define BR_UART_MA2_MA(x)    (HW_UART_MA2(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_MA2_MA.
@@ -2065,7 +2065,7 @@ typedef union _hw_uart_ma2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the MA field to a new value.
-#define BW_UART_MA2_MA(x, v) (HW_UART_MA2_WR(x, (HW_UART_MA2_RD(x) & ~BM_UART_MA2_MA) | BF_UART_MA2_MA(v)))
+#define BW_UART_MA2_MA(x, v) (HW_UART_MA2_WR(x, v))
 #endif
 //@}
 
@@ -3133,11 +3133,6 @@ typedef union _hw_uart_cfifo
 #define BM_UART_CFIFO_RXFLUSH (0x40U)      //!< Bit mask for UART_CFIFO_RXFLUSH.
 #define BS_UART_CFIFO_RXFLUSH (1U)         //!< Bit field size in bits for UART_CFIFO_RXFLUSH.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the UART_CFIFO_RXFLUSH field.
-#define BR_UART_CFIFO_RXFLUSH(x) (BITBAND_ACCESS8(HW_UART_CFIFO_ADDR(x), BP_UART_CFIFO_RXFLUSH))
-#endif
-
 //! @brief Format value for bitfield UART_CFIFO_RXFLUSH.
 #define BF_UART_CFIFO_RXFLUSH(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_UART_CFIFO_RXFLUSH), uint8_t) & BM_UART_CFIFO_RXFLUSH)
 
@@ -3162,11 +3157,6 @@ typedef union _hw_uart_cfifo
 #define BP_UART_CFIFO_TXFLUSH (7U)         //!< Bit position for UART_CFIFO_TXFLUSH.
 #define BM_UART_CFIFO_TXFLUSH (0x80U)      //!< Bit mask for UART_CFIFO_TXFLUSH.
 #define BS_UART_CFIFO_TXFLUSH (1U)         //!< Bit field size in bits for UART_CFIFO_TXFLUSH.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the UART_CFIFO_TXFLUSH field.
-#define BR_UART_CFIFO_TXFLUSH(x) (BITBAND_ACCESS8(HW_UART_CFIFO_ADDR(x), BP_UART_CFIFO_TXFLUSH))
-#endif
 
 //! @brief Format value for bitfield UART_CFIFO_TXFLUSH.
 #define BF_UART_CFIFO_TXFLUSH(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_UART_CFIFO_TXFLUSH), uint8_t) & BM_UART_CFIFO_TXFLUSH)
@@ -3428,7 +3418,7 @@ typedef union _hw_uart_twfifo
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_TWFIFO_TXWATER field.
-#define BR_UART_TWFIFO_TXWATER(x) (HW_UART_TWFIFO(x).B.TXWATER)
+#define BR_UART_TWFIFO_TXWATER(x) (HW_UART_TWFIFO(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_TWFIFO_TXWATER.
@@ -3436,7 +3426,7 @@ typedef union _hw_uart_twfifo
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TXWATER field to a new value.
-#define BW_UART_TWFIFO_TXWATER(x, v) (HW_UART_TWFIFO_WR(x, (HW_UART_TWFIFO_RD(x) & ~BM_UART_TWFIFO_TXWATER) | BF_UART_TWFIFO_TXWATER(v)))
+#define BW_UART_TWFIFO_TXWATER(x, v) (HW_UART_TWFIFO_WR(x, v))
 #endif
 //@}
 
@@ -3495,7 +3485,7 @@ typedef union _hw_uart_tcfifo
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_TCFIFO_TXCOUNT field.
-#define BR_UART_TCFIFO_TXCOUNT(x) (HW_UART_TCFIFO(x).B.TXCOUNT)
+#define BR_UART_TCFIFO_TXCOUNT(x) (HW_UART_TCFIFO(x).U)
 #endif
 //@}
 
@@ -3561,7 +3551,7 @@ typedef union _hw_uart_rwfifo
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_RWFIFO_RXWATER field.
-#define BR_UART_RWFIFO_RXWATER(x) (HW_UART_RWFIFO(x).B.RXWATER)
+#define BR_UART_RWFIFO_RXWATER(x) (HW_UART_RWFIFO(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_RWFIFO_RXWATER.
@@ -3569,7 +3559,7 @@ typedef union _hw_uart_rwfifo
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RXWATER field to a new value.
-#define BW_UART_RWFIFO_RXWATER(x, v) (HW_UART_RWFIFO_WR(x, (HW_UART_RWFIFO_RD(x) & ~BM_UART_RWFIFO_RXWATER) | BF_UART_RWFIFO_RXWATER(v)))
+#define BW_UART_RWFIFO_RXWATER(x, v) (HW_UART_RWFIFO_WR(x, v))
 #endif
 //@}
 
@@ -3628,7 +3618,7 @@ typedef union _hw_uart_rcfifo
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_RCFIFO_RXCOUNT field.
-#define BR_UART_RCFIFO_RXCOUNT(x) (HW_UART_RCFIFO(x).B.RXCOUNT)
+#define BR_UART_RCFIFO_RXCOUNT(x) (HW_UART_RCFIFO(x).U)
 #endif
 //@}
 
@@ -3874,11 +3864,11 @@ typedef union _hw_uart_ie7816
     {
         uint8_t RXTE : 1;              //!< [0] Receive Threshold Exceeded Interrupt Enable
         uint8_t TXTE : 1;              //!< [1] Transmit Threshold Exceeded Interrupt
-                                       //!< Enable
+                                       //! Enable
         uint8_t GTVE : 1;              //!< [2] Guard Timer Violated Interrupt Enable
         uint8_t RESERVED0 : 1;         //!< [3]
         uint8_t INITDE : 1;            //!< [4] Initial Character Detected Interrupt
-                                       //!< Enable
+                                       //! Enable
         uint8_t BWTE : 1;              //!< [5] Block Wait Timer Interrupt Enable
         uint8_t CWTE : 1;              //!< [6] Character Wait Timer Interrupt Enable
         uint8_t WTE : 1;               //!< [7] Wait Timer Interrupt Enable
@@ -4439,7 +4429,7 @@ typedef union _hw_uart_wp7816_t_type0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_WP7816_T_TYPE0_WI field.
-#define BR_UART_WP7816_T_TYPE0_WI(x) (HW_UART_WP7816_T_TYPE0(x).B.WI)
+#define BR_UART_WP7816_T_TYPE0_WI(x) (HW_UART_WP7816_T_TYPE0(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_WP7816_T_TYPE0_WI.
@@ -4447,7 +4437,7 @@ typedef union _hw_uart_wp7816_t_type0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the WI field to a new value.
-#define BW_UART_WP7816_T_TYPE0_WI(x, v) (HW_UART_WP7816_T_TYPE0_WR(x, (HW_UART_WP7816_T_TYPE0_RD(x) & ~BM_UART_WP7816_T_TYPE0_WI) | BF_UART_WP7816_T_TYPE0_WI(v)))
+#define BW_UART_WP7816_T_TYPE0_WI(x, v) (HW_UART_WP7816_T_TYPE0_WR(x, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -4472,7 +4462,7 @@ typedef union _hw_uart_wp7816_t_type1
     {
         uint8_t BWI : 4;               //!< [3:0] Block Wait Time Integer(C7816[TTYPE] = 1)
         uint8_t CWI : 4;               //!< [7:4] Character Wait Time Integer (C7816[TTYPE]
-                                       //!< = 1)
+                                       //! = 1)
     } B;
 } hw_uart_wp7816_t_type1_t;
 #endif
@@ -4607,7 +4597,7 @@ typedef union _hw_uart_wn7816
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_WN7816_GTN field.
-#define BR_UART_WN7816_GTN(x) (HW_UART_WN7816(x).B.GTN)
+#define BR_UART_WN7816_GTN(x) (HW_UART_WN7816(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_WN7816_GTN.
@@ -4615,7 +4605,7 @@ typedef union _hw_uart_wn7816
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the GTN field to a new value.
-#define BW_UART_WN7816_GTN(x, v) (HW_UART_WN7816_WR(x, (HW_UART_WN7816_RD(x) & ~BM_UART_WN7816_GTN) | BF_UART_WN7816_GTN(v)))
+#define BW_UART_WN7816_GTN(x, v) (HW_UART_WN7816_WR(x, v))
 #endif
 //@}
 
@@ -4678,7 +4668,7 @@ typedef union _hw_uart_wf7816
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_WF7816_GTFD field.
-#define BR_UART_WF7816_GTFD(x) (HW_UART_WF7816(x).B.GTFD)
+#define BR_UART_WF7816_GTFD(x) (HW_UART_WF7816(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_WF7816_GTFD.
@@ -4686,7 +4676,7 @@ typedef union _hw_uart_wf7816
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the GTFD field to a new value.
-#define BW_UART_WF7816_GTFD(x, v) (HW_UART_WF7816_WR(x, (HW_UART_WF7816_RD(x) & ~BM_UART_WF7816_GTFD) | BF_UART_WF7816_GTFD(v)))
+#define BW_UART_WF7816_GTFD(x, v) (HW_UART_WF7816_WR(x, v))
 #endif
 //@}
 
@@ -4871,7 +4861,7 @@ typedef union _hw_uart_tl7816
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the UART_TL7816_TLEN field.
-#define BR_UART_TL7816_TLEN(x) (HW_UART_TL7816(x).B.TLEN)
+#define BR_UART_TL7816_TLEN(x) (HW_UART_TL7816(x).U)
 #endif
 
 //! @brief Format value for bitfield UART_TL7816_TLEN.
@@ -4879,7 +4869,7 @@ typedef union _hw_uart_tl7816
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TLEN field to a new value.
-#define BW_UART_TL7816_TLEN(x, v) (HW_UART_TL7816_WR(x, (HW_UART_TL7816_RD(x) & ~BM_UART_TL7816_TLEN) | BF_UART_TL7816_TLEN(v)))
+#define BW_UART_TL7816_TLEN(x, v) (HW_UART_TL7816_WR(x, v))
 #endif
 //@}
 

@@ -55,7 +55,7 @@
 #define HW_CHAN7 (7U) /*!< Channel number for CHAN7.*/
 
 #define FTM_COMBINE_CHAN_CTRL_WIDTH  (8U)
-/*! @brief flextimer clock source selection.*/
+/*! @brief FlexTimer clock source selection*/
 typedef enum _ftm_clock_source
 {
      kClock_source_FTM_None = 0,
@@ -64,14 +64,14 @@ typedef enum _ftm_clock_source
      kClock_source_FTM_ExternalClk
 }ftm_clock_source_t;
 
-/*! @brief flextimer counting mode, up or down*/
+/*! @brief FlexTimer counting mode, up-down*/
 typedef enum _ftm_counting_mode
 {
      kCounting_FTM_UP = 0,
      kCounting_FTM_Down
 }ftm_counting_mode_t;
 
-/*! @brief flextimer prescaler factor selection for clock source*/
+/*! @brief FlexTimer pre-scaler factor selection for the clock source*/
 typedef enum _ftm_clock_ps
 {
      kFtmDividedBy1 = 0,
@@ -84,7 +84,7 @@ typedef enum _ftm_clock_ps
      kFtmDividedBy128
 }ftm_clock_ps_t;
 
-/*! @brief flextimer phase for qualdrature*/
+/*! @brief FlexTimer phase for the quadrature*/
 typedef enum _ftm_phase_t
 {
     kFtmPhaseA = 0,
@@ -92,7 +92,7 @@ typedef enum _ftm_phase_t
 }ftm_phase_t;
 
 
-/*! @brief flextimer prescaler factor for deadtime insertion*/
+/*! @brief FlexTimer pre-scaler factor for the deadtime insertion*/
 typedef enum _ftm_deadtime_ps
 {
      kFtmDivided0 = 0,
@@ -101,7 +101,7 @@ typedef enum _ftm_deadtime_ps
      kFtmDivided16 = 3,
 }ftm_deadtime_ps_t;
 
-/*! @brief flextimer operation mode, capture, output, dual or quad*/
+/*! @brief FlexTimer operation mode, capture, output, dual, or quad*/
  typedef enum _ftm_config_mode_t
  {
     kFtmInputCapture,
@@ -113,7 +113,7 @@ typedef enum _ftm_deadtime_ps
     kFtmQuadCapture
  }ftm_config_mode_t;
 
-/*! @brief flextimer input capture edge mode, rising edge or falling edge */
+/*! @brief FlexTimer input capture edge mode, rising edge, or falling edge */
  typedef enum _ftm_input_capture_edge_mode_t
  {
    kFtmRisingEdge = 0,
@@ -121,28 +121,29 @@ typedef enum _ftm_deadtime_ps
    kFtmRisingAndFalling
  }ftm_input_capture_edge_mode_t;
 
-/*! @brief flextimer output compare edge mode, Toggle or clear */
+/*! @brief FlexTimer output compare edge mode. Toggle, clear or set.*/
  typedef enum _ftm_output_compare_edge_mode_t
  {
    kFtmToggleOnMatch = 0,
-   kFtmClearOnMatch
+   kFtmClearOnMatch,
+   kFtmSetOnMatch
  }ftm_output_compare_edge_mode_t;
 
-/*! @brief flextimer pwm output pulse mode, high-true or low-true on match up */
+/*! @brief FlexTimer PWM output pulse mode, high-true or low-true on match up */
  typedef enum _ftm_pwm_edge_mode_t
  {
    kFtmHighTrue = 0,
    kFtmLowTrue
  }ftm_pwm_edge_mode_t;
 
- /*! @brief flextimer dual capture edge mode, one shot or continuous */
+ /*! @brief FlexTimer dual capture edge mode, one shot or continuous */
  typedef enum _ftm_dual_capture_edge_mode_t
  {
    kFtmOneShout = 0,
    kFtmContinuous
  }ftm_dual_capture_edge_mode_t;
 
-/*! @brief flextimer edge mode*/
+/*! @brief FlexTimer edge mode*/
  typedef union _ftm_edge_mode_t
  {
     ftm_input_capture_edge_mode_t  input_capture_edge_mode;
@@ -150,17 +151,17 @@ typedef enum _ftm_deadtime_ps
     ftm_pwm_edge_mode_t            ftm_pwm_edge_mode;
     ftm_dual_capture_edge_mode_t   ftm_dual_capture_edge_mode;
  }ftm_edge_mode_t;
-/*! @brief flextimer moduler configuration*/
+/*! @brief FlexTimer module configuration*/
 typedef struct FTMConfig {
   ftm_config_mode_t   mode;
-  uint8_t             channel;   /*channle or channel pair in combine mode*/
+  uint8_t             channel;   /*channel or channel pair in combine mode*/
   ftm_edge_mode_t     edge_mode;
 
 }ftm_config_t;
 /*FTM timer control*/
 /*!
- * @brief set FTM clock source.
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM clock source.
+ * @param instance The FTM peripheral instance number
  * @param clock  The FTM peripheral clock selection
  * bits:00: No clock  01: system clock  10 :fixed clock 11:External clock
  */
@@ -171,9 +172,9 @@ static inline void ftm_hal_set_clock_source(uint8_t instance, ftm_clock_source_t
 }
 
 /*!
- * @brief set FTM clock divider.
- * @param instance The FTM peripheral instance number.
- * @param ps  The FTM peripheral clock prescale divider
+ * @brief Sets the FTM clock divider.
+ * @param instance The FTM peripheral instance number
+ * @param ps  The FTM peripheral clock pre-scale divider
  */
 static inline void ftm_hal_set_clock_ps(uint8_t instance, ftm_clock_ps_t ps)
 {
@@ -182,8 +183,8 @@ static inline void ftm_hal_set_clock_ps(uint8_t instance, ftm_clock_ps_t ps)
 }
 
 /*!
- * @brief enable FTM peripheral timer overflow interrup.
- * @param instance The FTM peripheral instance number.
+ * @brief Enables the FTM peripheral timer overflow interrupt.
+ * @param instance The FTM peripheral instance number
  */
 static inline void ftm_hal_enable_timer_overflow_interrupt(uint8_t instance)
 {
@@ -192,8 +193,8 @@ static inline void ftm_hal_enable_timer_overflow_interrupt(uint8_t instance)
 }
 
 /*!
- * @brief disable FTM peripheral timer overflow interrup.
- * @param instance The FTM peripheral instance number.
+ * @brief Disables the FTM peripheral timer overflow interrupt.
+ * @param instance The FTM peripheral instance number
  */
 static inline void ftm_hal_disable_timer_overflow_interrupt(uint8_t instance)
 {
@@ -202,8 +203,8 @@ static inline void ftm_hal_disable_timer_overflow_interrupt(uint8_t instance)
 }
 
 /*!
- * @brief return FTM peripheral timer overflow interrup flag.
- * @param instance The FTM peripheral instance number.
+ * @brief Returns the FTM peripheral timer overflow interrupt flag.
+ * @param instance The FTM peripheral instance number
  * @retval true if overflow, false if not
  */
 static inline bool ftm_is_timer_overflow(uint8_t instance)
@@ -213,9 +214,9 @@ static inline bool ftm_is_timer_overflow(uint8_t instance)
 }
 
 /*!
- * @brief set FTM center-aligned PWM select.
- * @param instance The FTM peripheral instance number.
- * @param mode 1:upcounting mode 0:up_down counting mode.
+ * @brief Sets the FTM center-aligned PWM select.
+ * @param instance The FTM peripheral instance number
+ * @param mode 1:upcounting mode 0:up_down counting mode
  */
 static inline void ftm_hal_set_cpwms(uint8_t instance, uint8_t mode)
 {
@@ -224,8 +225,8 @@ static inline void ftm_hal_set_cpwms(uint8_t instance, uint8_t mode)
 }
 
 /*!
- * @brief set FTM peripheral current counter value.
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral current counter value.
+ * @param instance The FTM peripheral instance number
  * @param val  FTM timer counter value to be set
  */
 static inline void  ftm_hal_set_counter(uint8_t instance,uint16_t val)
@@ -235,8 +236,8 @@ static inline void  ftm_hal_set_counter(uint8_t instance,uint16_t val)
 }
 
 /*!
- * @brief return FTM peripheral current counter value.
- * @param instance The FTM peripheral instance number.
+ * @brief Returns the FTM peripheral current counter value.
+ * @param instance The FTM peripheral instance number
  * @retval current FTM timer counter value
  */
 static inline uint16_t  ftm_hal_get_counter(uint8_t instance)
@@ -246,8 +247,8 @@ static inline uint16_t  ftm_hal_get_counter(uint8_t instance)
 }
 
 /*!
- * @brief set FTM peripheral timer modulo value,
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer modulo value.
+ * @param instance The FTM peripheral instance number
  * @param val The value to be set to the timer modulo
  */
 static inline void ftm_hal_set_mod(uint8_t instance, uint16_t val)
@@ -257,9 +258,9 @@ static inline void ftm_hal_set_mod(uint8_t instance, uint16_t val)
 }
 
 /*!
- * @brief return FTM peripheral counter modulo value.
- * @param instance The FTM peripheral instance number.
- * @retval FTM timer modula value
+ * @brief Returns the FTM peripheral counter modulo value.
+ * @param instance The FTM peripheral instance number
+ * @retval FTM timer modulo value
  */
 static inline uint16_t  ftm_hal_get_mod(uint8_t instance)
 {
@@ -268,8 +269,8 @@ static inline uint16_t  ftm_hal_get_mod(uint8_t instance)
 }
 
 /*!
- * @brief set FTM peripheral timer counter initial value,
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer counter initial value.
+ * @param instance The FTM peripheral instance number
  * @param val initial value to be set
  */
 static inline void ftm_hal_set_counter_init_val(uint8_t instance, uint16_t val)
@@ -279,9 +280,9 @@ static inline void ftm_hal_set_counter_init_val(uint8_t instance, uint16_t val)
 }
 
 /*!
- * @brief return FTM peripheral counter initail value.
- * @param instance The FTM peripheral instance number.
- * @retval FTM timer counter initail value
+ * @brief Returns the FTM peripheral counter initial value.
+ * @param instance The FTM peripheral instance number
+ * @retval FTM timer counter initial value
  */
 static inline uint16_t  ftm_hal_get_counter_init_val(uint8_t instance)
 {
@@ -289,10 +290,10 @@ static inline uint16_t  ftm_hal_get_counter_init_val(uint8_t instance)
     return BR_FTM_CNTIN_INIT(instance);
 }
 
-/*FTM channel operate mode(Mode, edge and level selection) for capture, output, pwm, combine, dual or quad*/
+/*FTM channel operating mode (Mode, edge and level selection) for capture, output, PWM, combine, dual or quad*/
 /*!
- * @brief set FTM peripheral timer channel mode,
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer channel mode.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
 * @param selection The mode to be set valid value MSnB:MSnA :00,01, 10, 11
  */
@@ -305,8 +306,8 @@ static inline void ftm_hal_set_channel_MSnBA_mode(uint8_t instance, uint8_t chan
 }
 
 /*!
- * @brief set FTM peripheral timer channel edge level,
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer channel edge level.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
 * @param level The rising or falling edge to be set, valid value ELSnB:ELSnA :00,01, 10, 11
  */
@@ -318,8 +319,8 @@ static inline void ftm_hal_set_channel_edge_level(uint8_t instance, uint8_t chan
 }
 
 /*!
- * @brief get FTM peripheral timer channel mode,
- * @param instance The FTM peripheral instance number.
+ * @brief Gets the FTM peripheral timer channel mode.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
 * @retval The MSnB:MSnA mode value, will be 00,01, 10, 11
  */
@@ -330,8 +331,8 @@ static inline uint8_t ftm_hal_get_channel_mode(uint8_t instance, uint8_t channel
 }
 
 /*!
- * @brief get FTM peripheral timer channel edge level,
- * @param instance The FTM peripheral instance number.
+ * @brief Gets the FTM peripheral timer channel edge level.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
 * @retval The ELSnB:ELSnA mode value, will be 00,01, 10, 11
  */
@@ -342,8 +343,8 @@ static inline uint8_t ftm_hal_get_channel_edge_level(uint8_t instance, uint8_t c
 }
 
 /*!
- * @brief enable or disable FTM peripheral timer channel dma,
- * @param instance The FTM peripheral instance number.
+ * @brief Enables or disables the FTM peripheral timer channel DMA.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
 * @param val enable or disable
  */
@@ -354,8 +355,8 @@ static inline void ftm_hal_enable_channle_dma(uint8_t instance, uint8_t channel,
 }
 
 /*!
- * @brief return if FTM peripheral timer channel dma is enabled,
- * @param instance The FTM peripheral instance number.
+ * @brief Returns whether the FTM peripheral timer channel DMA is enabled.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
 *  @retval true if enabled, false if disabled
  */
@@ -366,8 +367,8 @@ static inline bool ftm_hal_is_channel_dma(uint8_t instance, uint8_t channel, boo
 }
 
 /*!
- * @brief enable FTM peripheral timer channel(n) interrupt.
- * @param instance The FTM peripheral instance number.
+ * @brief Enables the FTM peripheral timer channel(n) interrupt.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
  */
 static inline void ftm_hal_enable_channel_interrupt(uint8_t instance, uint8_t channel)
@@ -376,8 +377,8 @@ static inline void ftm_hal_enable_channel_interrupt(uint8_t instance, uint8_t ch
     BW_FTM_CnSC_CHIE(instance, channel, 1);
 }
 /*!
- * @brief disable FTM peripheral timer channel(n) interrupt.
- * @param instance The FTM peripheral instance number.
+ * @brief Disables the FTM peripheral timer channel(n) interrupt.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number
  */
 static inline void ftm_hal_disable_channel_interrupt(uint8_t instance, uint8_t channel)
@@ -387,10 +388,10 @@ static inline void ftm_hal_disable_channel_interrupt(uint8_t instance, uint8_t c
 }
 
 /*!
- * @brief return if any event for FTM peripheral timer channel has occourred ,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @retval true if event occourred, false otherwise
+ * @brief Returns whether any event for the FTM peripheral timer channel has occurred.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @retval true if event occurred, false otherwise.
  */
 static inline bool ftm_is_channel_event_occurred(uint8_t instance, uint8_t channel)
 {
@@ -398,11 +399,11 @@ static inline bool ftm_is_channel_event_occurred(uint8_t instance, uint8_t chann
   return (BR_FTM_CnSC_CHF(instance, channel))? true : false;
 }
 
-/*FTM channle control*/
+/*FTM channel control*/
 /*!
- * @brief set FTM peripheral timer channel counter value,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Sets the FTM peripheral timer channel counter value.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @param val counter value to be set
  */
 static inline void ftm_hal_set_channel_count_value(uint8_t instance, uint8_t channel, uint16_t val)
@@ -412,9 +413,9 @@ static inline void ftm_hal_set_channel_count_value(uint8_t instance, uint8_t cha
 }
 
 /*!
- * @brief get FTM peripheral timer channel counter value,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Gets the FTM peripheral timer channel counter value.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @retval val return current channel counter value
  */
 static inline uint16_t ftm_hal_get_channel_count_value(uint8_t instance, uint8_t channel, uint16_t val)
@@ -424,9 +425,9 @@ static inline uint16_t ftm_hal_get_channel_count_value(uint8_t instance, uint8_t
 }
 
 /*!
- * @brief get FTM peripheral timer  channel event status
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Gets the FTM peripheral timer  channel event status.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @retval val return current channel event status value
  */
 static inline uint32_t ftm_hal_get_channel_event_status(uint8_t instance, uint8_t channel)
@@ -437,9 +438,9 @@ static inline uint32_t ftm_hal_get_channel_event_status(uint8_t instance, uint8_
 }
 
 /*!
- * @brief clear FTM peripheral timer all channel event status ,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Clears the FTM peripheral timer all channel event status.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @retval val return current channel counter value
  */
 static inline void ftm_hal_clear_channel_event_status(uint8_t instance, uint8_t channel)
@@ -449,9 +450,9 @@ static inline void ftm_hal_clear_channel_event_status(uint8_t instance, uint8_t 
 }
 
 /*!
- * @brief set FTM peripheral timer channel output mask,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Sets the FTM peripheral timer channel output mask.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @param mask mask to be set 0 or 1, unmasked or masked
  */
 static inline void ftm_hal_set_channel_output_mask(uint8_t instance, uint8_t channel, bool  mask)
@@ -462,9 +463,9 @@ static inline void ftm_hal_set_channel_output_mask(uint8_t instance, uint8_t cha
 }
 
 /*!
- * @brief set FTM peripheral timer channel output initial state 0 or 1,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Sets the FTM peripheral timer channel output initial state 0 or 1.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @param state counter value to be set 0 or 1
  */
 static inline void ftm_hal_set_channel_output_init_state(uint8_t instance, uint8_t channel, uint8_t state)
@@ -475,10 +476,10 @@ static inline void ftm_hal_set_channel_output_init_state(uint8_t instance, uint8
 }
 
 /*!
- * @brief set FTM peripheral timer channel output polarity,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param pol polarity to be set 0 or 1,
+ * @brief Sets the FTM peripheral timer channel output polarity.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param pol polarity to be set 0 or 1
  */
 static inline void ftm_hal_set_channel_output_polarity(uint8_t instance, uint8_t channel, uint8_t pol)
 {
@@ -487,9 +488,9 @@ static inline void ftm_hal_set_channel_output_polarity(uint8_t instance, uint8_t
    HW_FTM_POL_SET(instance, (uint8_t)(pol<<channel));
 }
 /*!
- * @brief set FTM peripheral timer channel input polarity,
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
+ * @brief Sets the FTM peripheral timer channel input polarity.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
  * @param pol polarity  to be set, 0: active high, 1:active low
  */
 static inline void ftm_hal_set_channel_fault_input_polarity(uint8_t instance, uint8_t channel, uint8_t pol)
@@ -500,11 +501,11 @@ static inline void ftm_hal_set_channel_fault_input_polarity(uint8_t instance, ui
 }
 
 
-/*Feature mode selection hal*/
+/*Feature mode selection HAL*/
     /*FTM fault control*/
 /*!
- * @brief enable FTM peripheral timer fault interrupt.
- * @param instance The FTM peripheral instance number.
+ * @brief Enables the FTM peripheral timer fault interrupt.
+ * @param instance The FTM peripheral instance number
  */
 static inline void ftm_hal_enable_fault_interrupt(uint8_t instance)
 {
@@ -513,8 +514,8 @@ static inline void ftm_hal_enable_fault_interrupt(uint8_t instance)
 }
 
 /*!
- * @brief disable FTM peripheral timer fault interrupt.
- * @param instance The FTM peripheral instance number.
+ * @brief Disables the FTM peripheral timer fault interrupt.
+ * @param instance The FTM peripheral instance number
  */
 static inline void ftm_hal_disable_fault_interrupt(uint8_t instance)
 {
@@ -523,8 +524,8 @@ static inline void ftm_hal_disable_fault_interrupt(uint8_t instance)
 }
 
 /*!
- * @brief set FTM peripheral timer fault control mode.
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer fault control mode.
+ * @param instance The FTM peripheral instance number
  * @param mode, valid number bits:00, 01, 10,11 (1, 2, 3, 4)
  */
 static inline void ftm_hal_set_fault_control_mode(uint8_t instance, uint8_t mode)
@@ -534,8 +535,8 @@ static inline void ftm_hal_set_fault_control_mode(uint8_t instance, uint8_t mode
 }
 
 /*!
- * @brief enable FTM peripheral timer capture test.
- * @param instance The FTM peripheral instance number.
+ * @brief Enables the FTM peripheral timer capture test.
+ * @param instance The FTM peripheral instance number
  * @param enable  true to enable, false to disable
  */
 static inline void ftm_hal_enable_capture_test(uint8_t instance, bool enable)
@@ -545,8 +546,8 @@ static inline void ftm_hal_enable_capture_test(uint8_t instance, bool enable)
 }
 
 /*!
- * @brief enable FTM peripheral timer write protection.
- * @param instance The FTM peripheral instance number.
+ * @brief Enables the FTM peripheral timer write protection.
+ * @param instance The FTM peripheral instance number
  * @param enable  true to enable, false to disable
  */
 static inline void ftm_hal_enable_write_protection(uint8_t instance, bool enable)
@@ -556,9 +557,9 @@ static inline void ftm_hal_enable_write_protection(uint8_t instance, bool enable
 }
 
 /*!
- * @brief enable FTM peripheral timer group.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable
+ * @brief Enables the FTM peripheral timer group.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_ftm_enable(uint8_t instance, bool enable)
 {
@@ -568,9 +569,9 @@ static inline void ftm_hal_ftm_enable(uint8_t instance, bool enable)
 }
 
 /*!
- * @brief enable FTM peripheral timer channel output initialization.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable
+ * @brief Enables the FTM peripheral timer channel output initialization.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_channel_init_output(uint8_t instance, bool enable)
 {
@@ -579,9 +580,9 @@ static inline void ftm_hal_enable_channel_init_output(uint8_t instance, bool ena
 }
 
 /*!
- * @brief set FTM peripheral timer sync mode .
- * @param instance The FTM peripheral instance number.
- * @param enable  true no restriction both software and hardware sync, false only software sync
+ * @brief Sets the FTM peripheral timer sync mode.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True no restriction both software and hardware sync, false only software sync.
  */
 static inline void ftm_hal_set_pwm_sync_mdoe(uint8_t instance, bool enable)
 {
@@ -591,9 +592,9 @@ static inline void ftm_hal_set_pwm_sync_mdoe(uint8_t instance, bool enable)
 
 /*FTM synchronization control*/
 /*!
- * @brief enable FTM peripheral timer software trigger.
+ * @brief Enables the FTM peripheral timer software trigger.
  * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_software_trigger(uint8_t instance, bool enable)
 {
@@ -602,17 +603,17 @@ static inline void ftm_hal_enable_software_trigger(uint8_t instance, bool enable
 }
 
 /*!
- * @brief set FTM peripheral timer hardware trigger.
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer hardware trigger.
+ * @param instance The FTM peripheral instance number
  * @param trigger_num  0, 1,2 for trigger0, trigger1 and trigger3
- * @param enable true to enable, 1 to enable
+ * @param enable True to enable, 1 to enable
  */
 void ftm_hal_set_hardware_trigger(uint8_t instance, uint8_t trigger_num, bool enable);
 
 /*!
- * @brief enable FTM peripheral timer output mask update by pwm sync.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable pwm sycn , false to enable outmask in rising edges of system clock
+ * @brief Enables the FTM peripheral timer output mask update by PWM sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable PWM sync, false to enable outmask in the rising edges of the system clock
  */
 static inline void ftm_hal_enable_output_mask_sync_by_pwm(uint8_t instance, bool enable)
 {
@@ -621,9 +622,9 @@ static inline void ftm_hal_enable_output_mask_sync_by_pwm(uint8_t instance, bool
 }
 
 /*!
- * @brief enable FTM peripheral timer counter re-initialized by sync.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to update FTM counter when triggered , false to count normally.
+ * @brief Enables the FTM peripheral timer counter re-initialized by sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to update FTM counter when triggered , false to count normally
  */
 static inline void ftm_hal_enable_count_reinit_sync(uint8_t instance, bool enable)
 {
@@ -631,9 +632,9 @@ static inline void ftm_hal_enable_count_reinit_sync(uint8_t instance, bool enabl
    BW_FTM_SYNC_REINIT(instance, enable?1:0);
 }
 /*!
- * @brief enable FTM peripheral timer maximum loading points.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer maximum loading points.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_max_loading(uint8_t instance, bool enable)
 {
@@ -641,9 +642,9 @@ static inline void ftm_hal_enable_max_loading(uint8_t instance, bool enable)
    BW_FTM_SYNC_CNTMAX(instance, enable?1:0);
 }
 /*!
- * @brief enable FTM peripheral timer minimum loading points.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer minimum loading points.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_min_loading(uint8_t instance, bool enable)
 {
@@ -651,23 +652,32 @@ static inline void ftm_hal_enable_min_loading(uint8_t instance, bool enable)
    BW_FTM_SYNC_CNTMIN(instance, enable?1:0);
 }
 
-/*combine channel control*/
-/*dual capture control*/
+/*!
+ * @brief Combines the channel control.
+ *
+ * Returns an index for each channel pair.
+ *
+ * @param channel  The FTM peripheral channel number.
+ * @return 0 for channel pair 0 & 1\n
+ *         1 for channel pair 2 & 3\n
+ *         2 for channel pair 4 & 5\n
+ *         3 for channel pair 6 & 7
+ */
 static uint32_t get_channel_pair_index(uint8_t channel)
 {
     if((channel == HW_CHAN0) || (channel == HW_CHAN1))
     {
         return 0;
     }
-    else if((channel == HW_CHAN2) || (channel == HW_CHAN3)) 
+    else if((channel == HW_CHAN2) || (channel == HW_CHAN3))
     {
         return 1;
     }
-    else if((channel == HW_CHAN4) || (channel == HW_CHAN5)) 
+    else if((channel == HW_CHAN4) || (channel == HW_CHAN5))
     {
         return 2;
     }
-    else 
+    else
     {
         return 3;
     }
@@ -675,10 +685,10 @@ static uint32_t get_channel_pair_index(uint8_t channel)
 
 /*set DECAPEN bit*/
 /*!
- * @brief enable FTM peripheral timer dual edge capture mode.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer dual edge capture mode.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_dual_capture(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -689,10 +699,10 @@ static inline void ftm_hal_enable_dual_capture(uint8_t instance, uint8_t channel
 }
 
 /*!
- * @brief enable FTM peripheral timer channel pair fault control.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer channel pair fault control.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline  void ftm_hal_enable_dual_channel_fault(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -703,10 +713,10 @@ static inline  void ftm_hal_enable_dual_channel_fault(uint8_t instance, uint8_t 
 }
 
 /*!
- * @brief enable FTM peripheral timer channel pair counter pwm sync.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer channel pair counter PWM sync.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_dual_channel_pwm_sync(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -717,10 +727,10 @@ static inline void ftm_hal_enable_dual_channel_pwm_sync(uint8_t instance, uint8_
 }
 
 /*!
- * @brief enable FTM peripheral timer channel pair deadtime.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer channel pair deadtime.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_dual_channel_deadtime(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -731,10 +741,10 @@ static inline void ftm_hal_enable_dual_channel_deadtime(uint8_t instance, uint8_
 }
 
 /*!
- * @brief enable FTM peripheral timer channel dual edge capture decap, not decapen.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer channel dual edge capture decap, not decapen.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_dual_channel_decap(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -745,10 +755,10 @@ static inline void ftm_hal_enable_dual_channel_decap(uint8_t instance, uint8_t c
 }
 
 /*!
- * @brief enable FTM peripheral timer channel pair output complement mode.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM peripheral timer channel pair output complement mode.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_dual_channel_comp(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -760,10 +770,10 @@ static inline void ftm_hal_enable_dual_channel_comp(uint8_t instance, uint8_t ch
 }
 
 /*!
- * @brief enable FTM peripheral timer channel pair output combine mode.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable channle pair to combine, false to disable.
+ * @brief Enables the FTM peripheral timer channel pair output combine mode.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable channel pair to combine, false to disable
  */
 static inline void ftm_hal_enable_dual_channel_combine(uint8_t instance, uint8_t channel, bool enable)
 {
@@ -775,8 +785,8 @@ static inline void ftm_hal_enable_dual_channel_combine(uint8_t instance, uint8_t
 
 /*FTM dead time insertion control*/
 /*!
- * @brief set FTM deadtime divider.
- * @param instance The FTM peripheral instance number.
+ * @brief Set the FTM deadtime divider.
+ * @param instance The FTM peripheral instance number
  * @param divider  The FTM peripheral  prescale divider
     0x :divided by 1, 10: divided by 4 11:divided by 16
  */
@@ -787,8 +797,8 @@ static inline void ftm_hal_set_deadtime_prescale(uint8_t instance, ftm_deadtime_
 }
 
 /*!
- * @brief set FTM deadtime value.
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM deadtime value.
+ * @param instance The FTM peripheral instance number
  * @param divider  The FTM peripheral  prescale divider
     count: 0, no counts inserted  1: 1 count is inserted 2: 2 count is inserted....
  */
@@ -797,19 +807,19 @@ static inline void ftm_hal_set_deadtime_count(uint8_t instance, uint8_t count)
    assert(instance < HW_FTM_INSTANCE_COUNT);
    BW_FTM_DEADTIME_DTPS(instance, count);
 }
-/*FTM ecternal trigger */
+/*FTM external trigger */
 /*!
- * @brief enable the generation of FTM peripheral timer channel trigger when FTM counter is equal to its initial value.
-   channel 6 and 7 cannot be used as trigger
- * @param instance The FTM peripheral instance number.
- * @param channel channle to be enabled,  valid value 0, 1, 2, 3, 4, 5
- * @param enable  true to enable, false to disable.
+ * @brief Enables the generation of the FTM peripheral timer channel trigger when the FTM counter is equal to its initial value.
+   Channels 6 and 7 cannot be used as triggers.
+ * @param instance The FTM peripheral instance number
+ * @param channel Channel to be enabled,  valid value 0, 1, 2, 3, 4, 5
+ * @param enable  True to enable, false to disable
  */
 void ftm_hal_enable_channel_trigger(uint8_t instance, uint8_t channel, bool val);
 /*!
- * @brief check if any channel trigger event has occurred.
- * @param instance The FTM peripheral instance number.
- * @retval true if there is trigger event, false if not.
+ * @brief Checks whether any channel trigger event has occurred.
+ * @param instance The FTM peripheral instance number
+ * @retval True if there is a trigger event, false if not.
  */
 static inline bool ftm_hal_is_channel_trigger_generated(uint8_t instance, uint8_t channel)
 {
@@ -818,11 +828,11 @@ static inline bool ftm_hal_is_channel_trigger_generated(uint8_t instance, uint8_
 }
 
 
-/*fault mode status*/
+/*Fault mode status*/
 /*!
- * @brief get FTM detected fault input .
- * @param instance The FTM peripheral instance number.
- * @retval return faulty byte.
+ * @brief Gets the FTM detected fault input.
+ * @param instance The FTM peripheral instance number
+ * @retval Return faulty byte
  */
 static inline uint8_t ftm_hal_get_detected_fault_input(uint8_t instance)
 {
@@ -830,9 +840,9 @@ static inline uint8_t ftm_hal_get_detected_fault_input(uint8_t instance)
    return  (HW_FTM_FMS(instance).U &0x0f);
 }
 /*!
- * @brief check if write protection is enabled.
- * @param instance The FTM peripheral instance number.
- * @retval true if enabled, false if not.
+ * @brief Checks whether the write protection is enabled.
+ * @param instance The FTM peripheral instance number
+ * @retval True if enabled, false if not
  */
 static inline bool    ftm_hal_is_write_protection_enable(uint8_t instance)
 {
@@ -842,16 +852,16 @@ static inline bool    ftm_hal_is_write_protection_enable(uint8_t instance)
 
 /*Quadrature decoder control*/
 /*!
- * @brief enable the channel quadrature decoder .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the channel quadrature decoder.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_quad_capture(uint8_t instance, bool enable)
 {
    assert(instance < HW_FTM_INSTANCE_COUNT);
 }
 
-/*hardware defination for quadrature decoder control is missing, implement this later */
+/*Hardware definition for quadrature decoder control is missing, implement this later */
 /*static inline void ftm_hal_enable_quad_input_filter(uint8_t instance, ftm_phase_t phase)
 static inline void ftm_hal_set_quad_phase_normal_polarity(uint8_t instance, ftm_phase_t phase)
 static inline void ftm_hal_set_quad_phase_invert_polarity(uint8_t instance, ftm_phase_t phase)
@@ -860,20 +870,20 @@ static inline void ftm_hal_set_quad_direction()
 static inline void ftm_hal_set_quad_timer_overflow_direction()*/
 
 /*!
- * @brief set FTM peripheral timer channel input capture filter value,
- * @param instance The FTM peripheral instance number.
+ * @brief Sets the FTM peripheral timer channel input capture filter value.
+ * @param instance The FTM peripheral instance number
  * @param channel  The FTM peripheral channel number, only 0,1,2,3, channel 4, 5,6, 7 don't have.
- * @param val  filter valueto be set
+ * @param val  Filter value to be set
  */
 void ftm_hal_set_channel_input_capture_filter(uint8_t instance, uint8_t channel, uint8_t val);
 
 
 
 /*!
- * @brief enable the channel input filter.
- * @param instance The FTM peripheral instance number.
- * @param channel channle to be enabled,  valid value 0, 1, 2, 3
- * @param enable  true to enable, false to disable.
+ * @brief Enables the channel input filter.
+ * @param instance The FTM peripheral instance number
+ * @param channel Channel to be enabled,  valid value 0, 1, 2, 3
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_channel_fault_input_filter(uint8_t instance, uint8_t channel, bool val)
 {
@@ -882,38 +892,38 @@ static inline void ftm_hal_enable_channel_fault_input_filter(uint8_t instance, u
 }
 
 /*!
- * @brief enable the channel fault input.
- * @param instance The FTM peripheral instance number.
- * @param channel channle to be enabled,  valid value 0, 1, 2, 3
- * @param enable  true to enable, false to disable.
+ * @brief Enables the channel fault input.
+ * @param instance The FTM peripheral instance number
+ * @param channel Channel to be enabled,  valid value 0, 1, 2, 3
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_channel_fault_input(uint8_t instance, uint8_t channel, bool val)
 {
    assert(instance < HW_FTM_INSTANCE_COUNT  && channel < HW_CHAN4);
-   val ? HW_FTM_FLTCTRL_SET(instance,  ((1U << channel) + 4)) 
+   val ? HW_FTM_FLTCTRL_SET(instance,  ((1U << channel) + 4))
        : HW_FTM_FLTCTRL_CLR(instance,  ((1U << channel) + 4));
 }
 
 /*!
- * @brief enable the channel invert.
- * @param instance The FTM peripheral instance number.
- * @param channel  The FTM peripheral channel number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the channel invert.
+ * @param instance The FTM peripheral instance number
+ * @param channel  The FTM peripheral channel number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_dual_channel_invert(uint8_t instance, uint8_t channel, bool val)
 {
     assert(instance < HW_FTM_INSTANCE_COUNT && channel < HW_FTM_CHANNEL_COUNT);
 
-    val ? HW_FTM_INVCTRL_SET(instance, (1U << get_channel_pair_index(channel))) 
+    val ? HW_FTM_INVCTRL_SET(instance, (1U << get_channel_pair_index(channel)))
         : HW_FTM_INVCTRL_CLR(instance, (1U << get_channel_pair_index(channel)));
 }
 
 /*FTM software output control*/
 /*!
- * @brief enable the channel software control.
- * @param instance The FTM peripheral instance number.
- * @param channel channle to be enabled,  valid value 0, 1, 2, 3, 4,5,6,7
- * @param enable  true to enable, false to disable.
+ * @brief Enables the channel software control.
+ * @param instance The FTM peripheral instance number
+ * @param channel Channel to be enabled,  valid value 0, 1, 2, 3, 4,5,6,7
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_channel_software_ctrl(uint8_t instance, uint8_t channel, bool val)
 {
@@ -921,10 +931,10 @@ static inline void ftm_hal_enable_channel_software_ctrl(uint8_t instance, uint8_
    val? HW_FTM_SWOCTRL_SET(instance,  (1U<<channel)) : HW_FTM_SWOCTRL_CLR(instance,  (1U<<channel));
 }
 /*!
- * @brief set the channel software control value.
+ * @brief Sets the channel software control value.
  * @param instance The FTM peripheral instance number.
- * @param channel channle to be enabled,  valid value 0, 1, 2, 3,5,6,7,
- * @param bool  true to set 1, false to set 0.
+ * @param channel Channel to be enabled,  valid value 0, 1, 2, 3,5,6,7,
+ * @param bool  True to set 1, false to set 0
  */
 static inline void ftm_hal_set_channel_software_ctrl_val(uint8_t instance, uint8_t channel, bool val)
 {
@@ -932,11 +942,11 @@ static inline void ftm_hal_set_channel_software_ctrl_val(uint8_t instance, uint8
           val? HW_FTM_SWOCTRL_SET(instance, (1U<<(channel+8))) : HW_FTM_SWOCTRL_CLR(instance, (1U<<(channel+8)));
 }
 
-/*FTM pwm load control*/
+/*FTM PWM load control*/
 /*!
- * @brief enable FTM timer PWM loading of MOD, CNTIN and CV.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer PWM loading of MOD, CNTIN and CV.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_pwm_load(uint8_t instance, bool enable)
 {
@@ -945,10 +955,10 @@ static inline void ftm_hal_enable_pwm_load(uint8_t instance, bool enable)
 }
 
 /*!
- * @brief enable the channel matching process.
- * @param instance The FTM peripheral instance number.
- * @param channel channle to be enabled,  valid value 0, 1, 2, 3, 4,5,6,7
- * @param enable  true to enable, false to disable.
+ * @brief Enables the channel matching process.
+ * @param instance The FTM peripheral instance number
+ * @param channel Channel to be enabled,  valid value 0, 1, 2, 3, 4,5,6,7
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_pwm_load_matching_channel(uint8_t instance, uint8_t channel, bool val)
 {
@@ -957,9 +967,9 @@ static inline void ftm_hal_enable_pwm_load_matching_channel(uint8_t instance, ui
 }
 /*FTM configuration*/
 /*!
- * @brief enable FTM timer global time base output.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer global time base output.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_global_time_base_output(uint8_t instance, bool enable)
 {
@@ -968,9 +978,9 @@ static inline void ftm_hal_enable_global_time_base_output(uint8_t instance, bool
 }
 
 /*!
- * @brief enable FTM timer global time base.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer global time base.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_global_time_base(uint8_t instance, bool enable)
 {
@@ -979,9 +989,9 @@ static inline void ftm_hal_enable_global_time_base(uint8_t instance, bool enable
 }
 
 /*!
- * @brief set FTM timer TOF Frequency.
- * @param instance The FTM peripheral instance number.
- * @param val  value of TOF bit set frequency .
+ * @brief Sets the FTM timer TOF Frequency.
+ * @param instance The FTM peripheral instance number
+ * @param val  Value of the TOF bit set frequency 
  */
 static inline void ftm_hal_set_bdm_mode(uint8_t instance, uint8_t val)
 {
@@ -990,9 +1000,9 @@ static inline void ftm_hal_set_bdm_mode(uint8_t instance, uint8_t val)
 }
 
 /*!
- * @brief set BDM mode.
- * @param instance The FTM peripheral instance number.
- * @param val  value of TOF bit set frequency .
+ * @brief Sets the BDM mode.
+ * @param instance The FTM peripheral instance number
+ * @param val  Value of the TOF bit set frequency 
  */
 static inline void ftm_hal_set_tof_frequency(uint8_t instance, uint8_t val)
 {
@@ -1000,12 +1010,12 @@ static inline void ftm_hal_set_tof_frequency(uint8_t instance, uint8_t val)
    BW_FTM_CONF_BDMMODE(instance, val);
 }
 
-/*FTM sync configration*/
+/*FTM sync configuration*/
   /*hardware sync*/
 /*!
- * @brief enable FTM timer hardware sync activation.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer hardware sync activation.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_hardware_sync_software_output_ctrl(uint8_t instance, bool enable )
 {
@@ -1014,9 +1024,9 @@ static inline void ftm_hal_enable_hardware_sync_software_output_ctrl(uint8_t ins
 }
 
 /*!
- * @brief enable FTM timer hardware inverting control sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer hardware inverting control sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_hardware_sync_invert_ctrl(uint8_t instance, bool enable )
 {
@@ -1025,9 +1035,9 @@ static inline void ftm_hal_enable_hardware_sync_invert_ctrl(uint8_t instance, bo
 }
 
 /*!
- * @brief enable FTM timer hardware outmask sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer hardware outmask sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_hardware_sync_output_mask(uint8_t instance, bool enable )
 {
@@ -1036,9 +1046,12 @@ static inline void ftm_hal_enable_hardware_sync_output_mask(uint8_t instance, bo
 }
 
 /*!
- * @brief enable FTM timer hardware mod, cntin, cv sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief MOD, CNTIN, and CV registers synchronization is activated.
+ *
+ * A hardware trigger  activates the synchronization.
+ *
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_hardware_sycn_mod_cntin_cv(uint8_t instance, bool enable )
 {
@@ -1046,16 +1059,22 @@ static inline void ftm_hal_enable_hardware_sycn_mod_cntin_cv(uint8_t instance, b
    BW_FTM_SYNCONF_HWWRBUF(instance, enable? 1:0);
 }
 
+/*!
+ * @brief The FTM counter synchronization is activated by a hardware trigger.
+ *
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
+ */
 static inline void ftm_hal_enable_hardware_sync_counter(uint8_t instance, bool enable )
 {
    assert(instance < HW_FTM_INSTANCE_COUNT);
    BW_FTM_SYNCONF_HWRSTCNT(instance, enable? 1:0);
 }
-  /*software sync*/
+
 /*!
- * @brief enable FTM timer software sync activation.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer software sync activation.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_pwm_sync_swoctrl(uint8_t instance, bool enable )
 {
@@ -1064,9 +1083,9 @@ static inline void ftm_hal_enable_pwm_sync_swoctrl(uint8_t instance, bool enable
 }
 
 /*!
- * @brief enable FTM timer enhanced PWM sync mode.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer enhanced PWM sync mode.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_enhanced_pwm_sync_mdoe(uint8_t instance, bool enable )
 {
@@ -1076,9 +1095,9 @@ static inline void ftm_hal_enable_enhanced_pwm_sync_mdoe(uint8_t instance, bool 
 
 
 /*!
- * @brief enable FTM timer software output control sync.
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer software output control sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_software_sync_swoctrl(uint8_t instance, bool enable )
 {
@@ -1087,9 +1106,9 @@ static inline void ftm_hal_enable_software_sync_swoctrl(uint8_t instance, bool e
 }
 
 /*!
- * @brief enable FTM timer software inverting control sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer software inverting control sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_software_sync_invert_ctrl(uint8_t instance, bool enable )
 {
@@ -1098,9 +1117,9 @@ static inline void ftm_hal_enable_software_sync_invert_ctrl(uint8_t instance, bo
 }
 
 /*!
- * @brief enable FTM timer software outmask sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer software outmask sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_software_sync_output_mask(uint8_t instance, bool enable )
 {
@@ -1109,9 +1128,9 @@ static inline void ftm_hal_enable_software_sync_output_mask(uint8_t instance, bo
 }
 
 /*!
- * @brief enable FTM timer software outmask sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer software outmask sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable.
  */
 static inline void ftm_hal_enable_software_sycn_mod_cntin_cv(uint8_t instance, bool enable )
 {
@@ -1120,9 +1139,9 @@ static inline void ftm_hal_enable_software_sycn_mod_cntin_cv(uint8_t instance, b
 }
 
 /*!
- * @brief enable FTM timer counter software sync .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to enable, false to disable.
+ * @brief Enables the FTM timer counter software sync.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to enable, false to disable
  */
 static inline void ftm_hal_enable_software_sync_counter(uint8_t instance, bool enable )
 {
@@ -1131,9 +1150,9 @@ static inline void ftm_hal_enable_software_sync_counter(uint8_t instance, bool e
 }
 
 /*!
- * @brief enable FTM timer INVCTRL udpate by PWM .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to update with PWM, false to update with rising edge of system clock.
+ * @brief Enables the FTM timer INVCTRL update by PWM.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to update with PWM, false to update with rising edge of system clock.
  */
 static inline void ftm_hal_enable_invert_sync_with_rising_edge(uint8_t instance, bool enable)
 {
@@ -1142,9 +1161,9 @@ static inline void ftm_hal_enable_invert_sync_with_rising_edge(uint8_t instance,
 }
 
 /*!
- * @brief enable FTM timer cntin udpate by PWM .
- * @param instance The FTM peripheral instance number.
- * @param enable  true to update with PWM, false to update with rising edge of system clock.
+ * @brief Enables the FTM timer cntin update by PWM.
+ * @param instance The FTM peripheral instance number
+ * @param enable  True to update with PWM, false to update with rising edge of system clock.
  */
 static inline void ftm_hal_enable_cntin_sync_with_rising_edge(uint8_t instance, bool enable )
 {
@@ -1153,33 +1172,33 @@ static inline void ftm_hal_enable_cntin_sync_with_rising_edge(uint8_t instance, 
 }
 
 
-/*hal functionality*/
+/*HAL functionality*/
 /*!
- * @brief reset ftm registers
- * @param instance The FTM peripheral instance number.
+ * @brief Resets the FTM registers
+ * @param instance The FTM peripheral instance number
  */
 void ftm_hal_reset(uint8_t instance);
 
 /*!
- * @brief init ftm
+ * @brief Initializes the FTM.
  * @param instance The FTM peripheral instance number.
 */
 void ftm_hal_init(uint8_t instance, ftm_config_t *config);
-/*init  5 ftm operating mode, input capture, output compare, pwm output(edge aligned, center-aligned, conbine), dual and quadrature*/
+/*Initializes the  5 FTM operating mode, input capture, output compare, PWM output(edge aligned, center-aligned, conbine), dual and quadrature).*/
 
 /*void ftm_hal_input_capture_mode(uint8_t instance);*/
 /*void ftm_hal_output_compare_mode(uint8_t instance);*/
 
 /*!
- * @brief enable FTM timer when it is PWM output mode
- * @param instance The FTM peripheral instance number.
+ * @brief Enables the FTM timer when it is PWM output mode.
+ * @param instance The FTM peripheral instance number
  * @param config pwm config parameter
  */
 void ftm_hal_enable_pwm_mode(uint8_t instance, ftm_config_t *config);
 
 /*!
- * @brief init FTM timer when it is PWM output mode
- * @param instance The FTM peripheral instance number.
+ * @brief Initializes the FTM timer when it is PWM output mode.
+ * @param instance The FTM peripheral instance number
  */
 void ftm_hal_disable_pwm_mode(uint8_t instance, ftm_config_t *config);
 /*void ftm_hal_dual_mode(uint8_t instance);*/

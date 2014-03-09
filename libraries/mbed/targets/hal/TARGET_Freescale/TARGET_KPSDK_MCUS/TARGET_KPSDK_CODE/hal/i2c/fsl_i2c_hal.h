@@ -30,19 +30,21 @@
 #if !defined(__FSL_I2C_HAL_H__)
 #define __FSL_I2C_HAL_H__
 
-#include "fsl_i2c_features.h"
-#include "fsl_device_registers.h"
 #include <assert.h>
 #include <stdbool.h>
+#include "fsl_i2c_features.h"
+#include "fsl_device_registers.h"
 
-/*! @addtogroup i2c_hal*/
-/*! @{*/
+/*!
+ * @addtogroup i2c_hal
+ * @{
+ */
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 
-/*! @brief I2C status return codes.*/
+/*! @brief I2C status return codes*/
 typedef enum _i2c_status
 {
     kStatus_I2C_Success = 0,
@@ -57,24 +59,24 @@ typedef enum _i2c_status
     kStatus_I2C_AribtrationLost,     /*!< I2C Arbitration Lost error.*/
 } i2c_status_t;
 
-/*! @brief Direction of master and slave transfers.*/
+/*! @brief Direction of master and slave transfers*/
 typedef enum _i2c_transmit_receive_mode {
     kI2CReceive = 0,    /*!< Master and slave receive.*/
     kI2CTransmit = 1    /*!< Master and slave transmit.*/
 } i2c_transmit_receive_mode_t;
 
 /*!
- * @brief I2C module configuration.
+ * @brief I2C module configuration
  *
- * Pass an instance of this struct to i2c_hal_init() to configure the entire I2C peripheral
+ * Pass an instance of this structure  to the i2c_hal_init() to configure the entire I2C peripheral
  * in a single function call.
  */
 typedef struct I2CConfig {
-    bool enableModule;              /*!< Whether the enable the I2C peripheral operation.*/
-    uint32_t baudRate_kbps;         /*!< Requested baud rate in kilobits per second, i.e. 100 or 400. Pass zero to not set the baud rate.*/
-    bool useIndependentSlaveBaud;   /*!< Enables independent slave mode baud rate at max frequency.*/
+    bool enableModule;              /*!< Whether the I2C peripheral operation is enabled.*/
+    uint32_t baudRate_kbps;         /*!< Requested baud rate in kilobits per second, for example, 100 or 400. Pass zero to not set the baud rate.*/
+    bool useIndependentSlaveBaud;   /*!< Enables independent slave mode baud rate at maximum frequency.*/
     bool enableInterrupt;           /*!< Enable for the I2C interrupt.*/
-    bool enableDma;                 /*!< Enable DMA transfer signaling.*/
+    bool enableDma;                 /*!< Enable DMA transfer signalling.*/
     bool enableHighDrive;           /*!< Enable high drive pin mode.*/
     bool enableWakeup;              /*!< Enable low power wakeup.*/
     uint8_t glitchFilterWidth;      /*!< Specify the glitch filter width in terms of bus clock cycles. Set this value to zero to disable the glitch filter.*/
@@ -82,7 +84,7 @@ typedef struct I2CConfig {
     uint8_t upperSlaveAddress;      /*!< 7-bit upper slave address, or zero to disable. If 10-bit addresses are enabled, the top 3 bits are provided by the @a slaveAddress field.*/
     bool use10bitSlaveAddress;      /*!< Controls whether 10-bit slave addresses are enabled.*/
     bool enableGeneralCallAddress;  /*!< Enable general call address matching.*/
-    bool enableRangeAddressMatch;   /*!< Determines if addresses between @a slaveAddress and @a upperSlaveAddress are matched. Both of those fields must be nonzero.*/
+    bool enableRangeAddressMatch;   /*!< Determines if addresses between @a slaveAddress and @a upperSlaveAddress are matched. Both of those fields must be non-zero.*/
 
 #if FSL_FEATURE_I2C_HAS_STOP_DETECT
     bool enableStopModeHoldoff;     /*!< Option to hold off CPU low power stop mode until the current byte transfer is complete.*/
@@ -102,25 +104,25 @@ extern "C" {
 /*@{*/
 
 /*!
- * @brief Initialize and configure the I2C peripheral.
+ * @brief Initializes and configures the I2C peripheral.
  *
- * @param instance The I2C peripheral instance number.
- * @param config Pointer to the configuration settings.
- * @param sourceClockInHz I2C source input clock in Hz.
+ * @param instance The I2C peripheral instance number
+ * @param config Pointer to the configuration settings
+ * @param sourceClockInHz I2C source input clock in Hertz.
  */
 void i2c_hal_init(uint32_t instance, const i2c_config_t * config, uint32_t sourceClockInHz);
 
 /*!
- * @brief Restore the I2C peripheral to reset state.
+ * @brief Restores the I2C peripheral to reset state.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 void i2c_hal_reset(uint32_t instance);
 
 /*!
  * @brief Enables the I2C module operation.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_enable(uint32_t instance)
 {
@@ -131,7 +133,7 @@ static inline void i2c_hal_enable(uint32_t instance)
 /*!
  * @brief Disables the I2C module operation.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_disable(uint32_t instance)
 {
@@ -145,10 +147,10 @@ static inline void i2c_hal_disable(uint32_t instance)
 /*@{*/
 
 /*!
- * @brief Enable or disable DMA support.
+ * @brief Enables or disables the DMA support.
  *
- * @param instance The I2C peripheral instance number.
- * @param enable Pass true to enable DMA transfer signalling.
+ * @param instance The I2C peripheral instance number
+ * @param enable Pass true to enable DMA transfer signalling
  */
 static inline void i2c_hal_set_dma_enable(uint32_t instance, bool enable)
 {
@@ -164,7 +166,7 @@ static inline void i2c_hal_set_dma_enable(uint32_t instance, bool enable)
 /*!
  * @brief Controls the drive capability of the I2C pads.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param enable Passing true will enable high drive mode of the I2C pads. False sets normal
  *     drive mode.
  */
@@ -175,14 +177,14 @@ static inline void i2c_hal_set_high_drive(uint32_t instance, bool enable)
 }
 
 /*!
- * @brief Control the width of the programmable glitch filter.
+ * @brief Controls the width of the programmable glitch filter.
  *
  * Controls the width of the glitch, in terms of bus clock cycles, that the filter must absorb.
- * For any glitch whose size is less than or equal to this width setting, the filter does not
- * allow the glitch to pass.
+ * The filter does not allow any glitch whose size is less than or equal to this width setting, 
+ * to pass.
  *
- * @param instance The I2C peripheral instance number.
- * @param glitchWidth Maximum width in bus clock cycles of the glitches that will be filtered.
+ * @param instance The I2C peripheral instance number
+ * @param glitchWidth Maximum width in bus clock cycles of the glitches that is filtered.
  *     Pass zero to disable the glitch filter.
  */
 static inline void i2c_hal_set_glitch_filter(uint32_t instance, uint8_t glitchWidth)
@@ -197,14 +199,14 @@ static inline void i2c_hal_set_glitch_filter(uint32_t instance, uint8_t glitchWi
 /*@{*/
 
 /*!
- * @brief Control I2C wakeup enable.
+ * @brief Controls the I2C wakeup enable.
  *
  * The I2C module can wake the MCU from low power mode with no peripheral bus running when
- * slave address matching occurs. When wakeup enable is 
+ * slave address matching occurs. 
  *
  * @param instance The I2C peripheral instance number.
  * @param enable true - Enables the wakeup function in low power mode.<br>
- *     false - Normal operation. No interrupt will be generated when address matching in
+ *     false - Normal operation. No interrupt is  generated when address matching in
  *     low power mode.
  */
 static inline void i2c_hal_set_wakeup_enable(uint32_t instance, bool enable)
@@ -215,14 +217,14 @@ static inline void i2c_hal_set_wakeup_enable(uint32_t instance, bool enable)
 
 #if FSL_FEATURE_I2C_HAS_STOP_HOLD_OFF
 /*!
- * @brief Control stop mode holdoff.
+ * @brief Controls the stop mode hold off.
  *
- * This function lets you enable hold off entry to low power stop mode when any data transmission
+ * This function lets you enable the hold off entry to low power stop mode when any data transmission
  * or reception is occurring.
  *
- * @param instance The I2C peripheral instance number.
- * @param enable false - Stop holdoff is disabled. The MCU's entry to stop mode is not gated.<br>
- *     true - Stop holdoff is enabled.
+ * @param instance The I2C peripheral instance number
+ * @param enable false - Stop hold off is disabled. The MCU's entry to stop mode is not gated.<br>
+ *     true - Stop hold off is enabled.
  */
 
 static inline void i2c_hal_set_stop_holdoff(uint32_t instance, bool enable)
@@ -240,18 +242,18 @@ static inline void i2c_hal_set_stop_holdoff(uint32_t instance, bool enable)
 /*!
  * brief Returns the maximum supported baud rate in kilohertz.
  *
- * @param   instance        The I2C peripheral instance number.
- * @param   sourceClockInHz I2C source input clock in Hz.
- * @return The maximum baud rate in kilohertz.
+ * @param   instance        The I2C peripheral instance number
+ * @param   sourceClockInHz I2C source input clock in Hertz
+ * @return The maximum baud rate in kilohertz
  */
 uint32_t i2c_hal_get_max_baud(uint32_t instance, uint32_t sourceClockInHz);
 
 /*!
- * @brief Set the I2C bus frequency for master transactions.
+ * @brief Sets the I2C bus frequency for master transactions.
  *
- * @param instance The I2C peripheral instance number.
- * @param sourceClockInHz I2C source input clock in Hz.
- * @param kbps Requested bus frequency in kilohertz. Common values would be 100 or 400.
+ * @param instance The I2C peripheral instance number
+ * @param sourceClockInHz I2C source input clock in Hertz
+ * @param kbps Requested bus frequency in kilohertz. Common values are either 100 or 400.
  * @param absoluteError_Hz If this parameter is not NULL, it is filled in with the
  *     difference in Hertz between the requested bus frequency and the closest frequency
  *     possible given available divider values.
@@ -266,12 +268,12 @@ i2c_status_t i2c_hal_set_baud(uint32_t instance, uint32_t sourceClockInHz, uint3
                                   uint32_t * absoluteError_Hz);
 
 /*!
- * @brief Set the I2C baud rate multipler and table entry.
+ * @brief Sets the I2C baud rate multiplier and table entry.
  *
  * Use this function to set the I2C bus frequency register values directly, if they are
  * known in advance.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param mult Value of the MULT bitfield, ranging from 0-2. 
  * @param icr The ICR bitfield value, which is the index into an internal table in the I2C
  *     hardware that selects the baud rate divisor and SCL hold time.
@@ -283,12 +285,12 @@ static inline void i2c_hal_set_baud_icr(uint32_t instance, uint8_t mult, uint8_t
 }
 
 /*!
- * @brief Slave baud rate control.
+ * @brief Slave baud rate control
  *
- * Enables independent slave mode baud rate at max frequency. This forces clock stretching
- * on SCL in very fast I2C modes.
+ * Enables an independent slave mode baud rate at the maximum frequency. This forces clock stretching
+ * on the SCL in very fast I2C modes.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param enable true - Slave baud rate is independent of the master baud rate;<br>
  *     false - The slave baud rate follows the master baud rate and clock stretching may occur.
  */
@@ -304,19 +306,19 @@ static inline void i2c_hal_set_independent_slave_baud(uint32_t instance, bool en
 /*@{*/
 
 /*!
- * @brief Send a START or Repeated START signal on the I2C bus.
+ * @brief Sends a START or a Repeated START signal on the I2C bus.
  *
  * This function is used to initiate a new master mode transfer by sending the START signal. It
  * is also used to send a Repeated START signal when a transfer is already in progress.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 void i2c_hal_send_start(uint32_t instance);
 
 /*!
- * @brief Send a STOP signal on the I2C bus.
+ * @brief Sends a STOP signal on the I2C bus.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_send_stop(uint32_t instance)
 {
@@ -326,9 +328,9 @@ static inline void i2c_hal_send_stop(uint32_t instance)
 }
 
 /*!
- * @brief Selects either transmit or receive mode.
+ * @brief Selects either transmit or receive modes.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param mode Specifies either transmit mode or receive mode. The valid values are:
  *     - #kI2CTransmit
  *     - #kI2CReceive
@@ -342,7 +344,7 @@ static inline void i2c_hal_set_direction(uint32_t instance, i2c_transmit_receive
 /*!
  * @brief Returns the currently selected transmit or receive mode.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval #kI2CTransmit I2C is configured for master or slave transmit mode.
  * @retval #kI2CReceive I2C is configured for master or slave receive mode.
  */
@@ -357,11 +359,11 @@ static inline i2c_transmit_receive_mode_t i2c_hal_get_direction(uint32_t instanc
  *
  * This function specifies that an ACK signal is sent in response to the next received byte.
  *
- * Note that the behaviour of this function is changed when the I2C peripheral is placed in
- * Fast Ack mode. In this case, this function causes an ACK signal to be sent in
+ * Note that the behavior of this function is changed when the I2C peripheral is placed in
+ * Fast ACK mode. In this case, this function causes an ACK signal to be sent in
  * response to the current byte, rather than the next received byte.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_send_ack(uint32_t instance)
 {
@@ -370,15 +372,15 @@ static inline void i2c_hal_send_ack(uint32_t instance)
 }
 
 /*!
- * @brief Causes an NAK to be sent on the bus.
+ * @brief Causes a NAK to be sent on the bus.
  *
- * This function specifies that an NAK signal is sent in response to the next received byte.
+ * This function specifies that a NAK signal is sent in response to the next received byte.
  *
- * Note that the behaviour of this function is changed when the I2C peripheral is placed in
- * Fast Ack mode. In this case, this function causes an NAK signal to be sent in
+ * Note that the behavior of this function is changed when the I2C peripheral is placed in the
+ * Fast ACK mode. In this case, this function causes an NAK signal to be sent in
  * response to the current byte, rather than the next received byte.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_send_nak(uint32_t instance)
 {
@@ -392,12 +394,12 @@ static inline void i2c_hal_send_nak(uint32_t instance)
 /*@{*/
 
 /*!
- * @brief Return the last byte of data read from the bus and initiate another read.
+ * @brief Returns the last byte of data read from the bus and initiate another read.
  *
- * In master receive mode, calling this function initiates receiving of the next byte of data.
+ * In a master receive mode, calling this function initiates receiving  the next byte of data.
  *
- * @param instance The I2C peripheral instance number.
- * @return This functon returns the last byte received while the I2C module is configured in master
+ * @param instance The I2C peripheral instance number
+ * @return This function returns the last byte received while the I2C module is configured in master
  *     receive or slave receive mode.
  */
 static inline uint8_t i2c_hal_read(uint32_t instance)
@@ -407,17 +409,17 @@ static inline uint8_t i2c_hal_read(uint32_t instance)
 }
 
 /*!
- * @brief Write one byte of data to the I2C bus.
+ * @brief Writes one byte of data to the I2C bus.
  *
- * When this function is called in master transmit mode, a data transfer is initiated. In slave
+ * When this function is called in the master transmit mode, a data transfer is initiated. In slave
  * mode, the same function is available after an address match occurs.
  *
- * In master transmit mode, the first byte of data written following the start bit or repeated
+ * In a master transmit mode, the first byte of data written following the start bit or repeated
  * start bit is used for the address transfer and must consist of the slave address (in bits 7-1)
  * concatenated with the required R/\#W bit (in position bit 0).
  *
- * @param instance The I2C peripheral instance number.
- * @param data The byte of data to transmit.
+ * @param instance The I2C peripheral instance number
+ * @param data The byte of data to transmit
  */
 static inline void i2c_hal_write(uint32_t instance, uint8_t data)
 {
@@ -433,7 +435,7 @@ static inline void i2c_hal_write(uint32_t instance, uint8_t data)
 /*!
  * @brief Sets the primary 7-bit slave address.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param address The slave address in the upper 7 bits. Bit 0 of this value must be 0.
  */
 void i2c_hal_set_slave_address_7bit(uint32_t instance, uint8_t address);
@@ -441,7 +443,7 @@ void i2c_hal_set_slave_address_7bit(uint32_t instance, uint8_t address);
 /*!
  * @brief Sets the primary slave address and enables 10-bit address mode.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param address The 10-bit slave address, in bits [10:1] of the value. Bit 0 must be 0.
  */
 void i2c_hal_set_slave_address_10bit(uint32_t instance, uint16_t address);
@@ -449,7 +451,7 @@ void i2c_hal_set_slave_address_10bit(uint32_t instance, uint16_t address);
 /*!
  * @brief Controls whether the general call address is recognized.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param enable Whether to enable the general call address.
  */
 static inline void i2c_hal_set_general_call_enable(uint32_t instance, bool enable)
@@ -459,10 +461,10 @@ static inline void i2c_hal_set_general_call_enable(uint32_t instance, bool enabl
 }
 
 /*!
- * @brief Enables or disables slave address range matching.
+ * @brief Enables or disables the slave address range matching.
  *
- * @param instance The I2C peripheral instance number.
- * @param enable Pass true to enable range address matching. You must also call
+ * @param instance The I2C peripheral instance number
+ * @param enable Pass true to enable the range address matching. You must also call the
  *     i2c_hal_set_upper_slave_address_7bit() to set the upper address.
  */
 static inline void i2c_hal_set_slave_range_address_enable(uint32_t instance, bool enable)
@@ -474,20 +476,20 @@ static inline void i2c_hal_set_slave_range_address_enable(uint32_t instance, boo
 /*!
  * @brief Sets the upper slave address.
  *
- * This slave address is used as a secondary slave address. In addition, if range address
+ * This slave address is used as a secondary slave address. If range address
  * matching is enabled, this slave address acts as the upper bound on the slave address
  * range.
  *
- * This function sets only a 7-bit slave address. If 10-bit addressing was enabled by calling
+ * This function sets only a 7-bit slave address. If 10-bit addressing was enabled by calling the
  * i2c_hal_set_slave_address_10bit(), then the top 3 bits set with that function are also used
  * with the address set with this function to form a 10-bit address.
  *
- * Passing 0 for the @a address parameter will disable matching the upper slave address.
+ * Passing 0 for the @a address parameter  disables  matching the upper slave address.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @param address The upper slave address in the upper 7 bits. Bit 0 of this value must be 0.
- *     In addition, this address must be greater than the primary slave address that is set by
- *     calling i2c_hal_set_slave_address_7bit().
+ *     This address must be greater than the primary slave address that is set by
+ *     calling the i2c_hal_set_slave_address_7bit().
  */
 static inline void i2c_hal_set_upper_slave_address_7bit(uint32_t instance, uint8_t address)
 {
@@ -505,7 +507,7 @@ static inline void i2c_hal_set_upper_slave_address_7bit(uint32_t instance, uint8
 /*!
  * @brief Returns whether the I2C module is in master mode.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true The module is in master mode, which implies it is also performing a transfer.
  * @retval false The module is in slave mode.
  */
@@ -516,9 +518,9 @@ static inline bool i2c_hal_is_master(uint32_t instance)
 }
 
 /*!
- * @brief Get the transfer complete flag.
+ * @brief Gets the transfer complete flag.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true Transfer is complete.
  * @retval false Transfer is in progress.
  */
@@ -531,7 +533,7 @@ static inline bool i2c_hal_is_transfer_complete(uint32_t instance)
 /*!
  * @brief Returns whether the I2C slave was addressed.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true Addressed as slave.
  * @retval false Not addressed.
  */
@@ -542,9 +544,9 @@ static inline bool i2c_hal_is_addressed_as_slave(uint32_t instance)
 }
 
 /*!
- * @brief Determines if the I2C bus is busy.
+ * @brief Determines whether the I2C bus is busy.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true Bus is busy.
  * @retval false Bus is idle.
  */
@@ -557,9 +559,9 @@ static inline bool i2c_hal_is_bus_busy(uint32_t instance)
 /*!
  * @brief Returns whether the arbitration procedure was lost.
  *
- * @param instance The I2C peripheral instance number.
- * @retval true Loss of arbitration.
- * @retval false Standard bus operation.
+ * @param instance The I2C peripheral instance number
+ * @retval true Loss of arbitration
+ * @retval false Standard bus operation
  */
 static inline bool i2c_hal_was_arbitration_lost(uint32_t instance)
 {
@@ -570,7 +572,7 @@ static inline bool i2c_hal_was_arbitration_lost(uint32_t instance)
 /*!
  * @brief Clears the arbitration lost flag.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_clear_arbitration_lost(uint32_t instance)
 {
@@ -581,7 +583,7 @@ static inline void i2c_hal_clear_arbitration_lost(uint32_t instance)
 /*!
  * @brief Get the range address match flag.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true Addressed as slave.
  * @retval false Not addressed.
  */
@@ -594,7 +596,7 @@ static inline bool i2c_hal_is_range_address_match(uint32_t instance)
 /*!
  * @brief Returns whether the I2C slave was addressed in read or write mode.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval #kI2CReceive Slave receive, master writing to slave
  * @retval #kI2CTransmit Slave transmit, master reading from slave
  */
@@ -607,10 +609,10 @@ static inline i2c_transmit_receive_mode_t i2c_hal_get_slave_direction(uint32_t i
 /*!
  * @brief Returns whether an ACK was received after the last byte was transmitted.
  *
- * @param instance The I2C peripheral instance number.
- * @retval true Acknowledge signal was received after the completion of one byte of data
+ * @param instance The I2C peripheral instance number
+ * @retval true Acknowledges that the signal was received after the completion of one byte of data
  *     transmission on the bus.
- * @retval false No acknowledge signal detected.
+ * @retval false No acknowledgement of the signal is detected.
  */
 static inline bool i2c_hal_get_receive_ack(uint32_t instance)
 {
@@ -624,9 +626,9 @@ static inline bool i2c_hal_get_receive_ack(uint32_t instance)
 /*@{*/
 
 /*!
- * @brief Enables I2C interupt requests.
+ * @brief Enables the I2C interrupt requests.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_enable_interrupt(uint32_t instance)
 {
@@ -635,9 +637,9 @@ static inline void i2c_hal_enable_interrupt(uint32_t instance)
 }
 
 /*!
- * @brief Disables I2C interupt requests.
+ * @brief Disables the I2C interrupt requests.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_disable_interrupt(uint32_t instance)
 {
@@ -646,9 +648,9 @@ static inline void i2c_hal_disable_interrupt(uint32_t instance)
 }
 
 /*!
- * @brief Returns whether I2C interrupts are enabled.
+ * @brief Returns whether the I2C interrupts are enabled.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true I2C interrupts are enabled.
  * @retval false I2C interrupts are disabled.
  */
@@ -661,7 +663,7 @@ static inline bool i2c_hal_is_interrupt_enabled(uint32_t instance)
 /*!
  * @brief Returns the current I2C interrupt flag.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true An interrupt is pending.
  * @retval false No interrupt is pending.
  */
@@ -674,7 +676,7 @@ static inline bool i2c_hal_get_interrupt_status(uint32_t instance)
 /*!
  * @brief Clears the I2C interrupt if set.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_clear_interrupt(uint32_t instance)
 {
@@ -690,9 +692,9 @@ static inline void i2c_hal_clear_interrupt(uint32_t instance)
 /*@{*/
 
 /*!
- * @brief Get the flag indicating a STOP signal was detected on the I2C bus.
+ * @brief Gets the flag indicating a STOP signal was detected on the I2C bus.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true STOP signal detected on bus.
  * @retval false No STOP signal was detected on the bus.
  */
@@ -705,7 +707,7 @@ static inline bool i2c_hal_get_stop_detect(uint32_t instance)
 /*!
  * @brief Clears the bus STOP signal detected flag.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_clear_stop_detect(uint32_t instance)
 {
@@ -722,7 +724,7 @@ static inline void i2c_hal_clear_stop_detect(uint32_t instance)
 /*!
  * @brief Enables the I2C bus stop detection interrupt.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_enable_bus_stop_interrupt(uint32_t instance)
 {
@@ -733,7 +735,7 @@ static inline void i2c_hal_enable_bus_stop_interrupt(uint32_t instance)
 /*!
  * @brief Disables the I2C bus stop detection interrupt.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_disable_bus_stop_interrupt(uint32_t instance)
 {
@@ -742,11 +744,11 @@ static inline void i2c_hal_disable_bus_stop_interrupt(uint32_t instance)
 }
 
 /*!
- * @brief Returns whether I2C bus stop detection interrupts are enabled.
+ * @brief Returns whether  the I2C bus stop detection interrupts are enabled.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true Stop detect interrupts are enabled.
- * @retval false Stop detect interupts are disabled.
+ * @retval false Stop detect interrupts are disabled.
  */
 static inline bool i2c_hal_is_bus_stop_interrupt_enabled(uint32_t instance)
 {
@@ -762,7 +764,7 @@ static inline bool i2c_hal_is_bus_stop_interrupt_enabled(uint32_t instance)
 /*!
  * @brief Enables the I2C bus stop detection interrupt.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_enable_bus_stop_interrupt(uint32_t instance)
 {
@@ -773,7 +775,7 @@ static inline void i2c_hal_enable_bus_stop_interrupt(uint32_t instance)
 /*!
  * @brief Disables the I2C bus stop detection interrupt.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  */
 static inline void i2c_hal_disable_bus_stop_interrupt(uint32_t instance)
 {
@@ -782,11 +784,11 @@ static inline void i2c_hal_disable_bus_stop_interrupt(uint32_t instance)
 }
 
 /*!
- * @brief Returns whether I2C bus stop detection interrupts are enabled.
+ * @brief Returns whether the I2C bus stop detection interrupts are enabled.
  *
- * @param instance The I2C peripheral instance number.
+ * @param instance The I2C peripheral instance number
  * @retval true Stop detect interrupts are enabled.
- * @retval false Stop detect interupts are disabled.
+ * @retval false Stop detect interrupts are disabled.
  */
 static inline bool i2c_hal_is_bus_stop_interrupt_enabled(uint32_t instance)
 {

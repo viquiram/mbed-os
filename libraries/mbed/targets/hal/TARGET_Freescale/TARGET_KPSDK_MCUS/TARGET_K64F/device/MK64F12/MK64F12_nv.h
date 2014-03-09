@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -85,7 +85,7 @@ typedef union _hw_nv_backkey3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY3           (*(__I hw_nv_backkey3_t *) HW_NV_BACKKEY3_ADDR)
-#define HW_NV_BACKKEY3_RD        (HW_NV_BACKKEY3.U)
+#define HW_NV_BACKKEY3_RD()      (HW_NV_BACKKEY3.U)
 #endif
 //@}
 
@@ -103,7 +103,7 @@ typedef union _hw_nv_backkey3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY3_KEY field.
-#define BR_NV_BACKKEY3_KEY   (HW_NV_BACKKEY3.B.KEY)
+#define BR_NV_BACKKEY3_KEY   (HW_NV_BACKKEY3.U)
 #endif
 //@}
 
@@ -135,7 +135,7 @@ typedef union _hw_nv_backkey2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY2           (*(__I hw_nv_backkey2_t *) HW_NV_BACKKEY2_ADDR)
-#define HW_NV_BACKKEY2_RD        (HW_NV_BACKKEY2.U)
+#define HW_NV_BACKKEY2_RD()      (HW_NV_BACKKEY2.U)
 #endif
 //@}
 
@@ -153,7 +153,7 @@ typedef union _hw_nv_backkey2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY2_KEY field.
-#define BR_NV_BACKKEY2_KEY   (HW_NV_BACKKEY2.B.KEY)
+#define BR_NV_BACKKEY2_KEY   (HW_NV_BACKKEY2.U)
 #endif
 //@}
 
@@ -185,7 +185,7 @@ typedef union _hw_nv_backkey1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY1           (*(__I hw_nv_backkey1_t *) HW_NV_BACKKEY1_ADDR)
-#define HW_NV_BACKKEY1_RD        (HW_NV_BACKKEY1.U)
+#define HW_NV_BACKKEY1_RD()      (HW_NV_BACKKEY1.U)
 #endif
 //@}
 
@@ -203,7 +203,7 @@ typedef union _hw_nv_backkey1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY1_KEY field.
-#define BR_NV_BACKKEY1_KEY   (HW_NV_BACKKEY1.B.KEY)
+#define BR_NV_BACKKEY1_KEY   (HW_NV_BACKKEY1.U)
 #endif
 //@}
 
@@ -235,7 +235,7 @@ typedef union _hw_nv_backkey0
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY0           (*(__I hw_nv_backkey0_t *) HW_NV_BACKKEY0_ADDR)
-#define HW_NV_BACKKEY0_RD        (HW_NV_BACKKEY0.U)
+#define HW_NV_BACKKEY0_RD()      (HW_NV_BACKKEY0.U)
 #endif
 //@}
 
@@ -253,7 +253,7 @@ typedef union _hw_nv_backkey0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY0_KEY field.
-#define BR_NV_BACKKEY0_KEY   (HW_NV_BACKKEY0.B.KEY)
+#define BR_NV_BACKKEY0_KEY   (HW_NV_BACKKEY0.U)
 #endif
 //@}
 
@@ -285,7 +285,7 @@ typedef union _hw_nv_backkey7
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY7           (*(__I hw_nv_backkey7_t *) HW_NV_BACKKEY7_ADDR)
-#define HW_NV_BACKKEY7_RD        (HW_NV_BACKKEY7.U)
+#define HW_NV_BACKKEY7_RD()      (HW_NV_BACKKEY7.U)
 #endif
 //@}
 
@@ -303,7 +303,7 @@ typedef union _hw_nv_backkey7
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY7_KEY field.
-#define BR_NV_BACKKEY7_KEY   (HW_NV_BACKKEY7.B.KEY)
+#define BR_NV_BACKKEY7_KEY   (HW_NV_BACKKEY7.U)
 #endif
 //@}
 
@@ -335,7 +335,7 @@ typedef union _hw_nv_backkey6
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY6           (*(__I hw_nv_backkey6_t *) HW_NV_BACKKEY6_ADDR)
-#define HW_NV_BACKKEY6_RD        (HW_NV_BACKKEY6.U)
+#define HW_NV_BACKKEY6_RD()      (HW_NV_BACKKEY6.U)
 #endif
 //@}
 
@@ -353,7 +353,7 @@ typedef union _hw_nv_backkey6
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY6_KEY field.
-#define BR_NV_BACKKEY6_KEY   (HW_NV_BACKKEY6.B.KEY)
+#define BR_NV_BACKKEY6_KEY   (HW_NV_BACKKEY6.U)
 #endif
 //@}
 
@@ -385,7 +385,7 @@ typedef union _hw_nv_backkey5
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY5           (*(__I hw_nv_backkey5_t *) HW_NV_BACKKEY5_ADDR)
-#define HW_NV_BACKKEY5_RD        (HW_NV_BACKKEY5.U)
+#define HW_NV_BACKKEY5_RD()      (HW_NV_BACKKEY5.U)
 #endif
 //@}
 
@@ -403,7 +403,7 @@ typedef union _hw_nv_backkey5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY5_KEY field.
-#define BR_NV_BACKKEY5_KEY   (HW_NV_BACKKEY5.B.KEY)
+#define BR_NV_BACKKEY5_KEY   (HW_NV_BACKKEY5.U)
 #endif
 //@}
 
@@ -435,7 +435,7 @@ typedef union _hw_nv_backkey4
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_BACKKEY4           (*(__I hw_nv_backkey4_t *) HW_NV_BACKKEY4_ADDR)
-#define HW_NV_BACKKEY4_RD        (HW_NV_BACKKEY4.U)
+#define HW_NV_BACKKEY4_RD()      (HW_NV_BACKKEY4.U)
 #endif
 //@}
 
@@ -453,7 +453,7 @@ typedef union _hw_nv_backkey4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_BACKKEY4_KEY field.
-#define BR_NV_BACKKEY4_KEY   (HW_NV_BACKKEY4.B.KEY)
+#define BR_NV_BACKKEY4_KEY   (HW_NV_BACKKEY4.U)
 #endif
 //@}
 
@@ -485,7 +485,7 @@ typedef union _hw_nv_fprot3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FPROT3             (*(__I hw_nv_fprot3_t *) HW_NV_FPROT3_ADDR)
-#define HW_NV_FPROT3_RD          (HW_NV_FPROT3.U)
+#define HW_NV_FPROT3_RD()        (HW_NV_FPROT3.U)
 #endif
 //@}
 
@@ -503,7 +503,7 @@ typedef union _hw_nv_fprot3
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_FPROT3_PROT field.
-#define BR_NV_FPROT3_PROT    (HW_NV_FPROT3.B.PROT)
+#define BR_NV_FPROT3_PROT    (HW_NV_FPROT3.U)
 #endif
 //@}
 
@@ -535,7 +535,7 @@ typedef union _hw_nv_fprot2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FPROT2             (*(__I hw_nv_fprot2_t *) HW_NV_FPROT2_ADDR)
-#define HW_NV_FPROT2_RD          (HW_NV_FPROT2.U)
+#define HW_NV_FPROT2_RD()        (HW_NV_FPROT2.U)
 #endif
 //@}
 
@@ -553,7 +553,7 @@ typedef union _hw_nv_fprot2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_FPROT2_PROT field.
-#define BR_NV_FPROT2_PROT    (HW_NV_FPROT2.B.PROT)
+#define BR_NV_FPROT2_PROT    (HW_NV_FPROT2.U)
 #endif
 //@}
 
@@ -585,7 +585,7 @@ typedef union _hw_nv_fprot1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FPROT1             (*(__I hw_nv_fprot1_t *) HW_NV_FPROT1_ADDR)
-#define HW_NV_FPROT1_RD          (HW_NV_FPROT1.U)
+#define HW_NV_FPROT1_RD()        (HW_NV_FPROT1.U)
 #endif
 //@}
 
@@ -603,7 +603,7 @@ typedef union _hw_nv_fprot1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_FPROT1_PROT field.
-#define BR_NV_FPROT1_PROT    (HW_NV_FPROT1.B.PROT)
+#define BR_NV_FPROT1_PROT    (HW_NV_FPROT1.U)
 #endif
 //@}
 
@@ -635,7 +635,7 @@ typedef union _hw_nv_fprot0
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FPROT0             (*(__I hw_nv_fprot0_t *) HW_NV_FPROT0_ADDR)
-#define HW_NV_FPROT0_RD          (HW_NV_FPROT0.U)
+#define HW_NV_FPROT0_RD()        (HW_NV_FPROT0.U)
 #endif
 //@}
 
@@ -653,7 +653,7 @@ typedef union _hw_nv_fprot0
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_FPROT0_PROT field.
-#define BR_NV_FPROT0_PROT    (HW_NV_FPROT0.B.PROT)
+#define BR_NV_FPROT0_PROT    (HW_NV_FPROT0.U)
 #endif
 //@}
 
@@ -688,7 +688,7 @@ typedef union _hw_nv_fsec
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FSEC               (*(__I hw_nv_fsec_t *) HW_NV_FSEC_ADDR)
-#define HW_NV_FSEC_RD            (HW_NV_FSEC.U)
+#define HW_NV_FSEC_RD()          (HW_NV_FSEC.U)
 #endif
 //@}
 
@@ -782,7 +782,7 @@ typedef union _hw_nv_fopt
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FOPT               (*(__I hw_nv_fopt_t *) HW_NV_FOPT_ADDR)
-#define HW_NV_FOPT_RD            (HW_NV_FOPT.U)
+#define HW_NV_FOPT_RD()          (HW_NV_FOPT.U)
 #endif
 //@}
 
@@ -846,7 +846,7 @@ typedef union _hw_nv_feprot
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FEPROT             (*(__I hw_nv_feprot_t *) HW_NV_FEPROT_ADDR)
-#define HW_NV_FEPROT_RD          (HW_NV_FEPROT.U)
+#define HW_NV_FEPROT_RD()        (HW_NV_FEPROT.U)
 #endif
 //@}
 
@@ -864,7 +864,7 @@ typedef union _hw_nv_feprot
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_FEPROT_EPROT field.
-#define BR_NV_FEPROT_EPROT   (HW_NV_FEPROT.B.EPROT)
+#define BR_NV_FEPROT_EPROT   (HW_NV_FEPROT.U)
 #endif
 //@}
 
@@ -896,7 +896,7 @@ typedef union _hw_nv_fdprot
 
 #ifndef __LANGUAGE_ASM__
 #define HW_NV_FDPROT             (*(__I hw_nv_fdprot_t *) HW_NV_FDPROT_ADDR)
-#define HW_NV_FDPROT_RD          (HW_NV_FDPROT.U)
+#define HW_NV_FDPROT_RD()        (HW_NV_FDPROT.U)
 #endif
 //@}
 
@@ -914,7 +914,7 @@ typedef union _hw_nv_fdprot
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the NV_FDPROT_DPROT field.
-#define BR_NV_FDPROT_DPROT   (HW_NV_FDPROT.B.DPROT)
+#define BR_NV_FDPROT_DPROT   (HW_NV_FDPROT.U)
 #endif
 //@}
 

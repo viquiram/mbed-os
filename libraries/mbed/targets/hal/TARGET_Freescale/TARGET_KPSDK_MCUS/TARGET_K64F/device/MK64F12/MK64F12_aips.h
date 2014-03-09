@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -84,7 +84,7 @@ static const uint32_t __g_regs_AIPS_base_addresses[] = {
 /*!
  * @brief HW_AIPS_MPRA - Master Privilege Register A (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x77700000U
  *
  * The MPRA specifies identical 4-bit fields defining the access-privilege level
  * associated with a bus master to various peripherals on the chip. The register
@@ -92,15 +92,39 @@ static const uint32_t __g_regs_AIPS_base_addresses[] = {
  * the MPRA fields is chip-specific. See the chip configuration details for the
  * value of a particular device. A register field that maps to an unimplemented
  * master or peripheral behaves as read-only-zero. Each master is assigned a logical
- * ID from 0 to 15. See the master logical ID assignement table in the AIPS
- * chip-specific information.
+ * ID from 0 to 15. See the master logical ID assignment table in the
+ * chip-specific AIPS information.
  */
 typedef union _hw_aips_mpra
 {
     uint32_t U;
     struct _hw_aips_mpra_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t RESERVED0 : 8;        //!< [7:0]
+        uint32_t MPL5 : 1;             //!< [8] Master 5 Privilege Level
+        uint32_t MTW5 : 1;             //!< [9] Master 5 Trusted For Writes
+        uint32_t MTR5 : 1;             //!< [10] Master 5 Trusted For Read
+        uint32_t RESERVED1 : 1;        //!< [11]
+        uint32_t MPL4 : 1;             //!< [12] Master 4 Privilege Level
+        uint32_t MTW4 : 1;             //!< [13] Master 4 Trusted For Writes
+        uint32_t MTR4 : 1;             //!< [14] Master 4 Trusted For Read
+        uint32_t RESERVED2 : 1;        //!< [15]
+        uint32_t MPL3 : 1;             //!< [16] Master 3 Privilege Level
+        uint32_t MTW3 : 1;             //!< [17] Master 3 Trusted For Writes
+        uint32_t MTR3 : 1;             //!< [18] Master 3 Trusted For Read
+        uint32_t RESERVED3 : 1;        //!< [19]
+        uint32_t MPL2 : 1;             //!< [20] Master 2 Privilege Level
+        uint32_t MTW2 : 1;             //!< [21] Master 2 Trusted For Writes
+        uint32_t MTR2 : 1;             //!< [22] Master 2 Trusted For Read
+        uint32_t RESERVED4 : 1;        //!< [23]
+        uint32_t MPL1 : 1;             //!< [24] Master 1 Privilege Level
+        uint32_t MTW1 : 1;             //!< [25] Master 1 Trusted for Writes
+        uint32_t MTR1 : 1;             //!< [26] Master 1 Trusted for Read
+        uint32_t RESERVED5 : 1;        //!< [27]
+        uint32_t MPL0 : 1;             //!< [28] Master 0 Privilege Level
+        uint32_t MTW0 : 1;             //!< [29] Master 0 Trusted For Writes
+        uint32_t MTR0 : 1;             //!< [30] Master 0 Trusted For Read
+        uint32_t RESERVED6 : 1;        //!< [31]
     } B;
 } hw_aips_mpra_t;
 #endif
@@ -125,6 +149,510 @@ typedef union _hw_aips_mpra
  * Constants & macros for individual AIPS_MPRA bitfields
  */
 
+/*!
+ * @name Register AIPS_MPRA, field MPL5[8] (RW)
+ *
+ * Specifies how the privilege level of the master is determined.
+ *
+ * Values:
+ * - 0 - Accesses from this master are forced to user-mode.
+ * - 1 - Accesses from this master are not forced to user-mode.
+ */
+//@{
+#define BP_AIPS_MPRA_MPL5    (8U)          //!< Bit position for AIPS_MPRA_MPL5.
+#define BM_AIPS_MPRA_MPL5    (0x00000100U) //!< Bit mask for AIPS_MPRA_MPL5.
+#define BS_AIPS_MPRA_MPL5    (1U)          //!< Bit field size in bits for AIPS_MPRA_MPL5.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MPL5 field.
+#define BR_AIPS_MPRA_MPL5(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL5))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MPL5.
+#define BF_AIPS_MPRA_MPL5(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MPL5), uint32_t) & BM_AIPS_MPRA_MPL5)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MPL5 field to a new value.
+#define BW_AIPS_MPRA_MPL5(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL5) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTW5[9] (RW)
+ *
+ * Determines whether the master is trusted for write accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for write accesses.
+ * - 1 - This master is trusted for write accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTW5    (9U)          //!< Bit position for AIPS_MPRA_MTW5.
+#define BM_AIPS_MPRA_MTW5    (0x00000200U) //!< Bit mask for AIPS_MPRA_MTW5.
+#define BS_AIPS_MPRA_MTW5    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTW5.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTW5 field.
+#define BR_AIPS_MPRA_MTW5(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW5))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTW5.
+#define BF_AIPS_MPRA_MTW5(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTW5), uint32_t) & BM_AIPS_MPRA_MTW5)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTW5 field to a new value.
+#define BW_AIPS_MPRA_MTW5(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW5) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTR5[10] (RW)
+ *
+ * Determines whether the master is trusted for read accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for read accesses.
+ * - 1 - This master is trusted for read accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTR5    (10U)         //!< Bit position for AIPS_MPRA_MTR5.
+#define BM_AIPS_MPRA_MTR5    (0x00000400U) //!< Bit mask for AIPS_MPRA_MTR5.
+#define BS_AIPS_MPRA_MTR5    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTR5.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTR5 field.
+#define BR_AIPS_MPRA_MTR5(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR5))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTR5.
+#define BF_AIPS_MPRA_MTR5(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTR5), uint32_t) & BM_AIPS_MPRA_MTR5)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTR5 field to a new value.
+#define BW_AIPS_MPRA_MTR5(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR5) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MPL4[12] (RW)
+ *
+ * Specifies how the privilege level of the master is determined.
+ *
+ * Values:
+ * - 0 - Accesses from this master are forced to user-mode.
+ * - 1 - Accesses from this master are not forced to user-mode.
+ */
+//@{
+#define BP_AIPS_MPRA_MPL4    (12U)         //!< Bit position for AIPS_MPRA_MPL4.
+#define BM_AIPS_MPRA_MPL4    (0x00001000U) //!< Bit mask for AIPS_MPRA_MPL4.
+#define BS_AIPS_MPRA_MPL4    (1U)          //!< Bit field size in bits for AIPS_MPRA_MPL4.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MPL4 field.
+#define BR_AIPS_MPRA_MPL4(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL4))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MPL4.
+#define BF_AIPS_MPRA_MPL4(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MPL4), uint32_t) & BM_AIPS_MPRA_MPL4)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MPL4 field to a new value.
+#define BW_AIPS_MPRA_MPL4(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL4) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTW4[13] (RW)
+ *
+ * Determines whether the master is trusted for write accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for write accesses.
+ * - 1 - This master is trusted for write accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTW4    (13U)         //!< Bit position for AIPS_MPRA_MTW4.
+#define BM_AIPS_MPRA_MTW4    (0x00002000U) //!< Bit mask for AIPS_MPRA_MTW4.
+#define BS_AIPS_MPRA_MTW4    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTW4.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTW4 field.
+#define BR_AIPS_MPRA_MTW4(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW4))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTW4.
+#define BF_AIPS_MPRA_MTW4(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTW4), uint32_t) & BM_AIPS_MPRA_MTW4)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTW4 field to a new value.
+#define BW_AIPS_MPRA_MTW4(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW4) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTR4[14] (RW)
+ *
+ * Determines whether the master is trusted for read accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for read accesses.
+ * - 1 - This master is trusted for read accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTR4    (14U)         //!< Bit position for AIPS_MPRA_MTR4.
+#define BM_AIPS_MPRA_MTR4    (0x00004000U) //!< Bit mask for AIPS_MPRA_MTR4.
+#define BS_AIPS_MPRA_MTR4    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTR4.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTR4 field.
+#define BR_AIPS_MPRA_MTR4(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR4))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTR4.
+#define BF_AIPS_MPRA_MTR4(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTR4), uint32_t) & BM_AIPS_MPRA_MTR4)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTR4 field to a new value.
+#define BW_AIPS_MPRA_MTR4(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR4) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MPL3[16] (RW)
+ *
+ * Specifies how the privilege level of the master is determined.
+ *
+ * Values:
+ * - 0 - Accesses from this master are forced to user-mode.
+ * - 1 - Accesses from this master are not forced to user-mode.
+ */
+//@{
+#define BP_AIPS_MPRA_MPL3    (16U)         //!< Bit position for AIPS_MPRA_MPL3.
+#define BM_AIPS_MPRA_MPL3    (0x00010000U) //!< Bit mask for AIPS_MPRA_MPL3.
+#define BS_AIPS_MPRA_MPL3    (1U)          //!< Bit field size in bits for AIPS_MPRA_MPL3.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MPL3 field.
+#define BR_AIPS_MPRA_MPL3(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL3))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MPL3.
+#define BF_AIPS_MPRA_MPL3(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MPL3), uint32_t) & BM_AIPS_MPRA_MPL3)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MPL3 field to a new value.
+#define BW_AIPS_MPRA_MPL3(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL3) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTW3[17] (RW)
+ *
+ * Determines whether the master is trusted for write accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for write accesses.
+ * - 1 - This master is trusted for write accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTW3    (17U)         //!< Bit position for AIPS_MPRA_MTW3.
+#define BM_AIPS_MPRA_MTW3    (0x00020000U) //!< Bit mask for AIPS_MPRA_MTW3.
+#define BS_AIPS_MPRA_MTW3    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTW3.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTW3 field.
+#define BR_AIPS_MPRA_MTW3(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW3))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTW3.
+#define BF_AIPS_MPRA_MTW3(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTW3), uint32_t) & BM_AIPS_MPRA_MTW3)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTW3 field to a new value.
+#define BW_AIPS_MPRA_MTW3(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW3) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTR3[18] (RW)
+ *
+ * Determines whether the master is trusted for read accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for read accesses.
+ * - 1 - This master is trusted for read accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTR3    (18U)         //!< Bit position for AIPS_MPRA_MTR3.
+#define BM_AIPS_MPRA_MTR3    (0x00040000U) //!< Bit mask for AIPS_MPRA_MTR3.
+#define BS_AIPS_MPRA_MTR3    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTR3.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTR3 field.
+#define BR_AIPS_MPRA_MTR3(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR3))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTR3.
+#define BF_AIPS_MPRA_MTR3(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTR3), uint32_t) & BM_AIPS_MPRA_MTR3)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTR3 field to a new value.
+#define BW_AIPS_MPRA_MTR3(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR3) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MPL2[20] (RW)
+ *
+ * Specifies how the privilege level of the master is determined.
+ *
+ * Values:
+ * - 0 - Accesses from this master are forced to user-mode.
+ * - 1 - Accesses from this master are not forced to user-mode.
+ */
+//@{
+#define BP_AIPS_MPRA_MPL2    (20U)         //!< Bit position for AIPS_MPRA_MPL2.
+#define BM_AIPS_MPRA_MPL2    (0x00100000U) //!< Bit mask for AIPS_MPRA_MPL2.
+#define BS_AIPS_MPRA_MPL2    (1U)          //!< Bit field size in bits for AIPS_MPRA_MPL2.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MPL2 field.
+#define BR_AIPS_MPRA_MPL2(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL2))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MPL2.
+#define BF_AIPS_MPRA_MPL2(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MPL2), uint32_t) & BM_AIPS_MPRA_MPL2)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MPL2 field to a new value.
+#define BW_AIPS_MPRA_MPL2(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL2) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTW2[21] (RW)
+ *
+ * Determines whether the master is trusted for write accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for write accesses.
+ * - 1 - This master is trusted for write accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTW2    (21U)         //!< Bit position for AIPS_MPRA_MTW2.
+#define BM_AIPS_MPRA_MTW2    (0x00200000U) //!< Bit mask for AIPS_MPRA_MTW2.
+#define BS_AIPS_MPRA_MTW2    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTW2.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTW2 field.
+#define BR_AIPS_MPRA_MTW2(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW2))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTW2.
+#define BF_AIPS_MPRA_MTW2(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTW2), uint32_t) & BM_AIPS_MPRA_MTW2)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTW2 field to a new value.
+#define BW_AIPS_MPRA_MTW2(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW2) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTR2[22] (RW)
+ *
+ * Determines whether the master is trusted for read accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for read accesses.
+ * - 1 - This master is trusted for read accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTR2    (22U)         //!< Bit position for AIPS_MPRA_MTR2.
+#define BM_AIPS_MPRA_MTR2    (0x00400000U) //!< Bit mask for AIPS_MPRA_MTR2.
+#define BS_AIPS_MPRA_MTR2    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTR2.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTR2 field.
+#define BR_AIPS_MPRA_MTR2(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR2))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTR2.
+#define BF_AIPS_MPRA_MTR2(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTR2), uint32_t) & BM_AIPS_MPRA_MTR2)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTR2 field to a new value.
+#define BW_AIPS_MPRA_MTR2(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR2) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MPL1[24] (RW)
+ *
+ * Specifies how the privilege level of the master is determined.
+ *
+ * Values:
+ * - 0 - Accesses from this master are forced to user-mode.
+ * - 1 - Accesses from this master are not forced to user-mode.
+ */
+//@{
+#define BP_AIPS_MPRA_MPL1    (24U)         //!< Bit position for AIPS_MPRA_MPL1.
+#define BM_AIPS_MPRA_MPL1    (0x01000000U) //!< Bit mask for AIPS_MPRA_MPL1.
+#define BS_AIPS_MPRA_MPL1    (1U)          //!< Bit field size in bits for AIPS_MPRA_MPL1.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MPL1 field.
+#define BR_AIPS_MPRA_MPL1(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL1))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MPL1.
+#define BF_AIPS_MPRA_MPL1(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MPL1), uint32_t) & BM_AIPS_MPRA_MPL1)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MPL1 field to a new value.
+#define BW_AIPS_MPRA_MPL1(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL1) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTW1[25] (RW)
+ *
+ * Determines whether the master is trusted for write accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for write accesses.
+ * - 1 - This master is trusted for write accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTW1    (25U)         //!< Bit position for AIPS_MPRA_MTW1.
+#define BM_AIPS_MPRA_MTW1    (0x02000000U) //!< Bit mask for AIPS_MPRA_MTW1.
+#define BS_AIPS_MPRA_MTW1    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTW1.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTW1 field.
+#define BR_AIPS_MPRA_MTW1(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW1))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTW1.
+#define BF_AIPS_MPRA_MTW1(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTW1), uint32_t) & BM_AIPS_MPRA_MTW1)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTW1 field to a new value.
+#define BW_AIPS_MPRA_MTW1(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW1) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTR1[26] (RW)
+ *
+ * Determines whether the master is trusted for read accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for read accesses.
+ * - 1 - This master is trusted for read accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTR1    (26U)         //!< Bit position for AIPS_MPRA_MTR1.
+#define BM_AIPS_MPRA_MTR1    (0x04000000U) //!< Bit mask for AIPS_MPRA_MTR1.
+#define BS_AIPS_MPRA_MTR1    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTR1.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTR1 field.
+#define BR_AIPS_MPRA_MTR1(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR1))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTR1.
+#define BF_AIPS_MPRA_MTR1(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTR1), uint32_t) & BM_AIPS_MPRA_MTR1)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTR1 field to a new value.
+#define BW_AIPS_MPRA_MTR1(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR1) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MPL0[28] (RW)
+ *
+ * Specifies how the privilege level of the master is determined.
+ *
+ * Values:
+ * - 0 - Accesses from this master are forced to user-mode.
+ * - 1 - Accesses from this master are not forced to user-mode.
+ */
+//@{
+#define BP_AIPS_MPRA_MPL0    (28U)         //!< Bit position for AIPS_MPRA_MPL0.
+#define BM_AIPS_MPRA_MPL0    (0x10000000U) //!< Bit mask for AIPS_MPRA_MPL0.
+#define BS_AIPS_MPRA_MPL0    (1U)          //!< Bit field size in bits for AIPS_MPRA_MPL0.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MPL0 field.
+#define BR_AIPS_MPRA_MPL0(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL0))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MPL0.
+#define BF_AIPS_MPRA_MPL0(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MPL0), uint32_t) & BM_AIPS_MPRA_MPL0)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MPL0 field to a new value.
+#define BW_AIPS_MPRA_MPL0(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MPL0) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTW0[29] (RW)
+ *
+ * Determines whether the master is trusted for write accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for write accesses.
+ * - 1 - This master is trusted for write accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTW0    (29U)         //!< Bit position for AIPS_MPRA_MTW0.
+#define BM_AIPS_MPRA_MTW0    (0x20000000U) //!< Bit mask for AIPS_MPRA_MTW0.
+#define BS_AIPS_MPRA_MTW0    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTW0.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTW0 field.
+#define BR_AIPS_MPRA_MTW0(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW0))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTW0.
+#define BF_AIPS_MPRA_MTW0(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTW0), uint32_t) & BM_AIPS_MPRA_MTW0)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTW0 field to a new value.
+#define BW_AIPS_MPRA_MTW0(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTW0) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register AIPS_MPRA, field MTR0[30] (RW)
+ *
+ * Determines whether the master is trusted for read accesses.
+ *
+ * Values:
+ * - 0 - This master is not trusted for read accesses.
+ * - 1 - This master is trusted for read accesses.
+ */
+//@{
+#define BP_AIPS_MPRA_MTR0    (30U)         //!< Bit position for AIPS_MPRA_MTR0.
+#define BM_AIPS_MPRA_MTR0    (0x40000000U) //!< Bit mask for AIPS_MPRA_MTR0.
+#define BS_AIPS_MPRA_MTR0    (1U)          //!< Bit field size in bits for AIPS_MPRA_MTR0.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the AIPS_MPRA_MTR0 field.
+#define BR_AIPS_MPRA_MTR0(x) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR0))
+#endif
+
+//! @brief Format value for bitfield AIPS_MPRA_MTR0.
+#define BF_AIPS_MPRA_MTR0(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_AIPS_MPRA_MTR0), uint32_t) & BM_AIPS_MPRA_MTR0)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the MTR0 field to a new value.
+#define BW_AIPS_MPRA_MTR0(x, v) (BITBAND_ACCESS32(HW_AIPS_MPRA_ADDR(x), BP_AIPS_MPRA_MTR0) = (v))
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
 // HW_AIPS_PACRA - Peripheral Access Control Register
 //-------------------------------------------------------------------------------------------
@@ -133,32 +661,32 @@ typedef union _hw_aips_mpra
 /*!
  * @brief HW_AIPS_PACRA - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x50004000U
  *
  * Each PACR register consists of eight 4-bit PACR fields. Each PACR field
  * defines the access levels for a particular peripheral. The mapping between a
  * peripheral and its PACR field is shown in the table below. The peripheral assignment
  * to each PACR is defined by the memory map slot that the peripheral is
  * assigned to. See this chip's memory map for the assignment of a particular
- * peripheral. The following table shows the location of each peripheral's PACR field in
- * the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
- * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7 0x24
- * PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC PACR16
- * PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24 PACR25
- * PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
- * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37 PACR38
- * PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47 0x48
- * PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
- * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64 PACR65
- * PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74 PACR75
- * PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83 PACR84
- * PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93 PACR94
- * PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102 PACR103
- * 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110 PACR111
- * 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119 0x6C
- * PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
- * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR A - D,
- * which control peripheral slots 0 - 31, are shown below. The following
+ * peripheral. The following table shows the location of each peripheral slot's PACR field
+ * in the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
+ * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7
+ * 0x24 PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC
+ * PACR16 PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24
+ * PACR25 PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
+ * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37
+ * PACR38 PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47
+ * 0x48 PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
+ * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64
+ * PACR65 PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74
+ * PACR75 PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83
+ * PACR84 PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93
+ * PACR94 PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102
+ * PACR103 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110
+ * PACR111 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119
+ * 0x6C PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
+ * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR
+ * A-D, which control peripheral slots 0-31, are shown below. The following
  * section, PACRPeripheral Access Control Register , shows the register field
  * descriptions for PACR E-P. All PACR registers are identical. They are divided into two
  * sections because they occupy two non-contiguous address spaces.
@@ -180,24 +708,24 @@ typedef union _hw_aips_pacra
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
-        uint32_t WP4 : 1;              //!< [13] Write protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
+        uint32_t WP4 : 1;              //!< [13] Write Protect
         uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
-        uint32_t TP3 : 1;              //!< [16] Trusted protect
+        uint32_t TP3 : 1;              //!< [16] Trusted Protect
         uint32_t WP3 : 1;              //!< [17] Write Protect
-        uint32_t SP3 : 1;              //!< [18] Supervisor protect
+        uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
         uint32_t TP2 : 1;              //!< [20] Trusted Protect
-        uint32_t WP2 : 1;              //!< [21] Write protect
+        uint32_t WP2 : 1;              //!< [21] Write Protect
         uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
-        uint32_t TP1 : 1;              //!< [24] Trusted protect
+        uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
         uint32_t TP0 : 1;              //!< [28] Trusted Protect
-        uint32_t WP0 : 1;              //!< [29] Write protect
+        uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
     } B;
@@ -229,7 +757,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -257,9 +785,9 @@ typedef union _hw_aips_pacra
 /*!
  * @name Register AIPS_PACRA, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -289,9 +817,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -322,7 +850,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -350,9 +878,9 @@ typedef union _hw_aips_pacra
 /*!
  * @name Register AIPS_PACRA, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -382,9 +910,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -415,7 +943,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -443,9 +971,9 @@ typedef union _hw_aips_pacra
 /*!
  * @name Register AIPS_PACRA, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -475,9 +1003,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -508,7 +1036,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -538,7 +1066,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -568,9 +1096,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -601,7 +1129,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -629,9 +1157,9 @@ typedef union _hw_aips_pacra
 /*!
  * @name Register AIPS_PACRA, field WP3[17] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -661,9 +1189,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -694,7 +1222,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -724,7 +1252,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -754,9 +1282,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -787,7 +1315,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -815,9 +1343,9 @@ typedef union _hw_aips_pacra
 /*!
  * @name Register AIPS_PACRA, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -847,9 +1375,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -880,7 +1408,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -910,7 +1438,7 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -940,9 +1468,9 @@ typedef union _hw_aips_pacra
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -976,32 +1504,32 @@ typedef union _hw_aips_pacra
 /*!
  * @brief HW_AIPS_PACRB - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44004400U
  *
  * Each PACR register consists of eight 4-bit PACR fields. Each PACR field
  * defines the access levels for a particular peripheral. The mapping between a
  * peripheral and its PACR field is shown in the table below. The peripheral assignment
  * to each PACR is defined by the memory map slot that the peripheral is
  * assigned to. See this chip's memory map for the assignment of a particular
- * peripheral. The following table shows the location of each peripheral's PACR field in
- * the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
- * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7 0x24
- * PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC PACR16
- * PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24 PACR25
- * PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
- * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37 PACR38
- * PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47 0x48
- * PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
- * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64 PACR65
- * PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74 PACR75
- * PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83 PACR84
- * PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93 PACR94
- * PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102 PACR103
- * 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110 PACR111
- * 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119 0x6C
- * PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
- * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR A - D,
- * which control peripheral slots 0 - 31, are shown below. The following
+ * peripheral. The following table shows the location of each peripheral slot's PACR field
+ * in the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
+ * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7
+ * 0x24 PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC
+ * PACR16 PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24
+ * PACR25 PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
+ * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37
+ * PACR38 PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47
+ * 0x48 PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
+ * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64
+ * PACR65 PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74
+ * PACR75 PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83
+ * PACR84 PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93
+ * PACR94 PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102
+ * PACR103 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110
+ * PACR111 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119
+ * 0x6C PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
+ * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR
+ * A-D, which control peripheral slots 0-31, are shown below. The following
  * section, PACRPeripheral Access Control Register , shows the register field
  * descriptions for PACR E-P. All PACR registers are identical. They are divided into two
  * sections because they occupy two non-contiguous address spaces.
@@ -1023,24 +1551,24 @@ typedef union _hw_aips_pacrb
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
-        uint32_t WP4 : 1;              //!< [13] Write protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
+        uint32_t WP4 : 1;              //!< [13] Write Protect
         uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
-        uint32_t TP3 : 1;              //!< [16] Trusted protect
+        uint32_t TP3 : 1;              //!< [16] Trusted Protect
         uint32_t WP3 : 1;              //!< [17] Write Protect
-        uint32_t SP3 : 1;              //!< [18] Supervisor protect
+        uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
         uint32_t TP2 : 1;              //!< [20] Trusted Protect
-        uint32_t WP2 : 1;              //!< [21] Write protect
+        uint32_t WP2 : 1;              //!< [21] Write Protect
         uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
-        uint32_t TP1 : 1;              //!< [24] Trusted protect
+        uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
         uint32_t TP0 : 1;              //!< [28] Trusted Protect
-        uint32_t WP0 : 1;              //!< [29] Write protect
+        uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
     } B;
@@ -1072,7 +1600,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1100,9 +1628,9 @@ typedef union _hw_aips_pacrb
 /*!
  * @name Register AIPS_PACRB, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1132,9 +1660,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1165,7 +1693,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1193,9 +1721,9 @@ typedef union _hw_aips_pacrb
 /*!
  * @name Register AIPS_PACRB, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1225,9 +1753,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1258,7 +1786,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1286,9 +1814,9 @@ typedef union _hw_aips_pacrb
 /*!
  * @name Register AIPS_PACRB, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1318,9 +1846,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1351,7 +1879,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1381,7 +1909,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1411,9 +1939,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1444,7 +1972,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1472,9 +2000,9 @@ typedef union _hw_aips_pacrb
 /*!
  * @name Register AIPS_PACRB, field WP3[17] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1504,9 +2032,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1537,7 +2065,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1567,7 +2095,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1597,9 +2125,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1630,7 +2158,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1658,9 +2186,9 @@ typedef union _hw_aips_pacrb
 /*!
  * @name Register AIPS_PACRB, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1690,9 +2218,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1723,7 +2251,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1753,7 +2281,7 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1783,9 +2311,9 @@ typedef union _hw_aips_pacrb
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -1826,25 +2354,25 @@ typedef union _hw_aips_pacrb
  * peripheral and its PACR field is shown in the table below. The peripheral assignment
  * to each PACR is defined by the memory map slot that the peripheral is
  * assigned to. See this chip's memory map for the assignment of a particular
- * peripheral. The following table shows the location of each peripheral's PACR field in
- * the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
- * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7 0x24
- * PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC PACR16
- * PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24 PACR25
- * PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
- * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37 PACR38
- * PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47 0x48
- * PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
- * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64 PACR65
- * PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74 PACR75
- * PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83 PACR84
- * PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93 PACR94
- * PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102 PACR103
- * 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110 PACR111
- * 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119 0x6C
- * PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
- * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR A - D,
- * which control peripheral slots 0 - 31, are shown below. The following
+ * peripheral. The following table shows the location of each peripheral slot's PACR field
+ * in the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
+ * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7
+ * 0x24 PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC
+ * PACR16 PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24
+ * PACR25 PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
+ * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37
+ * PACR38 PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47
+ * 0x48 PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
+ * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64
+ * PACR65 PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74
+ * PACR75 PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83
+ * PACR84 PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93
+ * PACR94 PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102
+ * PACR103 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110
+ * PACR111 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119
+ * 0x6C PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
+ * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR
+ * A-D, which control peripheral slots 0-31, are shown below. The following
  * section, PACRPeripheral Access Control Register , shows the register field
  * descriptions for PACR E-P. All PACR registers are identical. They are divided into two
  * sections because they occupy two non-contiguous address spaces.
@@ -1866,24 +2394,24 @@ typedef union _hw_aips_pacrc
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
-        uint32_t WP4 : 1;              //!< [13] Write protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
+        uint32_t WP4 : 1;              //!< [13] Write Protect
         uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
-        uint32_t TP3 : 1;              //!< [16] Trusted protect
+        uint32_t TP3 : 1;              //!< [16] Trusted Protect
         uint32_t WP3 : 1;              //!< [17] Write Protect
-        uint32_t SP3 : 1;              //!< [18] Supervisor protect
+        uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
         uint32_t TP2 : 1;              //!< [20] Trusted Protect
-        uint32_t WP2 : 1;              //!< [21] Write protect
+        uint32_t WP2 : 1;              //!< [21] Write Protect
         uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
-        uint32_t TP1 : 1;              //!< [24] Trusted protect
+        uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
         uint32_t TP0 : 1;              //!< [28] Trusted Protect
-        uint32_t WP0 : 1;              //!< [29] Write protect
+        uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
     } B;
@@ -1915,7 +2443,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -1943,9 +2471,9 @@ typedef union _hw_aips_pacrc
 /*!
  * @name Register AIPS_PACRC, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -1975,9 +2503,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2008,7 +2536,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2036,9 +2564,9 @@ typedef union _hw_aips_pacrc
 /*!
  * @name Register AIPS_PACRC, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2068,9 +2596,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2101,7 +2629,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2129,9 +2657,9 @@ typedef union _hw_aips_pacrc
 /*!
  * @name Register AIPS_PACRC, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2161,9 +2689,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2194,7 +2722,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2224,7 +2752,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2254,9 +2782,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2287,7 +2815,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2315,9 +2843,9 @@ typedef union _hw_aips_pacrc
 /*!
  * @name Register AIPS_PACRC, field WP3[17] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2347,9 +2875,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2380,7 +2908,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2410,7 +2938,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2440,9 +2968,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2473,7 +3001,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2501,9 +3029,9 @@ typedef union _hw_aips_pacrc
 /*!
  * @name Register AIPS_PACRC, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2533,9 +3061,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2566,7 +3094,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2596,7 +3124,7 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2626,9 +3154,9 @@ typedef union _hw_aips_pacrc
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2662,32 +3190,32 @@ typedef union _hw_aips_pacrc
 /*!
  * @brief HW_AIPS_PACRD - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x00000004U
  *
  * Each PACR register consists of eight 4-bit PACR fields. Each PACR field
  * defines the access levels for a particular peripheral. The mapping between a
  * peripheral and its PACR field is shown in the table below. The peripheral assignment
  * to each PACR is defined by the memory map slot that the peripheral is
  * assigned to. See this chip's memory map for the assignment of a particular
- * peripheral. The following table shows the location of each peripheral's PACR field in
- * the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
- * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7 0x24
- * PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC PACR16
- * PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24 PACR25
- * PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
- * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37 PACR38
- * PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47 0x48
- * PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
- * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64 PACR65
- * PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74 PACR75
- * PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83 PACR84
- * PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93 PACR94
- * PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102 PACR103
- * 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110 PACR111
- * 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119 0x6C
- * PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
- * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR A - D,
- * which control peripheral slots 0 - 31, are shown below. The following
+ * peripheral. The following table shows the location of each peripheral slot's PACR field
+ * in the PACR registers. Offset Register [31:28] [27:24] [23:20] [19:16] [15:12]
+ * [11:8] [7:4] [3:0] 0x20 PACRA PACR0 PACR1 PACR2 PACR3 PACR4 PACR5 PACR6 PACR7
+ * 0x24 PACRB PACR8 PACR9 PACR10 PACR11 PACR12 PACR13 PACR14 PACR15 0x28 PACRC
+ * PACR16 PACR17 PACR18 PACR19 PACR20 PACR21 PACR22 PACR23 0x2C PACRD PACR24
+ * PACR25 PACR26 PACR27 PACR28 PACR29 PACR30 PACR31 0x30 Reserved 0x34 Reserved 0x38
+ * Reserved 0x3C Reserved 0x40 PACRE PACR32 PACR33 PACR34 PACR35 PACR36 PACR37
+ * PACR38 PACR39 0x44 PACRF PACR40 PACR41 PACR42 PACR43 PACR44 PACR45 PACR46 PACR47
+ * 0x48 PACRG PACR48 PACR49 PACR50 PACR51 PACR52 PACR53 PACR54 PACR55 0x4C PACRH
+ * PACR56 PACR57 PACR58 PACR59 PACR60 PACR61 PACR62 PACR63 0x50 PACRI PACR64
+ * PACR65 PACR66 PACR67 PACR68 PACR69 PACR70 PACR71 0x54 PACRJ PACR72 PACR73 PACR74
+ * PACR75 PACR76 PACR77 PACR78 PACR79 0x58 PACRK PACR80 PACR81 PACR82 PACR83
+ * PACR84 PACR85 PACR86 PACR87 0x5C PACRL PACR88 PACR89 PACR90 PACR91 PACR92 PACR93
+ * PACR94 PACR95 0x60 PACRM PACR96 PACR97 PACR98 PACR99 PACR100 PACR101 PACR102
+ * PACR103 0x64 PACRN PACR104 PACR105 PACR106 PACR107 PACR108 PACR109 PACR110
+ * PACR111 0x68 PACRO PACR112 PACR113 PACR114 PACR115 PACR116 PACR117 PACR118 PACR119
+ * 0x6C PACRP PACR120 PACR121 PACR122 PACR123 PACR124 PACR125 PACR126 PACR127 0x80
+ * PACRU PACR GBL0 PACR GBL1 Reserved The register field descriptions for PACR
+ * A-D, which control peripheral slots 0-31, are shown below. The following
  * section, PACRPeripheral Access Control Register , shows the register field
  * descriptions for PACR E-P. All PACR registers are identical. They are divided into two
  * sections because they occupy two non-contiguous address spaces.
@@ -2709,24 +3237,24 @@ typedef union _hw_aips_pacrd
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
-        uint32_t WP4 : 1;              //!< [13] Write protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
+        uint32_t WP4 : 1;              //!< [13] Write Protect
         uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
-        uint32_t TP3 : 1;              //!< [16] Trusted protect
+        uint32_t TP3 : 1;              //!< [16] Trusted Protect
         uint32_t WP3 : 1;              //!< [17] Write Protect
-        uint32_t SP3 : 1;              //!< [18] Supervisor protect
+        uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
         uint32_t TP2 : 1;              //!< [20] Trusted Protect
-        uint32_t WP2 : 1;              //!< [21] Write protect
+        uint32_t WP2 : 1;              //!< [21] Write Protect
         uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
-        uint32_t TP1 : 1;              //!< [24] Trusted protect
+        uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
         uint32_t TP0 : 1;              //!< [28] Trusted Protect
-        uint32_t WP0 : 1;              //!< [29] Write protect
+        uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
     } B;
@@ -2758,7 +3286,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2786,9 +3314,9 @@ typedef union _hw_aips_pacrd
 /*!
  * @name Register AIPS_PACRD, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2818,9 +3346,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2851,7 +3379,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2879,9 +3407,9 @@ typedef union _hw_aips_pacrd
 /*!
  * @name Register AIPS_PACRD, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -2911,9 +3439,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -2944,7 +3472,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -2972,9 +3500,9 @@ typedef union _hw_aips_pacrd
 /*!
  * @name Register AIPS_PACRD, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3004,9 +3532,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3037,7 +3565,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3067,7 +3595,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3097,9 +3625,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3130,7 +3658,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3158,9 +3686,9 @@ typedef union _hw_aips_pacrd
 /*!
  * @name Register AIPS_PACRD, field WP3[17] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3190,9 +3718,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3223,7 +3751,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3253,7 +3781,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3283,9 +3811,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3316,7 +3844,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3344,9 +3872,9 @@ typedef union _hw_aips_pacrd
 /*!
  * @name Register AIPS_PACRD, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3376,9 +3904,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3409,7 +3937,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3439,7 +3967,7 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3469,9 +3997,9 @@ typedef union _hw_aips_pacrd
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3505,11 +4033,11 @@ typedef union _hw_aips_pacrd
 /*!
  * @brief HW_AIPS_PACRE - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacre
 {
@@ -3528,23 +4056,23 @@ typedef union _hw_aips_pacre
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -3577,7 +4105,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3605,9 +4133,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3637,9 +4165,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3670,7 +4198,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3698,9 +4226,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3730,9 +4258,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3763,7 +4291,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3791,9 +4319,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3823,9 +4351,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3856,7 +4384,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3884,9 +4412,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -3916,9 +4444,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -3949,7 +4477,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -3979,7 +4507,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4009,9 +4537,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4042,7 +4570,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4070,9 +4598,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4102,9 +4630,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4135,7 +4663,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4163,9 +4691,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4195,9 +4723,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4228,7 +4756,7 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4256,9 +4784,9 @@ typedef union _hw_aips_pacre
 /*!
  * @name Register AIPS_PACRE, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4288,9 +4816,9 @@ typedef union _hw_aips_pacre
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4324,11 +4852,11 @@ typedef union _hw_aips_pacre
 /*!
  * @brief HW_AIPS_PACRF - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrf
 {
@@ -4347,23 +4875,23 @@ typedef union _hw_aips_pacrf
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -4396,7 +4924,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4424,9 +4952,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4456,9 +4984,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4489,7 +5017,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4517,9 +5045,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4549,9 +5077,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4582,7 +5110,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4610,9 +5138,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4642,9 +5170,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4675,7 +5203,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4703,9 +5231,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4735,9 +5263,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4768,7 +5296,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4798,7 +5326,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4828,9 +5356,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4861,7 +5389,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4889,9 +5417,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -4921,9 +5449,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -4954,7 +5482,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -4982,9 +5510,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5014,9 +5542,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5047,7 +5575,7 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5075,9 +5603,9 @@ typedef union _hw_aips_pacrf
 /*!
  * @name Register AIPS_PACRF, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5107,9 +5635,9 @@ typedef union _hw_aips_pacrf
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5143,11 +5671,11 @@ typedef union _hw_aips_pacrf
 /*!
  * @brief HW_AIPS_PACRG - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrg
 {
@@ -5166,23 +5694,23 @@ typedef union _hw_aips_pacrg
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -5215,7 +5743,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5243,9 +5771,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5275,9 +5803,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5308,7 +5836,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5336,9 +5864,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5368,9 +5896,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5401,7 +5929,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5429,9 +5957,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5461,9 +5989,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5494,7 +6022,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5522,9 +6050,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5554,9 +6082,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5587,7 +6115,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5617,7 +6145,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5647,9 +6175,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5680,7 +6208,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5708,9 +6236,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5740,9 +6268,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5773,7 +6301,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5801,9 +6329,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5833,9 +6361,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5866,7 +6394,7 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -5894,9 +6422,9 @@ typedef union _hw_aips_pacrg
 /*!
  * @name Register AIPS_PACRG, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -5926,9 +6454,9 @@ typedef union _hw_aips_pacrg
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -5962,11 +6490,11 @@ typedef union _hw_aips_pacrg
 /*!
  * @brief HW_AIPS_PACRH - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrh
 {
@@ -5985,23 +6513,23 @@ typedef union _hw_aips_pacrh
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -6034,7 +6562,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6062,9 +6590,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6094,9 +6622,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6127,7 +6655,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6155,9 +6683,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6187,9 +6715,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6220,7 +6748,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6248,9 +6776,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6280,9 +6808,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6313,7 +6841,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6341,9 +6869,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6373,9 +6901,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6406,7 +6934,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6436,7 +6964,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6466,9 +6994,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6499,7 +7027,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6527,9 +7055,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6559,9 +7087,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6592,7 +7120,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6620,9 +7148,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6652,9 +7180,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6685,7 +7213,7 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6713,9 +7241,9 @@ typedef union _hw_aips_pacrh
 /*!
  * @name Register AIPS_PACRH, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6745,9 +7273,9 @@ typedef union _hw_aips_pacrh
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6781,11 +7309,11 @@ typedef union _hw_aips_pacrh
 /*!
  * @brief HW_AIPS_PACRI - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacri
 {
@@ -6804,23 +7332,23 @@ typedef union _hw_aips_pacri
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -6853,7 +7381,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6881,9 +7409,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -6913,9 +7441,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -6946,7 +7474,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -6974,9 +7502,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7006,9 +7534,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7039,7 +7567,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7067,9 +7595,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7099,9 +7627,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7132,7 +7660,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7160,9 +7688,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7192,9 +7720,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7225,7 +7753,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7255,7 +7783,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7285,9 +7813,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7318,7 +7846,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7346,9 +7874,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7378,9 +7906,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7411,7 +7939,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7439,9 +7967,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7471,9 +7999,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7504,7 +8032,7 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7532,9 +8060,9 @@ typedef union _hw_aips_pacri
 /*!
  * @name Register AIPS_PACRI, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7564,9 +8092,9 @@ typedef union _hw_aips_pacri
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7600,11 +8128,11 @@ typedef union _hw_aips_pacri
 /*!
  * @brief HW_AIPS_PACRJ - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrj
 {
@@ -7623,23 +8151,23 @@ typedef union _hw_aips_pacrj
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -7672,7 +8200,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7700,9 +8228,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7732,9 +8260,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7765,7 +8293,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7793,9 +8321,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7825,9 +8353,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7858,7 +8386,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7886,9 +8414,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -7918,9 +8446,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -7951,7 +8479,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -7979,9 +8507,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8011,9 +8539,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8044,7 +8572,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8074,7 +8602,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8104,9 +8632,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8137,7 +8665,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8165,9 +8693,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8197,9 +8725,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8230,7 +8758,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8258,9 +8786,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8290,9 +8818,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8323,7 +8851,7 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8351,9 +8879,9 @@ typedef union _hw_aips_pacrj
 /*!
  * @name Register AIPS_PACRJ, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8383,9 +8911,9 @@ typedef union _hw_aips_pacrj
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8419,11 +8947,11 @@ typedef union _hw_aips_pacrj
 /*!
  * @brief HW_AIPS_PACRK - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrk
 {
@@ -8442,23 +8970,23 @@ typedef union _hw_aips_pacrk
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -8491,7 +9019,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8519,9 +9047,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8551,9 +9079,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8584,7 +9112,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8612,9 +9140,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8644,9 +9172,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8677,7 +9205,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8705,9 +9233,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8737,9 +9265,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8770,7 +9298,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8798,9 +9326,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8830,9 +9358,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8863,7 +9391,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8893,7 +9421,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -8923,9 +9451,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -8956,7 +9484,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -8984,9 +9512,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9016,9 +9544,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9049,7 +9577,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9077,9 +9605,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9109,9 +9637,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9142,7 +9670,7 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9170,9 +9698,9 @@ typedef union _hw_aips_pacrk
 /*!
  * @name Register AIPS_PACRK, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9202,9 +9730,9 @@ typedef union _hw_aips_pacrk
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9238,11 +9766,11 @@ typedef union _hw_aips_pacrk
 /*!
  * @brief HW_AIPS_PACRL - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrl
 {
@@ -9261,23 +9789,23 @@ typedef union _hw_aips_pacrl
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -9310,7 +9838,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9338,9 +9866,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9370,9 +9898,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9403,7 +9931,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9431,9 +9959,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9463,9 +9991,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9496,7 +10024,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9524,9 +10052,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9556,9 +10084,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9589,7 +10117,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9617,9 +10145,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9649,9 +10177,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9682,7 +10210,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9712,7 +10240,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9742,9 +10270,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9775,7 +10303,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9803,9 +10331,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9835,9 +10363,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9868,7 +10396,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9896,9 +10424,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -9928,9 +10456,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -9961,7 +10489,7 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -9989,9 +10517,9 @@ typedef union _hw_aips_pacrl
 /*!
  * @name Register AIPS_PACRL, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10021,9 +10549,9 @@ typedef union _hw_aips_pacrl
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10057,11 +10585,11 @@ typedef union _hw_aips_pacrl
 /*!
  * @brief HW_AIPS_PACRM - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrm
 {
@@ -10080,23 +10608,23 @@ typedef union _hw_aips_pacrm
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -10129,7 +10657,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10157,9 +10685,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10189,9 +10717,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10222,7 +10750,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10250,9 +10778,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10282,9 +10810,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10315,7 +10843,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10343,9 +10871,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10375,9 +10903,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10408,7 +10936,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10436,9 +10964,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10468,9 +10996,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10501,7 +11029,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10531,7 +11059,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10561,9 +11089,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10594,7 +11122,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10622,9 +11150,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10654,9 +11182,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10687,7 +11215,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10715,9 +11243,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10747,9 +11275,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10780,7 +11308,7 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10808,9 +11336,9 @@ typedef union _hw_aips_pacrm
 /*!
  * @name Register AIPS_PACRM, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -10840,9 +11368,9 @@ typedef union _hw_aips_pacrm
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -10876,11 +11404,11 @@ typedef union _hw_aips_pacrm
 /*!
  * @brief HW_AIPS_PACRN - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrn
 {
@@ -10899,23 +11427,23 @@ typedef union _hw_aips_pacrn
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -10948,7 +11476,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -10976,9 +11504,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11008,9 +11536,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11041,7 +11569,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11069,9 +11597,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11101,9 +11629,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11134,7 +11662,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11162,9 +11690,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11194,9 +11722,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11227,7 +11755,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11255,9 +11783,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11287,9 +11815,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11320,7 +11848,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11350,7 +11878,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11380,9 +11908,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11413,7 +11941,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11441,9 +11969,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11473,9 +12001,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11506,7 +12034,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11534,9 +12062,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11566,9 +12094,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11599,7 +12127,7 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11627,9 +12155,9 @@ typedef union _hw_aips_pacrn
 /*!
  * @name Register AIPS_PACRN, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11659,9 +12187,9 @@ typedef union _hw_aips_pacrn
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11695,11 +12223,11 @@ typedef union _hw_aips_pacrn
 /*!
  * @brief HW_AIPS_PACRO - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacro
 {
@@ -11718,23 +12246,23 @@ typedef union _hw_aips_pacro
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -11767,7 +12295,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11795,9 +12323,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11827,9 +12355,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11860,7 +12388,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11888,9 +12416,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -11920,9 +12448,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -11953,7 +12481,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -11981,9 +12509,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12013,9 +12541,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12046,7 +12574,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12074,9 +12602,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12106,9 +12634,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12139,7 +12667,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12169,7 +12697,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12199,9 +12727,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12232,7 +12760,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12260,9 +12788,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12292,9 +12820,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12325,7 +12853,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12353,9 +12881,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12385,9 +12913,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12418,7 +12946,7 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12446,9 +12974,9 @@ typedef union _hw_aips_pacro
 /*!
  * @name Register AIPS_PACRO, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12478,9 +13006,9 @@ typedef union _hw_aips_pacro
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12514,11 +13042,11 @@ typedef union _hw_aips_pacro
 /*!
  * @brief HW_AIPS_PACRP - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44444444U
  *
- * This section describes PACR registers E - P, which control peripheral slots
- * 32 - 127. See PACRPeripheral Access Control Register for the description of
- * these registers.
+ * This section describes PACR registers E-P, which control peripheral slots
+ * 32-127. See PACRPeripheral Access Control Register for the description of these
+ * registers.
  */
 typedef union _hw_aips_pacrp
 {
@@ -12537,23 +13065,23 @@ typedef union _hw_aips_pacrp
         uint32_t WP5 : 1;              //!< [9] Write Protect
         uint32_t SP5 : 1;              //!< [10] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [11]
-        uint32_t TP4 : 1;              //!< [12] Trusted protect
+        uint32_t TP4 : 1;              //!< [12] Trusted Protect
         uint32_t WP4 : 1;              //!< [13] Write Protect
-        uint32_t SP4 : 1;              //!< [14] Supervisor protect
+        uint32_t SP4 : 1;              //!< [14] Supervisor Protect
         uint32_t RESERVED3 : 1;        //!< [15]
         uint32_t TP3 : 1;              //!< [16] Trusted Protect
-        uint32_t WP3 : 1;              //!< [17] Write protect
+        uint32_t WP3 : 1;              //!< [17] Write Protect
         uint32_t SP3 : 1;              //!< [18] Supervisor Protect
         uint32_t RESERVED4 : 1;        //!< [19]
-        uint32_t TP2 : 1;              //!< [20] Trusted protect
+        uint32_t TP2 : 1;              //!< [20] Trusted Protect
         uint32_t WP2 : 1;              //!< [21] Write Protect
-        uint32_t SP2 : 1;              //!< [22] Supervisor protect
+        uint32_t SP2 : 1;              //!< [22] Supervisor Protect
         uint32_t RESERVED5 : 1;        //!< [23]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
         uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED6 : 1;        //!< [27]
-        uint32_t TP0 : 1;              //!< [28] Trusted protect
+        uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
         uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED7 : 1;        //!< [31]
@@ -12586,7 +13114,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12614,9 +13142,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP7[1] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12646,9 +13174,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12679,7 +13207,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12707,9 +13235,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP6[5] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12739,9 +13267,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12772,7 +13300,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12800,9 +13328,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP5[9] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12832,9 +13360,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12865,7 +13393,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12893,9 +13421,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP4[13] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -12925,9 +13453,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -12958,7 +13486,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -12988,7 +13516,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -13018,9 +13546,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -13051,7 +13579,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -13079,9 +13607,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP2[21] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -13111,9 +13639,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attributeMPR x [MPL n ], and the MPR x [MPL n ] control bit for
- * the master must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -13144,7 +13672,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -13172,9 +13700,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP1[25] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -13204,9 +13732,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master must
+ * be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -13237,7 +13765,7 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this bit is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -13265,9 +13793,9 @@ typedef union _hw_aips_pacrp
 /*!
  * @name Register AIPS_PACRP, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -13297,9 +13825,9 @@ typedef union _hw_aips_pacrp
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -13333,7 +13861,7 @@ typedef union _hw_aips_pacrp
 /*!
  * @brief HW_AIPS_PACRU - Peripheral Access Control Register (RW)
  *
- * Reset value: 0x00000000U
+ * Reset value: 0x44000000U
  *
  * PACRU defines the access levels for the two global spaces.
  */
@@ -13344,12 +13872,12 @@ typedef union _hw_aips_pacru
     {
         uint32_t RESERVED0 : 24;       //!< [23:0]
         uint32_t TP1 : 1;              //!< [24] Trusted Protect
-        uint32_t WP1 : 1;              //!< [25] Write protect
+        uint32_t WP1 : 1;              //!< [25] Write Protect
         uint32_t SP1 : 1;              //!< [26] Supervisor Protect
         uint32_t RESERVED1 : 1;        //!< [27]
         uint32_t TP0 : 1;              //!< [28] Trusted Protect
         uint32_t WP0 : 1;              //!< [29] Write Protect
-        uint32_t SP0 : 1;              //!< [30] Supervisor protect
+        uint32_t SP0 : 1;              //!< [30] Supervisor Protect
         uint32_t RESERVED2 : 1;        //!< [31]
     } B;
 } hw_aips_pacru_t;
@@ -13380,7 +13908,7 @@ typedef union _hw_aips_pacru
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -13410,7 +13938,7 @@ typedef union _hw_aips_pacru
  *
  * Determines whether the peripheral allows write accesss. When this bit is set
  * and a write access is attempted, access terminates with an error response and
- * no peripheral access initiates .
+ * no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -13440,9 +13968,9 @@ typedef union _hw_aips_pacru
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * accesses. When this field is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control field for the master
- * must be set. If not, access terminates with an error response and no
- * peripheral access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control field for the master
+ * must be set. If not, access terminates with an error response and no peripheral
+ * access initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for
@@ -13473,7 +14001,7 @@ typedef union _hw_aips_pacru
  *
  * Determines whether the peripheral allows accesses from an untrusted master.
  * When this field is set and an access is attempted by an untrusted master, the
- * access terminates with an error response and no peripheral access initiates .
+ * access terminates with an error response and no peripheral access initiates.
  *
  * Values:
  * - 0 - Accesses from an untrusted master are allowed.
@@ -13501,9 +14029,9 @@ typedef union _hw_aips_pacru
 /*!
  * @name Register AIPS_PACRU, field WP0[29] (RW)
  *
- * Determines whether the peripheral allows write accessses. When this field is
+ * Determines whether the peripheral allows write accesses. When this field is
  * set and a write access is attempted, access terminates with an error response
- * and no peripheral access initiates .
+ * and no peripheral access initiates.
  *
  * Values:
  * - 0 - This peripheral allows write accesses.
@@ -13533,9 +14061,9 @@ typedef union _hw_aips_pacru
  *
  * Determines whether the peripheral requires supervisor privilege level for
  * access. When this bit is set, the master privilege level must indicate the
- * supervisor access attribute, and the MPR x [MPL n ] control bit for the master must
- * be set. If not, access terminates with an error response and no peripheral
- * access initiates .
+ * supervisor access attribute, and the MPRx[MPLn] control bit for the master must be
+ * set. If not, access terminates with an error response and no peripheral access
+ * initiates.
  *
  * Values:
  * - 0 - This peripheral does not require supervisor privilege level for

@@ -75,7 +75,7 @@
 #define SDMMC_R1_ILLEGAL_COMMAND      (1 << 22)                 /*!< R1: illegal command status bit */
 #define SDMMC_R1_CARD_ECC_FAILED      (1 << 21)                 /*!< R1: card ecc error status bit */
 #define SDMMC_R1_CC_ERROR             (1 << 20)                 /*!< R1: internal card controller status bit */
-#define SDMMC_R1_ERROR                (1 << 19)                 /*!< R1: a general or an unkown error status bit */
+#define SDMMC_R1_ERROR                (1 << 19)                 /*!< R1: a general or an unknown error status bit */
 #define SDMMC_R1_UNDERRUN             (1 << 18)                 /*!< R1: underrun status bit */
 #define SDMMC_R1_OVERRUN              (1 << 17)                 /*!< R1: overrun status bit */
 #define SDMMC_R1_CID_CSD_OVERWRITE    (1 << 16)                 /*!< R1: cid/csd overwrite status bit */
@@ -103,7 +103,7 @@
 #define SDMMC_SD_VERSION_2_0         (1 << 2)                   /*!< SD card version 2.0 */
 #define SDMMC_SD_VERSION_3_0         (1 << 3)                   /*!< SD card version 3.0 */
 
-typedef enum                        /*!< type     argument        response */
+typedef enum _mmc_cmd_t             /*!< type     argument        response */
 {
     kMmcSetRelativeAddr = 3,        /*!< ac       [31:16] RCA     R1 */
     kMmcSleepAwake = 5,             /*!< ac       [31:16] RCA     R1b */
@@ -124,7 +124,7 @@ typedef enum                        /*!< type     argument        response */
     kMmcGoIrqState = 40,            /*!< bcr                      R5 */
 } mmc_cmd_t;
 
-typedef enum
+typedef enum _sdmmc_cmd_t
 {
     kGoIdleState = 0,               /*!< bc */
     kSendOpCond = 1,                /*!< bcr      [31:0] OCR      R3 */
@@ -165,7 +165,7 @@ typedef enum
     kGenCmd = 56,                   /*!< adtc     [0] RD/WR       R1 */
 } sdmmc_cmd_t;
 
-typedef enum
+typedef enum _sd_cmd_t
 {
     kSdSendRelativeAddr = 3,        /*!< bcr                      R6 */
     kSdSwitch = 6,                  /*!< adtc     [31] mode       R1 */
@@ -194,7 +194,7 @@ typedef enum
                                     /*!<          address */
 } sd_cmd_t;
 
-typedef enum
+typedef enum _sd_acmd_t
 {
     kSdAppSetBusWdith = 6,          /*!< ac       [1:0] bus       R1 */
                                     /*!<          width */
@@ -211,7 +211,7 @@ typedef enum
     kSdAppSendScr = 51,             /*!< adtc                     R1 */
 } sd_acmd_t;
 
-typedef enum
+typedef enum _sd_switch_mode_t
 {
     kSdSwitchCheck = 0,             /*!< SD switch mode 0: check function */
     kSdSwitchSet = 1,               /*!< SD switch mode 1: set function */

@@ -82,7 +82,7 @@ const sim_clock_gate_module_config_t kSimClockGateModuleConfigTable [] =  {
     {kSimClockModulePDB,           0,  HW_SIM_SCGC6_ADDR, SIM_SCGC6_PDB_MASK},
     {kSimClockModuleFTM,           0,  HW_SIM_SCGC6_ADDR, SIM_SCGC6_FTM0_MASK},
     {kSimClockModuleFTM,           1,  HW_SIM_SCGC6_ADDR, SIM_SCGC6_FTM1_MASK},
-    {kSimClockModuleFTM,           2,  HW_SIM_SCGC6_ADDR, SIM_SCGC6_FTM2_MASK},
+    {kSimClockModuleFTM,           2,  HW_SIM_SCGC3_ADDR, SIM_SCGC3_FTM2_MASK},
     {kSimClockModuleFTM,           3,  HW_SIM_SCGC3_ADDR, SIM_SCGC3_FTM3_MASK},
     {kSimClockModulePIT,           0,  HW_SIM_SCGC6_ADDR, SIM_SCGC6_PIT_MASK},
     {kSimClockModuleLPTIMER,       0,  HW_SIM_SCGC5_ADDR, SIM_SCGC5_LPTMR_MASK},

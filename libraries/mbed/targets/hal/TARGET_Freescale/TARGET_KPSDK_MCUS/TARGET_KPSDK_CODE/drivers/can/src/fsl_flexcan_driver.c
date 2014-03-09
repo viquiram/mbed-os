@@ -29,10 +29,9 @@
  */
 
 #include "fsl_flexcan_driver.h"
-#include "fsl_os_abstraction.h"
-#include "fsl_clock_configs.h"
 #include "fsl_clock_manager.h"
 #include "fsl_interrupt_manager.h"
+#include "fsl_os_abstraction.h"
 
 /*******************************************************************************
  * Variables
@@ -51,15 +50,15 @@ sync_object_t irqSync;
 /*! The table contains bit_rate (Hz), propseg, pseg1, pseg2, pre_divider, and rjw.*/
 #if defined(K70F12_SERIES) || defined(K64F12_SERIES)
 const flexcan_bitrate_table_t bit_rate_table[] = {
-    { 125000, 6, 7, 7, 19, 3},  /* 125 kHz */
-    { 250000, 6, 7, 7,  9, 3},  /* 250 kHz */
-    { 500000, 6, 7, 7,  4, 3},  /* 500 kHz */
-    { 750000, 6, 5, 5,  3, 3},  /* 750 kHz */
-    {1000000, 6, 5, 5,  2, 3},  /* 1   MHz */
+    { kFlexCanBitrate_125k, 6, 7, 7, 19, 3},  /* 125 kHz */
+    { kFlexCanBitrate_250k, 6, 7, 7,  9, 3},  /* 250 kHz */
+    { kFlexCanBitrate_500k, 6, 7, 7,  4, 3},  /* 500 kHz */
+    { kFlexCanBitrate_750k, 6, 5, 5,  3, 3},  /* 750 kHz */
+    { kFlexCanBitrate_1M,   6, 5, 5,  2, 3},  /* 1   MHz */
 };
 #endif
 
-extern IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_FEATURE_CAN_INTERRUPT_COUNT];
+extern IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_CAN_INTERRUPT_COUNT];
 
 /*******************************************************************************
  * Code
@@ -73,7 +72,7 @@ extern IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_FEATURE_CAN_INTERRUP
  * values are from the table bit_rate_table and based on the baudrate passed in.
  *
  *END**************************************************************************/
-flexcan_status_t flexcan_set_bitrate(uint8_t instance, uint32_t bitrate)
+flexcan_status_t flexcan_set_bitrate(uint8_t instance, flexcan_bitrate_t bitrate)
 {
     uint32_t num_bitrate_table;
     uint32_t i;
@@ -114,7 +113,7 @@ flexcan_status_t flexcan_set_bitrate(uint8_t instance, uint32_t bitrate)
  * baudrate from the table bit_rate_table.
  *
  *END**************************************************************************/
-flexcan_status_t flexcan_get_bitrate(uint8_t instance, uint32_t *bitrate)
+flexcan_status_t flexcan_get_bitrate(uint8_t instance, flexcan_bitrate_t *bitrate)
 {
     uint32_t i;
     flexcan_time_segment_t time_seg;
@@ -227,38 +226,27 @@ flexcan_status_t flexcan_set_rx_mb_global_mask(
  *END**************************************************************************/
 flexcan_status_t flexcan_set_rx_individual_mask(
     uint8_t instance,
-    flexcan_config_t * data,
+    const flexcan_user_config_t * data,
     flexcan_mb_id_type_t id_type,
     uint32_t mb_idx,
     uint32_t mask)
 {
-    flexcan_status_t result;
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     if (id_type == kFlexCanMbId_Std)
     {
         /* Set standard individual mask*/
-        result = flexcan_hal_set_rx_individual_std_mask(instance, data, mb_idx, mask);
-        if (result)
-        {
-            return result;
-        }
+        return flexcan_hal_set_rx_individual_std_mask(instance, data, mb_idx, mask);
     }
     else if (id_type == kFlexCanMbId_Ext)
     {
         /* Set extended individual mask*/
-        result = flexcan_hal_set_rx_individual_ext_mask(instance, data, mb_idx, mask);
-        if (result)
-        {
-            return result;
-        }
+        return flexcan_hal_set_rx_individual_ext_mask(instance, data, mb_idx, mask);
     }
     else
     {
         return kStatus_FLEXCAN_InvalidArgument;
     }
-
-    return kStatus_FLEXCAN_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -273,7 +261,7 @@ flexcan_status_t flexcan_set_rx_individual_mask(
  *END**************************************************************************/
 flexcan_status_t flexcan_init(
    uint8_t instance,
-   flexcan_config_t *data,
+   const flexcan_user_config_t *data,
    bool enable_err_interrupts)
 {
     flexcan_status_t result;
@@ -336,18 +324,21 @@ flexcan_status_t flexcan_init(
  *END**************************************************************************/
 flexcan_status_t flexcan_tx_mb_config(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
-    flexcan_mb_code_status_tx_t *cs,
+    flexcan_data_info_t *tx_info,
     uint32_t msg_id)
 {
     flexcan_status_t result;
+    flexcan_mb_code_status_tx_t cs;
     assert(instance < HW_CAN_INSTANCE_COUNT);
     assert(data);
 
     /* Initialize transmit mb*/
-    cs->code = kFlexCanTX_Inactive;
-    result = flexcan_hal_set_mb_tx(instance, data, mb_idx, cs, msg_id, NULL);
+    cs.data_length = tx_info->data_length;
+    cs.msg_id_type = tx_info->msg_id_type;
+    cs.code = kFlexCanTX_Inactive;
+    result = flexcan_hal_set_mb_tx(instance, data, mb_idx, &cs, msg_id, NULL);
     if (result)
     {
         return result;
@@ -368,9 +359,9 @@ flexcan_status_t flexcan_tx_mb_config(
  *END**************************************************************************/
 flexcan_status_t flexcan_send(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
-    flexcan_mb_code_status_tx_t *cs,
+    flexcan_data_info_t *tx_info,
     uint32_t msg_id,
     uint32_t num_bytes,
     uint8_t *mb_data)
@@ -378,6 +369,7 @@ flexcan_status_t flexcan_send(
     flexcan_status_t result;
     uint32_t num_byte_left;
     uint32_t total_byte_data_transmitted;
+    flexcan_mb_code_status_tx_t cs;
     assert(instance < HW_CAN_INSTANCE_COUNT);
     assert(data);
 
@@ -390,17 +382,19 @@ flexcan_status_t flexcan_send(
     /* Start transmitting data*/
     num_byte_left = num_bytes;
     total_byte_data_transmitted = 0;
+    cs.data_length = tx_info->data_length;
+    cs.msg_id_type = tx_info->msg_id_type;
     
     while (num_byte_left)
     {
-        if (num_byte_left < cs->data_length)
+        if (num_byte_left < cs.data_length)
         {
-            cs->data_length = num_byte_left;
+            cs.data_length = num_byte_left;
         }
 
         /* Set up FlexCAN message buffer for transmitting data*/
-        cs->code = kFlexCanTX_Data;
-        result = flexcan_hal_set_mb_tx(instance, data, mb_idx, cs, msg_id,
+        cs.code = kFlexCanTX_Data;
+        result = flexcan_hal_set_mb_tx(instance, data, mb_idx, &cs, msg_id,
                                        (mb_data + total_byte_data_transmitted));
 
         if(result == kStatus_FLEXCAN_Success)
@@ -423,8 +417,8 @@ flexcan_status_t flexcan_send(
             return result;
         }
 
-        total_byte_data_transmitted += cs->data_length;
-        num_byte_left -= cs->data_length;
+        total_byte_data_transmitted += cs.data_length;
+        num_byte_left -= cs.data_length;
     }
 
     return (kStatus_FLEXCAN_Success);
@@ -445,20 +439,23 @@ flexcan_status_t flexcan_send(
  *END**************************************************************************/
 flexcan_status_t flexcan_rx_mb_config(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
-    flexcan_mb_code_status_rx_t *cs,
+    flexcan_data_info_t *rx_info,
     uint32_t msg_id)
 {
     flexcan_status_t result;
+    flexcan_mb_code_status_rx_t cs;
     assert(instance < HW_CAN_INSTANCE_COUNT);
     assert(data);
 
     rx_mb_idx = mb_idx;
+    cs.data_length = rx_info->data_length;
+    cs.msg_id_type = rx_info->msg_id_type;
 
     /* Initialize rx mb*/
-    cs->code = kFlexCanRX_NotUsed;
-    result = flexcan_hal_set_mb_rx(instance, data, mb_idx, cs, msg_id);
+    cs.code = kFlexCanRX_NotUsed;
+    result = flexcan_hal_set_mb_rx(instance, data, mb_idx, &cs, msg_id);
     if (result)
     {
          return result;
@@ -472,16 +469,16 @@ flexcan_status_t flexcan_rx_mb_config(
     }
 
     /* Initialize receive MB*/
-    cs->code = kFlexCanRX_Inactive;
-    result = flexcan_hal_set_mb_rx(instance, data, mb_idx, cs, msg_id);
+    cs.code = kFlexCanRX_Inactive;
+    result = flexcan_hal_set_mb_rx(instance, data, mb_idx, &cs, msg_id);
     if (result)
     {
          return result;
     }
 
     /* Set up FlexCAN message buffer fields for receiving data*/
-    cs->code = kFlexCanRX_Empty;
-    return flexcan_hal_set_mb_rx(instance, data, mb_idx, cs, msg_id);
+    cs.code = kFlexCanRX_Empty;
+    return flexcan_hal_set_mb_rx(instance, data, mb_idx, &cs, msg_id);
 }
 
 /*FUNCTION**********************************************************************
@@ -494,7 +491,7 @@ flexcan_status_t flexcan_rx_mb_config(
  *END**************************************************************************/
 flexcan_status_t flexcan_rx_fifo_config(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     flexcan_rx_fifo_id_element_format_t id_format,
     flexcan_id_table_t *id_filter_table)
 {
@@ -509,19 +506,16 @@ flexcan_status_t flexcan_rx_fifo_config(
     }
 
     /* Enable RX FIFO interrupts*/
-    result = flexcan_hal_enable_mb_interrupt(instance, data, 5);
-    if(result)
+    for (uint8_t i = 5; i <= 7; i++)
     {
-         return result;
+        result = flexcan_hal_enable_mb_interrupt(instance, data, i);
+        if(result)
+        {
+             return result;
+        }
     }
-
-    result = flexcan_hal_enable_mb_interrupt(instance, data, 6);
-    if(result)
-    {
-         return result;
-    }
-
-    return flexcan_hal_enable_mb_interrupt(instance, data, 7);
+    
+    return result;
 }
 
 /*FUNCTION**********************************************************************
@@ -534,9 +528,8 @@ flexcan_status_t flexcan_rx_fifo_config(
  *END**************************************************************************/
 flexcan_status_t flexcan_start_receive(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
-    uint32_t msg_id,
     uint32_t receiveDataCount,
     bool *is_rx_mb_data,
     bool *is_rx_fifo_data,
@@ -638,9 +631,9 @@ flexcan_status_t flexcan_start_receive(
  *END**************************************************************************/
 flexcan_status_t flexcan_receive(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
-    flexcan_mb_code_status_rx_t *cs,
+    flexcan_data_info_t *rx_info,
     uint32_t msg_id,
     flexcan_rx_fifo_id_element_format_t id_format,
     flexcan_id_table_t *id_filter_table,
@@ -669,7 +662,7 @@ flexcan_status_t flexcan_receive(
     if (data->is_rx_mb_needed)
     {
         /* Configure RX MB fields*/
-        result = flexcan_rx_mb_config(instance, data, mb_idx, cs, msg_id);
+        result = flexcan_rx_mb_config(instance, data, mb_idx, rx_info, msg_id);
         if (result)
         {
             return result;
@@ -677,7 +670,7 @@ flexcan_status_t flexcan_receive(
     }
 
     /* Start receiving data*/
-    return (flexcan_start_receive(instance, data, mb_idx, msg_id, receiveDataCount,
+    return (flexcan_start_receive(instance, data, mb_idx, receiveDataCount,
                                   &is_rx_mb_data, &is_rx_fifo_data, rx_mb, rx_fifo));
 }
 

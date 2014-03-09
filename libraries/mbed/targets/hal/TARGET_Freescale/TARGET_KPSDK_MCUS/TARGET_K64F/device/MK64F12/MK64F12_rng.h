@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -55,14 +55,14 @@
  *
  * Reset value: 0x00000000U
  *
- * This register controls the operation of RNGA.
+ * Controls the operation of RNGA.
  */
 typedef union _hw_rng_cr
 {
     uint32_t U;
     struct _hw_rng_cr_bitfields
     {
-        uint32_t GO : 1;               //!< [0]
+        uint32_t GO : 1;               //!< [0] Go
         uint32_t HA : 1;               //!< [1] High Assurance
         uint32_t INTM : 1;             //!< [2] Interrupt Mask
         uint32_t CLRI : 1;             //!< [3] Clear Interrupt
@@ -80,11 +80,11 @@ typedef union _hw_rng_cr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_RNG_CR                (*(__IO hw_rng_cr_t *) HW_RNG_CR_ADDR)
-#define HW_RNG_CR_RD             (HW_RNG_CR.U)
+#define HW_RNG_CR_RD()           (HW_RNG_CR.U)
 #define HW_RNG_CR_WR(v)          (HW_RNG_CR.U = (v))
-#define HW_RNG_CR_SET(v)         (HW_RNG_CR_WR(HW_RNG_CR_RD |  (v)))
-#define HW_RNG_CR_CLR(v)         (HW_RNG_CR_WR(HW_RNG_CR_RD & ~(v)))
-#define HW_RNG_CR_TOG(v)         (HW_RNG_CR_WR(HW_RNG_CR_RD ^  (v)))
+#define HW_RNG_CR_SET(v)         (HW_RNG_CR_WR(HW_RNG_CR_RD() |  (v)))
+#define HW_RNG_CR_CLR(v)         (HW_RNG_CR_WR(HW_RNG_CR_RD() & ~(v)))
+#define HW_RNG_CR_TOG(v)         (HW_RNG_CR_WR(HW_RNG_CR_RD() ^  (v)))
 #endif
 //@}
 
@@ -95,14 +95,13 @@ typedef union _hw_rng_cr
 /*!
  * @name Register RNG_CR, field GO[0] (RW)
  *
- * This field must be set before RNGA begins loading data into the RNGA Output
- * Register. This field is sticky and can only be cleared by a hardware reset.
- * Setting this field does not bring RNGA out of Sleep mode. Furthermore, this field
- * does not need to be reset after exiting Sleep mode.
+ * Specifies whether random-data generation and loading (into OR[RANDOUT]) is
+ * enabled.This field is sticky. You must reset RNGA to stop RNGA from loading
+ * OR[RANDOUT] with data.
  *
  * Values:
- * - 0 - RNGA Output Register is not loaded with random data.
- * - 1 - RNGA Output Register is loaded with random data.
+ * - 0 - Disabled
+ * - 1 - Enabled
  */
 //@{
 #define BP_RNG_CR_GO         (0U)          //!< Bit position for RNG_CR_GO.
@@ -127,13 +126,13 @@ typedef union _hw_rng_cr
  * @name Register RNG_CR, field HA[1] (RW)
  *
  * Enables notification of security violations (via SR[SECV]). A security
- * violation occurs when you read OR[RANDOUT] while it is 0. This field is sticky.
- * After enabling notification of security violations, you must reset RNGA to disable
- * them again.
+ * violation occurs when you read OR[RANDOUT] and SR[OREG_LVL]=0. This field is sticky.
+ * After enabling notification of security violations, you must reset RNGA to
+ * disable them again.
  *
  * Values:
  * - 0 - Disabled
- * - 1 - Enabled.
+ * - 1 - Enabled
  */
 //@{
 #define BP_RNG_CR_HA         (1U)          //!< Bit position for RNG_CR_HA.
@@ -157,9 +156,9 @@ typedef union _hw_rng_cr
 /*!
  * @name Register RNG_CR, field INTM[2] (RW)
  *
- * Masks triggering an error interrupt to the interrupt controller when an OR
- * underflow condition occurs. An OR underflow condition occurs when you read
- * OR[RANDOUT] while it's 0.
+ * Masks the triggering of an error interrupt to the interrupt controller when
+ * an OR underflow condition occurs. An OR underflow condition occurs when you
+ * read OR[RANDOUT] and SR[OREG_LVL]=0. See the Output Register (OR) description.
  *
  * Values:
  * - 0 - Not masked
@@ -187,24 +186,17 @@ typedef union _hw_rng_cr
 /*!
  * @name Register RNG_CR, field CLRI[3] (WORZ)
  *
- * Clears the interrupt by resetting the error-interrupt indicator (SR[ERRI])
+ * Clears the interrupt by resetting the error-interrupt indicator (SR[ERRI]).
  *
  * Values:
  * - 0 - Do not clear the interrupt.
- * - 1 - Clear the interrupt (RNGA also writes 0 to SR[ERRI] and returns the
- *     value of this field to 0). When you write 1 to this field, RNGA then resets
- *     the error-interrupt indicator (SR[ERRI]) and returns the value of this
- *     field to 0.
+ * - 1 - Clear the interrupt. When you write 1 to this field, RNGA then resets
+ *     the error-interrupt indicator (SR[ERRI]). This bit always reads as 0.
  */
 //@{
 #define BP_RNG_CR_CLRI       (3U)          //!< Bit position for RNG_CR_CLRI.
 #define BM_RNG_CR_CLRI       (0x00000008U) //!< Bit mask for RNG_CR_CLRI.
 #define BS_RNG_CR_CLRI       (1U)          //!< Bit field size in bits for RNG_CR_CLRI.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the RNG_CR_CLRI field.
-#define BR_RNG_CR_CLRI       (BITBAND_ACCESS32(HW_RNG_CR_ADDR, BP_RNG_CR_CLRI))
-#endif
 
 //! @brief Format value for bitfield RNG_CR_CLRI.
 #define BF_RNG_CR_CLRI(v)    (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_RNG_CR_CLRI), uint32_t) & BM_RNG_CR_CLRI)
@@ -223,8 +215,7 @@ typedef union _hw_rng_cr
  *
  * Values:
  * - 0 - Normal mode
- * - 1 - Sleep (low-power) mode ((the RNGA oscillators are disabled, and RNGA
- *     doesn't load the OR with data)
+ * - 1 - Sleep (low-power) mode
  */
 //@{
 #define BP_RNG_CR_SLP        (4U)          //!< Bit position for RNG_CR_SLP.
@@ -255,8 +246,7 @@ typedef union _hw_rng_cr
  *
  * Reset value: 0x00010000U
  *
- * The RNGA Status register is a read-only register that reflects the internal
- * status of RNGA.
+ * Indicates the status of RNGA. This register is read-only.
  */
 typedef union _hw_rng_sr
 {
@@ -284,7 +274,7 @@ typedef union _hw_rng_sr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_RNG_SR                (*(__I hw_rng_sr_t *) HW_RNG_SR_ADDR)
-#define HW_RNG_SR_RD             (HW_RNG_SR.U)
+#define HW_RNG_SR_RD()           (HW_RNG_SR.U)
 #endif
 //@}
 
@@ -295,14 +285,13 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field SECV[0] (RO)
  *
- * When enabled by CR[HA], this field signals that a security violation has
- * occurred. The RNGA Output register underflow is the only condition that is
- * considered to be a security violation. The field is sticky and can be cleared only by
- * a hardware reset.
+ * Used only when high assurance is enabled (CR[HA]). Indicates that a security
+ * violation has occurred.This field is sticky. To clear SR[SECV], you must reset
+ * RNGA.
  *
  * Values:
- * - 0 - No security violations have occured or CR[HA] is not set.
- * - 1 - A security violation has occurred.
+ * - 0 - No security violation
+ * - 1 - Security violation
  */
 //@{
 #define BP_RNG_SR_SECV       (0U)          //!< Bit position for RNG_SR_SECV.
@@ -318,13 +307,14 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field LRS[1] (RO)
  *
- * This field is always enabled and reflects the status of the most recent read
- * of the RNGA Output register.
+ * Indicates whether the most recent read of OR[RANDOUT] caused an OR underflow
+ * condition, regardless of whether the error interrupt is masked (CR[INTM]). An
+ * OR underflow condition occurs when you read OR[RANDOUT] and SR[OREG_LVL]=0.
+ * After you read this register, RNGA writes 0 to this field.
  *
  * Values:
- * - 0 - Last read was performed while the RNGA Output register was not empty.
- * - 1 - Last read was performed while the RNGA Output register was empty
- *     (underflow condition).
+ * - 0 - No underflow
+ * - 1 - Underflow
  */
 //@{
 #define BP_RNG_SR_LRS        (1U)          //!< Bit position for RNG_SR_LRS.
@@ -340,14 +330,15 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field ORU[2] (RO)
  *
- * This field is always enabled and signals an RNGA Output Register underflow
- * condition. The field is reset by reading the RNGA Status register.
+ * Indicates whether an OR underflow condition has occurred since you last read
+ * this register (SR) or RNGA was reset, regardless of whether the error
+ * interrupt is masked (CR[INTM]). An OR underflow condition occurs when you read
+ * OR[RANDOUT] and SR[OREG_LVL]=0. After you read this register, RNGA writes 0 to this
+ * field.
  *
  * Values:
- * - 0 - The RNGA Output register has not been read while empty since last read
- *     of the RNGA Status register.
- * - 1 - The RNGA Output register has been read while empty since last read of
- *     the RNGA Status register.
+ * - 0 - No underflow
+ * - 1 - Underflow
  */
 //@{
 #define BP_RNG_SR_ORU        (2U)          //!< Bit position for RNG_SR_ORU.
@@ -363,15 +354,15 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field ERRI[3] (RO)
  *
- * This field is always enabled and signals an RNGA Output Register underflow
- * condition. This field is different from SR[ORU] and SR[LRS] in that it is only
- * reset by writing 1 to CR[CLRI]. This field is not masked by CR[INTM].If
- * CR[INTM] = 0, then, if there is an RNGA Output Register underflow condition, SR[ERRI]
- * is set and RNGA generates an Error Interrupt.
+ * Indicates whether an OR underflow condition has occurred since you last
+ * cleared the error interrupt (CR[CLRI]) or RNGA was reset, regardless of whether the
+ * error interrupt is masked (CR[INTM]). An OR underflow condition occurs when
+ * you read OR[RANDOUT] and SR[OREG_LVL]=0. After you reset the error-interrupt
+ * indicator (via CR[CLRI]), RNGA writes 0 to this field.
  *
  * Values:
- * - 0 - The RNGA Output register has not been read while empty.
- * - 1 - The RNGA Output register has been read while empty.
+ * - 0 - No underflow
+ * - 1 - Underflow
  */
 //@{
 #define BP_RNG_SR_ERRI       (3U)          //!< Bit position for RNG_SR_ERRI.
@@ -387,15 +378,12 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field SLP[4] (RO)
  *
- * This field reflects whether RNGA is in Sleep mode that is, either the CR[SLP]
- * is set or the "ipg_doze" input is asserted. When this field is set, RNGA is
- * in Sleep mode and the oscillator clocks are inactive. In this mode, the RNGA
- * Output register is not loaded, but can be read. If valid data is read from the
- * OR, both the output register and SR[OREG_LVL] are cleared.
+ * Specifies whether RNGA is in Sleep or Normal mode. You can also enter Sleep
+ * mode by asserting the DOZE signal.
  *
  * Values:
- * - 0 - RNGA is not in Sleep mode.
- * - 1 - RNGA is in Sleep mode.
+ * - 0 - Normal mode
+ * - 1 - Sleep (low-power) mode
  */
 //@{
 #define BP_RNG_SR_SLP        (4U)          //!< Bit position for RNG_SR_SLP.
@@ -411,13 +399,14 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field OREG_LVL[15:8] (RO)
  *
- * This field signals the number of random words that currently reside in the
- * RNGA Output register. Only two values are possible. The field is interpreted as
- * an integer; the value 0b00000001 indicates that one random word is in the RNGA
- * Output register, and the value 0b00000000 indicates that no random data is in
- * the RNGA Output register. When a valid read of RNG_OR occurs, this field and
- * RNG_OR are both cleared. If this field is 0b00000000 and RNG_OR is read, an
- * Error Interrupt is generated if CR[INTM] is cleared.
+ * Indicates the number of random-data words that are in OR[RANDOUT], which
+ * indicates whether OR[RANDOUT] is valid.If you read OR[RANDOUT] when SR[OREG_LVL]
+ * is not 0, then the contents of a random number contained in OR[RANDOUT] are
+ * returned, and RNGA writes 0 to both OR[RANDOUT] and SR[OREG_LVL].
+ *
+ * Values:
+ * - 0 - No words (empty)
+ * - 1 - One word (valid)
  */
 //@{
 #define BP_RNG_SR_OREG_LVL   (8U)          //!< Bit position for RNG_SR_OREG_LVL.
@@ -433,9 +422,11 @@ typedef union _hw_rng_sr
 /*!
  * @name Register RNG_SR, field OREG_SIZE[23:16] (RO)
  *
- * This field signals the actual size of the Output Register. In other words,
- * this is the maximum possible Output Register Level. The bits should be
- * interpreted as an integer. This value is set to 0x01.
+ * Indicates the size of the Output (OR) register in terms of the number of
+ * 32-bit random-data words it can hold.
+ *
+ * Values:
+ * - 1 - One word (this value is fixed)
  */
 //@{
 #define BP_RNG_SR_OREG_SIZE  (16U)         //!< Bit position for RNG_SR_OREG_SIZE.
@@ -454,15 +445,13 @@ typedef union _hw_rng_sr
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_RNG_ER - RNGA Entropy Register (WO)
+ * @brief HW_RNG_ER - RNGA Entropy Register (WORZ)
  *
  * Reset value: 0x00000000U
  *
- * The RNGA Entropy register is a write-only register that allows the user to
- * insert entropy into RNGA. This register allows a user to seed the RNGA with
- * externally generated random data. Although the use of this register is
- * recommended, it is also optional. The RNGA Entropy register can be written at any time
- * during operation.
+ * Specifies an entropy value that RNGA uses in addition to its ring oscillators
+ * to seed its pseudorandom algorithm. This is a write-only register; reads
+ * return all zeros.
  */
 typedef union _hw_rng_er
 {
@@ -482,6 +471,7 @@ typedef union _hw_rng_er
 
 #ifndef __LANGUAGE_ASM__
 #define HW_RNG_ER                (*(__O hw_rng_er_t *) HW_RNG_ER_ADDR)
+#define HW_RNG_ER_RD()           (HW_RNG_ER.U)
 #define HW_RNG_ER_WR(v)          (HW_RNG_ER.U = (v))
 #endif
 //@}
@@ -493,25 +483,21 @@ typedef union _hw_rng_er
 /*!
  * @name Register RNG_ER, field EXT_ENT[31:0] (WORZ)
  *
- * A write to this register allows the user to introduce 32 bits of entropy to
- * the internal state of RNGA.
+ * Specifies an entropy value that RNGA uses in addition to its ring oscillators
+ * to seed its pseudorandom algorithm.Specifying a value for this field is
+ * optional but recommended. You can write to this field at any time during operation.
  */
 //@{
 #define BP_RNG_ER_EXT_ENT    (0U)          //!< Bit position for RNG_ER_EXT_ENT.
 #define BM_RNG_ER_EXT_ENT    (0xFFFFFFFFU) //!< Bit mask for RNG_ER_EXT_ENT.
 #define BS_RNG_ER_EXT_ENT    (32U)         //!< Bit field size in bits for RNG_ER_EXT_ENT.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the RNG_ER_EXT_ENT field.
-#define BR_RNG_ER_EXT_ENT    (HW_RNG_ER.B.EXT_ENT)
-#endif
-
 //! @brief Format value for bitfield RNG_ER_EXT_ENT.
 #define BF_RNG_ER_EXT_ENT(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_RNG_ER_EXT_ENT), uint32_t) & BM_RNG_ER_EXT_ENT)
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the EXT_ENT field to a new value.
-#define BW_RNG_ER_EXT_ENT(v) (HW_RNG_ER_WR((HW_RNG_ER_RD & ~BM_RNG_ER_EXT_ENT) | BF_RNG_ER_EXT_ENT(v)))
+#define BW_RNG_ER_EXT_ENT(v) (HW_RNG_ER_WR(v))
 #endif
 //@}
 
@@ -525,24 +511,7 @@ typedef union _hw_rng_er
  *
  * Reset value: 0x00000000U
  *
- * The RNGA Output register provides temporary storage for random data generated
- * by RNGA. As long as this register is not empty, a read of this address
- * returns 32 bits of random data. This register and SR[OREG_LVL] are cleared on
- * reading a valid random number from this register. If the Output Register is read
- * when it is empty, SR[ERRI], SR[ORU], and SR[LRS] are set. If the interrupt is not
- * masked in the RNGA Control register, a request is asserted to the interrupt
- * controller. SR[OREG_LVL] can be polled to monitor the presence of valid data in
- * the RNGA Output register. When in Normal mode, with CR[GO] set, a new random
- * word is loaded into the RNGA Output register every 256 system clock cycles (as
- * long as the RNGA Output register is empty. If the RNGA Output register is not
- * empty, the just generated random value is discarded and RNGA continues to
- * generate a new random word every 256 system clock cycles. Only when the RNGA
- * Output register becomes empty is the newly generated random word loaded into the
- * RNGA Output register. Polling SR[OREG_LVL] is very important to make sure a
- * random value is present before reading from the RNGA Output register.When a valid
- * read of the OR occurs, this register and SR[OREG_LVL] are both cleared. If
- * SR[OREG_LVL] is 0b00000000 and the OR is read, an Error Interrupt is generated
- * if CR[INTM] is cleared.
+ * Stores a random-data word generated by RNGA.
  */
 typedef union _hw_rng_or
 {
@@ -562,7 +531,7 @@ typedef union _hw_rng_or
 
 #ifndef __LANGUAGE_ASM__
 #define HW_RNG_OR                (*(__I hw_rng_or_t *) HW_RNG_OR_ADDR)
-#define HW_RNG_OR_RD             (HW_RNG_OR.U)
+#define HW_RNG_OR_RD()           (HW_RNG_OR.U)
 #endif
 //@}
 
@@ -573,7 +542,14 @@ typedef union _hw_rng_or
 /*!
  * @name Register RNG_OR, field RANDOUT[31:0] (RO)
  *
- * 32 bits of random data
+ * Stores a random-data word generated by RNGA. This is a read-only field.Before
+ * reading RANDOUT, be sure it is valid (SR[OREG_LVL]=1).
+ *
+ * Values:
+ * - 0 - Invalid data (if you read this field when it is 0 and SR[OREG_LVL] is
+ *     0, RNGA then writes 1 to SR[ERRI], SR[ORU], and SR[LRS]; when the error
+ *     interrupt is not masked (CR[INTM]=0), RNGA also asserts an error interrupt
+ *     request to the interrupt controller).
  */
 //@{
 #define BP_RNG_OR_RANDOUT    (0U)          //!< Bit position for RNG_OR_RANDOUT.
@@ -582,7 +558,7 @@ typedef union _hw_rng_or
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the RNG_OR_RANDOUT field.
-#define BR_RNG_OR_RANDOUT    (HW_RNG_OR.B.RANDOUT)
+#define BR_RNG_OR_RANDOUT    (HW_RNG_OR.U)
 #endif
 //@}
 

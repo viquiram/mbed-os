@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -31,7 +31,7 @@
  * Registers defined in this header file:
  * - HW_MCM_PLASC - Crossbar Switch (AXBS) Slave Configuration
  * - HW_MCM_PLAMC - Crossbar Switch (AXBS) Master Configuration
- * - HW_MCM_PLACR - Crossbar Switch (AXBS) Control Register
+ * - HW_MCM_CR - Control Register
  * - HW_MCM_ISR - Interrupt Status Register
  * - HW_MCM_ETBCC - ETB Counter Control register
  * - HW_MCM_ETBRL - ETB Reload register
@@ -68,8 +68,8 @@ typedef union _hw_mcm_plasc
     struct _hw_mcm_plasc_bitfields
     {
         uint16_t ASC : 8;              //!< [7:0] Each bit in the ASC field indicates
-                                       //!< whether there is a corresponding connection to the crossbar switch's
-                                       //!< slave input port.
+                                       //! whether there is a corresponding connection to the crossbar switch's slave
+                                       //! input port.
         uint16_t RESERVED0 : 8;        //!< [15:8]
     } B;
 } hw_mcm_plasc_t;
@@ -83,7 +83,7 @@ typedef union _hw_mcm_plasc
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_PLASC             (*(__I hw_mcm_plasc_t *) HW_MCM_PLASC_ADDR)
-#define HW_MCM_PLASC_RD          (HW_MCM_PLASC.U)
+#define HW_MCM_PLASC_RD()        (HW_MCM_PLASC.U)
 #endif
 //@}
 
@@ -128,7 +128,7 @@ typedef union _hw_mcm_plamc
     struct _hw_mcm_plamc_bitfields
     {
         uint16_t AMC : 8;              //!< [7:0] Each bit in the AMC field indicates
-                                       //!< whether there is a corresponding connection to the AXBS master input port.
+                                       //! whether there is a corresponding connection to the AXBS master input port.
         uint16_t RESERVED0 : 8;        //!< [15:8]
     } B;
 } hw_mcm_plamc_t;
@@ -142,7 +142,7 @@ typedef union _hw_mcm_plamc
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_PLAMC             (*(__I hw_mcm_plamc_t *) HW_MCM_PLAMC_ADDR)
-#define HW_MCM_PLAMC_RD          (HW_MCM_PLAMC.U)
+#define HW_MCM_PLAMC_RD()        (HW_MCM_PLAMC.U)
 #endif
 //@}
 
@@ -169,60 +169,161 @@ typedef union _hw_mcm_plamc
 //@}
 
 //-------------------------------------------------------------------------------------------
-// HW_MCM_PLACR - Crossbar Switch (AXBS) Control Register
+// HW_MCM_CR - Control Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_MCM_PLACR - Crossbar Switch (AXBS) Control Register (RO)
+ * @brief HW_MCM_CR - Control Register (RW)
  *
  * Reset value: 0x00000000U
  *
- * The PLACR register selects the arbitration policy for the crossbar masters.
+ * CR defines the arbitration and protection schemes for the two system RAM
+ * arrays.
  */
-typedef union _hw_mcm_placr
+typedef union _hw_mcm_cr
 {
     uint32_t U;
-    struct _hw_mcm_placr_bitfields
+    struct _hw_mcm_cr_bitfields
     {
-        uint32_t RESERVED0 : 9;        //!< [8:0]
-        uint32_t ARB : 1;              //!< [9] Arbitration select
-        uint32_t RESERVED1 : 22;       //!< [31:10]
+        uint32_t RESERVED0 : 24;       //!< [23:0]
+        uint32_t SRAMUAP : 2;          //!< [25:24] SRAM_U arbitration priority
+        uint32_t SRAMUWP : 1;          //!< [26] SRAM_U write protect
+        uint32_t RESERVED1 : 1;        //!< [27]
+        uint32_t SRAMLAP : 2;          //!< [29:28] SRAM_L arbitration priority
+        uint32_t SRAMLWP : 1;          //!< [30] SRAM_L Write Protect
+        uint32_t RESERVED2 : 1;        //!< [31]
     } B;
-} hw_mcm_placr_t;
+} hw_mcm_cr_t;
 #endif
 
 /*!
- * @name Constants and macros for entire MCM_PLACR register
+ * @name Constants and macros for entire MCM_CR register
  */
 //@{
-#define HW_MCM_PLACR_ADDR        (REGS_MCM_BASE + 0xCU)
+#define HW_MCM_CR_ADDR           (REGS_MCM_BASE + 0xCU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_MCM_PLACR             (*(__I hw_mcm_placr_t *) HW_MCM_PLACR_ADDR)
-#define HW_MCM_PLACR_RD          (HW_MCM_PLACR.U)
+#define HW_MCM_CR                (*(__IO hw_mcm_cr_t *) HW_MCM_CR_ADDR)
+#define HW_MCM_CR_RD()           (HW_MCM_CR.U)
+#define HW_MCM_CR_WR(v)          (HW_MCM_CR.U = (v))
+#define HW_MCM_CR_SET(v)         (HW_MCM_CR_WR(HW_MCM_CR_RD() |  (v)))
+#define HW_MCM_CR_CLR(v)         (HW_MCM_CR_WR(HW_MCM_CR_RD() & ~(v)))
+#define HW_MCM_CR_TOG(v)         (HW_MCM_CR_WR(HW_MCM_CR_RD() ^  (v)))
 #endif
 //@}
 
 /*
- * Constants & macros for individual MCM_PLACR bitfields
+ * Constants & macros for individual MCM_CR bitfields
  */
 
 /*!
- * @name Register MCM_PLACR, field ARB[9] (RO)
+ * @name Register MCM_CR, field SRAMUAP[25:24] (RW)
+ *
+ * Defines the arbitration scheme and priority for the processor and SRAM
+ * backdoor accesses to the SRAM_U array.
  *
  * Values:
- * - 0 - Fixed-priority arbitration for the crossbar masters
- * - 1 - Round-robin arbitration for the crossbar masters
+ * - 00 - Round robin
+ * - 01 - Special round robin (favors SRAM backoor accesses over the processor)
+ * - 10 - Fixed priority. Processor has highest, backdoor has lowest
+ * - 11 - Fixed priority. Backdoor has highest, processor has lowest
  */
 //@{
-#define BP_MCM_PLACR_ARB     (9U)          //!< Bit position for MCM_PLACR_ARB.
-#define BM_MCM_PLACR_ARB     (0x00000200U) //!< Bit mask for MCM_PLACR_ARB.
-#define BS_MCM_PLACR_ARB     (1U)          //!< Bit field size in bits for MCM_PLACR_ARB.
+#define BP_MCM_CR_SRAMUAP    (24U)         //!< Bit position for MCM_CR_SRAMUAP.
+#define BM_MCM_CR_SRAMUAP    (0x03000000U) //!< Bit mask for MCM_CR_SRAMUAP.
+#define BS_MCM_CR_SRAMUAP    (2U)          //!< Bit field size in bits for MCM_CR_SRAMUAP.
 
 #ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the MCM_PLACR_ARB field.
-#define BR_MCM_PLACR_ARB     (BITBAND_ACCESS32(HW_MCM_PLACR_ADDR, BP_MCM_PLACR_ARB))
+//! @brief Read current value of the MCM_CR_SRAMUAP field.
+#define BR_MCM_CR_SRAMUAP    (HW_MCM_CR.B.SRAMUAP)
+#endif
+
+//! @brief Format value for bitfield MCM_CR_SRAMUAP.
+#define BF_MCM_CR_SRAMUAP(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_MCM_CR_SRAMUAP), uint32_t) & BM_MCM_CR_SRAMUAP)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the SRAMUAP field to a new value.
+#define BW_MCM_CR_SRAMUAP(v) (HW_MCM_CR_WR((HW_MCM_CR_RD() & ~BM_MCM_CR_SRAMUAP) | BF_MCM_CR_SRAMUAP(v)))
+#endif
+//@}
+
+/*!
+ * @name Register MCM_CR, field SRAMUWP[26] (RW)
+ *
+ * When this bit is set, writes to SRAM_U array generates a bus error.
+ */
+//@{
+#define BP_MCM_CR_SRAMUWP    (26U)         //!< Bit position for MCM_CR_SRAMUWP.
+#define BM_MCM_CR_SRAMUWP    (0x04000000U) //!< Bit mask for MCM_CR_SRAMUWP.
+#define BS_MCM_CR_SRAMUWP    (1U)          //!< Bit field size in bits for MCM_CR_SRAMUWP.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the MCM_CR_SRAMUWP field.
+#define BR_MCM_CR_SRAMUWP    (BITBAND_ACCESS32(HW_MCM_CR_ADDR, BP_MCM_CR_SRAMUWP))
+#endif
+
+//! @brief Format value for bitfield MCM_CR_SRAMUWP.
+#define BF_MCM_CR_SRAMUWP(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_MCM_CR_SRAMUWP), uint32_t) & BM_MCM_CR_SRAMUWP)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the SRAMUWP field to a new value.
+#define BW_MCM_CR_SRAMUWP(v) (BITBAND_ACCESS32(HW_MCM_CR_ADDR, BP_MCM_CR_SRAMUWP) = (v))
+#endif
+//@}
+
+/*!
+ * @name Register MCM_CR, field SRAMLAP[29:28] (RW)
+ *
+ * Defines the arbitration scheme and priority for the processor and SRAM
+ * backdoor accesses to the SRAM_L array.
+ *
+ * Values:
+ * - 00 - Round robin
+ * - 01 - Special round robin (favors SRAM backoor accesses over the processor)
+ * - 10 - Fixed priority. Processor has highest, backdoor has lowest
+ * - 11 - Fixed priority. Backdoor has highest, processor has lowest
+ */
+//@{
+#define BP_MCM_CR_SRAMLAP    (28U)         //!< Bit position for MCM_CR_SRAMLAP.
+#define BM_MCM_CR_SRAMLAP    (0x30000000U) //!< Bit mask for MCM_CR_SRAMLAP.
+#define BS_MCM_CR_SRAMLAP    (2U)          //!< Bit field size in bits for MCM_CR_SRAMLAP.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the MCM_CR_SRAMLAP field.
+#define BR_MCM_CR_SRAMLAP    (HW_MCM_CR.B.SRAMLAP)
+#endif
+
+//! @brief Format value for bitfield MCM_CR_SRAMLAP.
+#define BF_MCM_CR_SRAMLAP(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_MCM_CR_SRAMLAP), uint32_t) & BM_MCM_CR_SRAMLAP)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the SRAMLAP field to a new value.
+#define BW_MCM_CR_SRAMLAP(v) (HW_MCM_CR_WR((HW_MCM_CR_RD() & ~BM_MCM_CR_SRAMLAP) | BF_MCM_CR_SRAMLAP(v)))
+#endif
+//@}
+
+/*!
+ * @name Register MCM_CR, field SRAMLWP[30] (RW)
+ *
+ * When this bit is set, writes to SRAM_L array generates a bus error.
+ */
+//@{
+#define BP_MCM_CR_SRAMLWP    (30U)         //!< Bit position for MCM_CR_SRAMLWP.
+#define BM_MCM_CR_SRAMLWP    (0x40000000U) //!< Bit mask for MCM_CR_SRAMLWP.
+#define BS_MCM_CR_SRAMLWP    (1U)          //!< Bit field size in bits for MCM_CR_SRAMLWP.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the MCM_CR_SRAMLWP field.
+#define BR_MCM_CR_SRAMLWP    (BITBAND_ACCESS32(HW_MCM_CR_ADDR, BP_MCM_CR_SRAMLWP))
+#endif
+
+//! @brief Format value for bitfield MCM_CR_SRAMLWP.
+#define BF_MCM_CR_SRAMLWP(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_MCM_CR_SRAMLWP), uint32_t) & BM_MCM_CR_SRAMLWP)
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Set the SRAMLWP field to a new value.
+#define BW_MCM_CR_SRAMLWP(v) (BITBAND_ACCESS32(HW_MCM_CR_ADDR, BP_MCM_CR_SRAMLWP) = (v))
 #endif
 //@}
 
@@ -273,11 +374,11 @@ typedef union _hw_mcm_isr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_ISR               (*(__IO hw_mcm_isr_t *) HW_MCM_ISR_ADDR)
-#define HW_MCM_ISR_RD            (HW_MCM_ISR.U)
+#define HW_MCM_ISR_RD()          (HW_MCM_ISR.U)
 #define HW_MCM_ISR_WR(v)         (HW_MCM_ISR.U = (v))
-#define HW_MCM_ISR_SET(v)        (HW_MCM_ISR_WR(HW_MCM_ISR_RD |  (v)))
-#define HW_MCM_ISR_CLR(v)        (HW_MCM_ISR_WR(HW_MCM_ISR_RD & ~(v)))
-#define HW_MCM_ISR_TOG(v)        (HW_MCM_ISR_WR(HW_MCM_ISR_RD ^  (v)))
+#define HW_MCM_ISR_SET(v)        (HW_MCM_ISR_WR(HW_MCM_ISR_RD() |  (v)))
+#define HW_MCM_ISR_CLR(v)        (HW_MCM_ISR_WR(HW_MCM_ISR_RD() & ~(v)))
+#define HW_MCM_ISR_TOG(v)        (HW_MCM_ISR_WR(HW_MCM_ISR_RD() ^  (v)))
 #endif
 //@}
 
@@ -684,11 +785,11 @@ typedef union _hw_mcm_etbcc
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_ETBCC             (*(__IO hw_mcm_etbcc_t *) HW_MCM_ETBCC_ADDR)
-#define HW_MCM_ETBCC_RD          (HW_MCM_ETBCC.U)
+#define HW_MCM_ETBCC_RD()        (HW_MCM_ETBCC.U)
 #define HW_MCM_ETBCC_WR(v)       (HW_MCM_ETBCC.U = (v))
-#define HW_MCM_ETBCC_SET(v)      (HW_MCM_ETBCC_WR(HW_MCM_ETBCC_RD |  (v)))
-#define HW_MCM_ETBCC_CLR(v)      (HW_MCM_ETBCC_WR(HW_MCM_ETBCC_RD & ~(v)))
-#define HW_MCM_ETBCC_TOG(v)      (HW_MCM_ETBCC_WR(HW_MCM_ETBCC_RD ^  (v)))
+#define HW_MCM_ETBCC_SET(v)      (HW_MCM_ETBCC_WR(HW_MCM_ETBCC_RD() |  (v)))
+#define HW_MCM_ETBCC_CLR(v)      (HW_MCM_ETBCC_WR(HW_MCM_ETBCC_RD() & ~(v)))
+#define HW_MCM_ETBCC_TOG(v)      (HW_MCM_ETBCC_WR(HW_MCM_ETBCC_RD() ^  (v)))
 #endif
 //@}
 
@@ -748,7 +849,7 @@ typedef union _hw_mcm_etbcc
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RSPT field to a new value.
-#define BW_MCM_ETBCC_RSPT(v) (HW_MCM_ETBCC_WR((HW_MCM_ETBCC_RD & ~BM_MCM_ETBCC_RSPT) | BF_MCM_ETBCC_RSPT(v)))
+#define BW_MCM_ETBCC_RSPT(v) (HW_MCM_ETBCC_WR((HW_MCM_ETBCC_RD() & ~BM_MCM_ETBCC_RSPT) | BF_MCM_ETBCC_RSPT(v)))
 #endif
 //@}
 
@@ -869,11 +970,11 @@ typedef union _hw_mcm_etbrl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_ETBRL             (*(__IO hw_mcm_etbrl_t *) HW_MCM_ETBRL_ADDR)
-#define HW_MCM_ETBRL_RD          (HW_MCM_ETBRL.U)
+#define HW_MCM_ETBRL_RD()        (HW_MCM_ETBRL.U)
 #define HW_MCM_ETBRL_WR(v)       (HW_MCM_ETBRL.U = (v))
-#define HW_MCM_ETBRL_SET(v)      (HW_MCM_ETBRL_WR(HW_MCM_ETBRL_RD |  (v)))
-#define HW_MCM_ETBRL_CLR(v)      (HW_MCM_ETBRL_WR(HW_MCM_ETBRL_RD & ~(v)))
-#define HW_MCM_ETBRL_TOG(v)      (HW_MCM_ETBRL_WR(HW_MCM_ETBRL_RD ^  (v)))
+#define HW_MCM_ETBRL_SET(v)      (HW_MCM_ETBRL_WR(HW_MCM_ETBRL_RD() |  (v)))
+#define HW_MCM_ETBRL_CLR(v)      (HW_MCM_ETBRL_WR(HW_MCM_ETBRL_RD() & ~(v)))
+#define HW_MCM_ETBRL_TOG(v)      (HW_MCM_ETBRL_WR(HW_MCM_ETBRL_RD() ^  (v)))
 #endif
 //@}
 
@@ -902,7 +1003,7 @@ typedef union _hw_mcm_etbrl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RELOAD field to a new value.
-#define BW_MCM_ETBRL_RELOAD(v) (HW_MCM_ETBRL_WR((HW_MCM_ETBRL_RD & ~BM_MCM_ETBRL_RELOAD) | BF_MCM_ETBRL_RELOAD(v)))
+#define BW_MCM_ETBRL_RELOAD(v) (HW_MCM_ETBRL_WR((HW_MCM_ETBRL_RD() & ~BM_MCM_ETBRL_RELOAD) | BF_MCM_ETBRL_RELOAD(v)))
 #endif
 //@}
 
@@ -935,7 +1036,7 @@ typedef union _hw_mcm_etbcnt
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_ETBCNT            (*(__I hw_mcm_etbcnt_t *) HW_MCM_ETBCNT_ADDR)
-#define HW_MCM_ETBCNT_RD         (HW_MCM_ETBCNT.U)
+#define HW_MCM_ETBCNT_RD()       (HW_MCM_ETBCNT.U)
 #endif
 //@}
 
@@ -993,11 +1094,11 @@ typedef union _hw_mcm_pid
 
 #ifndef __LANGUAGE_ASM__
 #define HW_MCM_PID               (*(__IO hw_mcm_pid_t *) HW_MCM_PID_ADDR)
-#define HW_MCM_PID_RD            (HW_MCM_PID.U)
+#define HW_MCM_PID_RD()          (HW_MCM_PID.U)
 #define HW_MCM_PID_WR(v)         (HW_MCM_PID.U = (v))
-#define HW_MCM_PID_SET(v)        (HW_MCM_PID_WR(HW_MCM_PID_RD |  (v)))
-#define HW_MCM_PID_CLR(v)        (HW_MCM_PID_WR(HW_MCM_PID_RD & ~(v)))
-#define HW_MCM_PID_TOG(v)        (HW_MCM_PID_WR(HW_MCM_PID_RD ^  (v)))
+#define HW_MCM_PID_SET(v)        (HW_MCM_PID_WR(HW_MCM_PID_RD() |  (v)))
+#define HW_MCM_PID_CLR(v)        (HW_MCM_PID_WR(HW_MCM_PID_RD() & ~(v)))
+#define HW_MCM_PID_TOG(v)        (HW_MCM_PID_WR(HW_MCM_PID_RD() ^  (v)))
 #endif
 //@}
 
@@ -1025,7 +1126,7 @@ typedef union _hw_mcm_pid
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PID field to a new value.
-#define BW_MCM_PID_PID(v)    (HW_MCM_PID_WR((HW_MCM_PID_RD & ~BM_MCM_PID_PID) | BF_MCM_PID_PID(v)))
+#define BW_MCM_PID_PID(v)    (HW_MCM_PID_WR((HW_MCM_PID_RD() & ~BM_MCM_PID_PID) | BF_MCM_PID_PID(v)))
 #endif
 //@}
 
@@ -1042,7 +1143,7 @@ typedef struct _hw_mcm
     uint8_t _reserved0[8];
     __I hw_mcm_plasc_t PLASC;              //!< [0x8] Crossbar Switch (AXBS) Slave Configuration
     __I hw_mcm_plamc_t PLAMC;              //!< [0xA] Crossbar Switch (AXBS) Master Configuration
-    __I hw_mcm_placr_t PLACR;              //!< [0xC] Crossbar Switch (AXBS) Control Register
+    __IO hw_mcm_cr_t CR;                   //!< [0xC] Control Register
     __IO hw_mcm_isr_t ISR;                 //!< [0x10] Interrupt Status Register
     __IO hw_mcm_etbcc_t ETBCC;             //!< [0x14] ETB Counter Control register
     __IO hw_mcm_etbrl_t ETBRL;             //!< [0x18] ETB Reload register

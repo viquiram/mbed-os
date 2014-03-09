@@ -30,6 +30,10 @@
 #ifndef __FSL_SDHC_HAL_H__
 #define __FSL_SDHC_HAL_H__
 
+#include <assert.h>
+#include <stdbool.h>
+#include "fsl_device_registers.h"
+
 /*! @addtogroup sdhc_hal */
 /*! @{ */
 
@@ -192,9 +196,9 @@ extern "C" {
 /*@{ */
 
 /*!
- * @brief Check if the given instance is valid
+ * @brief Checks whether the given instance is valid.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return true if valid
  */
 static inline bool sdhc_hal_is_valid_instance(uint8_t instance)
@@ -203,10 +207,10 @@ static inline bool sdhc_hal_is_valid_instance(uint8_t instance)
 }
 
 /*!
- * @brief Configure the dma address
+ * @brief Configures the DMA address.
  *
- * @param instance sdhc instance id
- * @param address the dma address
+ * @param instance SDHC instance ID
+ * @param address the DMA address
  */
 static inline void sdhc_hal_set_dma_addr(uint8_t instance, uint32_t address)
 {
@@ -215,21 +219,21 @@ static inline void sdhc_hal_set_dma_addr(uint8_t instance, uint32_t address)
 }
 
 /*!
- * @brief Get the dma address
+ * @brief Gets the DMA address.
  *
- * @param instance sdhc instance id
- * @return the dma address
+ * @param instance SDHC instance ID
+ * @return the DMA address
  */
 static inline uint32_t sdhc_hal_get_dma_addr(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-    return HW_SDHC_DSADDR_RD;
+    return HW_SDHC_DSADDR_RD();
 }
 
 /*!
- * @brief Get block size configured
+ * @brief Gets the block size configured.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return the block size already configured
  */
 static inline uint32_t sdhc_hal_get_blksz(uint8_t instance)
@@ -239,9 +243,9 @@ static inline uint32_t sdhc_hal_get_blksz(uint8_t instance)
 }
 
 /*!
- * @brief Set block size
+ * @brief Sets the block size.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param blockSize the block size
  */
 static inline void sdhc_hal_set_blksz(uint8_t instance, uint32_t blockSize)
@@ -251,9 +255,9 @@ static inline void sdhc_hal_set_blksz(uint8_t instance, uint32_t blockSize)
 }
 
 /*!
- * @brief Set block count
+ * @brief Sets the block count.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param blockCount the block count
  */
 static inline void sdhc_hal_set_blkcnt(uint8_t instance, uint32_t blockCount)
@@ -263,9 +267,9 @@ static inline void sdhc_hal_set_blkcnt(uint8_t instance, uint32_t blockCount)
 }
 
 /*!
- * @brief Get block count configured
+ * @brief Gets the block count configured.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance id
  * @return the block count already configured
  */
 static inline uint32_t sdhc_hal_get_blkcnt(uint8_t instance)
@@ -275,9 +279,9 @@ static inline uint32_t sdhc_hal_get_blkcnt(uint8_t instance)
 }
 
 /*!
- * @brief Configure command argument
+ * @brief Configures the command argument.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param arg the command argument
  */
 static inline void sdhc_hal_set_cmd_arg(uint8_t instance, uint32_t arg)
@@ -287,9 +291,9 @@ static inline void sdhc_hal_set_cmd_arg(uint8_t instance, uint32_t arg)
 }
 
 /*!
- * @brief Send command
+ * @brief Sends a command.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param index command index
  * @param flags transfer type flags
  */
@@ -304,24 +308,9 @@ static inline void sdhc_hal_send_cmd(uint8_t instance, uint32_t index, uint32_t 
 }
 
 /*!
- * @brief Get command response
+ * @brief Fills the the data port.
  *
- * @param instance sdhc instance id
- * @param resp an array of response, 4 bytes
- */
-static inline void sdhc_hal_get_resp(uint8_t instance, uint32_t * resp)
-{
-    assert(instance < HW_SDHC_INSTANCE_COUNT);
-    resp[0] = BR_SDHC_CMDRSP0_CMDRSP0;
-    resp[1] = BR_SDHC_CMDRSP1_CMDRSP1;
-    resp[2] = BR_SDHC_CMDRSP2_CMDRSP2;
-    resp[3] = BR_SDHC_CMDRSP3_CMDRSP3;
-}
-
-/*!
- * @brief Fill the data port
- *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param data the data about to be sent
  */
 static inline void sdhc_hal_set_data(uint8_t instance, uint32_t data)
@@ -331,9 +320,9 @@ static inline void sdhc_hal_set_data(uint8_t instance, uint32_t data)
 }
 
 /*!
- * @brief Retrieve the data from data port
+ * @brief Retrieves the data from the data port.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return data the data read
  */
 static inline uint32_t sdhc_hal_get_data(uint8_t instance)
@@ -343,9 +332,9 @@ static inline uint32_t sdhc_hal_get_data(uint8_t instance)
 }
 
 /*!
- * @brief Check if command inhibit bit is set or not
+ * @brief Checks whether the command inhibit bit is set or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if command inhibit, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_cmd_inhibit(uint8_t instance)
@@ -355,9 +344,9 @@ static inline uint32_t sdhc_hal_is_cmd_inhibit(uint8_t instance)
 }
 
 /*!
- * @brief Check if data inhibit bit is set or not
+ * @brief Checks whether data inhibit bit is set or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if data inhibit, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_data_inhibit(uint8_t instance)
@@ -367,9 +356,9 @@ static inline uint32_t sdhc_hal_is_data_inhibit(uint8_t instance)
 }
 
 /*!
- * @brief Check if data line is active
+ * @brief Checks whether data line is active.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's active, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_data_line_active(uint8_t instance)
@@ -379,9 +368,9 @@ static inline uint32_t sdhc_hal_is_data_line_active(uint8_t instance)
 }
 
 /*!
- * @brief Check if SD clock is stable or not
+ * @brief Checks whether the SD clock is stable or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's stable, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_sd_clk_stable(uint8_t instance)
@@ -391,9 +380,9 @@ static inline uint32_t sdhc_hal_is_sd_clk_stable(uint8_t instance)
 }
 
 /*!
- * @brief Check if IPG clock is off or not
+ * @brief Checks whether the  IPG clock is off or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's off, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_ipg_clk_off(uint8_t instance)
@@ -403,9 +392,9 @@ static inline uint32_t sdhc_hal_is_ipg_clk_off(uint8_t instance)
 }
 
 /*!
- * @brief Check if system clock is off or not
+ * @brief Checks whether the system clock is off or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's off, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_sys_clk_off(uint8_t instance)
@@ -415,9 +404,9 @@ static inline uint32_t sdhc_hal_is_sys_clk_off(uint8_t instance)
 }
 
 /*!
- * @brief Check if peripheral clock is off or not
+ * @brief Checks whether the peripheral clock is off or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID.
  * @return 1 if it's off, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_per_clk_off(uint8_t instance)
@@ -427,9 +416,9 @@ static inline uint32_t sdhc_hal_is_per_clk_off(uint8_t instance)
 }
 
 /*!
- * @brief Check if SD clock is off or not
+ * @brief Checks whether  the  SD clock is off or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's off, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_sd_clk_off(uint8_t instance)
@@ -439,9 +428,9 @@ static inline uint32_t sdhc_hal_is_sd_clk_off(uint8_t instance)
 }
 
 /*!
- * @brief Check if write transfer is active or not
+ * @brief Checks whether the write transfer is active or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's active, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_write_trans_active(uint8_t instance)
@@ -451,9 +440,9 @@ static inline uint32_t sdhc_hal_is_write_trans_active(uint8_t instance)
 }
 
 /*!
- * @brief Check if read transfer is active or not
+ * @brief Checks whether the read transfer is active or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's off, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_read_trans_active(uint8_t instance)
@@ -463,9 +452,9 @@ static inline uint32_t sdhc_hal_is_read_trans_active(uint8_t instance)
 }
 
 /*!
- * @brief Check if buffer write is enabled or not
+ * @brief Check whether the buffer write is enabled or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's isEnabledd, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_buf_write_enabled(uint8_t instance)
@@ -475,9 +464,9 @@ static inline uint32_t sdhc_hal_is_buf_write_enabled(uint8_t instance)
 }
 
 /*!
- * @brief Check if buffer read is enabled or not
+ * @brief Checks whether the buffer read is enabled or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's isEnabledd, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_buf_read_enabled(uint8_t instance)
@@ -487,9 +476,9 @@ static inline uint32_t sdhc_hal_is_buf_read_enabled(uint8_t instance)
 }
 
 /*!
- * @brief Check if card is inserted or not
+ * @brief Checks whether the  card is inserted or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID.
  * @return 1 if it's inserted, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_card_inserted(uint8_t instance)
@@ -499,9 +488,9 @@ static inline uint32_t sdhc_hal_is_card_inserted(uint8_t instance)
 }
 
 /*!
- * @brief Check if command line signal is high or not
+ * @brief Checks whether the command line signal is high or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return 1 if it's high, 0 if not.
  */
 static inline uint32_t sdhc_hal_is_cmd_line_level_high(uint8_t instance)
@@ -511,9 +500,9 @@ static inline uint32_t sdhc_hal_is_cmd_line_level_high(uint8_t instance)
 }
 
 /*!
- * @brief Get data line signal level or not
+ * @brief Gets the data line signal level or not.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @return [7:0] data line signal level
  */
 static inline uint32_t sdhc_hal_get_data_line_level(uint8_t instance)
@@ -523,9 +512,9 @@ static inline uint32_t sdhc_hal_get_data_line_level(uint8_t instance)
 }
 
 /*!
- * @brief Set LED state
+ * @brief Sets the LED state.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param state the LED state
  */
 static inline void sdhc_hal_set_led_state(uint8_t instance, sdhc_hal_led_t state)
@@ -535,9 +524,9 @@ static inline void sdhc_hal_set_led_state(uint8_t instance, sdhc_hal_led_t state
 }
 
 /*!
- * @brief Set data transfer width
+ * @brief Sets the data transfer width.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param dtw data transfer width
  */
 static inline void sdhc_hal_set_data_trans_width(uint8_t instance, sdhc_hal_dtw_t dtw)
@@ -547,9 +536,9 @@ static inline void sdhc_hal_set_data_trans_width(uint8_t instance, sdhc_hal_dtw_
 }
 
 /*!
- * @brief Check if DAT3 is taken as card detect pin
+ * @brief Checks whether the DAT3 is taken as card detect pin.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  */
 static inline bool sdhc_hal_is_d3cd_enabled(uint8_t instance)
 {
@@ -558,9 +547,9 @@ static inline bool sdhc_hal_is_d3cd_enabled(uint8_t instance)
 }
 
 /*!
- * @brief Enable DAT3 as card detect pin
+ * @brief Enables the DAT3 as a card detect pin.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param isEnabled isEnabled the feature
  */
 static inline void sdhc_hal_enable_d3cd(uint8_t instance, bool isEnabled)
@@ -570,9 +559,9 @@ static inline void sdhc_hal_enable_d3cd(uint8_t instance, bool isEnabled)
 }
 
 /*!
- * @brief Configure endian mode
+ * @brief Configures the endian mode.
  *
- * @param instance sdhc instance id
+ * @param instance SDHC instance ID
  * @param endianMode endian mode
  */
 static inline void sdhc_hal_set_endian(uint8_t instance, sdhc_hal_endian_t endianMode)
@@ -582,9 +571,9 @@ static inline void sdhc_hal_set_endian(uint8_t instance, sdhc_hal_endian_t endia
 }
 
 /*!
-* @brief Get card detect test level
+* @brief Gets the card detect test level.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return card detect test level
 */
 static inline uint32_t sdhc_hal_get_cd_test_level(uint8_t instance)
@@ -594,9 +583,9 @@ static inline uint32_t sdhc_hal_get_cd_test_level(uint8_t instance)
 }
 
 /*!
-* @brief Enable card detect test
+* @brief Enables the card detect test.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_cd_test(uint8_t instance, bool isEnabled)
@@ -606,9 +595,9 @@ static inline void sdhc_hal_enable_cd_test(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Set DMA mode
+* @brief Sets the DMA mode.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param dmaMode the DMA mode
 */
 static inline void sdhc_hal_set_dma_mode(uint8_t instance, sdhc_hal_dma_mode_t dmaMode)
@@ -618,9 +607,9 @@ static inline void sdhc_hal_set_dma_mode(uint8_t instance, sdhc_hal_dma_mode_t d
 }
 
 /*!
-* @brief Enable stop at block gap
+* @brief Enables stop at the block gap.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_stop_at_blkgap(uint8_t instance, bool isEnabled)
@@ -630,9 +619,9 @@ static inline void sdhc_hal_enable_stop_at_blkgap(uint8_t instance, bool isEnabl
 }
 
 /*!
-* @brief Restart a transaction which has stopped at block gap
+* @brief Restarts a transaction which has stopped at the block gap.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 */
 static inline void sdhc_hal_continue_req(uint8_t instance)
 {
@@ -641,9 +630,9 @@ static inline void sdhc_hal_continue_req(uint8_t instance)
 }
 
 /*!
-* @brief Enable read wait control for SDIO cards.
+* @brief Enables teh read wait control for the SDIO cards.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_read_wait_ctrl(uint8_t instance, bool isEnabled)
@@ -653,9 +642,9 @@ static inline void sdhc_hal_enable_read_wait_ctrl(uint8_t instance, bool isEnabl
 }
 
 /*!
-* @brief Enable stop at block gap requests
+* @brief Enables  stop at the block gap requests.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_intr_stop_at_blk_gap(uint8_t instance, bool isEnabled)
@@ -665,9 +654,9 @@ static inline void sdhc_hal_enable_intr_stop_at_blk_gap(uint8_t instance, bool i
 }
 
 /*!
-* @brief Enable wakeup event on card interrupt
+* @brief Enables wakeup event on the card interrupt.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_wakeup_on_card_intr(uint8_t instance, bool isEnabled)
@@ -677,9 +666,9 @@ static inline void sdhc_hal_enable_wakeup_on_card_intr(uint8_t instance, bool is
 }
 
 /*!
-* @brief Enable wakeup event on card insertion
+* @brief Enables wakeup event on the card insertion.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_wakeup_on_card_ins(uint8_t instance, bool isEnabled)
@@ -689,9 +678,9 @@ static inline void sdhc_hal_enable_wakeup_on_card_ins(uint8_t instance, bool isE
 }
 
 /*!
-* @brief Enable wakeup event on card removal
+* @brief Enables  wakeup event on card removal.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_wakeup_on_card_rm(uint8_t instance, bool isEnabled)
@@ -701,9 +690,9 @@ static inline void sdhc_hal_enable_wakeup_on_card_rm(uint8_t instance, bool isEn
 }
 
 /*!
-* @brief Enable IPG clock, then no automatic clock gating off
+* @brief Enables the IPG clock, then no automatic clock gating off.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_ipg_clk(uint8_t instance, bool isEnabled)
@@ -713,9 +702,9 @@ static inline void sdhc_hal_enable_ipg_clk(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Enable system clock, then no automatic clock gating off
+* @brief Enables the system clock, then no automatic clock gating off.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_sys_clk(uint8_t instance, bool isEnabled)
@@ -725,9 +714,9 @@ static inline void sdhc_hal_enable_sys_clk(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Enable peripheral clock, then no automatic clock gating off
+* @brief Enables the peripheral clock, then no automatic clock gating off.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_per_clk(uint8_t instance, bool isEnabled)
@@ -737,10 +726,10 @@ static inline void sdhc_hal_enable_per_clk(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Enable SD clock. It should be disabled before changing SD clock
+* @brief Enables the SD clock. It should be disabled before changing SD clock
 * frequency.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_sd_clk(uint8_t instance, bool isEnabled)
@@ -750,9 +739,9 @@ static inline void sdhc_hal_enable_sd_clk(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Set SD clock frequency divisor
+* @brief Sets the SD clock frequency divisor.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param divisor the divisor
 */
 static inline void sdhc_hal_set_clk_div(uint8_t instance, uint32_t divisor)
@@ -762,9 +751,9 @@ static inline void sdhc_hal_set_clk_div(uint8_t instance, uint32_t divisor)
 }
 
 /*!
-* @brief Set SD clock frequency select
+* @brief Sets the SD clock frequency select.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param freq the frequency selector
 */
 static inline void sdhc_hal_set_clk_freq(uint8_t instance, uint32_t freq)
@@ -774,9 +763,9 @@ static inline void sdhc_hal_set_clk_freq(uint8_t instance, uint32_t freq)
 }
 
 /*!
-* @brief Set data timeout counter value
+* @brief Sets the data timeout counter value.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param timeout
 */
 static inline void sdhc_hal_set_data_timeout(uint8_t instance, uint32_t timeout)
@@ -786,9 +775,9 @@ static inline void sdhc_hal_set_data_timeout(uint8_t instance, uint32_t timeout)
 }
 
 /*!
-* @brief Perform kinds of SDHC reset
+* @brief Performs the kinds of SDHC reset.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param type the type of reset
 */
 static inline void sdhc_hal_reset(uint8_t instance, uint32_t type)
@@ -798,23 +787,23 @@ static inline void sdhc_hal_reset(uint8_t instance, uint32_t type)
 }
 
 /*!
-* @brief Check if the given SDHC reset is finished
+* @brief Checks whether   the given SDHC reset is finished.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param type the type of reset
 * @return if the given reset is done
 */
 static inline uint32_t sdhc_hal_is_reset_done(uint8_t instance, uint32_t type)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-    return !(HW_SDHC_SYSCTL_RD
+    return !(HW_SDHC_SYSCTL_RD()
             & (type & (BM_SDHC_SYSCTL_RSTA | BM_SDHC_SYSCTL_RSTC | BM_SDHC_SYSCTL_RSTD)));
 }
 
 /*!
-* @brief Send 80 SD clock cycles to card
+* @brief Sends  80 SD clock cycles to the card.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 */
 static inline void sdhc_hal_init_card(uint8_t instance)
 {
@@ -823,9 +812,9 @@ static inline void sdhc_hal_init_card(uint8_t instance)
 }
 
 /*!
-* @brief Check if sending 80 SD clock cycles to card is finished
+* @brief Checks whether sending 80 SD clock cycles to card is finished.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if sending 80 SD clock cycles is finished
 */
 static inline uint32_t sdhc_hal_is_init_card_done(uint8_t instance)
@@ -835,21 +824,21 @@ static inline uint32_t sdhc_hal_is_init_card_done(uint8_t instance)
 }
 
 /*!
-* @brief Get current interrupt status
+* @brief Gets the current interrupt status.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return current interrupt flags
 */
 static inline uint32_t sdhc_hal_get_intr_flags(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-    return HW_SDHC_IRQSTAT_RD;
+    return HW_SDHC_IRQSTAT_RD();
 }
 
 /*!
-* @brief Clear specified interrupts' status
+* @brief Clears a specified interrupt status.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param mask to specify interrupts' flags to be cleared
 */
 static inline void sdhc_hal_clear_intr_flags(uint8_t instance, uint32_t mask)
@@ -859,86 +848,46 @@ static inline void sdhc_hal_clear_intr_flags(uint8_t instance, uint32_t mask)
 }
 
 /*!
-* @brief Get currently enabled interrupts' singal
+* @brief Gets the currently enabled interrupt signal.
 *
-* @param instance sdhc instance id
-* @return currently enabled interrupts' singal
+* @param instance SDHC instance ID
+* @return currently enabled interrupt signal
 */
 static inline uint32_t sdhc_hal_get_intr_signal(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-    return HW_SDHC_IRQSIGEN_RD;
+    return HW_SDHC_IRQSIGEN_RD();
 }
 
 /*!
-* @brief Get currently enabled interrupts' state
+* @brief Gets the currently enabled interrupt state.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return currently enabled interrupts' state
 */
 static inline uint32_t sdhc_hal_get_intr_state(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-    return HW_SDHC_IRQSTATEN_RD;
+    return HW_SDHC_IRQSTATEN_RD();
 }
 
 /*!
-* @brief Enable specified interrupts
+* @brief Gets the auto cmd12 error.
 *
-* @param instance sdhc instance id
-* @param isEnabled enable or disable
-* @param mask to specify interrupts to be isEnabledd
-*/
-static inline void sdhc_hal_enable_intr_signal(uint8_t instance, bool isEnabled, uint32_t mask)
-{
-    assert(instance < HW_SDHC_INSTANCE_COUNT);
-    if (isEnabled)
-    {
-        HW_SDHC_IRQSIGEN_SET(mask);
-    }
-    else
-    {
-        HW_SDHC_IRQSIGEN_CLR(mask);
-    }
-}
-
-/*!
-* @brief Enable specified interrupts' state 
-*
-* @param instance sdhc instance id
-* @param isEnabled enable or disable
-* @param mask to specify interrupts' state to be enabled
-*/
-static inline void sdhc_hal_enable_intr_state(uint8_t instance, bool isEnabled, uint32_t mask)
-{
-    assert(instance < HW_SDHC_INSTANCE_COUNT);
-    if (isEnabled)
-    {
-        HW_SDHC_IRQSTATEN_SET(mask);
-    }
-    else
-    {
-        HW_SDHC_IRQSTATEN_CLR(mask);
-    }
-}
-
-/*!
-* @brief Get auto cmd12 error
-*
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return auto cmd12 error status
 */
 static inline uint32_t sdhc_hal_get_ac12_error(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-    return HW_SDHC_AC12ERR_RD;
+    return HW_SDHC_AC12ERR_RD();
 }
 
 /*!
-* @brief Get the max block length supported
+* @brief Gets the maximum block length supported.
 *
-* @param instance sdhc instance id
-* @return the max block length support
+* @param instance SDHC instance ID
+* @return the maximum block length support
 */
 static inline uint32_t sdhc_hal_get_max_blklen(uint8_t instance)
 {
@@ -947,9 +896,9 @@ static inline uint32_t sdhc_hal_get_max_blklen(uint8_t instance)
 }
 
 /*!
-* @brief Check if ADMA is supported
+* @brief Checks whether the ADMA is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if ADMA is supported
 */
 static inline uint32_t sdhc_hal_host_can_do_adma(uint8_t instance)
@@ -959,9 +908,9 @@ static inline uint32_t sdhc_hal_host_can_do_adma(uint8_t instance)
 }
 
 /*!
-* @brief Check if high speed is supported
+* @brief Checks whether the  high speed is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if high speed is supported
 */
 static inline uint32_t sdhc_hal_host_can_do_highspeed(uint8_t instance)
@@ -971,9 +920,9 @@ static inline uint32_t sdhc_hal_host_can_do_highspeed(uint8_t instance)
 }
 
 /*!
-* @brief Check if DMA is supported
+* @brief Checks whether the  DMA is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if high speed is supported
 */
 static inline uint32_t sdhc_hal_host_can_do_dma(uint8_t instance)
@@ -983,9 +932,9 @@ static inline uint32_t sdhc_hal_host_can_do_dma(uint8_t instance)
 }
 
 /*!
-* @brief Check if suspend resume is supported
+* @brief Checks whether the suspend/resume is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if suspend and resume is supported
 */
 static inline uint32_t sdhc_hal_host_can_do_suspend_resume(uint8_t instance)
@@ -995,9 +944,9 @@ static inline uint32_t sdhc_hal_host_can_do_suspend_resume(uint8_t instance)
 }
 
 /*!
-* @brief Check if voltage 3.3 is supported
+* @brief Checks whether the  voltage 3.3 is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if voltage 3.3 is supported
 */
 static inline uint32_t sdhc_hal_host_supports_v330(uint8_t instance)
@@ -1007,15 +956,15 @@ static inline uint32_t sdhc_hal_host_supports_v330(uint8_t instance)
 }
 
 /*!
-* @brief Check if voltage 3.0 is supported
+* @brief Checks whether the  voltage 3.0 is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if voltage 3.0 is supported
 */
 static inline uint32_t sdhc_hal_host_supports_v300(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-#if defined(CPU_MK70FN1M0VMJ12) || defined(CPU_MK70FN1M0VMJ15)
+#if defined(FSL_FEATURE_SDHC_HAS_V300_SUPPORT) && FSL_FEATURE_SDHC_HAS_V300_SUPPORT
     return BR_SDHC_HTCAPBLT_VS30;
 #else
     return 0;
@@ -1023,15 +972,15 @@ static inline uint32_t sdhc_hal_host_supports_v300(uint8_t instance)
 }
 
 /*!
-* @brief Check if voltage 1.8 is supported
+* @brief Checks whether the voltage 1.8 is supported.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return if voltage 1.8 is supported
 */
 static inline uint32_t sdhc_hal_host_supports_v180(uint8_t instance)
 {
     assert(instance < HW_SDHC_INSTANCE_COUNT);
-#if defined(CPU_MK70FN1M0VMJ12) || defined(CPU_MK70FN1M0VMJ15)
+#if defined(FSL_FEATURE_SDHC_HAS_V180_SUPPORT) && FSL_FEATURE_SDHC_HAS_V180_SUPPORT
     return BR_SDHC_HTCAPBLT_VS18;
 #else
     return 0;
@@ -1039,9 +988,9 @@ static inline uint32_t sdhc_hal_host_supports_v180(uint8_t instance)
 }
 
 /*!
-* @brief Set watermark for writing
+* @brief Sets the watermark for writing.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param watermark for writing
 */
 static inline void sdhc_hal_set_write_watermark(uint8_t instance, uint32_t watermark)
@@ -1051,9 +1000,9 @@ static inline void sdhc_hal_set_write_watermark(uint8_t instance, uint32_t water
 }
 
 /*!
-* @brief Set watermark for reading
+* @brief Sets the watermark for reading.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param watermark for reading
 */
 static inline void sdhc_hal_set_read_watermark(uint8_t instance, uint32_t watermark)
@@ -1063,9 +1012,9 @@ static inline void sdhc_hal_set_read_watermark(uint8_t instance, uint32_t waterm
 }
 
 /*!
-* @brief Set force events according to the given mask
+* @brief Sets the force events according to the given mask.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param mask to specify the force events' flags to be set
 */
 static inline void sdhc_hal_set_force_event_flags(uint8_t instance, uint32_t mask)
@@ -1075,10 +1024,10 @@ static inline void sdhc_hal_set_force_event_flags(uint8_t instance, uint32_t mas
 }
 
 /*!
-* @brief Check if adma error is length mismatch
+* @brief Checks whether the ADMA error is length mismatch.
 *
-* @param instance sdhc instance id
-* @return if adma error is length mismatch
+* @param instance SDHC instance ID
+* @return if ADMA error is length mismatch
 */
 static inline uint32_t sdhc_hal_is_adma_len_mismatch_err(uint8_t instance)
 {
@@ -1087,9 +1036,9 @@ static inline uint32_t sdhc_hal_is_adma_len_mismatch_err(uint8_t instance)
 }
 
 /*!
-* @brief Get back the state of adma error
+* @brief Gets back the state of the ADMA error.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return error state
 */
 static inline uint32_t sdhc_hal_get_adma_error_stat(uint8_t instance)
@@ -1099,10 +1048,10 @@ static inline uint32_t sdhc_hal_get_adma_error_stat(uint8_t instance)
 }
 
 /*!
-* @brief Check if adma error is descriptor error
+* @brief Checks whether the  ADMA error is a descriptor error.
 *
-* @param instance sdhc instance id
-* @return if adma error is descriptor error
+* @param instance SDHC instance ID
+* @return if ADMA error is descriptor error
 */
 static inline uint32_t sdhc_hal_is_adma_desc_err(uint8_t instance)
 {
@@ -1111,10 +1060,10 @@ static inline uint32_t sdhc_hal_is_adma_desc_err(uint8_t instance)
 }
 
 /*!
-* @brief Set adma address
+* @brief Sets the ADMA address.
 *
-* @param instance sdhc instance id
-* @param address for adma transfer
+* @param instance SDHC instance ID
+* @param address for ADMA transfer
 */
 static inline void sdhc_hal_set_adma_addr(uint8_t instance, uint32_t address)
 {
@@ -1123,9 +1072,9 @@ static inline void sdhc_hal_set_adma_addr(uint8_t instance, uint32_t address)
 }
 
 /*!
-* @brief Enable external DMA request
+* @brief Enables the external DMA request.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled or not
 */
 static inline void sdhc_hal_enable_ext_dma_req(uint8_t instance, bool isEnabled)
@@ -1135,9 +1084,9 @@ static inline void sdhc_hal_enable_ext_dma_req(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Enable exact block number for SDIO CMD53
+* @brief Enables the exact block number for the SDIO CMD53.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled or not
 */
 static inline void sdhc_hal_enable_exact_blk_num(uint8_t instance, bool isEnabled)
@@ -1147,9 +1096,9 @@ static inline void sdhc_hal_enable_exact_blk_num(uint8_t instance, bool isEnable
 }
 
 /*!
-* @brief Set timeout value for boot ACK
+* @brief Sets the timeout value for the boot ACK.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param timeout
 */
 static inline void sdhc_hal_set_boot_ack_timeout(uint8_t instance, uint32_t timeout)
@@ -1159,9 +1108,9 @@ static inline void sdhc_hal_set_boot_ack_timeout(uint8_t instance, uint32_t time
 }
 
 /*!
-* @brief Enable boot ACK
+* @brief Enables the boot ACK.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled
 */
 static inline void sdhc_hal_enable_boot_ack(uint8_t instance, bool isEnabled)
@@ -1171,9 +1120,9 @@ static inline void sdhc_hal_enable_boot_ack(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Configure boot mode
+* @brief Configures the boot mode.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param mode the boot mode
 */
 static inline void sdhc_hal_set_boot_mode(uint8_t instance, sdhc_hal_mmcboot_t mode)
@@ -1183,9 +1132,9 @@ static inline void sdhc_hal_set_boot_mode(uint8_t instance, sdhc_hal_mmcboot_t m
 }
 
 /*!
-* @brief Enable fast boot
+* @brief Enables the fast boot.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled or not
 */
 static inline void sdhc_hal_enable_fastboot(uint8_t instance, bool isEnabled)
@@ -1195,9 +1144,9 @@ static inline void sdhc_hal_enable_fastboot(uint8_t instance, bool isEnabled)
 }
 
 /*!
-* @brief Enable automatic stop at block gap
+* @brief Enables the automatic stop at the block gap.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param isEnabled or not
 */
 static inline void sdhc_hal_enable_auto_stop_at_blkgap(uint8_t instance, bool isEnabled)
@@ -1207,9 +1156,9 @@ static inline void sdhc_hal_enable_auto_stop_at_blkgap(uint8_t instance, bool is
 }
 
 /*!
-* @brief Configure the block count for boot
+* @brief Configures the the block count for the boot.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @param blockCount the block count for boot
 */
 static inline void sdhc_hal_set_boot_blkcnt(uint8_t instance, uint32_t blockCount)
@@ -1219,9 +1168,9 @@ static inline void sdhc_hal_set_boot_blkcnt(uint8_t instance, uint32_t blockCoun
 }
 
 /*!
-* @brief Get specification version
+* @brief Gets a specification version.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return specification version
 */
 static inline uint32_t sdhc_hal_get_spec_ver(uint8_t instance)
@@ -1231,9 +1180,9 @@ static inline uint32_t sdhc_hal_get_spec_ver(uint8_t instance)
 }
 
 /*!
-* @brief Get vendor version
+* @brief Gets the vendor version.
 *
-* @param instance sdhc instance id
+* @param instance SDHC instance ID
 * @return vendor version
 */
 static inline uint32_t sdhc_hal_get_vendor_ver(uint8_t instance)
@@ -1241,6 +1190,32 @@ static inline uint32_t sdhc_hal_get_vendor_ver(uint8_t instance)
     assert(instance < HW_SDHC_INSTANCE_COUNT);
     return BR_SDHC_HOSTVER_VVN;
 }
+
+/*!
+ * @brief Gets the command response.
+ *
+ * @param instance SDHC instance ID
+ * @param resp an array of response, 4 bytes
+ */
+void sdhc_hal_get_resp(uint8_t instance, uint32_t * resp);
+
+/*!
+* @brief Enables the specified interrupts.
+*
+* @param instance SDHC instance ID
+* @param isEnabled enable or disable
+* @param mask to specify interrupts to be isEnabledd
+*/
+void sdhc_hal_enable_intr_signal(uint8_t instance, bool isEnabled, uint32_t mask);
+
+/*!
+* @brief Enables the specified interrupt state.
+*
+* @param instance SDHC instance ID
+* @param isEnabled enable or disable
+* @param mask to specify interrupts' state to be enabled
+*/
+void sdhc_hal_enable_intr_state(uint8_t instance, bool isEnabled, uint32_t mask);
 
 /*@} */
 

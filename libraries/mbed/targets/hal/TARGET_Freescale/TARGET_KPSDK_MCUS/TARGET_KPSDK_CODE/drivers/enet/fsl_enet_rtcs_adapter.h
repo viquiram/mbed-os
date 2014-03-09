@@ -118,7 +118,7 @@ extern unsigned long  _RTCSTASK_priority;
 #define ENET_OPTION_HW_RX_PROTOCOL_CHECKSUM 0x00008000
 #define ENET_OPTION_HW_RX_MAC_ERR           0x00010000
 
-/*! @brief Define for ENET default mac*/
+/*! @brief Define for ENET default MAC*/
 #define ENET_DEFAULT_MAC_ADD                { 0x00, 0x00, 0x5E, 0, 0, 0 }
 #define PCB_MINIMUM_SIZE                    (sizeof(PCB2))
 #define PCB_free(pcb_ptr)                   ((pcb_ptr)->FREE(pcb_ptr))
@@ -186,7 +186,7 @@ extern unsigned long  _RTCSTASK_priority;
       }                          \
    }  
 
-/*! @brief Define for ENET six-byte mac type*/
+/*! @brief Define for ENET six-byte MAC type*/
 typedef unsigned char   _enet_address[6];
 
 /*! @brief Define the structure for ipcfg*/
@@ -197,8 +197,8 @@ typedef void (*  PCB_FREE_FPTR)(struct pcb *);
 /*! @brief Define Structure for Ethernet packet header*/
 typedef struct enet_header 
 {
-    _enet_address    DEST;     /*!< destination mac address*/
-    _enet_address    SOURCE;   /*!< source mac address*/
+    _enet_address    DEST;     /*!< destination MAC address*/
+    _enet_address    SOURCE;   /*!< source MAC address*/
     unsigned char    TYPE[2];  /*!< protocol type*/
 } ENET_HEADER, * ENET_HEADER_PTR;
 
@@ -419,10 +419,10 @@ bool ENET_link_status(_enet_handle handle);
 uint32_t ENET_get_speed(_enet_handle handle);
 
 /*!
- * @brief ENET get mtu.
+ * @brief ENET get MTU.
  *
  * @param handle The address pointer for ENET device structure.
- * @return The link mtu
+ * @return The link MTU
  */
 uint32_t ENET_get_MTU(_enet_handle handle);
 
@@ -478,7 +478,7 @@ _enet_handle ENET_get_next_device_handle(_enet_handle handle);
 void ENET_free(PCB_PTR packet);
 
 /*!
- * @brief ENET error describing.
+ * @brief ENET error description.
  *
  * @param error The ENET error code.
  * @return The error string.

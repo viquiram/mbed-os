@@ -62,7 +62,7 @@
 
 #if AUDIO_CONTROLLER == AUDIO_CONTROLLER_SAI
 typedef  sai_handler_t ctrl_handler_t;
-typedef sai_config_t ctrl_config_t;
+typedef sai_user_config_t ctrl_config_t;
 typedef sai_data_format_t ctrl_data_format_t;
 typedef sai_callback_t ctrl_callback_t;
 typedef sai_status_t ctrl_status_t;
@@ -78,16 +78,16 @@ typedef enum _snd_status
 {
     kStatus_SND_Success = 0U, /*!< Execute successfully*/
     kStatus_SND_Fail = 1U, /*!< Execute fail */
-    kStatus_SND_DmaFail = 2U, /*!< Dma operation fail */
+    kStatus_SND_DmaFail = 2U, /*!< DMA operation fail */
     kStatus_SND_CtrlFail = 3U, /*!< Audio controller operation fail */
     kStatus_SND_CodecFail = 4U, /*!< Audio codec operation fail */
     kStatus_SND_BufferAllocateFail = 5U /*!< Buffer allocate failure */
 } snd_status_t;
 
 /*!
- * @brief Soundcard status includes the information which the application can see
- * This structure is the interface between the driver and the application, application can get the 
- * information about where and when to input/output data.
+ * @brief Soundcard status includes the information which the application can see.
+ * This structure is the interface between the driver and the application. The application can get the 
+ * information where and when to input/output data.
  */
  typedef struct SoundcardState
 {
@@ -96,7 +96,6 @@ typedef enum _snd_status
     uint32_t full_block; /*!< How many blocks are full */
     uint8_t *input_address; /*!< The input address */
     uint8_t *output_address; /*!< The output address */
-    sync_object_t sem; /*!< The sems tells application when to copy data */
 } snd_state_t;
 
 /*!
@@ -105,27 +104,27 @@ typedef enum _snd_status
  */
 typedef struct AudioControllerOperation
 {
-    ctrl_status_t (*ctrl_init)(ctrl_handler_t *param, ctrl_config_t * config);/*!< Initialize the controller. */
+    ctrl_status_t (*ctrl_init)(ctrl_handler_t *param, ctrl_config_t * config);/*!< Initializes the controller. */
     
-    ctrl_status_t (*ctrl_deinit)(ctrl_handler_t  *param);/*!< Deinit the controller. */
+    ctrl_status_t (*ctrl_deinit)(ctrl_handler_t  *param);/*!< Deinitializes the controller. */
     
-    ctrl_status_t (*ctrl_config_data_format)(ctrl_handler_t  *param, ctrl_data_format_t *format);/*!< Configure audio data format. */
+    ctrl_status_t (*ctrl_config_data_format)(ctrl_handler_t  *param, ctrl_data_format_t *format);/*!< Configures the audio data format. */
     
-    void (*ctrl_start_write)(ctrl_handler_t  *param);/*!< Used in strat transfer or resume transfer*/
+    void (*ctrl_start_write)(ctrl_handler_t  *param);/*!< Used in a start transfer or a resume transfer*/
 
-    void (*ctrl_start_read)(ctrl_handler_t  *param);/*!< Used in start receive or resume receive */
+    void (*ctrl_start_read)(ctrl_handler_t  *param);/*!< Used in a start receive or a resume receive */
     
-    void (*ctrl_stop_write)(ctrl_handler_t  *param);/*!< Used in stop transfer */
+    void (*ctrl_stop_write)(ctrl_handler_t  *param);/*!< Used in the stop transfer */
 
-    void (*ctrl_stop_read)(ctrl_handler_t  *param);/*!< Used in stop receive */
+    void (*ctrl_stop_read)(ctrl_handler_t  *param);/*!< Used in the stop receive */
 
-    uint32_t (*ctrl_send_data)(ctrl_handler_t  *param, uint8_t *addr, uint32_t len); /*!< Send data function*/
+    uint32_t (*ctrl_send_data)(ctrl_handler_t  *param, uint8_t *addr, uint32_t len); /*!< Sends data function*/
 
-    uint32_t (*ctrl_receive_data)(ctrl_handler_t  *param, uint8_t *addr, uint32_t len); /*!< Receive data*/
+    uint32_t (*ctrl_receive_data)(ctrl_handler_t  *param, uint8_t *addr, uint32_t len); /*!< Receives data*/
 
-    void (*ctrl_register_callback)(ctrl_handler_t  *param, ctrl_callback_t callback, void *callback_param); /*!< Register callback function. */
+    void (*ctrl_register_callback)(ctrl_handler_t  *param, ctrl_callback_t callback, void *callback_param); /*!< Registers a callback function. */
 
-    uint32_t *(*ctrl_get_fifo_address)(ctrl_handler_t  *param); /*!< Get fifo address */
+    uint32_t *(*ctrl_get_fifo_address)(ctrl_handler_t  *param); /*!< Gets the FIFO address */
 
 } audio_ctrl_operation_t;
 
@@ -133,38 +132,64 @@ typedef struct AudioControllerOperation
 typedef struct AudioCodecOperation
 {
     codec_status_t (*codec_init)(codec_handler_t *param, void *config); /*!< Codec initialize function*/
-    codec_status_t (*codec_deinit)(codec_handler_t  *param); /*!< Codec deinit function */
+    codec_status_t (*codec_deinit)(codec_handler_t  *param); /*!< Codec deinitialize function */
     codec_status_t (*codec_config_data_format)(codec_handler_t  *param, 
-        uint32_t mclk, uint32_t sample_rate, uint8_t bits ); /*!< Configure data format. */
+        uint32_t mclk, uint32_t sample_rate, uint8_t bits ); /*!< Configures data format. */
 } audio_codec_operation_t;
 
 
-/*! @brief The definitation of the audio device which may be a controller. */
+/*! @brief The definition of the audio device which may be a controller. */
 typedef struct AudioController
 {
     void *handler;
 #if USEDMA
-    edma_channel_t       dma_channel;/*!< Which dma channel it uses */
-    dma_request_source_t dma_source; /*!< Dma request source. */
-    edma_software_tcd_t  stcd[5];    /*!< Temporily assign 5 tcds for configuration. */
+    edma_channel_t       dma_channel;/*!< Which DMA channel it uses */
+    dma_request_source_t dma_source; /*!< DMA request source */
+    edma_software_tcd_t  stcd[5];    /*!< Temporarily assign 5 TCDs for configuration. */
 #endif
-    audio_ctrl_operation_t *ops;/*!< Operations including the initialize, configure etc*/
+    audio_ctrl_operation_t *ops;/*!< Operations including the initialize, configure, etc.*/
 } audio_controller_t;
 
-/*! @brief The codec structure. */
+/*! @brief The Codec structure. */
 typedef struct AudioCodec
 {  
     void *handler;/*!< Codec instance */
-    audio_codec_operation_t *ops;/*!< operations. */
+    audio_codec_operation_t *ops;/*!< Operations. */
 }audio_codec_t;
 
+/*! @brief  Audio buffer structure */
+typedef struct Audio_Buffer{
+    /* Buffer resources */
+    uint8_t*   buff;/*!< Buffer address */
+    /* Buffer configuration information */
+    uint8_t    blocks;/*!< Block number of the buffer. */
+    uint16_t   size;/*!< The size of a block */
+    /* Buffer status information */
+    uint32_t   requested;/*!< The request data number to transfer */
+    uint32_t   queued;/*!< Data which is in buffer, but not processed. */
+    uint32_t   processed;/*!< Data which is  put into the FIFO.
+                             This is used to judge if the SAI is under run. */
+    uint8_t    input_index; /*!< Buffer input block index. */
+    uint8_t    output_index; /*!< Buffer output block index. */
+    uint8_t*   input_curbuff; /*!< Buffer input address. */
+    uint8_t*   output_curbuff; /*!< Buffer output address. */
+    uint32_t   empty_block; /*!< Empty block number. */
+    uint32_t   full_block; /*!< Full block numbers. */
+    uint32_t   fifo_error; /*!< FIFO error numbers. */
+    uint32_t   buffer_error; /*!< Buffer error numbers. */
+    sync_object_t sem; /*!<  Semaphores to control the data flow. */
+    bool       first_io;/*!< Means the first time the transfer */
+}audio_buffer_t;
+
 /*!
- * @brief A sound card includes the audio controller and a codec. 
+ * @brief A sound card includes the audio controller and a Codec. 
  */
 typedef struct Soundcard
 {
-    audio_controller_t controller;/*!< Controller. */ 
-    audio_codec_t codec;/*!< Codec. */
+    audio_controller_t controller;/*!< Controller */ 
+    audio_codec_t codec;/*!< Codec */
+    audio_buffer_t buffer; /*!< Audio buffer managed by Soundcard. */
+    bool direction; /*!< TX or RX */
 } sound_card_t;
 
 extern audio_ctrl_operation_t g_sai_ops;
@@ -178,112 +203,109 @@ extern "C" {
 #endif
 
 /*!
- * @brief Initialize the sound card. The function would initialize the controller and the codec.
+ * @brief Initializes the Soundcard. The function  initializes the controller and the Codec.
  *
- * The function would initialize the generic layer structure, for example the buffer and the
- * status structure, then the function would call the initialize functions of controller and codec.
- * @param card Soundcard pointer.
- * @param ctrl_config The configuration structure of audio controller.
- * @param codec_config The configuration structure of audio codec.
- * @param direction Tx or Rx, can be AUDIO_TX or AUDIO_RX.
+ * The function  initializes the generic layer structure, for example the buffer and the
+ * status structure, then the function  calls the initialize functions of the controller and the Codec.
+ * @param card Soundcard pointer
+ * @param ctrl_config The configuration structure of the audio controller
+ * @param codec_config The configuration structure of the audio Codec
  * @return Return kStatus_SND_Success while the initialize success and kStatus_SND_fail if failed.
  */
-snd_status_t snd_init(sound_card_t *card, void * ctrl_config, void * codec_config, bool direction);
+snd_status_t snd_init(sound_card_t *card, void * ctrl_config, void * codec_config);
 
 /*!
- * @brief Deinit the sound card instance.
+ * @brief Deinitializes the sound card instance
  *
- * It would call the codec and controller deinit function and free the buffer controlled by
- * sound card.The function should be used at the end of the application, if just pause the
- * playback/record, you shouldn't use the function, you should use snd_stop_tx/snd_stop_rx
+ * The function  calls the Codec and controller deinitialization function and frees the buffer controlled by
+ * the sound card. The function should be used at the end of the application. If   the
+ * playback/record is paused, you shouldn't use the function. Instead, you should use the snd_stop_tx/snd_stop_rx
  * instead.
- * @param card Soundcard pointer.
- * @param direction Tx or Rx, can be AUDIO_TX or AUDIO_RX. 
+ * @param card Soundcard pointer
  * @return Return kStatus_SND_Success while the initialize success and kStatus_SND_fail if failed.
  */
-snd_status_t snd_deinit(sound_card_t *card, bool direction);
+snd_status_t snd_deinit(sound_card_t *card);
 
 /*!
- * @brief Configure the audio data format running in sound card.
+ * @brief Configures the audio data format running in the Soundcard.
  *
  * This function can make the application change the data format during the run time.
- * But this fucntion cannot be called while TCSR.TE or RCSR.RE is enable.
+ * This function cannot be called while TCSR.TE or RCSR.RE is enabled.
  * This function can change the sample rate, bit depth(i.e. 16-bit).
- * @param card Soundcard pointer.
- * @param format Data format using in sound card.
- * @param direction Tx or Rx, can be AUDIO_TX or AUDIO_RX.
+ * @param card Soundcard pointer
+ * @param format Data format used in the sound card
  * @return Return kStatus_SND_Success while the initialize success and kStatus_SND_fail if failed.
  */
-snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *format, bool direction);
+snd_status_t snd_data_format_configure(sound_card_t *card, ctrl_data_format_t *format);
 
 /*!
- * @brief Update the status of sai tx.
+ * @brief Updates the status of the TX.
  *
- * This function should be called after application copied data into buffer provided
- * by soundcard. Soundcard would not help users to copy data to internal buffer,this
- * operation should be done by applications. Soundcard would provide an interface
- * snd_get_status() for appliaction to get the inforamtion about the internal buffer
+ * This function should be called after the application copied data into the buffer provided
+ * by the Soundcard. The Soundcard does not help users  copy data to the internal buffer. This
+ * operation should be done by the applications. Soundcard  provides an interface
+ * ,snd_get_status(), for an application to get the information about the internal buffer
  * status, including the starting address and empty blocks and so on.
  * @param card Soundcard pointer
- * @param len Data size of data to write.
- * @return The size which have been written.
+ * @param len Data size of the data to write
+ * @return The size which has been written.
  */
 uint32_t snd_update_tx_status(sound_card_t *card, uint32_t len);
 
 /*!
- * @brief Update status of sai rx.
+ * @brief Updates status of the RX.
  *
- * This function should be called after application copied data from the buffer provided
- * by soundcard. Soundcard would not help apllications to copy data out from internal
- * buffer. This operation should be done by applications. Souncard would provide an
- * interface snd_get_status() for applications to get the inforamtion about the internal
+ * This function should be called after the application copied data from the buffer provided
+ * by the Soundcard. The Soundcard does not help applications to copy data  from the internal
+ * buffer. This operation should be done by applications. The Soundcard  provides an
+ * interface snd_get_status() for applications to get the information about the internal
  * buffer status, including the starting address and full blocks and so on.
- * @param card Soundcard pointer.
- * @param len Data size of data to read.
- * @return The data size which have been read.
+ * @param card Soundcard pointer
+ * @param len Data size of data to read
+ * @return The data size which has been read.
  */
 uint32_t snd_update_rx_status(sound_card_t *card, uint32_t len);
 
 /*!
- * @brief Get the status of sai.
+ * @brief Gets the status of the Soundcard.
  *
- * Every time the application want to write/read data from the internal buffer, application
+ * Each time the application wants to write/read data from the internal buffer, it
  * should call this function to get the status of the internal buffer. This function 
- * would copy data to the @param status, from the structure, the user can get the information
- * about where to write/read data and how much data can be read/write.
- * @param card Soundcard pointer.
- * @param status Pointer of audio_status_t structure.
- * @param direction Tx or rx, can be AUDIO_TX or AUDIO_RX.
+ * copies data to the @param status, from the structure. The user can get the information
+ * about where to write/read data and how much data can be read/written.
+ * @param card Soundcard pointer
+ * @param status Pointer of the audio_status_t structure
+ * @param card Soundcard pointer
  */
-void snd_get_status(snd_state_t *status, bool direction);
+void snd_get_status(snd_state_t *status, sound_card_t *card);
 
 /*!
- * @brief Start soundcard TX process.
+ * @brief Starts the Soundcard TX process.
  *
- * This function is used to start the tx process of soundcard. This function would enable
- * dma/interrupt request source and enable tx and bit clock of tx. Note that this
- * function can be used both the beginning of sai transfer and also resume the transfer.
- * @param card Soundcard pointer.
+ * This function starts the TX process of the Soundcard. This function  enables the
+ * DMA/interrupt request source and enables the TX and the bit clock of the TX. Note that this
+ * function can be used both in the beginning of the SAI transfer and also resume the transfer.
+ * @param card Soundcard pointer
  */
 void snd_start_tx(sound_card_t *card);
 
 /*!
- * @brief Start soundcard RX process.
+ * @brief Starts the Soundcard RX process.
  *
- * This function is used to start the rx process of soundcard. This function is the same
- * as the snd_start_tx, it would be used in the begining of soundcard rx transfer and also
- * resume rx.
- * @param card Soundcard pointer.
+ * This function starts the RX process of the Soundcard. This function is the same
+ * as the snd_start_tx. It is  used in the beginning of the Soundcard RX transfer and also
+ * resume RX.
+ * @param card Soundcard pointer
  */
 void snd_start_rx(sound_card_t *card);
 
 /*!
- * @brief Stop soundcard tx process.
+ * @brief Stops Soundcard TX process.
  *
- * This function is used to stop the trnasfer of soundcard tx. Note that this function
- * would not close audio controller, it just disable the dma/interrupt request source.
- * So this function can be used as the pause of audio play.
- * @param card Soundcard pointer.
+ * This function stops the transfer of the Soundcard TX. Note that this function
+ * does not close the audio controller. It  disables the DMA/interrupt request source.
+ * Therefore, this function can be used to  pause the audio play.
+ * @param card Soundcard pointer
  */
 static inline void snd_stop_tx(sound_card_t *card)
 {
@@ -292,11 +314,11 @@ static inline void snd_stop_tx(sound_card_t *card)
 }
 
 /*!
- * @brief Stop soundcard rx process.
+ * @brief Stops the Soundcard RX process.
  *
- * This fucntion is the same as snd_stop_tx, it is for stopping rx process. This
- * function is also disable the dma/interrupt source.
- * @param card Soundcard pointer.
+ * This function is the same as the snd_stop_tx, used to stop the RX process. This
+ * function  also disables the DMA/interrupt source.
+ * @param card Soundcard pointer
  */
 static inline void snd_stop_rx(sound_card_t *card)
 {
@@ -305,17 +327,17 @@ static inline void snd_stop_rx(sound_card_t *card)
 }
 
 /*!
- * @brief Wait the semaphore of write/read data from internal buffer.
+ * @brief Waits for the semaphore of the write/read data from the internal buffer.
  *
- * Application should call this function before write/read data from soundcard buffer.
- * Before application write data to soundcard buffer, the buffer must have free space
- * for the new data, or it would cause data loss. This function would wait the
- * semaphore which represents there is free space in soundcard buffer.
- * The same as read data from soundcacrd buffer, there must have effective data in the
- * buffer, this function can wait for that semaphore.
- * @param direction Tx or rx, can be AUDIO_TX or AUDIO_RX. 
+ * Application should call this function before write/read data from the Soundcard buffer.
+ * Before application writes data to the Soundcard buffer, the buffer must have free space
+ * for the new data, or it  causes data loss. This function  waits for the
+ * semaphore which represents   free space in the Soundcard buffer.
+ * Similarly to the  reading data from the Soundcard buffer, effective data must be in the
+ * buffer. This function  waits for that semaphore.
+ * @param card Soundcard pointer
  */
-void snd_wait_event(bool direction);
+void snd_wait_event(sound_card_t *card);
 
 
 #if defined(__cplusplus)

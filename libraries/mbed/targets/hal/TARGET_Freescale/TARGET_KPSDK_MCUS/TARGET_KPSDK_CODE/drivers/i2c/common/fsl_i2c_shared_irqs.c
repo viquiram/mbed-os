@@ -44,9 +44,9 @@ i2c_shared_irq_config_t g_i2cSharedIrqConfig[HW_I2C_INSTANCE_COUNT];
  * This table is indexed by the module instance number and returns I2C IRQ numbers.
  */
 #if defined (K64F12_SERIES)
-IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT] = {I2C0_IRQn, I2C1_IRQn, I2C2_IRQn};
+const IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT] = {I2C0_IRQn, I2C1_IRQn, I2C2_IRQn};
 #else
-IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT] = {I2C0_IRQn, I2C1_IRQn};
+const IRQn_Type i2c_irq_ids[HW_I2C_INSTANCE_COUNT] = {I2C0_IRQn, I2C1_IRQn};
 #endif
 
 /*******************************************************************************

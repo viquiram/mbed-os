@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -136,7 +136,7 @@ typedef union _hw_gpio_pdor
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the GPIO_PDOR_PDO field.
-#define BR_GPIO_PDOR_PDO(x)  (HW_GPIO_PDOR(x).B.PDO)
+#define BR_GPIO_PDOR_PDO(x)  (HW_GPIO_PDOR(x).U)
 #endif
 
 //! @brief Format value for bitfield GPIO_PDOR_PDO.
@@ -144,7 +144,7 @@ typedef union _hw_gpio_pdor
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PDO field to a new value.
-#define BW_GPIO_PDOR_PDO(x, v) (HW_GPIO_PDOR_WR(x, (HW_GPIO_PDOR_RD(x) & ~BM_GPIO_PDOR_PDO) | BF_GPIO_PDOR_PDO(v)))
+#define BW_GPIO_PDOR_PDO(x, v) (HW_GPIO_PDOR_WR(x, v))
 #endif
 //@}
 
@@ -154,7 +154,7 @@ typedef union _hw_gpio_pdor
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_GPIO_PSOR - Port Set Output Register (WO)
+ * @brief HW_GPIO_PSOR - Port Set Output Register (WORZ)
  *
  * Reset value: 0x00000000U
  *
@@ -178,6 +178,7 @@ typedef union _hw_gpio_psor
 
 #ifndef __LANGUAGE_ASM__
 #define HW_GPIO_PSOR(x)          (*(__O hw_gpio_psor_t *) HW_GPIO_PSOR_ADDR(x))
+#define HW_GPIO_PSOR_RD(x)       (HW_GPIO_PSOR(x).U)
 #define HW_GPIO_PSOR_WR(x, v)    (HW_GPIO_PSOR(x).U = (v))
 #endif
 //@}
@@ -201,17 +202,12 @@ typedef union _hw_gpio_psor
 #define BM_GPIO_PSOR_PTSO    (0xFFFFFFFFU) //!< Bit mask for GPIO_PSOR_PTSO.
 #define BS_GPIO_PSOR_PTSO    (32U)         //!< Bit field size in bits for GPIO_PSOR_PTSO.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the GPIO_PSOR_PTSO field.
-#define BR_GPIO_PSOR_PTSO(x) (HW_GPIO_PSOR(x).B.PTSO)
-#endif
-
 //! @brief Format value for bitfield GPIO_PSOR_PTSO.
 #define BF_GPIO_PSOR_PTSO(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_GPIO_PSOR_PTSO), uint32_t) & BM_GPIO_PSOR_PTSO)
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PTSO field to a new value.
-#define BW_GPIO_PSOR_PTSO(x, v) (HW_GPIO_PSOR_WR(x, (HW_GPIO_PSOR_RD(x) & ~BM_GPIO_PSOR_PTSO) | BF_GPIO_PSOR_PTSO(v)))
+#define BW_GPIO_PSOR_PTSO(x, v) (HW_GPIO_PSOR_WR(x, v))
 #endif
 //@}
 
@@ -221,7 +217,7 @@ typedef union _hw_gpio_psor
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_GPIO_PCOR - Port Clear Output Register (WO)
+ * @brief HW_GPIO_PCOR - Port Clear Output Register (WORZ)
  *
  * Reset value: 0x00000000U
  *
@@ -245,6 +241,7 @@ typedef union _hw_gpio_pcor
 
 #ifndef __LANGUAGE_ASM__
 #define HW_GPIO_PCOR(x)          (*(__O hw_gpio_pcor_t *) HW_GPIO_PCOR_ADDR(x))
+#define HW_GPIO_PCOR_RD(x)       (HW_GPIO_PCOR(x).U)
 #define HW_GPIO_PCOR_WR(x, v)    (HW_GPIO_PCOR(x).U = (v))
 #endif
 //@}
@@ -268,17 +265,12 @@ typedef union _hw_gpio_pcor
 #define BM_GPIO_PCOR_PTCO    (0xFFFFFFFFU) //!< Bit mask for GPIO_PCOR_PTCO.
 #define BS_GPIO_PCOR_PTCO    (32U)         //!< Bit field size in bits for GPIO_PCOR_PTCO.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the GPIO_PCOR_PTCO field.
-#define BR_GPIO_PCOR_PTCO(x) (HW_GPIO_PCOR(x).B.PTCO)
-#endif
-
 //! @brief Format value for bitfield GPIO_PCOR_PTCO.
 #define BF_GPIO_PCOR_PTCO(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_GPIO_PCOR_PTCO), uint32_t) & BM_GPIO_PCOR_PTCO)
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PTCO field to a new value.
-#define BW_GPIO_PCOR_PTCO(x, v) (HW_GPIO_PCOR_WR(x, (HW_GPIO_PCOR_RD(x) & ~BM_GPIO_PCOR_PTCO) | BF_GPIO_PCOR_PTCO(v)))
+#define BW_GPIO_PCOR_PTCO(x, v) (HW_GPIO_PCOR_WR(x, v))
 #endif
 //@}
 
@@ -288,7 +280,7 @@ typedef union _hw_gpio_pcor
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_GPIO_PTOR - Port Toggle Output Register (WO)
+ * @brief HW_GPIO_PTOR - Port Toggle Output Register (WORZ)
  *
  * Reset value: 0x00000000U
  */
@@ -310,6 +302,7 @@ typedef union _hw_gpio_ptor
 
 #ifndef __LANGUAGE_ASM__
 #define HW_GPIO_PTOR(x)          (*(__O hw_gpio_ptor_t *) HW_GPIO_PTOR_ADDR(x))
+#define HW_GPIO_PTOR_RD(x)       (HW_GPIO_PTOR(x).U)
 #define HW_GPIO_PTOR_WR(x, v)    (HW_GPIO_PTOR(x).U = (v))
 #endif
 //@}
@@ -334,17 +327,12 @@ typedef union _hw_gpio_ptor
 #define BM_GPIO_PTOR_PTTO    (0xFFFFFFFFU) //!< Bit mask for GPIO_PTOR_PTTO.
 #define BS_GPIO_PTOR_PTTO    (32U)         //!< Bit field size in bits for GPIO_PTOR_PTTO.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the GPIO_PTOR_PTTO field.
-#define BR_GPIO_PTOR_PTTO(x) (HW_GPIO_PTOR(x).B.PTTO)
-#endif
-
 //! @brief Format value for bitfield GPIO_PTOR_PTTO.
 #define BF_GPIO_PTOR_PTTO(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_GPIO_PTOR_PTTO), uint32_t) & BM_GPIO_PTOR_PTTO)
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PTTO field to a new value.
-#define BW_GPIO_PTOR_PTTO(x, v) (HW_GPIO_PTOR_WR(x, (HW_GPIO_PTOR_RD(x) & ~BM_GPIO_PTOR_PTTO) | BF_GPIO_PTOR_PTTO(v)))
+#define BW_GPIO_PTOR_PTTO(x, v) (HW_GPIO_PTOR_WR(x, v))
 #endif
 //@}
 
@@ -407,7 +395,7 @@ typedef union _hw_gpio_pdir
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the GPIO_PDIR_PDI field.
-#define BR_GPIO_PDIR_PDI(x)  (HW_GPIO_PDIR(x).B.PDI)
+#define BR_GPIO_PDIR_PDI(x)  (HW_GPIO_PDIR(x).U)
 #endif
 //@}
 
@@ -469,7 +457,7 @@ typedef union _hw_gpio_pddr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the GPIO_PDDR_PDD field.
-#define BR_GPIO_PDDR_PDD(x)  (HW_GPIO_PDDR(x).B.PDD)
+#define BR_GPIO_PDDR_PDD(x)  (HW_GPIO_PDDR(x).U)
 #endif
 
 //! @brief Format value for bitfield GPIO_PDDR_PDD.
@@ -477,7 +465,7 @@ typedef union _hw_gpio_pddr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PDD field to a new value.
-#define BW_GPIO_PDDR_PDD(x, v) (HW_GPIO_PDDR_WR(x, (HW_GPIO_PDDR_RD(x) & ~BM_GPIO_PDDR_PDD) | BF_GPIO_PDDR_PDD(v)))
+#define BW_GPIO_PDDR_PDD(x, v) (HW_GPIO_PDDR_WR(x, v))
 #endif
 //@}
 

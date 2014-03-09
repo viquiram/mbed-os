@@ -47,14 +47,14 @@ adc_status_t adc_hal_start_calibration(uint32_t instance)
 {
     assert(instance < HW_ADC_INSTANCE_COUNT);
     
-    /* Excute the calibration */
+    /* Execute the calibration */
     HW_ADC_SC3_SET(instance, BM_ADC_SC3_CALF); /* Clear the calibration's flag */
     BW_ADC_SC3_CAL(instance, 1U);  /* Enable the calibration */
     while (!adc_hal_is_conversion_completed(instance, 0U)) 
     {} /* Wait conversion is competed */
     if (adc_hal_is_calibration_fail(instance))
     {
-        return kStatus_ADC_Fail; /* Check for calibration fail error and return */
+        return kStatus_ADC_Failed; /* Check for calibration fail error and return */
     }
     return kStatus_ADC_Success;
 }

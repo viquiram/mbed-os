@@ -72,15 +72,15 @@ typedef struct RtcTimeStruct
 /*!
  * @brief RTC timer configuration structure
  */
-typedef struct RtcInitConfig
+typedef struct RtcUserConfig
 {
-  rtc_hal_init_config_t * general_config; /*!< pointer to struct most of the configurations will*/
-                                          /*!  be found. Set to NULL to skip related configuration.*/
-                                          /*!  See 'rtc_hal_init_config' definition for details.*/
-  rtc_datetime_t * start_at_datetime;     /*!< initial datetime. Set to NULL to skip.*/
-  bool start_counter;                     /*!< set to true to start the real time counter. Will*/
-                                          /*!  be ignored if pointer to start_datetime is NULL.*/
-} rtc_init_config_t;
+  rtc_hal_init_config_t * general_config; /*!< Pointer to a structure most of the configurations*/
+                                          /*!  are found. Set to NULL to skip related configuration.*/
+                                          /*!  See the 'rtc_hal_init_config' definition for details.*/
+  rtc_datetime_t * start_at_datetime;     /*!< Initial datetime. Set to NULL to skip.*/
+  bool start_counter;                     /*!< Set to true to start the real time counter. Will*/
+                                          /*!  Ignored if pointer to start_datetime is NULL.*/
+} rtc_user_config_t;
 
 /*! @brief RTC ISR callback function typedef */
 typedef void (*rtc_isr_callback_t)(void);
@@ -99,12 +99,12 @@ extern "C" {
  */
 
 /*!
- * @brief      initializes the Real Time Clock module.
- * @param      config [in] initialization configuration details.
- * @return     true: success; false: datetime format is invalid or the counter
- *             was inidicated to start but it was already started.
+ * @brief      Initializes the Real Time Clock module.
+ * @param      Config [in] initialization configuration details.
+ * @return     True: success; false: datetime format is invalid or the counter
+ *             indicated to start but it was already started.
  */
-bool rtc_init(const rtc_init_config_t * config);
+bool rtc_init(const rtc_user_config_t * config);
 
 /*! @brief      disable RTC module clock gate control. */
 void rtc_shutdown(void);
@@ -135,9 +135,9 @@ void rtc_shutdown(void);
 void rtc_configure_int(hw_rtc_ier_t * bitfields);
 
 /*!
- * @brief      returns the RTC interrupt's status flags.
+ * @brief      Returns the RTC interrupt status flags.
  * @param      int_status_flags [out] pointer to where to store bitfield with
- *             actual RTC interrupt flags.\n
+ *             an actual RTC interrupt flags.\n
  *             ONLY valid bitfields: \n
  *                TIF: Time Invalid Flag \n
  *                TOF: Time Overflow Flag \n
@@ -155,24 +155,24 @@ void rtc_get_int_status(hw_rtc_sr_t * int_status_flags);
  */
  
 /*! 
- * @brief      sets the RTC date and time according to the given time struct,
- *             if indicated in the corresponding parameter afterwards the time
- *             counter will be started.        
- * @param      datetime [in] pointer to structure where the date and time
- *             details to set are stored.
+ * @brief      Sets the RTC date and time according to the given time structure,
+ *             if indicated in the corresponding parameter. After, the time
+ *             counter is started.        
+ * @param      datetime [in] pointer to a structure where the date and time
+ *             details are stored.
  * @param	   start_after_set true: the RTC oscillator will be enabled and
  *             the counter will start.
- *             false: otherwise.
- * @return     true: success; false: error, datetime format incorrect, datetime
- *             format is invalid or unable to set counter value because it is
+ *             False: otherwise.
+ * @return     True: success; false: error, datetime format incorrect, datetime
+ *             format is invalid or unable to set the counter value because it is
  *             already enabled.
  */
 bool rtc_set_datetime(const rtc_datetime_t * datetime, bool start_after_set);
 
 /*!
- * @brief      gets the actual RTC time and stores it in the given time struct.
+ * @brief      Gets the actual RTC time and stores it in the given time structure.
  * @param      datetime [out] pointer to structure where the date and time details will be
- *             stored at.
+ *             stored.
  */
 void rtc_get_datetime(rtc_datetime_t * datetime);
 
@@ -184,18 +184,18 @@ void rtc_get_datetime(rtc_datetime_t * datetime);
  */
  
 /*!
- * @brief      sets the RTC alarm.
- * @param      date [in] pointer to structure where the alarm's date and time
- *             details will be stored at.
+ * @brief      Sets the RTC alarm.
+ * @param      date [in] pointer to structure where the alarm date and time
+ *             details will be stored.
  * @return     true: success; false: error.
  */
 bool rtc_set_alarm(const rtc_datetime_t * date);
 
 /*!
- * @brief      returns the RTC alarm time.
- * @param      date [out] pointer to structure where the alarm's date and time
- *             details will be stored at.
- * @return     true: success; false: error.
+ * @brief      Returns the RTC alarm time.
+ * @param      date [out] pointer to structure where the alarm date and time
+ *             details will be stored.
+ * @return     True: success; false: error.
  */
 bool rtc_get_alarm(rtc_datetime_t * date);
 
@@ -206,25 +206,25 @@ bool rtc_get_alarm(rtc_datetime_t * date);
  * @{
  */
  
-/*! @brief      enables the RTC oscillator and starts time counter.*/
+/*! @brief      Enables the RTC oscillator and starts time counter.*/
 void rtc_start_time_counter(void);
 
-/*! @brief      halts running time counter.*/
+/*! @brief      Halts running time counter.*/
 void rtc_stop_time_counter(void);
 
 /* @} */
 
 #if FSL_FEATURE_RTC_HAS_MONOTONIC
 /*!
- * @name increment monotonic counter
+ * @name Increments monotonic counter
  * @{
  */
  
 /*!
- * @brief      increments monotonic counter by one.
- * @return     true: increment succesfull; false: error invalid time found
- *             because of a tamper source enabled is detected or any write to
- *             the tamper time seconds counter was done.
+ * @brief      Increments monotonic counter by one.
+ * @return     True: increment successful; False: error invalid time found
+ *             because of a tamper source enabled is detected and any write to
+ *             the tamper time seconds counter is done.
  */
 bool rtc_increment_monotonic(void);
 #endif
@@ -235,7 +235,7 @@ bool rtc_increment_monotonic(void);
  */
  
 /*!
- * @brief      utility to copy time data from datetime structure to a time
+ * @brief      Utility to copy time data from datetime structure to a time
  *             structure.
  * @param      datetime        [in] data origin
  * @param      time            [out] data destination
@@ -243,7 +243,7 @@ bool rtc_increment_monotonic(void);
 void rtc_cp_datetime_time(const rtc_datetime_t * datetime, rtc_time_t * time);
 
 /*!
- * @brief      utility to copy time data from time structure to a datetime
+ * @brief      Utility to copy time data from time structure to a datetime.
  *             structure.
  * @param      time            [in] data origin
  * @param      datetime        [out] data destination
@@ -258,15 +258,15 @@ void rtc_cp_time_datetime(const rtc_time_t * time, rtc_datetime_t * datetime);
  */
 
 /*!
- * @brief Register RTC isr callback function. 
+ * @brief Register RTC ISR callback function. 
  *
- * System default ISR interfaces are already defined in fsl_rtc_irq.c. Users 
+ * System default ISR interfaces are already defined in the fsl_rtc_irq.c. Users 
  * can either edit these ISRs or use this function to register a callback
- * function. The default ISR runs the callback function if there is one
+ * function. The default ISR runs the callback function if one is 
  * installed.
  *
  * @param rtc_irq_number    RTC interrupt number.
- * @param function Pointer to rtc isr callback function.
+ * @param function Pointer to the RTC ISR callback function.
  */
 void rtc_register_isr_callback_function(uint8_t rtc_irq_number, rtc_isr_callback_t function);
 

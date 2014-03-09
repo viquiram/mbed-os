@@ -147,6 +147,7 @@ typedef enum _clock_gate_module_names {
     kClockModuleI2C,                    /*   instance 0, 1*/
     kClockModuleUART,                   /*   instance 0 - 5*/
     kClockModuleESDHC,                  /**/
+    kClockModuleLPUART,                 /**/
 
     /* Human-machine Interfaces*/
     kClockModuleTSI,                    /**/
@@ -154,7 +155,7 @@ typedef enum _clock_gate_module_names {
     kClockModuleMax
 } clock_gate_module_names_t;
 
-/*! @brief Clock source and sel names */
+/*! @brief Clock source and SEL names */
 typedef enum _clock_source_names {
     kClockNfcSrc,                   /* NFCSRC*/
     kClockEsdhcSrc,                 /* ESDHCSRC K70*/
@@ -163,7 +164,7 @@ typedef enum _clock_source_names {
     kClockTimeSrc,                  /* TIMESRC*/
     kClockRmiiSrc,                  /* RMIISRC*/
     kClockUsbfSrc,                  /* USBFSRC  K70*/
-    kClockUsbSrc,                   /* USBSRC   K64, KL25 and K22*/
+    kClockUsbSrc,                   /* USBSRC   K64, KL25, KV31, and K22*/
     kClockUsbhSrc,                  /* USBHSRC*/
     kClockUart0Src,                 /* UART0SRC*/
     kClockTpmSrc,                   /* TPMSRC*/
@@ -179,7 +180,7 @@ typedef enum _clock_source_names {
 } clock_source_names_t;
 
 /*!
- * @brief error code definition for clock manager APIs
+ * @brief Error code definition for the clock manager APIs
  */
 typedef enum _clock_manager_error_code {
     kClockManagerSuccess,                           /*!< success */
@@ -203,20 +204,20 @@ extern "C" {
 /*@{*/
 
 /*!
- * @brief Enable or disable the clock for specified clock module 
+ * @brief Enables or disables the clock for a specific clock module.
  *
- * This function will enable/disable the clock for specified clock module and
- * instance. Refer to clock_gate_module_names_t for supported clock module name
- * by this function and refer to reference manual for supported clock moulde
- * name for a specified chip family. Most module driver will call this function
- * to gate(disable)/ungate(enable) the clock for that module, but application 
- * can also call this function as needed. Disable the clock will make the module
- * stop working. Refer to the reference maunal for proper procedure of enalbing
- * and disabling the clock for the device module.
+ * This function enables/disables the clock for a specified clock module and
+ * instance. See the clock_gate_module_names_t for supported clock module names
+ * for a specific function and see the Reference Manual for supported clock module
+ * name for a specific chip family. Most module drivers call this function
+ * to gate(disable)/ungate(enable) the clock for a module. However, the application 
+ * can also call this function as needed. Disabling the clock causes the module
+ * to stop working. See the Reference Manual to properly enable
+ * and disable the clock for a device module.
  * 
  * @param moduleName Gate control module name defined in clock_gate_module_names_t
  * @param instance   Instance of the module
- * @param enable     Enalbe or disable the clock for the module
+ * @param enable     Enable or disable the clock for the module
  *                   - true: Enable
  *                   - false: Disable
  * @return status    Error code defined in clock_manager_error_code_t
@@ -225,10 +226,10 @@ clock_manager_error_code_t clock_manager_set_gate(clock_gate_module_names_t modu
                                                   uint8_t instance, bool enable);
 
 /*!
- * @brief Get the current clock gate status for specified clock module
+ * @brief Gets the current clock gate status for a specific clock module.
  *
- * This function will return the current clock gate status for specified clock
- * module. Refer to clock_gate_module_names_t for supported clock module name.
+ * This function returns the current clock gate status for a specific clock
+ * module. See clock_gate_module_names_t for supported clock module name.
  *
  * @param moduleName Gate control module name defined in clock_gate_module_names_t
  * @param instance   Instance of the module
@@ -246,34 +247,34 @@ clock_manager_error_code_t clock_manager_get_gate(clock_gate_module_names_t modu
 /*@{*/
 
 /*!
- * @brief Get the clock frequency for specified clock name
+ * @brief Gets the clock frequency for a specific clock name.
  *
- * This function will check the current clock configurations and then calculate
- * the clock frequency for specified clock name defined in clock_names_t.
- * The MCG must be properly configured before using this function. Also check
- * the reference manual for supported clock names on different chip falmily.
- * The returned value will be in herz. And if it cannot find the clock name
- * or the name is not supported on specific chip family, it will return an
+ * This function checks the current clock configurations and then calculates
+ * the clock frequency for a specific clock name defined in clock_names_t.
+ * The MCG must be properly configured before using this function. See
+ * the Reference Manual for supported clock names for different chip families.
+ * The returned value is in Hertz. If it cannot find the clock name
+ * or the name is not supported for a specific chip family, it returns an
  * error.
  *
  * @param clockName Clock names defined in clock_names_t
- * @param frequency Returned clock frequency value in herz
+ * @param frequency Returned clock frequency value in Hertz
  * @return status   Error code defined in clock_manager_error_code_t
  */
 clock_manager_error_code_t clock_manager_get_frequency(clock_names_t clockName, 
                                                         uint32_t *frequency);
 
 /*!
- * @brief Get the clock frequency for specified clock source 
+ * @brief Gets the clock frequency for a specified clock source.
  *
- * This function will get the specified clock source setting and convert it 
- * into a clock name, then calling the internal function to find out the value
- * for that clock name. Also the returned value is in herz.
- * If it cannot find the clock source or the source is not supported on the
- * specific chip family, it will return an error.
+ * This function gets the specified clock source setting and converts it 
+ * into a clock name. It calls the internal function to get the value
+ * for that clock name. The returned value is in Hertz.
+ * If it cannot find the clock source or the source is not supported for the
+ * specific chip family, it returns an error.
  *
  * @param clockSource Clock source names defined in clock_source_names_t
- * @param frequency   Returned clock frequency value in herz
+ * @param frequency   Returned clock frequency value in Hertz
  * @return status     Error code defined in clock_manager_error_code_t
  */
 clock_manager_error_code_t clock_manager_get_frequency_by_source(

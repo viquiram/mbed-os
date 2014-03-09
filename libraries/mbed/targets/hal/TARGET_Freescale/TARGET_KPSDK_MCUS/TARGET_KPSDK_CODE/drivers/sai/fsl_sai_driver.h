@@ -43,10 +43,10 @@
 
 #define USEDMA 1/*!< Use DMA mode or interrupt mode. */
 
-/*! @brief Sai callback function */
+/*! @brief SAI callback function */
 typedef void (*sai_callback_t)(void *parameter);
 
-/*! @brief Status structure for sai */
+/*! @brief Status structure for SAI */
 typedef enum _sai_status
 {
     kStatus_SAI_Success = 0U,
@@ -54,34 +54,34 @@ typedef enum _sai_status
     kStatus_SAI_DeviceBusy = 2U
 } sai_status_t;
 
-/*! @brief The description structure for the sai tx/rx module. */
-typedef struct SaiConfig
+/*! @brief The description structure for the SAI TX/RX module. */
+typedef struct SaiUserConfig
 {
-    sai_mclk_source_t	mclk_source;/*!< Master clock source. */
-    bool				mclk_divide_enable;/*!< Enable the divide of master clock to generate bit clock. */
-    sai_sync_mode_t	sync_mode;/*!< sychronous or asychronous. */
-    sai_bus_t			bus_type;/*!< I2S left, I2S right or I2S type. */
-    sai_master_slave_t	slave_master;/*!< Mater or slave. */
-    sai_bclk_source_t	bclk_source;/*!< Bit clock from master clock or other modules. */
-    uint8_t			channel;/*!< Which FIFO used to transfer. */
-}  sai_config_t;
+    sai_mclk_source_t   mclk_source;/*!< Master clock source. */
+    bool                mclk_divide_enable;/*!< Enable the divide of master clock to generate bit clock. */
+    sai_sync_mode_t     sync_mode;/*!< Synchronous or asynchronous. */
+    sai_bus_t           bus_type;/*!< I2S left, I2S right or I2S type. */
+    sai_master_slave_t  slave_master;/*!< Master or slave. */
+    sai_bclk_source_t   bclk_source;/*!< Bit clock from master clock or other modules. */
+    uint8_t             channel;/*!< Which FIFO is used to transfer. */
+}  sai_user_config_t;
 
-/*! @brief Define the PCM data format */
+/*! @brief Defines the PCM data format */
 typedef struct SaiAudioDataFormat
 {
     uint32_t sample_rate;/*!< Sample rate of the PCM file */
     uint32_t mclk;/*!< Master clock frequency */
     uint8_t  bits;/*!< How many bits in a word */
     uint8_t  words;/*!< How many word in a frame */
-    uint8_t watermark; /*!< When to send interrupt/dma request*/
+    uint8_t watermark; /*!< When to send interrupt/DMA request*/
 } sai_data_format_t;
 
-/*! @brief The sai handler structure. The structure is used in the runtime of sai */
+/*! @brief The SAI handler structure. The structure is used in the SAI runtime. */
 typedef struct SaiHandler
 {
-    uint8_t instance; /*!< Sai instance */
+    uint8_t instance; /*!< SAI instance */
     bool direction; /*!< RX or TX */
-    uint8_t fifo_channel; /*!< Which data channel used */     
+    uint8_t fifo_channel; /*!< Which data channel is used */     
 } sai_handler_t;
 
 /*******************************************************************************
@@ -92,60 +92,60 @@ extern "C" {
 #endif
 
 /*!
- * @brief Initialize sai module.
+ * @brief Initializes the SAI module.
  *
- * This initialize function would initialize sai registers according to the configuration
- * structure. This function would initialize the basic settings for sai, including
+ * This  function  initializes the SAI registers according to the configuration
+ * structure. This function  initializes the basic settings for SAI, including
  * some board relevant settings.
- * Notice: This fucntion would not initialize a whole sai instance. This function
- * just initialize Tx or Rx according to the value in handler.
- * @param handler Sai handler structure pointer.
- * @param config The configuration structure of sai.
+ * Notice: This function does not initialize an entire SAI instance. This function
+ * only initializes the TX or RX according to the value in the handler.
+ * @param handler SAI handler structure pointer.
+ * @param config The configuration structure of SAI.
  * @return Return kStatus_SAI_Success while the initialize success and kStatus_SAI_Fail if failed.
  */
-sai_status_t sai_init(sai_handler_t *handler, sai_config_t * config);
+sai_status_t sai_init(sai_handler_t *handler, sai_user_config_t * config);
 
 /*!
- * @brief De-initialize sai module.
+ * @brief De-initializes the SAI module.
  *
- * This function would close the sai device. It would not close the whole sai instance,
- * just close Tx or Rx according to the value in hanlder.
- * @param handler Sai handler structure pointer of sai module.
+ * This function  closes the SAI device. It does not close the entire SAI instance.
+ * It only closes the TX or RX according to the value in the handler.
+ * @param handler SAI handler structure pointer of the SAI module.
  * @return Return kStatus_SAI_Success while the process success and kStatus_SAI_Fail if failed.
  */
 sai_status_t sai_deinit(sai_handler_t *handler);
 
 /*!
- * @brief Configure the PCM data format.
+ * @brief Configures the PCM data format.
  *
- * The function would configure mainly audio sample rate, data bits and channel number.
- * @param handler Sai handler structure pointer of sai module.
+ * The function  mainly configures  an audio sample rate, data bits and a channel number.
+ * @param handler SAI handler structure pointer of the SAI module.
  * @param format PCM data format structure pointer.
  * @return Return kStatus_SAI_Success while the process success and kStatus_SAI_Fail if failed.
  */
 sai_status_t sai_configure_data_format(sai_handler_t *handler, sai_data_format_t *format);
 
 /*!
- * @brief Start to read data from fifo.
+ * @brief Starts  reading data from FIFO.
  *
- * The function would enable interrupt/dma request source and enable transmit channel.
- * @param handler Sai handler structure pointer of sai module.
+ * The function  enables the interrupt/DMA request source and enables the transmit channel.
+ * @param handler SAI handler structure pointer of the SAI module.
  */
 void sai_start_read_data(sai_handler_t *handler);
 
 /*!
- * @brief Start to write data to fifo.
+ * @brief Starts  writing data to FIFO.
  *
- * The function would enable interrupt/dma request source and enable receive channel.
- * @param handler Sai handler structure pointer of sai module.
+ * The function  enables the interrupt/DMA request source and enables the receive channel.
+ * @param handler SAI handler structure pointer of the SAI module.
  */
 void sai_start_write_data(sai_handler_t *handler);
 
 /*!
- * @brief Stop read data form fifo, mainly to disable dma or interrupt request bit.
+ * @brief Stops reading data from FIFO, mainly to disable the DMA or the interrupt request bit.
  *
  * This function provides the method to pause receiving data.  
- * @param handler Sai handler structure pointer of sai module.
+ * @param handler SAI handler structure pointer of the SAI module.
  */
 static inline void sai_stop_read_data(sai_handler_t *handler)
 {
@@ -154,18 +154,18 @@ static inline void sai_stop_read_data(sai_handler_t *handler)
     sai_hal_disable_rx_dma(handler->instance, kSaiDmaReqFIFORequest);
     sai_hal_disable_rx_dma(handler->instance, kSaiDmaReqFIFOWarning);
     sai_hal_disable_rx_interrupt(handler->instance, kSaiIntrequestFIFOError);
-#else	
+#else   
     sai_hal_disable_rx_interrupt(handler->instance,kSaiIntrequestFIFORequest);
     sai_hal_disable_rx_interrupt(handler->instance,kSaiIntrequestFIFOWarning);
-    sai_hal_disable_rx_interrupt(handler->instance,kSaiIntrequestFIFOError);	
-#endif	
+    sai_hal_disable_rx_interrupt(handler->instance,kSaiIntrequestFIFOError);    
+#endif  
 }
 
 /*!
- * @brief Stop write data to fifo, mainly to disable dma or interrupt request bit.
+ * @brief Stop write data to FIFO, mainly to disable the DMA or the interrupt request bit.
  *
  * This function provides the method to pause writing data.  
- * @param handler Sai handler structure pointer of sai module.
+ * @param handler SAI handler structure pointer of the SAI module.
  */
 static inline void sai_stop_write_data(sai_handler_t *handler)
 {
@@ -174,15 +174,15 @@ static inline void sai_stop_write_data(sai_handler_t *handler)
     sai_hal_disable_tx_dma(handler->instance, kSaiDmaReqFIFORequest);
     sai_hal_disable_tx_dma(handler->instance, kSaiDmaReqFIFOWarning);
     sai_hal_disable_tx_interrupt(handler->instance, kSaiIntrequestFIFOError);
-#else	
+#else   
     sai_hal_disable_tx_interrupt(handler->instance,kSaiIntrequestFIFORequest);
-    sai_hal_disable_tx_interrupt(handler->instance,kSaiIntrequestFIFOWarning);	
-#endif	
+    sai_hal_disable_tx_interrupt(handler->instance,kSaiIntrequestFIFOWarning);  
+#endif  
 }
 
 /*!
- * @brief Clear Tx FIFO error flag.
- * @param handler Sai handler structure pointer of sai module.
+ * @brief Clears the TX FIFO error flag.
+ * @param handler SAI handler structure pointer of the SAI module.
  */
 static inline void sai_clear_tx_status(sai_handler_t *handler)
 {
@@ -190,8 +190,8 @@ static inline void sai_clear_tx_status(sai_handler_t *handler)
 }
 
 /*!
- * @brief Clear Rx FIFO error flag.
- * @param handler Sai handler structure pointer of sai module.
+ * @brief Clears the RX FIFO error flag.
+ * @param handler SAI handler structure pointer of the SAI module.
  */
 static inline void sai_clear_rx_status(sai_handler_t *handler)
 {
@@ -199,12 +199,12 @@ static inline void sai_clear_rx_status(sai_handler_t *handler)
 }
 
 /*!
- * @brief Get the fifo address of the data channel.
+ * @brief Gets the FIFO address of the data channel.
  *
- * This function mainly used for dma settings, which dma
- * configuration needs the source/destination address of sai.
- * @param handler Sai handler structure pointer of sai module.
- * @return Return the address of the data channel fifo.
+ * This function is mainly used for the DMA settings, which the DMA
+ * configuration needs for the source/destination address of SAI.
+ * @param handler SAI handler structure pointer of the SAI module.
+ * @return Returns the address of the data channel FIFO.
  */
 static inline uint32_t* sai_get_fifo_address(sai_handler_t *handler)
 {
@@ -219,37 +219,37 @@ static inline uint32_t* sai_get_fifo_address(sai_handler_t *handler)
 }
 
 /*!
- * @brief Send a certain length data.
+ * @brief Sends a certain length data.
  *
- * This function would send the data to tx fifo. This function would 
- * start the transfer, and while finished the transfer, it would call the callback
+ * This function  sends the data to the TX FIFO. This function  
+ * starts the transfer, and while finishing the transfer, it  calls the callback
  * function registered by users.
- * @param handler Sai handler structure pointer of sai module.
- * @param addr Addrerss of the data which need to be transfer.
+ * @param handler SAI handler structure pointer of the SAI module.
+ * @param addr Address of the data which needs to be transferred.
  * @param len The data length which need to be sent.
- * @return Return the length been sent.
+ * @return Returns the length which was sent.
  */
 uint32_t sai_send_data(sai_handler_t *handler, uint8_t *addr, uint32_t len);
 
 /*!
- * @brief Receive a certain length data.
+ * @brief Receives a certain length data.
  *
- * This function would receive data from rx fifo. This function would 
- * start the transfer, and while finished the transfer, it would call the callback
+ * This function  receives the data from the RX FIFO. This function  
+ * starts the transfer, and while finishing the transfer, it  calls the callback
  * function registered by users.
- * @param handler Sai handler structure pointer of sai module.
- * @param addr Addrerss of the data which need to be transfer.
- * @param len The data length which need to be received.
- * @return Return the length received.
+ * @param handler SAI handler structure pointer of the SAI module.
+ * @param addr Address of the data which needs to be transferred.
+ * @param len The data length which needs to be received.
+ * @return Returns the length received.
  */
 uint32_t sai_receive_data(sai_handler_t *handler, uint8_t *addr, uint32_t len);
 
 /*!
- * @brief Register the callback function after a transfer.
+ * @brief Registers the callback function after a transfer.
  *
- * This function would tell sai which function need to be called after a 
+ * This function  tells SAI which function needs to be called after a 
  * period length transfer. 
- * @param handler Sai handler structure pointer of sai module.
+ * @param handler SAI handler structure pointer of the SAI module.
  * @param callback Callback function defined by users.
  * @param callback_param The parameter of the callback function.
  */

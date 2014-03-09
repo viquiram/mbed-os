@@ -63,30 +63,30 @@ typedef struct I2CSharedIrqConfig {
  * Variables
  ******************************************************************************/
 
-/*! @brief Contains global IRQ configuration information for the SPI drivers.*/
+/*! @brief Contains the global IRQ configuration information for the SPI drivers.*/
 extern i2c_shared_irq_config_t g_i2cSharedIrqConfig[HW_I2C_INSTANCE_COUNT];
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
-/*! @brief Set whether the master or slave driver IRQ handler will be invoked.*/
+/*! @brief Sets whether the master or slave driver IRQ handler are invoked.*/
 static inline void i2c_set_shared_irq_is_master(uint32_t instance, bool isMaster)
 {
     g_i2cSharedIrqConfig[instance].isMaster = isMaster;
 }
 
-/*! @brief Set the state information for the shared IRQ handler.*/
+/*! @brief Sets the state information for the shared IRQ handler.*/
 static inline void i2c_set_shared_irq_state(uint32_t instance, void * state)
 {
     g_i2cSharedIrqConfig[instance].state = state;
 }
 
-/* Weak extern for the I2C master driver's interrupt handler.*/
+/* Weak external for the I2C master driver interrupt handler.*/
 #pragma weak i2c_master_irq_handler
 void i2c_master_irq_handler(void * state);
 
-/* Weak extern for the I2C slave driver's interrupt handler.*/
+/* Weak external for the I2C slave driver interrupt handler.*/
 #pragma weak i2c_slave_irq_handler
 void i2c_slave_irq_handler(uint32_t instance);
 

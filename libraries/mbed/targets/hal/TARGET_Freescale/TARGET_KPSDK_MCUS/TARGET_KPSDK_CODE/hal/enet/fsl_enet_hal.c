@@ -44,12 +44,13 @@ void enet_hal_set_mac_address(uint32_t instance, enetMacAddr hwAddr)
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
 
-    uint32_t address;
+    uint32_t address, data;
 	
     address = (uint32_t)(((uint32_t)hwAddr[0] << 24U)|((uint32_t)hwAddr[1] << 16U)|((uint32_t)hwAddr[2] << 8U)| (uint32_t)hwAddr[3]) ;
-    HW_ENET_PALR_SET(instance,address);             /* Set low physical address */
+    HW_ENET_PALR_WR(instance,address);             /* Set low physical address */
     address = (uint32_t)(((uint32_t)hwAddr[4] << 24U)|((uint32_t)hwAddr[5] << 16U)) ;
-    HW_ENET_PAUR_SET(instance,address);             /* Set high physical address */
+    data = HW_ENET_PAUR_RD(instance) & BM_ENET_PAUR_TYPE;
+    HW_ENET_PAUR_WR(instance, (data | address));             /* Set high physical address */
 }
 
 /*FUNCTION****************************************************************
@@ -65,8 +66,8 @@ void enet_hal_set_group_hashtable(uint32_t instance, uint32_t crcValue, enet_spe
     switch (mode)
     {
         case kEnetSpecialAddressInit:           /* Clear group address register on ENET initialize */
-            HW_ENET_GALR_SET(instance,0);
-            HW_ENET_GAUR_SET(instance,0);			
+            HW_ENET_GALR_WR(instance,0);
+            HW_ENET_GAUR_WR(instance,0);			
             break;
         case kEnetSpecialAddressEnable:         /* Enable a multicast group address*/
             if (!((crcValue >> 31) & 1U))
@@ -106,8 +107,8 @@ void enet_hal_set_individual_hashtable(uint32_t instance, uint32_t crcValue, ene
     switch (mode)
     {
         case kEnetSpecialAddressInit:         /* Clear individual address register on ENET initialize */
-            HW_ENET_IALR_SET(instance,0);
-            HW_ENET_IAUR_SET(instance,0);			
+            HW_ENET_IALR_WR(instance,0);
+            HW_ENET_IAUR_WR(instance,0);			
             break;
         case kEnetSpecialAddressEnable:        /* Enable a special address*/
             if (((crcValue >>31) & 1U) == 0)
@@ -143,9 +144,13 @@ void enet_hal_config_tx_fifo(uint32_t instance, enet_config_tx_fifo_t *threshold
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
     assert(thresholdCfg);
+    assert(thresholdCfg->txFifoWrite <= BM_ENET_TFWR_TFWR);
 
-    BW_ENET_TFWR_STRFWD(instance,thresholdCfg->isStoreForwardEnabled);   /* Set store and forward mode*/
-    BW_ENET_TFWR_TFWR(instance,thresholdCfg->txFifoWrite);               /* Set transmit FIFO write	region*/
+    BW_ENET_TFWR_STRFWD(instance, thresholdCfg->isStoreForwardEnabled);   /* Set store and forward mode*/
+    if(!thresholdCfg->isStoreForwardEnabled)
+    {
+        BW_ENET_TFWR_TFWR(instance, thresholdCfg->txFifoWrite);  /* Set transmit FIFO write bytes*/
+    }
     BW_ENET_TSEM_TX_SECTION_EMPTY(instance,thresholdCfg->txEmpty);       /* Set transmit FIFO empty threshold*/
     BW_ENET_TAEM_TX_ALMOST_EMPTY(instance,thresholdCfg->txAlmostEmpty);  /* Set transmit FIFO almost empty threshold*/
     BW_ENET_TAFL_TX_ALMOST_FULL(instance,thresholdCfg->txAlmostFull);    /* Set transmit FIFO almost full threshold*/
@@ -160,27 +165,15 @@ void enet_hal_config_rx_fifo(uint32_t instance,enet_config_rx_fifo_t *thresholdC
 {
     assert(instance < HW_ENET_INSTANCE_COUNT);
     assert(thresholdCfg);
+    if(thresholdCfg->rxFull > 0)
+    {
+       assert(thresholdCfg->rxFull > thresholdCfg->rxAlmostEmpty);
+    }
 
     BW_ENET_RSFL_RX_SECTION_FULL(instance,thresholdCfg->rxFull);        /* Set receive FIFO full threshold*/
     BW_ENET_RSEM_RX_SECTION_EMPTY(instance,thresholdCfg->rxEmpty);      /* Set receive FIFO empty threshold*/
     BW_ENET_RAEM_RX_ALMOST_EMPTY(instance,thresholdCfg->rxAlmostEmpty); /* Set receive FIFO almost empty threshold*/
     BW_ENET_RAFL_RX_ALMOST_FULL(instance,thresholdCfg->rxAlmostFull);   /* Set receive FIFO almost full threshold*/    
-}
-
-/*FUNCTION****************************************************************
- *
- * Function Name: enet_hal_init_bd_address 
- * Description: Initialize the start address of buffer descriptors.  
- *END*********************************************************************/
-void enet_hal_init_bd_address(uint32_t instance, uint32_t rxBdAddr, uint32_t txBdAddr)
-{
-    assert(instance < HW_ENET_INSTANCE_COUNT);
-	
-    HW_ENET_RDSR_SET(instance,rxBdAddr);   /* Initialize receive buffer descriptor start address*/
-    HW_ENET_TDSR_SET(instance,txBdAddr);   /* Initialize transmit buffer descriptor start address*/
-#if SYSTEM_LITTLE_ENDIAN && !FSL_FEATURE_ENET_DMA_BIG_ENDIAN_ONLY
-    BW_ENET_ECR_DBSWP(instance,1);         /* buffer descriptor byte swapping for little-endian system and endianness configurable IP*/
-#endif
 }
 
 /*FUNCTION****************************************************************
@@ -193,16 +186,18 @@ void enet_hal_init_rxbds(void *rxBds, uint8_t *buffer, bool isLastBd)
     assert(rxBds);
     assert(buffer);
 
-    ((enet_bd_struct_t *)rxBds)->buffer = (uint8_t *)NTOHL((uint32_t)buffer); /* Set data buffer address */
-    ((enet_bd_struct_t *)rxBds)->length = 0;    /* Initialize data length*/
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)rxBds;
+
+    bdPtr->buffer = (uint8_t *)NTOHL((uint32_t)buffer); /* Set data buffer address */
+    bdPtr->length = 0;    /* Initialize data length*/
 
     /*The last buffer descriptor should be set with the wrap flag*/
     if (isLastBd)
     {    
-        ((enet_bd_struct_t *)rxBds)->control |= kEnetRxBdWrap; 
+        bdPtr->control |= kEnetRxBdWrap; 
     }
-    ((enet_bd_struct_t *)rxBds)->control |= kEnetRxBdEmpty;   /* Initialize bd with empty bit*/
-    ((enet_bd_struct_t *)rxBds)->controlExtend1 |= kEnetRxBdIntrrupt;/* Enable receive interrupt*/
+    bdPtr->control |= kEnetRxBdEmpty;   /* Initialize bd with empty bit*/
+    bdPtr->controlExtend1 |= kEnetRxBdIntrrupt;/* Enable receive interrupt*/
 }
 
 /*FUNCTION****************************************************************
@@ -213,13 +208,15 @@ void enet_hal_init_rxbds(void *rxBds, uint8_t *buffer, bool isLastBd)
 void enet_hal_init_txbds(void *txBds, bool isLastBd)
 {
     assert(txBds);
+
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)txBds;
 	
-    ((enet_bd_struct_t *)txBds)->length = 0;   /* Initialize  data length*/
+    bdPtr->length = 0;   /* Initialize  data length*/
 
     /*The last buffer descriptor should be set with the wrap flag*/
     if (isLastBd)
     {
-        ((enet_bd_struct_t *)txBds)->control |= kEnetTxBdWrap;
+        bdPtr->control |= kEnetTxBdWrap;
     }
 }
 
@@ -232,13 +229,15 @@ void enet_hal_update_rxbds(void *rxBds, uint8_t *data, bool isbufferUpdate)
 {
     assert(rxBds);
 
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)rxBds;
+
     if (isbufferUpdate)
     {
-        ((enet_bd_struct_t *)rxBds)->buffer = (uint8_t *)HTONL((uint32_t)data);
+        bdPtr->buffer = (uint8_t *)HTONL((uint32_t)data);
     }
-    ((enet_bd_struct_t *)rxBds)->control &= kEnetRxBdWrap;  /* Clear status*/
-    ((enet_bd_struct_t *)rxBds)->control |= kEnetRxBdEmpty;   /* Set rx bd empty*/
-    ((enet_bd_struct_t *)rxBds)->controlExtend1 |= kEnetRxBdIntrrupt;/* Enable interrupt*/
+    bdPtr->control &= kEnetRxBdWrap;  /* Clear status*/
+    bdPtr->control |= kEnetRxBdEmpty;   /* Set rx bd empty*/
+    bdPtr->controlExtend1 |= kEnetRxBdIntrrupt;/* Enable interrupt*/
 }
 
 /*FUNCTION****************************************************************
@@ -251,18 +250,20 @@ void enet_hal_update_txbds(void *txBds,uint8_t *buffer, uint16_t length, bool is
     assert(txBds);
     assert(buffer);
 
-    ((enet_bd_struct_t *)txBds)->length = HTONS(length); /* Set data length*/
-    ((enet_bd_struct_t *)txBds)->buffer = (uint8_t *)HTONL((uint32_t)buffer); /* Set data buffer*/
-    ((enet_bd_struct_t *)txBds)->control |= kEnetTxBdLast | kEnetTxBdTransmitCrc | kEnetTxBdReady;/* set control */
+    volatile enet_bd_struct_t * bdPtr = (enet_bd_struct_t *)txBds;
+    
+    bdPtr->length = HTONS(length); /* Set data length*/
+    bdPtr->buffer = (uint8_t *)HTONL((uint32_t)buffer); /* Set data buffer*/
+    bdPtr->control |= kEnetTxBdLast | kEnetTxBdTransmitCrc | kEnetTxBdReady;/* set control */
     if (isTxtsCfged)
     {
          /* Set receive and timestamp interrupt*/
-        ((enet_bd_struct_t *)txBds)->controlExtend1 |= (kEnetTxBdTxInterrupt | kEnetTxBdTimeStamp);	
+        bdPtr->controlExtend1 |= (kEnetTxBdTxInterrupt | kEnetTxBdTimeStamp);	
     }
     else
     {
         /* Set receive interrupt*/
-        ((enet_bd_struct_t *)txBds)->controlExtend1 |= kEnetTxBdTxInterrupt;	
+        bdPtr->controlExtend1 |= kEnetTxBdTxInterrupt;	
     }   
 }
 
@@ -275,7 +276,8 @@ uint16_t enet_hal_get_rxbd_control(void *curBd)
 {
     assert(curBd);
 
-    return ((enet_bd_struct_t *)curBd)->control;	
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd;
+    return bdPtr->control;	
 }
 
 /*FUNCTION****************************************************************
@@ -286,9 +288,51 @@ uint16_t enet_hal_get_rxbd_control(void *curBd)
 uint16_t enet_hal_get_txbd_control(void *curBd)
 {
     assert(curBd);
-
-    return ((enet_bd_struct_t *)curBd)->control;	
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd;
+    return bdPtr->control;	
 }
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_hal_get_bd_length
+ * Description: Get ENET data length of buffer descriptors.
+ *END*********************************************************************/
+uint16_t enet_hal_get_bd_length(void *curBd)
+{
+    assert(curBd);
+    uint16_t length;
+
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd;
+    length = bdPtr->length; 
+    return NTOHS(length);
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_hal_get_bd_buffer
+ * Description: Get the buffer address of buffer descriptors.
+ *END*********************************************************************/
+uint8_t* enet_hal_get_bd_buffer(void *curBd)
+{
+    assert(curBd);
+
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd;	
+    uint32_t buffer = (uint32_t)(bdPtr->buffer);
+    return  (uint8_t *)NTOHL(buffer);
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_hal_get_bd_timestamp
+ * Description: Get the timestamp of buffer descriptors.
+ *END*********************************************************************/
+uint32_t enet_hal_get_bd_timestamp(void *curBd)
+{
+    assert(curBd);
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd;
+    uint32_t timestamp = bdPtr->timestamp;
+    return NTOHL(timestamp);
+}	
 
 /*FUNCTION****************************************************************
  *
@@ -299,23 +343,25 @@ bool enet_hal_get_rxbd_control_extend(void *curBd,enet_rx_bd_control_extend_t co
 {
     assert(curBd);
 
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd;
+
 #if SYSTEM_LITTLE_ENDIAN && FSL_FEATURE_ENET_DMA_BIG_ENDIAN_ONLY 
     if (((uint16_t)controlRegion > kEnetRxBdCtlJudge1) && ((uint16_t)controlRegion < kEnetRxBdCtlJudge2))                
     {
-        return ((((enet_bd_struct_t *)curBd)->controlExtend0 & controlRegion) != 0); /* Control extended0 region*/
+        return ((bdPtr->controlExtend0 & controlRegion) != 0); /* Control extended0 region*/
     }
     else
     {
-        return ((((enet_bd_struct_t *)curBd)->controlExtend1 & controlRegion) != 0); /* Control extended1 region*/
+        return ((bdPtr->controlExtend1 & controlRegion) != 0); /* Control extended1 region*/
     }	
 #else
     if( (uint16_t)controlRegion < kEnetRxBdCtlJudge1)                 
     {
-        return ((((enet_bd_struct_t *)curBd)->controlExtend0 & controlRegion) != 0); /* Control extended0 region*/
+        return ((bdPtr->controlExtend0 & controlRegion) != 0); /* Control extended0 region*/
     }
     else
     {
-        return ((((enet_bd_struct_t *)curBd)->controlExtend1 & controlRegion) != 0);/* Control extended1 region*/
+        return ((bdPtr->controlExtend1 & controlRegion) != 0);/* Control extended1 region*/
     }
 #endif
 }
@@ -328,8 +374,9 @@ bool enet_hal_get_rxbd_control_extend(void *curBd,enet_rx_bd_control_extend_t co
 uint16_t enet_hal_get_txbd_control_extend(void *curBd)
 {
     assert(curBd);
+    volatile enet_bd_struct_t *bdPtr = (enet_bd_struct_t *)curBd; 
 
-    return ((enet_bd_struct_t *)curBd)->controlExtend0;	
+    return bdPtr->controlExtend0;	
 }
 
 /*FUNCTION****************************************************************
@@ -340,8 +387,8 @@ uint16_t enet_hal_get_txbd_control_extend(void *curBd)
 bool enet_hal_get_txbd_timestamp_flag(void *curBd)
 {
     assert(curBd);
-
-    return ((((enet_bd_struct_t *)curBd)->controlExtend1 & kEnetTxBdTimeStamp) != 0);	
+    volatile enet_bd_struct_t *bdPtr =  (enet_bd_struct_t *)curBd;
+    return ((bdPtr->controlExtend1 & kEnetTxBdTimeStamp) != 0);	
 }
 
 /*FUNCTION****************************************************************
@@ -388,7 +435,7 @@ void enet_hal_set_mii_command(uint32_t instance, uint32_t phyAddr, uint32_t phyR
 
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_hal_config_etherent
+ * Function Name: enet_hal_config_ethernet
  * Description: Enable or disable normal Ethernet mode and enhanced mode.
  *END*********************************************************************/
 void enet_hal_config_ethernet(uint32_t instance, bool isEnhanced, bool isEnabled)
@@ -400,12 +447,17 @@ void enet_hal_config_ethernet(uint32_t instance, bool isEnhanced, bool isEnabled
     {
         BW_ENET_ECR_EN1588(instance,isEnabled);	 /* Enable/Disable enhanced frame feature*/
     }
+#if SYSTEM_LITTLE_ENDIAN && !FSL_FEATURE_ENET_DMA_BIG_ENDIAN_ONLY
+    BW_ENET_ECR_DBSWP(instance,1);         /* buffer descriptor byte swapping for little-endian system and endianness configurable IP*/
+#endif
 }	
 
 /*FUNCTION****************************************************************
  *
  * Function Name: enet_hal_config_interrupt
  * Description: Enable or disable different Ethernet interrupts.
+ * the parameter source is the interrupt source and enet_interrupt_request_t
+ * enum types is recommended to be used as the interrupt sources.
  *END*********************************************************************/
 void enet_hal_config_interrupt(uint32_t instance, uint32_t source, bool isEnabled)
 {
@@ -423,7 +475,7 @@ void enet_hal_config_interrupt(uint32_t instance, uint32_t source, bool isEnable
 
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_hal_config_tx_acceleator
+ * Function Name: enet_hal_config_tx_accelerator
  * Description: Configure Ethernet transmit accelerator features.
  *END*********************************************************************/
 void enet_hal_config_tx_accelerator(uint32_t instance, enet_config_tx_accelerator_t *txCfgPtr)
@@ -439,7 +491,7 @@ void enet_hal_config_tx_accelerator(uint32_t instance, enet_config_tx_accelerato
 
 /*FUNCTION****************************************************************
  *
- * Function Name: enet_hal_config_rx_acceleator
+ * Function Name: enet_hal_config_rx_accelerator
  * Description: Configure Ethernet receive accelerator features.
  *END*********************************************************************/
 void enet_hal_config_rx_accelerator(uint32_t instance, enet_config_rx_accelerator_t *rxCfgPtr)
@@ -448,11 +500,27 @@ void enet_hal_config_rx_accelerator(uint32_t instance, enet_config_rx_accelerato
     assert(rxCfgPtr);
 
     HW_ENET_RACC_WR(instance,0);                                         /* Clear all*/
-    BW_ENET_RACC_IPDIS(instance,rxCfgPtr->isIpcheckEnabled);             /* Set ipchecksum feild*/
-    BW_ENET_RACC_PRODIS(instance,rxCfgPtr->isProtocolCheckEnabled);      /* Set protocol feild*/
-    BW_ENET_RACC_LINEDIS(instance,rxCfgPtr->isMacCheckEnabled);         /* Set maccheck feild*/
-    BW_ENET_RACC_SHIFT16(instance,rxCfgPtr->isShift16Enabled);           /* Set rx fifo shift feild*/
-    BW_ENET_RACC_PADREM(instance,rxCfgPtr->isPadRemoveEnabled);          /* Set rx padding remove feild*/
+    BW_ENET_RACC_IPDIS(instance,rxCfgPtr->isIpcheckEnabled);             /* Set ipchecksum field*/
+    BW_ENET_RACC_PRODIS(instance,rxCfgPtr->isProtocolCheckEnabled);      /* Set protocol field*/
+    BW_ENET_RACC_LINEDIS(instance,rxCfgPtr->isMacCheckEnabled);         /* Set maccheck field*/
+    BW_ENET_RACC_SHIFT16(instance,rxCfgPtr->isShift16Enabled);           /* Set rx fifo shift field*/
+    BW_ENET_RACC_PADREM(instance,rxCfgPtr->isPadRemoveEnabled);          /* Set rx padding remove field*/
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: enet_hal_set_txpause
+ * Return Value: The execution status.
+ * Description: Set the ENET transmit controller with pause duration and 
+ * Set enet transmit PAUSE frame transmission.
+ * This should be called when a PAUSE frame is dynamically wanted.
+ *END*********************************************************************/
+void enet_hal_set_txpause(uint32_t instance, uint32_t pauseDuration)
+{
+    assert(instance < HW_ENET_INSTANCE_COUNT);
+    assert(pauseDuration <= BM_ENET_OPD_PAUSE_DUR);
+    BW_ENET_OPD_PAUSE_DUR(instance, pauseDuration);
+    BW_ENET_TCR_TFC_PAUSE(instance, 1);
 }
 
 /*FUNCTION****************************************************************
@@ -465,14 +533,13 @@ void enet_hal_init_ptp_timer(uint32_t instance,enet_config_ptp_timer_t *ptpCfgPt
     assert(instance < HW_ENET_INSTANCE_COUNT);
     assert(ptpCfgPtr);
 	
-    BW_ENET_ATCR_SLAVE(instance,ptpCfgPtr->isSlaveEnabled);    /* Set ptp timer slave/master mode*/
-    if (!ptpCfgPtr->isSlaveEnabled)
-    {
-        BW_ENET_ATINC_INC(instance,ptpCfgPtr->clockIncease);   /* Set increase value for ptp timer*/
-        HW_ENET_ATPER_SET(instance,ptpCfgPtr->period);         /* Set wrap time for ptp timer*/
-        /* set periodical event and the event signal output assertion*/
-        HW_ENET_ATCR_SET(instance,((1U << BP_ENET_ATCR_PEREN)|(1U << BP_ENET_ATCR_PINPER)));    
-    }
+    BW_ENET_ATINC_INC(instance, ptpCfgPtr->clockIncease);   /* Set increase value for ptp timer*/
+    HW_ENET_ATPER_WR(instance, ptpCfgPtr->period);         /* Set wrap time for ptp timer*/
+    /* set periodical event and the event signal output assertion*/
+	BW_ENET_ATCR_PEREN(instance, 1);
+	BW_ENET_ATCR_PINPER(instance, 1);
+    /* Set ptp timer slave/master mode*/
+    BW_ENET_ATCR_SLAVE(instance, ptpCfgPtr->isSlaveEnabled); 
 }
 
 /*******************************************************************************

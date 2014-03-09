@@ -37,7 +37,7 @@
  ******************************************************************************/
 
 /*See fsl_ftm_driver.h for documentation of this function.*/
-void ftm_init(uint8_t instance, ftm_driver_info_t * info)
+void ftm_init(uint8_t instance, ftm_user_config_t * info)
 {
     uint32_t channel_pair_index, channel = 0;
 
@@ -175,7 +175,7 @@ void ftm_init(uint8_t instance, ftm_driver_info_t * info)
 }
 
 /*See fsl_ftm_driver.h for documentation of this function.*/
-void ftm_shutdown(ftm_driver_info_t *state)
+void ftm_shutdown(ftm_user_config_t *state)
 {
     ftm_hal_reset(state->instance);
     /* disable clock for FTM.*/
@@ -183,7 +183,7 @@ void ftm_shutdown(ftm_driver_info_t *state)
 }
 
 /*See fsl_ftm_driver.h for documentation of this function.*/
-void ftm_pwm_start( ftm_driver_info_t *info, uint8_t channel)
+void ftm_pwm_start( ftm_user_config_t *info, uint8_t channel)
 {
     assert((info->channleInfo[channel].mode == kFtmEdgeAlignedPWM) ||
            (info->channleInfo[channel].mode == kFtmCenterAlignedPWM) ||
@@ -208,7 +208,7 @@ void ftm_pwm_start( ftm_driver_info_t *info, uint8_t channel)
 }
 
 /*See fsl_ftm_driver.h for documentation of this function.*/
-void ftm_pwm_stop( ftm_driver_info_t *info,uint8_t channel)
+void ftm_pwm_stop( ftm_user_config_t *info,uint8_t channel)
 {
     assert((info->channleInfo[channel].mode == kFtmEdgeAlignedPWM) ||
            (info->channleInfo[channel].mode == kFtmCenterAlignedPWM) ||
@@ -227,7 +227,7 @@ void ftm_pwm_stop( ftm_driver_info_t *info,uint8_t channel)
 }
 
 /*See fsl_ftm_driver.h for documentation of this function.*/
-void ftm_pwm_configure(ftm_driver_info_t *info,uint8_t channel, ftm_pwm_param_t *param)
+void ftm_pwm_configure(ftm_user_config_t *info,uint8_t channel, ftm_pwm_param_t *param)
 {
 
   uint16_t uMod, uCnv;
@@ -272,6 +272,7 @@ void ftm_pwm_configure(ftm_driver_info_t *info,uint8_t channel, ftm_pwm_param_t 
      ftm_hal_set_counter_init_val(info->instance, info->counterInitVal);
      ftm_hal_set_channel_count_value(info->instance, channel, uCnv);
      assert(ftm_hal_get_mod(info->instance) == uMod);
+     info->counterMod = uMod;
      break;
   case kFtmCenterAlignedPWM:
      uMod = uFTMhz/(param->uFrequencyHZ*2) + info->counterInitVal;
@@ -287,6 +288,7 @@ void ftm_pwm_configure(ftm_driver_info_t *info,uint8_t channel, ftm_pwm_param_t 
      ftm_hal_set_mod(info->instance, uMod);
      ftm_hal_set_counter_init_val(info->instance, info->counterInitVal);
      ftm_hal_set_channel_count_value(info->instance, channel, uCnv);
+     info->counterMod = uMod;
      break;
   case kFtmCombinedPWM:
     /*for instance 1 and instance 2, only one channel pair*/
@@ -309,6 +311,7 @@ void ftm_pwm_configure(ftm_driver_info_t *info,uint8_t channel, ftm_pwm_param_t 
      ftm_hal_set_counter_init_val(info->instance, info->counterInitVal);
      ftm_hal_set_channel_count_value(info->instance, (2*channel), param->uCnV);
      ftm_hal_set_channel_count_value(info->instance, (2*channel+1), uCnv+param->uCnV);
+     info->counterMod = uMod;
      break;
   default:
     assert(0);

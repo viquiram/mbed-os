@@ -57,14 +57,14 @@ extern "C" {
 /*@{*/
 
 /*!
- * @brief Install an interrupt handler routine for a given IRQ number. 
+ * @brief Installs an interrupt handler routine for a given IRQ number. 
  *
- * This function will let application to register/replace the interrupt 
- * handler for specified IRQ number. IRQ number is different with Vector
- * number. IRQ 0 will start from Vector 16 address. Refer to reference
- * manual for details. Also refer to startup_MKxxxx.s file for each chip
- * family to find out the default interrut handler for each device. This
- * function will convert the IRQ number to vector number by adding 16 to
+ * This function lets the application  register/replace the interrupt 
+ * handler for a specified IRQ number. The IRQ number is different than the vector
+ * number. IRQ 0  starts from the vector 16 address. See a chip-specific reference
+ * manual for details and the  startup_MKxxxx.s file for each chip
+ * family to find out the default interrupt handler for each device. This
+ * function converts the IRQ number to the vector number by adding 16 to
  * it. 
  *
  * @param irqNumber IRQ number
@@ -73,12 +73,12 @@ extern "C" {
 void interrupt_register_handler(IRQn_Type irqNumber, void (*handler)(void));
 
 /*!
- * @brief Enable an interrupt for giving IRQ number. 
+ * @brief Enables an interrupt for a given IRQ number. 
  *
- * This function will enable the individual interrupt for specified IRQ
- * number. It will call the system NVIC API to access the interrupt control
- * register. The input IRQ number will not include the core interrupt, just
- * the peripheral interrupt. That will be from 0 to maximum supported IRQ.
+ * This function  enables the individual interrupt for a specified IRQ
+ * number. It calls the system NVIC API to access the interrupt control
+ * register. The input IRQ number does not include the core interrupt, only
+ * the peripheral interrupt, from 0 to a maximum supported IRQ.
  *
  * @param irqNumber IRQ number
  */
@@ -93,10 +93,10 @@ static inline void interrupt_enable(IRQn_Type irqNumber)
 }
 
 /*!
- * @brief Disnable an interrupt for giving IRQ number. 
+ * @brief Disables an interrupt for a given IRQ number. 
  *
- * This function will enable the individual interrupt for specified IRQ
- * number. It will call the system NVIC API to access the interrupt control
+ * This function  enables the individual interrupt for a specified IRQ
+ * number. It  calls the system NVIC API to access the interrupt control
  * register.
  *
  * @param irqNumber IRQ number
@@ -112,17 +112,17 @@ static inline void interrupt_disable(IRQn_Type irqNumber)
 }
 
 /*!
- * @brief Enable system interrupt.
+ * @brief Enables system interrupt.
  *
- * This function will enable the global interrupt by calling the core API
+ * This function  enables the global interrupt by calling the core API.
  *
  */
 void interrupt_enable_global(void);
 
 /*!
- * @brief Disnable system interrupt. 
+ * @brief Disable system interrupt. 
  *
- * This function will disable the global interrupt by calling the core API
+ * This function  disables the global interrupt by calling the core API.
  *
  */
 void interrupt_disable_global(void);

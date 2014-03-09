@@ -59,14 +59,28 @@ void rtc_hal_init(rtc_hal_init_config_t * configs)
         return;
     }
 
-    /* Use the following macro masks to set/clear the flags which enable/disable:\n
-    *    Oscillator 2pF load configure (SC2P):   BM_RTC_CR_SC2P \n
-    *    Oscillator 4pF load configure (SC4P):   BM_RTC_CR_SC4P \n
-    *    Oscillator 8pF load configure (SC8P):   BM_RTC_CR_SC8P \n
-    *    Oscillator 16pF load configure (SC16P): BM_RTC_CR_SC16P \n
-    */
-    HW_RTC_CR_WR(((configs->enableOscillatorLoadConfg) >> 1) & (BM_RTC_CR_SC2P | 
-    BM_RTC_CR_SC4P | BM_RTC_CR_SC8P | BM_RTC_CR_SC16P));
+    /* Clear to the default value */
+    HW_RTC_CR_WR(0x0);
+
+    /* Use the following macro masks to set the flags which enable load config
+     */
+    switch(configs->enableOscillatorLoadConfg)
+    {
+    case 2:
+       HW_RTC_CR_WR(BM_RTC_CR_SC2P);
+       break;
+    case 4:
+       HW_RTC_CR_WR(BM_RTC_CR_SC4P);
+       break;
+    case 8:
+       HW_RTC_CR_WR(BM_RTC_CR_SC8P);
+       break;
+    case 16:
+       HW_RTC_CR_WR(BM_RTC_CR_SC16P);
+       break;
+    default:
+       break;
+    }
 
     BW_RTC_CR_CLKO((uint32_t)configs->disableClockOutToPeripheral);
 

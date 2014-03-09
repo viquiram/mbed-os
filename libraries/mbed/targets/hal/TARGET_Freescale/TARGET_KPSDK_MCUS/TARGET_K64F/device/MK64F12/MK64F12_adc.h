@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -373,7 +373,7 @@ typedef union _hw_adc_cfg1
  *
  * Values:
  * - 00 - Bus clock
- * - 01 - (Bus clock)/2
+ * - 01 - Alternate clock 2 (ALTCLK2)
  * - 10 - Alternate clock (ALTCLK)
  * - 11 - Asynchronous clock (ADACK)
  */

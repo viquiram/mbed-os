@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -86,9 +86,9 @@ typedef union _hw_sim_sopt1
         uint32_t OSC32KSEL : 2;        //!< [19:18] 32K oscillator clock select
         uint32_t RESERVED2 : 9;        //!< [28:20]
         uint32_t USBVSTBY : 1;         //!< [29] USB voltage regulator in standby
-                                       //!< mode during VLPR and VLPW modes
+                                       //! mode during VLPR and VLPW modes
         uint32_t USBSSTBY : 1;         //!< [30] USB voltage regulator in standby
-                                       //!< mode during Stop, VLPS, LLS and VLLS modes.
+                                       //! mode during Stop, VLPS, LLS and VLLS modes.
         uint32_t USBREGEN : 1;         //!< [31] USB voltage regulator enable
     } B;
 } hw_sim_sopt1_t;
@@ -102,11 +102,11 @@ typedef union _hw_sim_sopt1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SOPT1             (*(__IO hw_sim_sopt1_t *) HW_SIM_SOPT1_ADDR)
-#define HW_SIM_SOPT1_RD          (HW_SIM_SOPT1.U)
+#define HW_SIM_SOPT1_RD()        (HW_SIM_SOPT1.U)
 #define HW_SIM_SOPT1_WR(v)       (HW_SIM_SOPT1.U = (v))
-#define HW_SIM_SOPT1_SET(v)      (HW_SIM_SOPT1_WR(HW_SIM_SOPT1_RD |  (v)))
-#define HW_SIM_SOPT1_CLR(v)      (HW_SIM_SOPT1_WR(HW_SIM_SOPT1_RD & ~(v)))
-#define HW_SIM_SOPT1_TOG(v)      (HW_SIM_SOPT1_WR(HW_SIM_SOPT1_RD ^  (v)))
+#define HW_SIM_SOPT1_SET(v)      (HW_SIM_SOPT1_WR(HW_SIM_SOPT1_RD() |  (v)))
+#define HW_SIM_SOPT1_CLR(v)      (HW_SIM_SOPT1_WR(HW_SIM_SOPT1_RD() & ~(v)))
+#define HW_SIM_SOPT1_TOG(v)      (HW_SIM_SOPT1_WR(HW_SIM_SOPT1_RD() ^  (v)))
 #endif
 //@}
 
@@ -168,7 +168,7 @@ typedef union _hw_sim_sopt1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OSC32KSEL field to a new value.
-#define BW_SIM_SOPT1_OSC32KSEL(v) (HW_SIM_SOPT1_WR((HW_SIM_SOPT1_RD & ~BM_SIM_SOPT1_OSC32KSEL) | BF_SIM_SOPT1_OSC32KSEL(v)))
+#define BW_SIM_SOPT1_OSC32KSEL(v) (HW_SIM_SOPT1_WR((HW_SIM_SOPT1_RD() & ~BM_SIM_SOPT1_OSC32KSEL) | BF_SIM_SOPT1_OSC32KSEL(v)))
 #endif
 //@}
 
@@ -279,9 +279,9 @@ typedef union _hw_sim_sopt1cfg
         uint32_t RESERVED0 : 24;       //!< [23:0]
         uint32_t URWE : 1;             //!< [24] USB voltage regulator enable write enable
         uint32_t UVSWE : 1;            //!< [25] USB voltage regulator VLP standby write
-                                       //!< enable
+                                       //! enable
         uint32_t USSWE : 1;            //!< [26] USB voltage regulator stop standby
-                                       //!< write enable
+                                       //! write enable
         uint32_t RESERVED1 : 5;        //!< [31:27]
     } B;
 } hw_sim_sopt1cfg_t;
@@ -295,11 +295,11 @@ typedef union _hw_sim_sopt1cfg
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SOPT1CFG          (*(__IO hw_sim_sopt1cfg_t *) HW_SIM_SOPT1CFG_ADDR)
-#define HW_SIM_SOPT1CFG_RD       (HW_SIM_SOPT1CFG.U)
+#define HW_SIM_SOPT1CFG_RD()     (HW_SIM_SOPT1CFG.U)
 #define HW_SIM_SOPT1CFG_WR(v)    (HW_SIM_SOPT1CFG.U = (v))
-#define HW_SIM_SOPT1CFG_SET(v)   (HW_SIM_SOPT1CFG_WR(HW_SIM_SOPT1CFG_RD |  (v)))
-#define HW_SIM_SOPT1CFG_CLR(v)   (HW_SIM_SOPT1CFG_WR(HW_SIM_SOPT1CFG_RD & ~(v)))
-#define HW_SIM_SOPT1CFG_TOG(v)   (HW_SIM_SOPT1CFG_WR(HW_SIM_SOPT1CFG_RD ^  (v)))
+#define HW_SIM_SOPT1CFG_SET(v)   (HW_SIM_SOPT1CFG_WR(HW_SIM_SOPT1CFG_RD() |  (v)))
+#define HW_SIM_SOPT1CFG_CLR(v)   (HW_SIM_SOPT1CFG_WR(HW_SIM_SOPT1CFG_RD() & ~(v)))
+#define HW_SIM_SOPT1CFG_TOG(v)   (HW_SIM_SOPT1CFG_WR(HW_SIM_SOPT1CFG_RD() ^  (v)))
 #endif
 //@}
 
@@ -421,15 +421,14 @@ typedef union _hw_sim_sopt2
         uint32_t PTD7PAD : 1;          //!< [11] PTD7 pad drive strength
         uint32_t TRACECLKSEL : 1;      //!< [12] Debug trace clock select
         uint32_t RESERVED2 : 3;        //!< [15:13]
-        uint32_t PLLFLLSEL : 1;        //!< [16] PLL/FLL clock select
-        uint32_t RESERVED3 : 1;        //!< [17]
+        uint32_t PLLFLLSEL : 2;        //!< [17:16] PLL/FLL clock select
         uint32_t USBSRC : 1;           //!< [18] USB clock source select
         uint32_t RMIISRC : 1;          //!< [19] RMII clock source select
         uint32_t TIMESRC : 2;          //!< [21:20] IEEE 1588 timestamp clock source
-                                       //!< select
-        uint32_t RESERVED4 : 6;        //!< [27:22]
+                                       //! select
+        uint32_t RESERVED3 : 6;        //!< [27:22]
         uint32_t SDHCSRC : 2;          //!< [29:28] SDHC clock source select
-        uint32_t RESERVED5 : 2;        //!< [31:30]
+        uint32_t RESERVED4 : 2;        //!< [31:30]
     } B;
 } hw_sim_sopt2_t;
 #endif
@@ -442,11 +441,11 @@ typedef union _hw_sim_sopt2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SOPT2             (*(__IO hw_sim_sopt2_t *) HW_SIM_SOPT2_ADDR)
-#define HW_SIM_SOPT2_RD          (HW_SIM_SOPT2.U)
+#define HW_SIM_SOPT2_RD()        (HW_SIM_SOPT2.U)
 #define HW_SIM_SOPT2_WR(v)       (HW_SIM_SOPT2.U = (v))
-#define HW_SIM_SOPT2_SET(v)      (HW_SIM_SOPT2_WR(HW_SIM_SOPT2_RD |  (v)))
-#define HW_SIM_SOPT2_CLR(v)      (HW_SIM_SOPT2_WR(HW_SIM_SOPT2_RD & ~(v)))
-#define HW_SIM_SOPT2_TOG(v)      (HW_SIM_SOPT2_WR(HW_SIM_SOPT2_RD ^  (v)))
+#define HW_SIM_SOPT2_SET(v)      (HW_SIM_SOPT2_WR(HW_SIM_SOPT2_RD() |  (v)))
+#define HW_SIM_SOPT2_CLR(v)      (HW_SIM_SOPT2_WR(HW_SIM_SOPT2_RD() & ~(v)))
+#define HW_SIM_SOPT2_TOG(v)      (HW_SIM_SOPT2_WR(HW_SIM_SOPT2_RD() ^  (v)))
 #endif
 //@}
 
@@ -496,7 +495,7 @@ typedef union _hw_sim_sopt2
  * - 100 - MCGIRCLK
  * - 101 - RTC 32.768kHz clock
  * - 110 - OSCERCLK0
- * - 111 - Reserved
+ * - 111 - IRC 48 MHz clock
  */
 //@{
 #define BP_SIM_SOPT2_CLKOUTSEL (5U)        //!< Bit position for SIM_SOPT2_CLKOUTSEL.
@@ -513,7 +512,7 @@ typedef union _hw_sim_sopt2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the CLKOUTSEL field to a new value.
-#define BW_SIM_SOPT2_CLKOUTSEL(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD & ~BM_SIM_SOPT2_CLKOUTSEL) | BF_SIM_SOPT2_CLKOUTSEL(v)))
+#define BW_SIM_SOPT2_CLKOUTSEL(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD() & ~BM_SIM_SOPT2_CLKOUTSEL) | BF_SIM_SOPT2_CLKOUTSEL(v)))
 #endif
 //@}
 
@@ -548,7 +547,7 @@ typedef union _hw_sim_sopt2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FBSL field to a new value.
-#define BW_SIM_SOPT2_FBSL(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD & ~BM_SIM_SOPT2_FBSL) | BF_SIM_SOPT2_FBSL(v)))
+#define BW_SIM_SOPT2_FBSL(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD() & ~BM_SIM_SOPT2_FBSL) | BF_SIM_SOPT2_FBSL(v)))
 #endif
 //@}
 
@@ -611,23 +610,24 @@ typedef union _hw_sim_sopt2
 //@}
 
 /*!
- * @name Register SIM_SOPT2, field PLLFLLSEL[16] (RW)
+ * @name Register SIM_SOPT2, field PLLFLLSEL[17:16] (RW)
  *
- * Selects the MCGPLLCLK or MCGFLLCLK clock for various peripheral clocking
- * options.
+ * Selects the high frequency clock for various peripheral clocking options.
  *
  * Values:
- * - 0 - MCGFLLCLK clock
- * - 1 - MCGPLLCLK clock
+ * - 00 - MCGFLLCLK clock
+ * - 01 - MCGPLLCLK clock
+ * - 10 - Reserved
+ * - 11 - IRC48 MHz clock
  */
 //@{
 #define BP_SIM_SOPT2_PLLFLLSEL (16U)       //!< Bit position for SIM_SOPT2_PLLFLLSEL.
-#define BM_SIM_SOPT2_PLLFLLSEL (0x00010000U) //!< Bit mask for SIM_SOPT2_PLLFLLSEL.
-#define BS_SIM_SOPT2_PLLFLLSEL (1U)        //!< Bit field size in bits for SIM_SOPT2_PLLFLLSEL.
+#define BM_SIM_SOPT2_PLLFLLSEL (0x00030000U) //!< Bit mask for SIM_SOPT2_PLLFLLSEL.
+#define BS_SIM_SOPT2_PLLFLLSEL (2U)        //!< Bit field size in bits for SIM_SOPT2_PLLFLLSEL.
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SIM_SOPT2_PLLFLLSEL field.
-#define BR_SIM_SOPT2_PLLFLLSEL (BITBAND_ACCESS32(HW_SIM_SOPT2_ADDR, BP_SIM_SOPT2_PLLFLLSEL))
+#define BR_SIM_SOPT2_PLLFLLSEL (HW_SIM_SOPT2.B.PLLFLLSEL)
 #endif
 
 //! @brief Format value for bitfield SIM_SOPT2_PLLFLLSEL.
@@ -635,7 +635,7 @@ typedef union _hw_sim_sopt2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PLLFLLSEL field to a new value.
-#define BW_SIM_SOPT2_PLLFLLSEL(v) (BITBAND_ACCESS32(HW_SIM_SOPT2_ADDR, BP_SIM_SOPT2_PLLFLLSEL) = (v))
+#define BW_SIM_SOPT2_PLLFLLSEL(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD() & ~BM_SIM_SOPT2_PLLFLLSEL) | BF_SIM_SOPT2_PLLFLLSEL(v)))
 #endif
 //@}
 
@@ -646,8 +646,9 @@ typedef union _hw_sim_sopt2
  *
  * Values:
  * - 0 - External bypass clock (USB_CLKIN).
- * - 1 - MCGPLLCLK/MCGFLLCLK clock divided by the USB fractional divider. See
- *     the SIM_CLKDIV2[USBFRAC, USBDIV] descriptions.
+ * - 1 - MCGFLLCLK , or MCGPLLCLK , or IRC48M clock as selected by
+ *     SOPT2[PLLFLLSEL], and then divided by the USB fractional divider as configured by
+ *     SIM_CLKDIV2[USBFRAC, USBDIV].
  */
 //@{
 #define BP_SIM_SOPT2_USBSRC  (18U)         //!< Bit position for SIM_SOPT2_USBSRC.
@@ -703,7 +704,8 @@ typedef union _hw_sim_sopt2
  *
  * Values:
  * - 00 - Core/system clock.
- * - 01 - MCGPLLCLK/MCGFLLCLK clock
+ * - 01 - MCGFLLCLK , or MCGPLLCLK , or IRC48M clock as selected by
+ *     SOPT2[PLLFLLSEL].
  * - 10 - OSCERCLK clock
  * - 11 - External bypass clock (ENET_1588_CLKIN).
  */
@@ -722,7 +724,7 @@ typedef union _hw_sim_sopt2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TIMESRC field to a new value.
-#define BW_SIM_SOPT2_TIMESRC(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD & ~BM_SIM_SOPT2_TIMESRC) | BF_SIM_SOPT2_TIMESRC(v)))
+#define BW_SIM_SOPT2_TIMESRC(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD() & ~BM_SIM_SOPT2_TIMESRC) | BF_SIM_SOPT2_TIMESRC(v)))
 #endif
 //@}
 
@@ -733,7 +735,8 @@ typedef union _hw_sim_sopt2
  *
  * Values:
  * - 00 - Core/system clock.
- * - 01 - MCGPLLCLK/MCGFLLCLK clock
+ * - 01 - MCGFLLCLK, or MCGPLLCLK , or IRC48M clock as selected by
+ *     SOPT2[PLLFLLSEL].
  * - 10 - OSCERCLK clock
  * - 11 - External bypass clock (SDHC0_CLKIN)
  */
@@ -752,7 +755,7 @@ typedef union _hw_sim_sopt2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SDHCSRC field to a new value.
-#define BW_SIM_SOPT2_SDHCSRC(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD & ~BM_SIM_SOPT2_SDHCSRC) | BF_SIM_SOPT2_SDHCSRC(v)))
+#define BW_SIM_SOPT2_SDHCSRC(v) (HW_SIM_SOPT2_WR((HW_SIM_SOPT2_RD() & ~BM_SIM_SOPT2_SDHCSRC) | BF_SIM_SOPT2_SDHCSRC(v)))
 #endif
 //@}
 
@@ -782,25 +785,25 @@ typedef union _hw_sim_sopt4
         uint32_t FTM3FLT0 : 1;         //!< [12] FTM3 Fault 0 Select
         uint32_t RESERVED3 : 5;        //!< [17:13]
         uint32_t FTM1CH0SRC : 2;       //!< [19:18] FTM1 channel 0 input capture
-                                       //!< source select
+                                       //! source select
         uint32_t FTM2CH0SRC : 2;       //!< [21:20] FTM2 channel 0 input capture
-                                       //!< source select
+                                       //! source select
         uint32_t RESERVED4 : 2;        //!< [23:22]
         uint32_t FTM0CLKSEL : 1;       //!< [24] FlexTimer 0 External Clock Pin
-                                       //!< Select
+                                       //! Select
         uint32_t FTM1CLKSEL : 1;       //!< [25] FTM1 External Clock Pin Select
         uint32_t FTM2CLKSEL : 1;       //!< [26] FlexTimer 2 External Clock Pin
-                                       //!< Select
+                                       //! Select
         uint32_t FTM3CLKSEL : 1;       //!< [27] FlexTimer 3 External Clock Pin
-                                       //!< Select
+                                       //! Select
         uint32_t FTM0TRG0SRC : 1;      //!< [28] FlexTimer 0 Hardware Trigger 0
-                                       //!< Source Select
+                                       //! Source Select
         uint32_t FTM0TRG1SRC : 1;      //!< [29] FlexTimer 0 Hardware Trigger 1
-                                       //!< Source Select
+                                       //! Source Select
         uint32_t FTM3TRG0SRC : 1;      //!< [30] FlexTimer 3 Hardware Trigger 0
-                                       //!< Source Select
+                                       //! Source Select
         uint32_t FTM3TRG1SRC : 1;      //!< [31] FlexTimer 3 Hardware Trigger 1
-                                       //!< Source Select
+                                       //! Source Select
     } B;
 } hw_sim_sopt4_t;
 #endif
@@ -813,11 +816,11 @@ typedef union _hw_sim_sopt4
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SOPT4             (*(__IO hw_sim_sopt4_t *) HW_SIM_SOPT4_ADDR)
-#define HW_SIM_SOPT4_RD          (HW_SIM_SOPT4.U)
+#define HW_SIM_SOPT4_RD()        (HW_SIM_SOPT4.U)
 #define HW_SIM_SOPT4_WR(v)       (HW_SIM_SOPT4.U = (v))
-#define HW_SIM_SOPT4_SET(v)      (HW_SIM_SOPT4_WR(HW_SIM_SOPT4_RD |  (v)))
-#define HW_SIM_SOPT4_CLR(v)      (HW_SIM_SOPT4_WR(HW_SIM_SOPT4_RD & ~(v)))
-#define HW_SIM_SOPT4_TOG(v)      (HW_SIM_SOPT4_WR(HW_SIM_SOPT4_RD ^  (v)))
+#define HW_SIM_SOPT4_SET(v)      (HW_SIM_SOPT4_WR(HW_SIM_SOPT4_RD() |  (v)))
+#define HW_SIM_SOPT4_CLR(v)      (HW_SIM_SOPT4_WR(HW_SIM_SOPT4_RD() & ~(v)))
+#define HW_SIM_SOPT4_TOG(v)      (HW_SIM_SOPT4_WR(HW_SIM_SOPT4_RD() ^  (v)))
 #endif
 //@}
 
@@ -1032,7 +1035,7 @@ typedef union _hw_sim_sopt4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FTM1CH0SRC field to a new value.
-#define BW_SIM_SOPT4_FTM1CH0SRC(v) (HW_SIM_SOPT4_WR((HW_SIM_SOPT4_RD & ~BM_SIM_SOPT4_FTM1CH0SRC) | BF_SIM_SOPT4_FTM1CH0SRC(v)))
+#define BW_SIM_SOPT4_FTM1CH0SRC(v) (HW_SIM_SOPT4_WR((HW_SIM_SOPT4_RD() & ~BM_SIM_SOPT4_FTM1CH0SRC) | BF_SIM_SOPT4_FTM1CH0SRC(v)))
 #endif
 //@}
 
@@ -1063,7 +1066,7 @@ typedef union _hw_sim_sopt4
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FTM2CH0SRC field to a new value.
-#define BW_SIM_SOPT4_FTM2CH0SRC(v) (HW_SIM_SOPT4_WR((HW_SIM_SOPT4_RD & ~BM_SIM_SOPT4_FTM2CH0SRC) | BF_SIM_SOPT4_FTM2CH0SRC(v)))
+#define BW_SIM_SOPT4_FTM2CH0SRC(v) (HW_SIM_SOPT4_WR((HW_SIM_SOPT4_RD() & ~BM_SIM_SOPT4_FTM2CH0SRC) | BF_SIM_SOPT4_FTM2CH0SRC(v)))
 #endif
 //@}
 
@@ -1331,11 +1334,11 @@ typedef union _hw_sim_sopt5
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SOPT5             (*(__IO hw_sim_sopt5_t *) HW_SIM_SOPT5_ADDR)
-#define HW_SIM_SOPT5_RD          (HW_SIM_SOPT5.U)
+#define HW_SIM_SOPT5_RD()        (HW_SIM_SOPT5.U)
 #define HW_SIM_SOPT5_WR(v)       (HW_SIM_SOPT5.U = (v))
-#define HW_SIM_SOPT5_SET(v)      (HW_SIM_SOPT5_WR(HW_SIM_SOPT5_RD |  (v)))
-#define HW_SIM_SOPT5_CLR(v)      (HW_SIM_SOPT5_WR(HW_SIM_SOPT5_RD & ~(v)))
-#define HW_SIM_SOPT5_TOG(v)      (HW_SIM_SOPT5_WR(HW_SIM_SOPT5_RD ^  (v)))
+#define HW_SIM_SOPT5_SET(v)      (HW_SIM_SOPT5_WR(HW_SIM_SOPT5_RD() |  (v)))
+#define HW_SIM_SOPT5_CLR(v)      (HW_SIM_SOPT5_WR(HW_SIM_SOPT5_RD() & ~(v)))
+#define HW_SIM_SOPT5_TOG(v)      (HW_SIM_SOPT5_WR(HW_SIM_SOPT5_RD() ^  (v)))
 #endif
 //@}
 
@@ -1369,7 +1372,7 @@ typedef union _hw_sim_sopt5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the UART0TXSRC field to a new value.
-#define BW_SIM_SOPT5_UART0TXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD & ~BM_SIM_SOPT5_UART0TXSRC) | BF_SIM_SOPT5_UART0TXSRC(v)))
+#define BW_SIM_SOPT5_UART0TXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD() & ~BM_SIM_SOPT5_UART0TXSRC) | BF_SIM_SOPT5_UART0TXSRC(v)))
 #endif
 //@}
 
@@ -1399,7 +1402,7 @@ typedef union _hw_sim_sopt5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the UART0RXSRC field to a new value.
-#define BW_SIM_SOPT5_UART0RXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD & ~BM_SIM_SOPT5_UART0RXSRC) | BF_SIM_SOPT5_UART0RXSRC(v)))
+#define BW_SIM_SOPT5_UART0RXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD() & ~BM_SIM_SOPT5_UART0RXSRC) | BF_SIM_SOPT5_UART0RXSRC(v)))
 #endif
 //@}
 
@@ -1429,7 +1432,7 @@ typedef union _hw_sim_sopt5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the UART1TXSRC field to a new value.
-#define BW_SIM_SOPT5_UART1TXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD & ~BM_SIM_SOPT5_UART1TXSRC) | BF_SIM_SOPT5_UART1TXSRC(v)))
+#define BW_SIM_SOPT5_UART1TXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD() & ~BM_SIM_SOPT5_UART1TXSRC) | BF_SIM_SOPT5_UART1TXSRC(v)))
 #endif
 //@}
 
@@ -1459,7 +1462,7 @@ typedef union _hw_sim_sopt5
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the UART1RXSRC field to a new value.
-#define BW_SIM_SOPT5_UART1RXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD & ~BM_SIM_SOPT5_UART1RXSRC) | BF_SIM_SOPT5_UART1RXSRC(v)))
+#define BW_SIM_SOPT5_UART1RXSRC(v) (HW_SIM_SOPT5_WR((HW_SIM_SOPT5_RD() & ~BM_SIM_SOPT5_UART1RXSRC) | BF_SIM_SOPT5_UART1RXSRC(v)))
 #endif
 //@}
 
@@ -1499,11 +1502,11 @@ typedef union _hw_sim_sopt7
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SOPT7             (*(__IO hw_sim_sopt7_t *) HW_SIM_SOPT7_ADDR)
-#define HW_SIM_SOPT7_RD          (HW_SIM_SOPT7.U)
+#define HW_SIM_SOPT7_RD()        (HW_SIM_SOPT7.U)
 #define HW_SIM_SOPT7_WR(v)       (HW_SIM_SOPT7.U = (v))
-#define HW_SIM_SOPT7_SET(v)      (HW_SIM_SOPT7_WR(HW_SIM_SOPT7_RD |  (v)))
-#define HW_SIM_SOPT7_CLR(v)      (HW_SIM_SOPT7_WR(HW_SIM_SOPT7_RD & ~(v)))
-#define HW_SIM_SOPT7_TOG(v)      (HW_SIM_SOPT7_WR(HW_SIM_SOPT7_RD ^  (v)))
+#define HW_SIM_SOPT7_SET(v)      (HW_SIM_SOPT7_WR(HW_SIM_SOPT7_RD() |  (v)))
+#define HW_SIM_SOPT7_CLR(v)      (HW_SIM_SOPT7_WR(HW_SIM_SOPT7_RD() & ~(v)))
+#define HW_SIM_SOPT7_TOG(v)      (HW_SIM_SOPT7_WR(HW_SIM_SOPT7_RD() ^  (v)))
 #endif
 //@}
 
@@ -1532,7 +1535,7 @@ typedef union _hw_sim_sopt7
  * - 1011 - FTM3 trigger
  * - 1100 - RTC alarm
  * - 1101 - RTC seconds
- * - 1110 - Low-power timer trigger
+ * - 1110 - Low-power timer (LPTMR) trigger
  * - 1111 - Reserved
  */
 //@{
@@ -1550,7 +1553,7 @@ typedef union _hw_sim_sopt7
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ADC0TRGSEL field to a new value.
-#define BW_SIM_SOPT7_ADC0TRGSEL(v) (HW_SIM_SOPT7_WR((HW_SIM_SOPT7_RD & ~BM_SIM_SOPT7_ADC0TRGSEL) | BF_SIM_SOPT7_ADC0TRGSEL(v)))
+#define BW_SIM_SOPT7_ADC0TRGSEL(v) (HW_SIM_SOPT7_WR((HW_SIM_SOPT7_RD() & ~BM_SIM_SOPT7_ADC0TRGSEL) | BF_SIM_SOPT7_ADC0TRGSEL(v)))
 #endif
 //@}
 
@@ -1632,7 +1635,7 @@ typedef union _hw_sim_sopt7
  * - 1011 - FTM3 trigger
  * - 1100 - RTC alarm
  * - 1101 - RTC seconds
- * - 1110 - Low-power timer trigger
+ * - 1110 - Low-power timer (LPTMR) trigger
  * - 1111 - Reserved
  */
 //@{
@@ -1650,7 +1653,7 @@ typedef union _hw_sim_sopt7
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ADC1TRGSEL field to a new value.
-#define BW_SIM_SOPT7_ADC1TRGSEL(v) (HW_SIM_SOPT7_WR((HW_SIM_SOPT7_RD & ~BM_SIM_SOPT7_ADC1TRGSEL) | BF_SIM_SOPT7_ADC1TRGSEL(v)))
+#define BW_SIM_SOPT7_ADC1TRGSEL(v) (HW_SIM_SOPT7_WR((HW_SIM_SOPT7_RD() & ~BM_SIM_SOPT7_ADC1TRGSEL) | BF_SIM_SOPT7_ADC1TRGSEL(v)))
 #endif
 //@}
 
@@ -1719,7 +1722,7 @@ typedef union _hw_sim_sopt7
 /*!
  * @brief HW_SIM_SDID - System Device Identification Register (RO)
  *
- * Reset value: 0x00000300U
+ * Reset value: 0x00000380U
  */
 typedef union _hw_sim_sdid
 {
@@ -1728,7 +1731,7 @@ typedef union _hw_sim_sdid
     {
         uint32_t PINID : 4;            //!< [3:0] Pincount identification
         uint32_t FAMID : 3;            //!< [6:4] Kinetis family identification
-        uint32_t DIEID : 5;            //!< [11:7] Device die number
+        uint32_t DIEID : 5;            //!< [11:7] Device Die ID
         uint32_t REVID : 4;            //!< [15:12] Device revision number
         uint32_t RESERVED0 : 4;        //!< [19:16]
         uint32_t SERIESID : 4;         //!< [23:20] Kinetis Series ID
@@ -1746,7 +1749,7 @@ typedef union _hw_sim_sdid
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SDID              (*(__I hw_sim_sdid_t *) HW_SIM_SDID_ADDR)
-#define HW_SIM_SDID_RD           (HW_SIM_SDID.U)
+#define HW_SIM_SDID_RD()         (HW_SIM_SDID.U)
 #endif
 //@}
 
@@ -1818,7 +1821,7 @@ typedef union _hw_sim_sdid
 /*!
  * @name Register SIM_SDID, field DIEID[11:7] (RO)
  *
- * Specifies the silicon implementation number for the device.
+ * Specifies the silicon feature set identication number for the device.
  */
 //@{
 #define BP_SIM_SDID_DIEID    (7U)          //!< Bit position for SIM_SDID_DIEID.
@@ -1900,12 +1903,12 @@ typedef union _hw_sim_sdid
  * Specifies the Kinetis family of the device.
  *
  * Values:
- * - 0001 - K1x Family (basic)
- * - 0010 - K2x Family (USB)
- * - 0011 - K3x Family (Segment LCD)
- * - 0100 - K4x Family (USB and Segment LCD)
- * - 0110 - K6x Family (USB and ENET)
- * - 0111 - K7x Family (USB and ENET and Graphic LCD)
+ * - 0001 - K1x Family
+ * - 0010 - K2x Family
+ * - 0011 - K3x Family
+ * - 0100 - K4x Family
+ * - 0110 - K6x Family
+ * - 0111 - K7x Family
  */
 //@{
 #define BP_SIM_SDID_FAMILYID (28U)         //!< Bit position for SIM_SDID_FAMILYID.
@@ -1951,11 +1954,11 @@ typedef union _hw_sim_scgc1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC1             (*(__IO hw_sim_scgc1_t *) HW_SIM_SCGC1_ADDR)
-#define HW_SIM_SCGC1_RD          (HW_SIM_SCGC1.U)
+#define HW_SIM_SCGC1_RD()        (HW_SIM_SCGC1.U)
 #define HW_SIM_SCGC1_WR(v)       (HW_SIM_SCGC1.U = (v))
-#define HW_SIM_SCGC1_SET(v)      (HW_SIM_SCGC1_WR(HW_SIM_SCGC1_RD |  (v)))
-#define HW_SIM_SCGC1_CLR(v)      (HW_SIM_SCGC1_WR(HW_SIM_SCGC1_RD & ~(v)))
-#define HW_SIM_SCGC1_TOG(v)      (HW_SIM_SCGC1_WR(HW_SIM_SCGC1_RD ^  (v)))
+#define HW_SIM_SCGC1_SET(v)      (HW_SIM_SCGC1_WR(HW_SIM_SCGC1_RD() |  (v)))
+#define HW_SIM_SCGC1_CLR(v)      (HW_SIM_SCGC1_WR(HW_SIM_SCGC1_RD() & ~(v)))
+#define HW_SIM_SCGC1_TOG(v)      (HW_SIM_SCGC1_WR(HW_SIM_SCGC1_RD() ^  (v)))
 #endif
 //@}
 
@@ -2056,6 +2059,10 @@ typedef union _hw_sim_scgc1
  * @brief HW_SIM_SCGC2 - System Clock Gating Control Register 2 (RW)
  *
  * Reset value: 0x00000000U
+ *
+ * DAC0 can be accessed through both AIPS0 and AIPS1. When accessing through
+ * AIPS1, define the clock gate control bits in the SCGC2. When accessing through
+ * AIPS0, define the clock gate control bits in SCGC6.
  */
 typedef union _hw_sim_scgc2
 {
@@ -2079,11 +2086,11 @@ typedef union _hw_sim_scgc2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC2             (*(__IO hw_sim_scgc2_t *) HW_SIM_SCGC2_ADDR)
-#define HW_SIM_SCGC2_RD          (HW_SIM_SCGC2.U)
+#define HW_SIM_SCGC2_RD()        (HW_SIM_SCGC2.U)
 #define HW_SIM_SCGC2_WR(v)       (HW_SIM_SCGC2.U = (v))
-#define HW_SIM_SCGC2_SET(v)      (HW_SIM_SCGC2_WR(HW_SIM_SCGC2_RD |  (v)))
-#define HW_SIM_SCGC2_CLR(v)      (HW_SIM_SCGC2_WR(HW_SIM_SCGC2_RD & ~(v)))
-#define HW_SIM_SCGC2_TOG(v)      (HW_SIM_SCGC2_WR(HW_SIM_SCGC2_RD ^  (v)))
+#define HW_SIM_SCGC2_SET(v)      (HW_SIM_SCGC2_WR(HW_SIM_SCGC2_RD() |  (v)))
+#define HW_SIM_SCGC2_CLR(v)      (HW_SIM_SCGC2_WR(HW_SIM_SCGC2_RD() & ~(v)))
+#define HW_SIM_SCGC2_TOG(v)      (HW_SIM_SCGC2_WR(HW_SIM_SCGC2_RD() ^  (v)))
 #endif
 //@}
 
@@ -2184,6 +2191,10 @@ typedef union _hw_sim_scgc2
  * @brief HW_SIM_SCGC3 - System Clock Gating Control Register 3 (RW)
  *
  * Reset value: 0x00000000U
+ *
+ * FTM2 and RNGA can be accessed through both AIPS0 and AIPS1. When accessing
+ * through AIPS1, define the clock gate control bits in the SCGC3. When accessing
+ * through AIPS0, define the clock gate control bits in SCGC6.
  */
 typedef union _hw_sim_scgc3
 {
@@ -2213,11 +2224,11 @@ typedef union _hw_sim_scgc3
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC3             (*(__IO hw_sim_scgc3_t *) HW_SIM_SCGC3_ADDR)
-#define HW_SIM_SCGC3_RD          (HW_SIM_SCGC3.U)
+#define HW_SIM_SCGC3_RD()        (HW_SIM_SCGC3.U)
 #define HW_SIM_SCGC3_WR(v)       (HW_SIM_SCGC3.U = (v))
-#define HW_SIM_SCGC3_SET(v)      (HW_SIM_SCGC3_WR(HW_SIM_SCGC3_RD |  (v)))
-#define HW_SIM_SCGC3_CLR(v)      (HW_SIM_SCGC3_WR(HW_SIM_SCGC3_RD & ~(v)))
-#define HW_SIM_SCGC3_TOG(v)      (HW_SIM_SCGC3_WR(HW_SIM_SCGC3_RD ^  (v)))
+#define HW_SIM_SCGC3_SET(v)      (HW_SIM_SCGC3_WR(HW_SIM_SCGC3_RD() |  (v)))
+#define HW_SIM_SCGC3_CLR(v)      (HW_SIM_SCGC3_WR(HW_SIM_SCGC3_RD() & ~(v)))
+#define HW_SIM_SCGC3_TOG(v)      (HW_SIM_SCGC3_WR(HW_SIM_SCGC3_RD() ^  (v)))
 #endif
 //@}
 
@@ -2436,11 +2447,11 @@ typedef union _hw_sim_scgc4
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC4             (*(__IO hw_sim_scgc4_t *) HW_SIM_SCGC4_ADDR)
-#define HW_SIM_SCGC4_RD          (HW_SIM_SCGC4.U)
+#define HW_SIM_SCGC4_RD()        (HW_SIM_SCGC4.U)
 #define HW_SIM_SCGC4_WR(v)       (HW_SIM_SCGC4.U = (v))
-#define HW_SIM_SCGC4_SET(v)      (HW_SIM_SCGC4_WR(HW_SIM_SCGC4_RD |  (v)))
-#define HW_SIM_SCGC4_CLR(v)      (HW_SIM_SCGC4_WR(HW_SIM_SCGC4_RD & ~(v)))
-#define HW_SIM_SCGC4_TOG(v)      (HW_SIM_SCGC4_WR(HW_SIM_SCGC4_RD ^  (v)))
+#define HW_SIM_SCGC4_SET(v)      (HW_SIM_SCGC4_WR(HW_SIM_SCGC4_RD() |  (v)))
+#define HW_SIM_SCGC4_CLR(v)      (HW_SIM_SCGC4_WR(HW_SIM_SCGC4_RD() & ~(v)))
+#define HW_SIM_SCGC4_TOG(v)      (HW_SIM_SCGC4_WR(HW_SIM_SCGC4_RD() ^  (v)))
 #endif
 //@}
 
@@ -2791,11 +2802,11 @@ typedef union _hw_sim_scgc5
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC5             (*(__IO hw_sim_scgc5_t *) HW_SIM_SCGC5_ADDR)
-#define HW_SIM_SCGC5_RD          (HW_SIM_SCGC5.U)
+#define HW_SIM_SCGC5_RD()        (HW_SIM_SCGC5.U)
 #define HW_SIM_SCGC5_WR(v)       (HW_SIM_SCGC5.U = (v))
-#define HW_SIM_SCGC5_SET(v)      (HW_SIM_SCGC5_WR(HW_SIM_SCGC5_RD |  (v)))
-#define HW_SIM_SCGC5_CLR(v)      (HW_SIM_SCGC5_WR(HW_SIM_SCGC5_RD & ~(v)))
-#define HW_SIM_SCGC5_TOG(v)      (HW_SIM_SCGC5_WR(HW_SIM_SCGC5_RD ^  (v)))
+#define HW_SIM_SCGC5_SET(v)      (HW_SIM_SCGC5_WR(HW_SIM_SCGC5_RD() |  (v)))
+#define HW_SIM_SCGC5_CLR(v)      (HW_SIM_SCGC5_WR(HW_SIM_SCGC5_RD() & ~(v)))
+#define HW_SIM_SCGC5_TOG(v)      (HW_SIM_SCGC5_WR(HW_SIM_SCGC5_RD() ^  (v)))
 #endif
 //@}
 
@@ -3027,11 +3038,11 @@ typedef union _hw_sim_scgc6
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC6             (*(__IO hw_sim_scgc6_t *) HW_SIM_SCGC6_ADDR)
-#define HW_SIM_SCGC6_RD          (HW_SIM_SCGC6.U)
+#define HW_SIM_SCGC6_RD()        (HW_SIM_SCGC6.U)
 #define HW_SIM_SCGC6_WR(v)       (HW_SIM_SCGC6.U = (v))
-#define HW_SIM_SCGC6_SET(v)      (HW_SIM_SCGC6_WR(HW_SIM_SCGC6_RD |  (v)))
-#define HW_SIM_SCGC6_CLR(v)      (HW_SIM_SCGC6_WR(HW_SIM_SCGC6_RD & ~(v)))
-#define HW_SIM_SCGC6_TOG(v)      (HW_SIM_SCGC6_WR(HW_SIM_SCGC6_RD ^  (v)))
+#define HW_SIM_SCGC6_SET(v)      (HW_SIM_SCGC6_WR(HW_SIM_SCGC6_RD() |  (v)))
+#define HW_SIM_SCGC6_CLR(v)      (HW_SIM_SCGC6_WR(HW_SIM_SCGC6_RD() & ~(v)))
+#define HW_SIM_SCGC6_TOG(v)      (HW_SIM_SCGC6_WR(HW_SIM_SCGC6_RD() ^  (v)))
 #endif
 //@}
 
@@ -3544,11 +3555,11 @@ typedef union _hw_sim_scgc7
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_SCGC7             (*(__IO hw_sim_scgc7_t *) HW_SIM_SCGC7_ADDR)
-#define HW_SIM_SCGC7_RD          (HW_SIM_SCGC7.U)
+#define HW_SIM_SCGC7_RD()        (HW_SIM_SCGC7.U)
 #define HW_SIM_SCGC7_WR(v)       (HW_SIM_SCGC7.U = (v))
-#define HW_SIM_SCGC7_SET(v)      (HW_SIM_SCGC7_WR(HW_SIM_SCGC7_RD |  (v)))
-#define HW_SIM_SCGC7_CLR(v)      (HW_SIM_SCGC7_WR(HW_SIM_SCGC7_RD & ~(v)))
-#define HW_SIM_SCGC7_TOG(v)      (HW_SIM_SCGC7_WR(HW_SIM_SCGC7_RD ^  (v)))
+#define HW_SIM_SCGC7_SET(v)      (HW_SIM_SCGC7_WR(HW_SIM_SCGC7_RD() |  (v)))
+#define HW_SIM_SCGC7_CLR(v)      (HW_SIM_SCGC7_WR(HW_SIM_SCGC7_RD() & ~(v)))
+#define HW_SIM_SCGC7_TOG(v)      (HW_SIM_SCGC7_WR(HW_SIM_SCGC7_RD() ^  (v)))
 #endif
 //@}
 
@@ -3652,8 +3663,11 @@ typedef union _hw_sim_scgc7
  *
  * When updating CLKDIV1, update all fields using the one write command.
  * Attempting to write an invalid clock ratio to the CLKDIV1 register will cause the
- * write to be ignored. The CLKDIV1 register cannot be written to when the device is
- * in VLPR mode.
+ * write to be ignored. The maximum divide ratio that can be programmed between
+ * core/system clock and the other divided clocks is divide by 8. When OUTDIV1 equals
+ * 0000 (divide by 1), the other dividers cannot be set higher than 0111 (divide
+ * by 8). The CLKDIV1 register cannot be written to when the device is in VLPR
+ * mode.
  */
 typedef union _hw_sim_clkdiv1
 {
@@ -3677,11 +3691,11 @@ typedef union _hw_sim_clkdiv1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_CLKDIV1           (*(__IO hw_sim_clkdiv1_t *) HW_SIM_CLKDIV1_ADDR)
-#define HW_SIM_CLKDIV1_RD        (HW_SIM_CLKDIV1.U)
+#define HW_SIM_CLKDIV1_RD()      (HW_SIM_CLKDIV1.U)
 #define HW_SIM_CLKDIV1_WR(v)     (HW_SIM_CLKDIV1.U = (v))
-#define HW_SIM_CLKDIV1_SET(v)    (HW_SIM_CLKDIV1_WR(HW_SIM_CLKDIV1_RD |  (v)))
-#define HW_SIM_CLKDIV1_CLR(v)    (HW_SIM_CLKDIV1_WR(HW_SIM_CLKDIV1_RD & ~(v)))
-#define HW_SIM_CLKDIV1_TOG(v)    (HW_SIM_CLKDIV1_WR(HW_SIM_CLKDIV1_RD ^  (v)))
+#define HW_SIM_CLKDIV1_SET(v)    (HW_SIM_CLKDIV1_WR(HW_SIM_CLKDIV1_RD() |  (v)))
+#define HW_SIM_CLKDIV1_CLR(v)    (HW_SIM_CLKDIV1_WR(HW_SIM_CLKDIV1_RD() & ~(v)))
+#define HW_SIM_CLKDIV1_TOG(v)    (HW_SIM_CLKDIV1_WR(HW_SIM_CLKDIV1_RD() ^  (v)))
 #endif
 //@}
 
@@ -3730,7 +3744,7 @@ typedef union _hw_sim_clkdiv1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OUTDIV4 field to a new value.
-#define BW_SIM_CLKDIV1_OUTDIV4(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD & ~BM_SIM_CLKDIV1_OUTDIV4) | BF_SIM_CLKDIV1_OUTDIV4(v)))
+#define BW_SIM_CLKDIV1_OUTDIV4(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD() & ~BM_SIM_CLKDIV1_OUTDIV4) | BF_SIM_CLKDIV1_OUTDIV4(v)))
 #endif
 //@}
 
@@ -3775,7 +3789,7 @@ typedef union _hw_sim_clkdiv1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OUTDIV3 field to a new value.
-#define BW_SIM_CLKDIV1_OUTDIV3(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD & ~BM_SIM_CLKDIV1_OUTDIV3) | BF_SIM_CLKDIV1_OUTDIV3(v)))
+#define BW_SIM_CLKDIV1_OUTDIV3(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD() & ~BM_SIM_CLKDIV1_OUTDIV3) | BF_SIM_CLKDIV1_OUTDIV3(v)))
 #endif
 //@}
 
@@ -3820,7 +3834,7 @@ typedef union _hw_sim_clkdiv1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OUTDIV2 field to a new value.
-#define BW_SIM_CLKDIV1_OUTDIV2(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD & ~BM_SIM_CLKDIV1_OUTDIV2) | BF_SIM_CLKDIV1_OUTDIV2(v)))
+#define BW_SIM_CLKDIV1_OUTDIV2(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD() & ~BM_SIM_CLKDIV1_OUTDIV2) | BF_SIM_CLKDIV1_OUTDIV2(v)))
 #endif
 //@}
 
@@ -3864,7 +3878,7 @@ typedef union _hw_sim_clkdiv1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OUTDIV1 field to a new value.
-#define BW_SIM_CLKDIV1_OUTDIV1(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD & ~BM_SIM_CLKDIV1_OUTDIV1) | BF_SIM_CLKDIV1_OUTDIV1(v)))
+#define BW_SIM_CLKDIV1_OUTDIV1(v) (HW_SIM_CLKDIV1_WR((HW_SIM_CLKDIV1_RD() & ~BM_SIM_CLKDIV1_OUTDIV1) | BF_SIM_CLKDIV1_OUTDIV1(v)))
 #endif
 //@}
 
@@ -3898,11 +3912,11 @@ typedef union _hw_sim_clkdiv2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_CLKDIV2           (*(__IO hw_sim_clkdiv2_t *) HW_SIM_CLKDIV2_ADDR)
-#define HW_SIM_CLKDIV2_RD        (HW_SIM_CLKDIV2.U)
+#define HW_SIM_CLKDIV2_RD()      (HW_SIM_CLKDIV2.U)
 #define HW_SIM_CLKDIV2_WR(v)     (HW_SIM_CLKDIV2.U = (v))
-#define HW_SIM_CLKDIV2_SET(v)    (HW_SIM_CLKDIV2_WR(HW_SIM_CLKDIV2_RD |  (v)))
-#define HW_SIM_CLKDIV2_CLR(v)    (HW_SIM_CLKDIV2_WR(HW_SIM_CLKDIV2_RD & ~(v)))
-#define HW_SIM_CLKDIV2_TOG(v)    (HW_SIM_CLKDIV2_WR(HW_SIM_CLKDIV2_RD ^  (v)))
+#define HW_SIM_CLKDIV2_SET(v)    (HW_SIM_CLKDIV2_WR(HW_SIM_CLKDIV2_RD() |  (v)))
+#define HW_SIM_CLKDIV2_CLR(v)    (HW_SIM_CLKDIV2_WR(HW_SIM_CLKDIV2_RD() & ~(v)))
+#define HW_SIM_CLKDIV2_TOG(v)    (HW_SIM_CLKDIV2_WR(HW_SIM_CLKDIV2_RD() ^  (v)))
 #endif
 //@}
 
@@ -3958,7 +3972,7 @@ typedef union _hw_sim_clkdiv2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the USBDIV field to a new value.
-#define BW_SIM_CLKDIV2_USBDIV(v) (HW_SIM_CLKDIV2_WR((HW_SIM_CLKDIV2_RD & ~BM_SIM_CLKDIV2_USBDIV) | BF_SIM_CLKDIV2_USBDIV(v)))
+#define BW_SIM_CLKDIV2_USBDIV(v) (HW_SIM_CLKDIV2_WR((HW_SIM_CLKDIV2_RD() & ~BM_SIM_CLKDIV2_USBDIV) | BF_SIM_CLKDIV2_USBDIV(v)))
 #endif
 //@}
 
@@ -3974,7 +3988,7 @@ typedef union _hw_sim_clkdiv2
  *
  * For devices with FlexNVM: The reset value of EESIZE and DEPART are based on
  * user programming in user IFR via the PGMPART flash command. For devices with
- * program flash only: The EESIZE and DEPART filelds are not applicable.
+ * program flash only:
  */
 typedef union _hw_sim_fcfg1
 {
@@ -4002,11 +4016,11 @@ typedef union _hw_sim_fcfg1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_FCFG1             (*(__IO hw_sim_fcfg1_t *) HW_SIM_FCFG1_ADDR)
-#define HW_SIM_FCFG1_RD          (HW_SIM_FCFG1.U)
+#define HW_SIM_FCFG1_RD()        (HW_SIM_FCFG1.U)
 #define HW_SIM_FCFG1_WR(v)       (HW_SIM_FCFG1.U = (v))
-#define HW_SIM_FCFG1_SET(v)      (HW_SIM_FCFG1_WR(HW_SIM_FCFG1_RD |  (v)))
-#define HW_SIM_FCFG1_CLR(v)      (HW_SIM_FCFG1_WR(HW_SIM_FCFG1_RD & ~(v)))
-#define HW_SIM_FCFG1_TOG(v)      (HW_SIM_FCFG1_WR(HW_SIM_FCFG1_RD ^  (v)))
+#define HW_SIM_FCFG1_SET(v)      (HW_SIM_FCFG1_WR(HW_SIM_FCFG1_RD() |  (v)))
+#define HW_SIM_FCFG1_CLR(v)      (HW_SIM_FCFG1_WR(HW_SIM_FCFG1_RD() & ~(v)))
+#define HW_SIM_FCFG1_TOG(v)      (HW_SIM_FCFG1_WR(HW_SIM_FCFG1_RD() ^  (v)))
 #endif
 //@}
 
@@ -4193,7 +4207,7 @@ typedef union _hw_sim_fcfg2
     {
         uint32_t RESERVED0 : 16;       //!< [15:0]
         uint32_t MAXADDR1 : 7;         //!< [22:16] Max address block 1
-        uint32_t PFLSH : 1;            //!< [23] Program flash
+        uint32_t PFLSH : 1;            //!< [23] Program flash only
         uint32_t MAXADDR0 : 7;         //!< [30:24] Max address block 0
         uint32_t RESERVED1 : 1;        //!< [31]
     } B;
@@ -4208,7 +4222,7 @@ typedef union _hw_sim_fcfg2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_FCFG2             (*(__I hw_sim_fcfg2_t *) HW_SIM_FCFG2_ADDR)
-#define HW_SIM_FCFG2_RD          (HW_SIM_FCFG2.U)
+#define HW_SIM_FCFG2_RD()        (HW_SIM_FCFG2.U)
 #endif
 //@}
 
@@ -4221,14 +4235,14 @@ typedef union _hw_sim_fcfg2
  *
  * For devices with FlexNVM: This field concatenated with 13 trailing zeros plus
  * the FlexNVM base address indicates the first invalid address of the FlexNVM
- * (flash block 1). For example, if MAXADDR1 = 0x20 the first invalid address of
- * flash block 1 is 0x4_0000 + 0x1000_0000 . This would be the MAXADDR1 value for
- * a device with 256 KB FlexNVM. For devices with program flash only: This field
- * concatenated with 13 trailing zeros plus the value of the MAXADDR1 field
- * indicates the first invalid address of the second program flash block (flash block
- * 1). For example, if MAXADDR0 = MAXADDR1 = 0x20 the first invalid address of
- * flash block 1 is 0x4_0000 + 0x4_0000. This would be the MAXADDR1 value for a
- * device with 512 KB program flash memory and no FlexNVM.
+ * flash block. For example, if MAXADDR1 = 0x20 the first invalid address of
+ * FlexNVM flash block is 0x4_0000 + 0x1000_0000 . This would be the MAXADDR1 value
+ * for a device with 256 KB FlexNVM. For devices with program flash only: This
+ * field equals zero if there is only one program flash block, otherwise it equals
+ * the value of the MAXADDR0 field. For example, with MAXADDR0 = MAXADDR1 = 0x20
+ * the first invalid address of flash block 1 is 0x4_0000 + 0x4_0000. This would be
+ * the MAXADDR1 value for a device with 512 KB program flash memory across two
+ * flash blocks and no FlexNVM.
  */
 //@{
 #define BP_SIM_FCFG2_MAXADDR1 (16U)        //!< Bit position for SIM_FCFG2_MAXADDR1.
@@ -4248,9 +4262,8 @@ typedef union _hw_sim_fcfg2
  * FlexNVM, this bit is always set.
  *
  * Values:
- * - 0 - Physical flash block 1 is used as FlexNVM Reserved for devices without
- *     FlexNVM
- * - 1 - Physical flash block 1 is used as program flash
+ * - 0 - Device supports FlexNVM
+ * - 1 - Program Flash only, device does not support FlexNVM
  */
 //@{
 #define BP_SIM_FCFG2_PFLSH   (23U)         //!< Bit position for SIM_FCFG2_PFLSH.
@@ -4267,9 +4280,9 @@ typedef union _hw_sim_fcfg2
  * @name Register SIM_FCFG2, field MAXADDR0[30:24] (RO)
  *
  * This field concatenated with 13 trailing zeros indicates the first invalid
- * address of flash block 0 (program flash 0). For example, if MAXADDR0 = 0x20 the
- * first invalid address of flash block 0 is 0x0004_0000. This would be the
- * MAXADDR0 value for a device with 256 KB program flash in flash block 0.
+ * address of each program flash block. For example, if MAXADDR0 = 0x20 the first
+ * invalid address of flash block 0 is 0x0004_0000. This would be the MAXADDR0
+ * value for a device with 256 KB program flash in flash block 0.
  */
 //@{
 #define BP_SIM_FCFG2_MAXADDR0 (24U)        //!< Bit position for SIM_FCFG2_MAXADDR0.
@@ -4310,7 +4323,7 @@ typedef union _hw_sim_uidh
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_UIDH              (*(__I hw_sim_uidh_t *) HW_SIM_UIDH_ADDR)
-#define HW_SIM_UIDH_RD           (HW_SIM_UIDH.U)
+#define HW_SIM_UIDH_RD()         (HW_SIM_UIDH.U)
 #endif
 //@}
 
@@ -4330,7 +4343,7 @@ typedef union _hw_sim_uidh
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SIM_UIDH_UID field.
-#define BR_SIM_UIDH_UID      (HW_SIM_UIDH.B.UID)
+#define BR_SIM_UIDH_UID      (HW_SIM_UIDH.U)
 #endif
 //@}
 
@@ -4362,7 +4375,7 @@ typedef union _hw_sim_uidmh
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_UIDMH             (*(__I hw_sim_uidmh_t *) HW_SIM_UIDMH_ADDR)
-#define HW_SIM_UIDMH_RD          (HW_SIM_UIDMH.U)
+#define HW_SIM_UIDMH_RD()        (HW_SIM_UIDMH.U)
 #endif
 //@}
 
@@ -4382,7 +4395,7 @@ typedef union _hw_sim_uidmh
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SIM_UIDMH_UID field.
-#define BR_SIM_UIDMH_UID     (HW_SIM_UIDMH.B.UID)
+#define BR_SIM_UIDMH_UID     (HW_SIM_UIDMH.U)
 #endif
 //@}
 
@@ -4414,7 +4427,7 @@ typedef union _hw_sim_uidml
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_UIDML             (*(__I hw_sim_uidml_t *) HW_SIM_UIDML_ADDR)
-#define HW_SIM_UIDML_RD          (HW_SIM_UIDML.U)
+#define HW_SIM_UIDML_RD()        (HW_SIM_UIDML.U)
 #endif
 //@}
 
@@ -4434,7 +4447,7 @@ typedef union _hw_sim_uidml
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SIM_UIDML_UID field.
-#define BR_SIM_UIDML_UID     (HW_SIM_UIDML.B.UID)
+#define BR_SIM_UIDML_UID     (HW_SIM_UIDML.U)
 #endif
 //@}
 
@@ -4466,7 +4479,7 @@ typedef union _hw_sim_uidl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SIM_UIDL              (*(__I hw_sim_uidl_t *) HW_SIM_UIDL_ADDR)
-#define HW_SIM_UIDL_RD           (HW_SIM_UIDL.U)
+#define HW_SIM_UIDL_RD()         (HW_SIM_UIDL.U)
 #endif
 //@}
 
@@ -4486,7 +4499,7 @@ typedef union _hw_sim_uidl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SIM_UIDL_UID field.
-#define BR_SIM_UIDL_UID      (HW_SIM_UIDL.B.UID)
+#define BR_SIM_UIDL_UID      (HW_SIM_UIDL.U)
 #endif
 //@}
 

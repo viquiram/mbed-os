@@ -44,17 +44,15 @@ enet_mac_config_t g_enetMacCfg[HW_ENET_INSTANCE_COUNT] =
 {
     kEnetMaxFrameSize,  /*!< ENET receive buffer size*/
     ENET_RX_LARGE_BUFFER_NUM,  /*!< ENET receive large buffer number*/
-    ENET_RX_BUFFER_ALIGNMENT,  /*!< ENET receive buffer alignment*/
-    ENET_TX_BUFFER_ALIGNMENT,  /*!< ENET transmit buffer alignment*/
     ENET_RX_RING_LEN,        /*!< ENET receive bd number*/
     ENET_TX_RING_LEN,        /*!< ENET transmit bd number*/
-    ENET_BD_ALIGNMENT,         /*!< ENET bd alignment*/
     {0},                /*!< ENET mac address*/
     kEnetCfgRmii,       /*!< ENET rmii interface*/
     kEnetCfgSpeed100M,  /*!< ENET rmii 100M*/
     kEnetCfgFullDuplex, /*!< ENET rmii Full- duplex*/
-    false,              /*!< ENET no loop*/
-    false,              /*!< ENET enable promiscuous*/
+    /*!< enet mac control flag recommended to use enet_mac_control_flag_t
+      it is special control for loop mode, sleep mode, crc forward/terminate etc*/
+    kEnetRxCrcFwdEnable,
     false,              /*!< ENET txaccelerator enabled*/
     false,              /*!< ENET rxaccelerator enabled*/
     false,              /*!< ENET store and forward*/
@@ -125,6 +123,166 @@ extern void IPE_recv_ARP(PCB_PTR pcb, void *handle);
 #if RTCSCFG_ENABLE_IP6 
 extern void IP6E_recv_IP(PCB_PTR pcb, void *handle);
 #endif
+uint8_t *txBdPtr, *rxBdPtr, *txBuffer, *rxBuffer, *rxLargeBuffer; 
+/*FUNCTION****************************************************************
+ *
+ * Function Name: ENET_buffer_init
+ * Return Value: The execution status.
+ * Description: Initialize enet mac buffer. 
+ *
+ *END*********************************************************************/
+uint32_t ENET_buffer_init(enet_dev_if_t * enetIfPtr, enet_rxbd_config_t *rxbdCfg,
+                                       enet_txbd_config_t *txbdCfg)
+{
+    uint32_t bdSize, rxBufferSizeAlign, txBufferSizeAlign, rxLargeBufferSizeAlign, rxBufferNumber;
+    uint8_t *txBdPtrAlign, *rxBdPtrAlign, *txBufferAlign, *rxBufferAlign, *rxLargeBufferAlign;
+
+    /* Check input parameter*/
+    if(!enetIfPtr)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+    /* Allocate buffer for ENET mac context*/
+    enetIfPtr->macContextPtr = 
+        (enet_mac_context_t *)mem_allocate_zero(sizeof(enet_mac_context_t));
+    if (!enetIfPtr->macContextPtr)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+
+    /* Allocate ENET receive buffer descriptors*/
+    bdSize = enet_hal_get_bd_size();
+    txBdPtr = (uint8_t *)mem_allocate_zero(bdSize * enetIfPtr->macCfgPtr->txBdNumber + ENET_BD_ALIGNMENT);
+    if (!txBdPtr)
+    {
+        mem_free(enetIfPtr->macContextPtr);
+        return kStatus_ENET_MemoryAllocateFail;
+    }
+   txBdPtrAlign = (uint8_t *)ENET_ALIGN((uint32_t)txBdPtr, ENET_BD_ALIGNMENT);
+
+   rxBdPtr = (uint8_t *)mem_allocate_zero(bdSize * enetIfPtr->macCfgPtr->rxBdNumber + ENET_BD_ALIGNMENT);
+   if(!rxBdPtr)
+   {
+        mem_free(enetIfPtr->macContextPtr);
+        mem_free(txBdPtr);
+        return kStatus_ENET_MemoryAllocateFail;
+   }
+    rxBdPtrAlign = (uint8_t *)ENET_ALIGN((uint32_t)rxBdPtr, ENET_BD_ALIGNMENT);
+   
+    /* Allocate the transmit and receive date buffers*/
+    if(!enetIfPtr->macCfgPtr->rxBufferSize)
+    {
+        enetIfPtr->macCfgPtr->rxBufferSize = enetIfPtr->maxFrameSize;
+    }
+    /* The receive buffer number*/
+#if ENET_RECEIVE_ALL_INTERRUPT
+    rxBufferNumber = enetIfPtr->macCfgPtr->rxBdNumber;
+#else
+    /* For poll add interrupt approach, because of asynchronous buffer free and
+        delay we need more receive buffers*/
+    rxBufferNumber = enetIfPtr->macCfgPtr->rxBdNumber + (3*enetIfPtr->macCfgPtr->rxBdNumber)/4;
+#endif
+    rxBufferSizeAlign = ENET_ALIGN(enetIfPtr->macCfgPtr->rxBufferSize, ENET_RX_BUFFER_ALIGNMENT);
+    enetIfPtr->macContextPtr->rxBufferSizeAligned = rxBufferSizeAlign;
+    rxBuffer = (uint8_t *)mem_allocate_zero(rxBufferNumber * rxBufferSizeAlign + ENET_RX_BUFFER_ALIGNMENT);
+    if (!rxBuffer)
+    {
+        mem_free(enetIfPtr->macContextPtr);
+        mem_free(txBdPtr);
+        mem_free(rxBdPtr);
+        return kStatus_ENET_MemoryAllocateFail;
+    }
+    rxBufferAlign = (uint8_t *)ENET_ALIGN((uint32_t)rxBuffer, ENET_RX_BUFFER_ALIGNMENT);
+
+    txBufferSizeAlign = ENET_ALIGN(enetIfPtr->maxFrameSize, ENET_TX_BUFFER_ALIGNMENT);    
+    txBuffer = mem_allocate_zero(enetIfPtr->macCfgPtr->txBdNumber * txBufferSizeAlign + ENET_TX_BUFFER_ALIGNMENT);
+    if (!txBuffer)
+    {
+        mem_free(enetIfPtr->macContextPtr);
+        mem_free(txBdPtr);
+        mem_free(rxBdPtr);
+        mem_free(rxBuffer);
+        return kStatus_ENET_MemoryAllocateFail;
+    }
+    txBufferAlign = (uint8_t *)ENET_ALIGN((uint32_t)txBuffer, ENET_TX_BUFFER_ALIGNMENT);
+
+    if(enetIfPtr->macCfgPtr->rxLargeBufferNumber)
+    {
+        /*Initialize the large receive buffer*/
+        rxLargeBufferSizeAlign = ENET_ALIGN(enetIfPtr->maxFrameSize, ENET_RX_BUFFER_ALIGNMENT);
+        rxLargeBuffer = mem_allocate_zero(enetIfPtr->macCfgPtr->rxLargeBufferNumber * rxLargeBufferSizeAlign + ENET_RX_BUFFER_ALIGNMENT);
+        if (!rxLargeBuffer)
+        {
+            mem_free(enetIfPtr->macContextPtr);
+            mem_free(txBdPtr);
+            mem_free(rxBdPtr);
+            mem_free(rxBuffer);
+            mem_free(txBuffer);
+            return kStatus_ENET_MemoryAllocateFail;
+        }
+        /* Store for buffer free*/
+        rxLargeBufferAlign = (uint8_t *)ENET_ALIGN((uint32_t)rxLargeBuffer, ENET_RX_BUFFER_ALIGNMENT);
+    }
+
+    rxbdCfg->rxBdPtrAlign = rxBdPtrAlign;
+    rxbdCfg->rxBufferAlign = rxBufferAlign;
+    rxbdCfg->rxLargeBufferSizeAlign = rxLargeBufferSizeAlign;
+    rxbdCfg->rxLargeBufferAlign = rxLargeBufferAlign;
+    rxbdCfg->rxBdNum = enetIfPtr->macCfgPtr->rxBdNumber;
+    rxbdCfg->rxBufferNum = rxBufferNumber;
+    rxbdCfg->rxLargeBufferNum = enetIfPtr->macCfgPtr->rxLargeBufferNumber;
+
+    txbdCfg->txBdPtrAlign = txBdPtrAlign;
+    txbdCfg->txBufferAlign = txBufferAlign;
+    txbdCfg->txBufferNum = enetIfPtr->macCfgPtr->txBdNumber;
+    txbdCfg->txBufferSizeAlign = txBufferSizeAlign;
+ 
+    return kStatus_ENET_Success;
+}
+
+/*FUNCTION****************************************************************
+ *
+ * Function Name: ENET_buffer_deinit
+ * Return Value: The execution status.
+ * Description: Initialize enet mac buffer. 
+ *
+ *END*********************************************************************/
+uint32_t ENET_buffer_deinit(enet_dev_if_t * enetIfPtr)
+{
+    /* Check input parameter*/
+    if(!enetIfPtr)
+    {
+        return kStatus_ENET_InvalidInput;
+    }
+
+    /* Free allocated memory*/
+    if(txBdPtr)
+    {
+        mem_free(txBdPtr);
+    }
+    if(rxBdPtr)
+    {
+        mem_free(rxBdPtr);
+    }
+    if(txBuffer)
+    {
+        mem_free(txBuffer);
+    }
+    if(rxBuffer)
+    {
+        mem_free(rxBuffer);
+    }
+    if(rxLargeBuffer)
+    {
+        mem_free(rxLargeBuffer);
+    }
+    if(enetIfPtr->macContextPtr)
+    {
+        mem_free(enetIfPtr->macContextPtr);
+    }
+    return kStatus_ENET_Success;
+}
+
 /*FUNCTION****************************************************************
  *
  * Function Name: ENET_free
@@ -266,7 +424,9 @@ uint32_t ENET_initialize(uint32_t device, _enet_address address,uint32_t flag, _
     uint32_t result;
     uint8_t count;
     PCB2 *pcbbuffer;
-
+    enet_rxbd_config_t rxbdCfg;
+    enet_txbd_config_t txbdCfg;
+	
     if (device > HW_ENET_INSTANCE_COUNT)
     {
         return ENETERR_INVALID_INIT_PARAM;
@@ -314,17 +474,27 @@ uint32_t ENET_initialize(uint32_t device, _enet_address address,uint32_t flag, _
     /* Create receive task*/
     task_create(ENET_receive, ENET_RECEIVE_TASK_PRIO, enetIfPtr, &revHandle);
 #endif	
+    /* Initialize enet buffers*/
+    result = ENET_buffer_init(enetIfPtr, &rxbdCfg, &txbdCfg);
+    if(result != kStatus_ENET_Success)
+    {
+        return result;
+    }
     /* Initialize ENET device*/
-    result = enetIfPtr->macApiPtr->enet_mac_init(enetIfPtr);
+    result = enetIfPtr->macApiPtr->enet_mac_init(enetIfPtr, &rxbdCfg, &txbdCfg);
     if (result == kStatus_ENET_Success)
     {
+        /* Initialize PHY*/
+        ((enet_phy_api_t *)(enetIfPtr->phyApiPtr))->phy_init(enetIfPtr);
+	
         *handle = enetIfPtr;
         enetIfPtr->isInitialized = true;
         return ENET_OK;
     }
     else
     {
-
+        enetIfPtr->macApiPtr->enet_mac_deinit(enetIfPtr);
+        ENET_buffer_deinit(enetIfPtr);
         lock_destroy(&enetIfPtr->enetContextSync);
 #if !ENET_RECEIVE_ALL_INTERRUPT
         task_destroy(revHandle);
@@ -438,7 +608,7 @@ uint32_t ENET_shutdown(_enet_handle handle)
     }
 #endif
     /* Close the ENET device*/
-    result = enetIfPtr->macApiPtr->enet_mac_close(enetIfPtr);
+    result = enetIfPtr->macApiPtr->enet_mac_deinit(enetIfPtr);
     if (result == kStatus_ENET_Success)
     {
         lock_destroy(&enetIfPtr->enetContextSync);
@@ -565,7 +735,10 @@ static void ENET_receive(void *param)
 #endif
                     case ENETPROT_ETHERNET:
 #if FSL_FEATURE_ENET_SUPPORT_PTP
-                    enet_ptp_service_l2packet(enetIfPtr, packet, length);
+                    if(enetIfPtr->macContextPtr->privatePtp)
+                    {
+                        enet_ptp_service_l2packet(enetIfPtr->macContextPtr->privatePtp.l2QueuePtr, packet, length);
+                    }                   
 #endif
                         break;
                     default:
@@ -607,7 +780,7 @@ uint32_t ENET_send(_enet_handle handle, PCB_PTR packet, uint32_t type, _enet_add
 
     enetIfPtr = (enet_dev_if_t *)handle;
     /* Default frame header size*/
-    headerLen = sizeof(enet_ethernet_header_t);
+    headerLen = kEnetEthernetHeadLen;
 
     /* Check the frame length*/
     for (fragPtr = packet->FRAG; fragPtr->LENGTH; fragPtr++)
@@ -950,7 +1123,7 @@ uint32_t ENET_get_MTU(_enet_handle handle)
 
     if (enetIfPtr->macCfgPtr->isVlanEnabled)
     {
-        return enetIfPtr->maxFrameSize - sizeof(enet_ethernet_header_t) - kEnetFrameFcsLen;
+        return enetIfPtr->maxFrameSize - kEnetEthernetHeadLen - kEnetFrameFcsLen;
     }
     else
     {

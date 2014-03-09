@@ -53,11 +53,11 @@ IRQn_Type uart_irq_ids[UART_INSTANCE_COUNT] =
 { UART0_RX_TX_IRQn,
   UART1_RX_TX_IRQn,
   UART2_RX_TX_IRQn,
+  #if defined (K64F12_SERIES) || defined (K70F12_SERIES)
   UART3_RX_TX_IRQn,
-#if defined (K64F12_SERIES) || defined (K70F12_SERIES)
   UART4_RX_TX_IRQn,
   UART5_RX_TX_IRQn
-#endif
+  #endif
 };
 #endif
 

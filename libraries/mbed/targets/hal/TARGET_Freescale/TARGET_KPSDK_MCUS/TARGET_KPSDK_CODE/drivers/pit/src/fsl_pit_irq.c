@@ -47,12 +47,12 @@
  * They are used by pit_init_channel to enable or disable PIT interrupts. This table is
  * indexed by channel number which could return PIT IRQ numbers.
  */
-IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT] = 
+const IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT] = 
 {
     PIT_IRQn, PIT_IRQn
 };
 #elif defined (K64F12_SERIES) || defined (K70F12_SERIES) || defined (K22F51212_SERIES)
-IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT] = 
+const IRQn_Type pit_irq_ids[FSL_FEATURE_PIT_TIMER_COUNT] = 
 {
     PIT0_IRQn, PIT1_IRQn, PIT2_IRQn, PIT3_IRQn
 };

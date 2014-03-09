@@ -49,8 +49,8 @@ typedef struct sai_internal_status
 } sai_internal_status_t;
 
 extern IRQn_Type sai_irq_ids[HW_I2S_INSTANCE_COUNT][2];
-static sai_handler_t *sai_handler_ids[HW_I2S_INSTANCE_COUNT][2];
-static sai_internal_status_t sai_status_ids[HW_I2S_INSTANCE_COUNT][2];
+static sai_handler_t * volatile sai_handler_ids[HW_I2S_INSTANCE_COUNT][2];
+static volatile sai_internal_status_t sai_status_ids[HW_I2S_INSTANCE_COUNT][2];
 
 /*******************************************************************************
  * Internal API
@@ -83,7 +83,7 @@ void sai_rx_interrupt_handle(uint32_t instance);
  * Description   : Initialize the sai module, and install the interrupt handle.
  *
  *END**************************************************************************/
-sai_status_t sai_init(sai_handler_t *handler, sai_config_t * config)
+sai_status_t sai_init(sai_handler_t *handler, sai_user_config_t * config)
 {
     /* Open clock gate for sai instance */
     clock_manager_set_gate(kClockModuleSAI, handler->instance, true);
@@ -93,8 +93,7 @@ sai_status_t sai_init(sai_handler_t *handler, sai_config_t * config)
         return kStatus_SAI_DeviceBusy;
     }
     sai_handler_ids[handler->instance][handler->direction] = handler;
-    sai_internal_status_t* status = &sai_status_ids[handler->instance][handler->direction];
-    status->sync_mode = config->sync_mode;
+    sai_status_ids[handler->instance][handler->direction].sync_mode = config->sync_mode;
     /* Mclk source select */
     sai_hal_set_mclk_source(handler->instance, config->mclk_source);
     /* Tx register initialize */
@@ -128,13 +127,17 @@ sai_status_t sai_deinit(sai_handler_t *handler)
 {
     if(handler->direction)
     {
+        sai_stop_write_data(handler);
         sai_hal_disable_tx(handler->instance);
         sai_hal_reset_tx(handler->instance,kSaiResetTypeSoftware);
+        sai_hal_clear_tx_state_flag(handler->instance, kSaiStateFlagSoftReset);
     }
     else
     {
+        sai_stop_read_data(handler);
         sai_hal_disable_rx(handler->instance);
-        sai_hal_reset_rx(handler->instance,kSaiResetTypeSoftware);       
+        sai_hal_reset_rx(handler->instance,kSaiResetTypeSoftware);
+        sai_hal_clear_rx_state_flag(handler->instance, kSaiStateFlagSoftReset);
     }
     sai_handler_ids[handler->instance][handler->direction] = NULL;
     /* Check if need to close the clock gate */
@@ -155,7 +158,6 @@ sai_status_t sai_configure_data_format(sai_handler_t *handler, sai_data_format_t
 {
     uint32_t frequency = 0;
     uint32_t bclk = format->sample_rate * format->bits * 2;
-    format->mclk = format->sample_rate * 384;
     uint8_t divider = format->mclk/bclk;
      /* Get the clock source frequency */
      clock_manager_get_frequency(kCoreClock, &frequency);
@@ -222,7 +224,6 @@ sai_status_t sai_configure_data_format(sai_handler_t *handler, sai_data_format_t
  *END**************************************************************************/
 void sai_start_write_data(sai_handler_t *handler)
 {
-    sai_internal_status_t *status = &sai_status_ids[handler->instance][1];
 #if USEDMA
     sai_hal_enable_tx_dma(handler->instance, kSaiDmaReqFIFORequest);
     sai_hal_enable_tx_dma(handler->instance, kSaiDmaReqFIFOWarning);
@@ -233,7 +234,7 @@ void sai_start_write_data(sai_handler_t *handler)
 #endif
     sai_hal_enable_tx(handler->instance);
     /* If the sync mode is synchronous, it will need Rx enable bit clock */
-    if(status->sync_mode == kSaiModeSync)
+    if(sai_status_ids[handler->instance][1].sync_mode == kSaiModeSync)
     {
         sai_hal_enable_rx(handler->instance);
     }
@@ -247,7 +248,6 @@ void sai_start_write_data(sai_handler_t *handler)
  *END**************************************************************************/
 void sai_start_read_data(sai_handler_t *handler)
 {
-    sai_internal_status_t *status = &sai_status_ids[handler->instance][0];
 #if USEDMA
     sai_hal_enable_rx_dma(handler->instance, kSaiDmaReqFIFORequest);
     sai_hal_enable_rx_dma(handler->instance, kSaiDmaReqFIFOWarning);
@@ -258,7 +258,7 @@ void sai_start_read_data(sai_handler_t *handler)
 #endif
     sai_hal_enable_rx(handler->instance);
     /* If the sync mode is synchronous, it will need Tx enable bit clock */
-    if(status->sync_mode == kSaiModeSync)
+    if(sai_status_ids[handler->instance][0].sync_mode == kSaiModeSync)
     {
         sai_hal_enable_tx(handler->instance);
     }
@@ -302,13 +302,14 @@ void sai_tx_interrupt_handle(uint32_t instance)
     uint8_t data_size = 0;
     uint8_t i = 0, j = 0;
     sai_handler_t *handler = sai_handler_ids[instance][1];
-    sai_internal_status_t *status = &sai_status_ids[instance][1];
-    sai_data_format_t *format = &status->format;
-    uint8_t space = FSL_FEATURE_I2S_FIFO_COUNT - format->watermark;
+    sai_data_format_t format = sai_status_ids[instance][1].format;
+    uint8_t space = FSL_FEATURE_I2S_FIFO_COUNT - format.watermark;
     uint32_t data = 0, temp = 0;
+    uint32_t len = sai_status_ids[instance][1].len;
+    uint32_t count = sai_status_ids[instance][1].count;
 
-    data_size = format->bits/8;
-    if((data_size == 3) || (format->bits & 0x7))
+    data_size = format.bits/8;
+    if((data_size == 3) || (format.bits & 0x7))
     {
         data_size = 4;
     }
@@ -319,31 +320,31 @@ void sai_tx_interrupt_handle(uint32_t instance)
         sai_hal_reset_tx(instance, kSaiResetTypeFIFO);
     }
     /*Judge if the data need to transmit is less than space */
-    if(space > (status->len - status->count)/data_size)
+    if(space > (len -count)/data_size)
     {
-        space = (status->len - status->count)/data_size;
+        space = (len -count)/data_size;
     }
     /* If normal, copy the data from sai buffer to FIFO */
     for(i = 0; i < space; i++)
     {
         for(j = 0; j < data_size; j ++)
         {
-            temp = (uint32_t)(*status->address);
+            temp = (uint32_t)(*sai_status_ids[instance][1].address);
             data |= (temp << (8U * j));
-            status->address ++;
+            sai_status_ids[instance][1].address ++;
         }
         sai_hal_transmit_data(instance, handler->fifo_channel, (uint32_t )data);
-        status->count += data_size;
+        sai_status_ids[instance][1].count += data_size;
         data = 0;
     }
-    /* clear the WSF */
-    sai_hal_clear_tx_state_flag(instance, kSaiStateFlagWordStart);
     sai_hal_clear_tx_state_flag(instance, kSaiStateFlagFIFOError);
     /* If a block is finished, just callback */
-    if(status->count == status->len)
+    count = sai_status_ids[instance][1].count;
+    if(count == len)
     {
-        status->count = 0;
-        status->callback(status->callback_param);
+        void * callback_param = sai_status_ids[instance][1].callback_param;
+        sai_status_ids[instance][1].count = 0;
+        (sai_status_ids[instance][1].callback)(callback_param);
     }
 }
 
@@ -359,12 +360,13 @@ void sai_rx_interrupt_handle(uint32_t instance)
     uint8_t data_size = 0;
     uint32_t data = 0;
     sai_handler_t *handler = sai_handler_ids[instance][0];
-    sai_internal_status_t *status = &sai_status_ids[instance][0];
-    sai_data_format_t *format = &status->format;
-    uint8_t space = format->watermark;
+    sai_data_format_t format = sai_status_ids[instance][0].format;
+    uint8_t space = format.watermark;
+    uint32_t len = sai_status_ids[instance][0].len;
+    uint32_t count = sai_status_ids[instance][0].count;
 
-    data_size = format->bits/8;
-    if((data_size == 3) || (format->bits & 0x7))
+    data_size = format.bits/8;
+    if((data_size == 3) || (format.bits & 0x7))
     {
         data_size = 4;
     }
@@ -374,9 +376,9 @@ void sai_rx_interrupt_handle(uint32_t instance)
         sai_hal_reset_rx(instance, kSaiResetTypeFIFO);
     }
     /*Judge if the data need to transmit is less than space */
-    if(space > ( status->len - status->count)/data_size)
+    if(space > (len - count)/data_size)
     {
-        space = (status->len - status->count)/data_size;
+        space = (len -count)/data_size;
     }
     /* Read data from FIFO to the buffer */
     for (i = 0; i < space; i ++)
@@ -384,17 +386,19 @@ void sai_rx_interrupt_handle(uint32_t instance)
         sai_hal_receive_data(instance, handler->fifo_channel, &data);
         for(j = 0; j < data_size; j ++)
         {
-            *status->address = (data >> (8U * j)) & 0xFF;
-            status->address ++;         
+            *sai_status_ids[instance][0].address = (data >> (8U * j)) & 0xFF;
+            sai_status_ids[instance][0].address ++;
         }
-        status->count += data_size;
+        sai_status_ids[instance][0].count += data_size;
     }
     sai_hal_clear_rx_state_flag(instance, kSaiStateFlagFIFOError);	
     /* If need to callback the function */
-    if (status->count == status->len)
+    count = sai_status_ids[instance][0].count;
+    if (count == len)
     {
-        status->count = 0;
-        status->callback(status->callback_param);
+        void *callback_param = sai_status_ids[instance][0].callback_param;
+        sai_status_ids[instance][0].count = 0;
+        (sai_status_ids[instance][0].callback)(callback_param);
     }
 }
 #endif
@@ -407,9 +411,8 @@ void sai_rx_interrupt_handle(uint32_t instance)
  *END**************************************************************************/
 void sai_register_callback(sai_handler_t *handler, sai_callback_t callback, void *callback_param)
 {
-    sai_internal_status_t *status = &sai_status_ids[handler->instance][handler->direction];
-    status->callback = callback;
-    status->callback_param = callback_param;
+    sai_status_ids[handler->instance][handler->direction].callback = callback;
+    sai_status_ids[handler->instance][handler->direction].callback_param = callback_param;
 }
 
 /*FUNCTION**********************************************************************
@@ -420,9 +423,8 @@ void sai_register_callback(sai_handler_t *handler, sai_callback_t callback, void
  *END**************************************************************************/
 uint32_t sai_send_data(sai_handler_t *handler, uint8_t *addr, uint32_t len)
 {
-    sai_internal_status_t *status = &sai_status_ids[handler->instance][1];
-    status->len = len;
-    status->address= addr;
+    sai_status_ids[handler->instance][1].len = len;
+    sai_status_ids[handler->instance][1].address= addr;
     return len;
 }
 
@@ -434,9 +436,8 @@ uint32_t sai_send_data(sai_handler_t *handler, uint8_t *addr, uint32_t len)
  *END**************************************************************************/
 uint32_t sai_receive_data(sai_handler_t *handler, uint8_t *addr, uint32_t len)
 {
-    sai_internal_status_t *status = &sai_status_ids[handler->instance][0];
-    status->len = len;
-    status->address= addr;
+    sai_status_ids[handler->instance][0].len = len;
+    sai_status_ids[handler->instance][0].address= addr;
     return len;
 }
 /*******************************************************************************

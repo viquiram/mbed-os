@@ -43,100 +43,101 @@
  * Definitions
 
  ******************************************************************************/
-/*! @brief Define the approach: enet interrupt handler to do receive */
+/*! @brief Defines the approach: ENET interrupt handler do receive */
 #define ENET_RECEIVE_ALL_INTERRUPT  0
 
-/*! @brief Define the statistic enable macro*/
+/*! @brief Defines the statistic enable macro.*/
 #define ENET_ENABLE_DETAIL_STATS    0
 
-/*! @brief Define alignment operation*/
+/*! @brief Defines the alignment operation.*/
 #define ENET_ALIGN(x,align)        ((unsigned int)((x) + ((align)-1)) & (unsigned int)(~(unsigned int)((align)- 1)))
 
 #if FSL_FEATURE_ENET_SUPPORT_PTP
-/*! @brief Define ptp ioctl macro*/
+/*! @brief Defines the PTP IOCTL macro.*/
 typedef enum _enet_ptp_ioctl
 {
-    kEnetPtpGetRxTimestamp = 0,    /*!< ENET ptp get receive timestamp*/
-    kEnetPtpGetTxTimestamp,        /*!< ENET ptp get transmit timestamp*/
-    kEnetPtpGetCurrentTime,        /*!< ENET ptp get current time*/
-    kEnetPtpSetCurrentTime,        /*!< ENET ptp set current time*/
-    kEnetPtpFlushTimestamp,        /*!< ENET ptp flush timestamp*/
-    kEnetPtpCorrectTime,           /*!< ENET ptp time Correction*/
-    kEnetPtpSendEthernetPtpV2,     /*!< ENET ptpv2 send Ethernet frame*/
-    kEnetPtpReceiveEthernetPtpV2   /*!< ENET ptpv2 receive with Ethernet frame*/
+    kEnetPtpGetRxTimestamp = 0,    /*!< ENET PTP gets receive timestamp*/
+    kEnetPtpGetTxTimestamp,        /*!< ENET PTP gets transmit timestamp*/
+    kEnetPtpGetCurrentTime,        /*!< ENET PTP gets current time*/
+    kEnetPtpSetCurrentTime,        /*!< ENET PTP sets current time*/
+    kEnetPtpFlushTimestamp,        /*!< ENET PTP flushes timestamp*/
+    kEnetPtpCorrectTime,           /*!< ENET PTP time correction*/
+    kEnetPtpSendEthernetPtpV2,     /*!< ENET PTPv2 sends Ethernet frame*/
+    kEnetPtpReceiveEthernetPtpV2   /*!< ENET PTPv2 receives with Ethernet frame*/
 } enet_ptp_ioctl_t;
 
-/*! @brief Define ptpv2 message buffer number*/
-typedef enum _enet_ptp_l2packet_buffer_number
+/*! @brief Defines the PTP message buffer number.*/
+typedef enum _enet_ptp_buffer_number
 {
-    kEnetPtpL2bufferNumber = 10  /*!< ptp layer2 frame buffer number*/
-} enet_ptp_l2packet_buffer_number_t;
+    kEnetPtpL2bufferNumber = 10,  /*!< PTP layer2 frame buffer number*/
+    kEnetPtpRingNumber = 25       /*!< PTP Ring buffer number*/
+} enet_ptp_buffer_number_t;
 
-/*! @brief Define ENET's ptp message related constant*/
+/*! @brief Defines the ENET PTP message related constant.*/
 typedef enum _enet_ptp_event_type
 {
-     kEnetPtpSourcePortIdLen = 10,  /*!< Ptp message sequence id length*/
-     kEnetPtpEventMsgType = 3,      /*!< Ptp event message type*/
-     kEnetPtpEventPort = 319,       /*!< Ptp event port number*/
-     kEnetPtpGnrlPort = 320         /*!< Ptp general port number*/
+     kEnetPtpSourcePortIdLen = 10,  /*!< PTP message sequence id length*/
+     kEnetPtpEventMsgType = 3,      /*!< PTP event message type*/
+     kEnetPtpEventPort = 319,       /*!< PTP event port number*/
+     kEnetPtpGnrlPort = 320         /*!< PTP general port number*/
 } enet_ptp_event_type_t;
 
-/*! @brief Define all ENET ptp content offest in IPV4 ptp UDP/IP multicast message*/
+/*! @brief Defines all ENET PTP content offsets in the IPv4 PTP UDP/IP multicast message.*/
 typedef enum _enet_ipv4_ptp_content_offset
 {
-    kEnetPtpIpVersionOffset = 0xe,   /*!< Ipv4 ptp message ip version offset*/
-    kEnetPtpUdpProtocolOffset = 0x17,/*!< Ipv4 ptp message udp protocol offset*/
-    kEnetPtpUdpPortOffset = 0x24,    /*!< Ipv4 ptp message udp port offset*/
-    kEnetPtpUdpMsgTypeOffset = 0x2a, /*!< Ipv4 ptp message udp message type offset*/
-    kEnetPtpUdpVersionoffset = 0x2b, /*!< Ipv4 ptp message udp version offset*/
-    kEnetPtpUdpClockIdOffset = 0x3e, /*!< Ipv4 ptp message udp clock id offset*/
-    kEnetPtpUdpSequenIdOffset = 0x48,/*!< Ipv4 ptp message udp sequence id offset*/
-    kEnetPtpUdpCtlOffset = 0x4a      /*!< Ipv4 ptp message udp control offset*/
+    kEnetPtpIpVersionOffset = 0xe,   /*!< IPv4 PTP message IP version offset*/
+    kEnetPtpUdpProtocolOffset = 0x17,/*!< IPv4 PTP message UDP protocol offset*/
+    kEnetPtpUdpPortOffset = 0x24,    /*!< IPv4 PTP message UDP port offset*/
+    kEnetPtpUdpMsgTypeOffset = 0x2a, /*!< IPv4 PTP message UDP message type offset*/
+    kEnetPtpUdpVersionoffset = 0x2b, /*!< IPv4 PTP message UDP version offset*/
+    kEnetPtpUdpClockIdOffset = 0x3e, /*!< IPv4 PTP message UDP clock id offset*/
+    kEnetPtpUdpSequenIdOffset = 0x48,/*!< IPv4 PTP message UDP sequence id offset*/
+    kEnetPtpUdpCtlOffset = 0x4a      /*!< IPv4 PTP message UDP control offset*/
 } enet_ipv4_ptp_content_offset_t;
 
-/*! @brief Define all ENET ptp content offest in IPV6 ptp UDP/IP multicast message*/
+/*! @brief Defines all ENET PTP content offset in THE IPv6 PTP UDP/IP multicast message.*/
 typedef enum _enet_ipv6_ptp_content_offset
 {
-    kEnetPtpIpv6UdpProtocolOffset = 0x14,  /*!< Ipv6 ptp message udp protocol offset*/
-    kEnetPtpIpv6UdpPortOffset = 0x38,      /*!< Ipv6 ptp message udp port offset*/
-    kEnetPtpIpv6UdpMsgTypeOffset = 0x3e,   /*!< Ipv6 ptp message udp message type offset*/
-    kEnetPtpIpv6UdpVersionOffset = 0x3f,   /*!< Ipv6 ptp message udp version offset*/
-    kEnetPtpIpv6UdpClockIdOffset = 0x52,   /*!< Ipv6 ptp message udp clock id offset*/
-    kEnetPtpIpv6UdpSequenceIdOffset = 0x5c,/*!< Ipv6 ptp message udp sequence id offset*/
-    kEnetPtpIpv6UdpCtlOffset = 0x5e        /*!< Ipv6 ptp message udp control offset*/
+    kEnetPtpIpv6UdpProtocolOffset = 0x14,  /*!< IPv6 PTP message UDP protocol offset*/
+    kEnetPtpIpv6UdpPortOffset = 0x38,      /*!< IPv6 PTP message UDP port offset*/
+    kEnetPtpIpv6UdpMsgTypeOffset = 0x3e,   /*!< IPv6 PTP message UDP message type offset*/
+    kEnetPtpIpv6UdpVersionOffset = 0x3f,   /*!< IPv6 PTP message UDP version offset*/
+    kEnetPtpIpv6UdpClockIdOffset = 0x52,   /*!< IPv6 PTP message UDP clock id offset*/
+    kEnetPtpIpv6UdpSequenceIdOffset = 0x5c,/*!< IPv6 PTP message UDP sequence id offset*/
+    kEnetPtpIpv6UdpCtlOffset = 0x5e        /*!< IPv6 PTP message UDP control offset*/
 } enet_ipv6_ptp_content_offset_t;
 
-/*! @brief Define all ENET ptp content offest in ptp Layer2 Ethernet message*/
+/*! @brief Defines all ENET PTP content offset in the PTP Layer2 Ethernet message.*/
 typedef enum _enet_ethernet_ptp_content_offset
 {
-    kEnetPtpEtherPktTypeOffset = 0x0c,   /*!< Ptpv2 message Ethernet packet type offset*/
-    kEnetPtpEtherMsgTypeOffset = 0x0e,   /*!< Ptpv2 message Ethernet message type offset*/
-    kEnetPtpEtherVersionOffset = 0x0f,   /*!< Ptpv2 message Ethernet version type offest*/
-    kEnetPtpEtherClockIdOffset = 0x22,   /*!< Ptpv2 message Ethernet clock id offset*/
-    kEnetPtpEtherSequenceIdOffset = 0x2c,/*!< Ptpv2 message Ethernet sequence id offset*/
-    kEnetPtpEtherCtlOffset = 0x2e        /*!< Ptpv2 message Ethernet control offset*/
+    kEnetPtpEtherPktTypeOffset = 0x0c,   /*!< PTPv2 message Ethernet packet type offset*/
+    kEnetPtpEtherMsgTypeOffset = 0x0e,   /*!< PTPv2 message Ethernet message type offset*/
+    kEnetPtpEtherVersionOffset = 0x0f,   /*!< PTPv2 message Ethernet version type offset*/
+    kEnetPtpEtherClockIdOffset = 0x22,   /*!< PTPv2 message Ethernet clock id offset*/
+    kEnetPtpEtherSequenceIdOffset = 0x2c,/*!< PTPv2 message Ethernet sequence id offset*/
+    kEnetPtpEtherCtlOffset = 0x2e        /*!< PTPv2 message Ethernet control offset*/
 } enet_ethernet_ptp_content_offset_t;
 
-/*! @brief Define the 1588 timer parameters*/
+/*! @brief Defines the 1588 timer parameters.*/
 typedef enum _enet_ptp_timer_wrap_period
 {
-    kEnetPtpAtperVaule = 1000000000, /*!< Ptp timer wrap aroud of one second */
-    kEnetBaseIncreaseUnit = 2        /*!< Ptp timer adjust clock increase vlaue 2*/
+    kEnetPtpAtperVaule = 1000000000, /*!< PTP timer wrap around one second */
+    kEnetBaseIncreaseUnit = 2        /*!< PTP timer adjusts clock and increases value to 2*/
 } enet_ptp_timer_wrap_period_t;
 #endif
 
-/*! @brief Define interrupt source index for interrupt vector change table*/
+/*! @brief Defines the interrupt source index for the interrupt vector change table.*/
 typedef enum _enet_interrupt_number
 {
     kEnetTstimerInt = 0, /*!< Timestamp interrupt*/
-    kEnetTsAvailInt, /*!< Ts-avail interrupt*/
+    kEnetTsAvailInt, /*!< TS-avail interrupt*/
     kEnetWakeUpInt,  /*!< Wakeup interrupt*/
     kEnetPlrInt,     /*!< Plr interrupt*/
     kEnetUnInt,      /*!< Un interrupt*/
-    kEnetRlInt,      /*!< Rl interrupt*/
-    kEnetLcInt,      /*!< Lc interrupt*/
+    kEnetRlInt,      /*!< RL interrupt*/
+    kEnetLcInt,      /*!< LC interrupt*/
     kEnetEberrInt,   /*!< Eberr interrupt*/
-    kEnetMiiInt,     /*!< Mii interrupt*/
+    kEnetMiiInt,     /*!< MII interrupt*/
     kEnetRxbInt ,    /*!< Receive byte interrupt*/
     kEnetRxfInt,    /*!< Receive frame interrupt*/
     kEnetTxbInt,    /*!< Transmit byte interrupt*/
@@ -144,160 +145,194 @@ typedef enum _enet_interrupt_number
     kEnetGraInt,    /*!< Gra interrupt*/
     kEnetBabtInt,   /*!< Babt interrupt*/
     kEnetBabrInt,   /*!< Babr interrupt*/
-    kEnetIntNum     /*!< interrupt number*/
+    kEnetIntNum     /*!< Interrupt number*/
 } enet_interrupt_number_t;
 
-/*! @brief Define ENET main constant*/
+/*! @brief Defines the ENET main constant.*/
 typedef enum _enet_frame_max
 {
-    kEnetMaxTimeout = 0x10000,    /*!< Max timeout*/
-    kEnetMaxFrameSize = 1518,     /*!< Max frame size*/
-    kEnetMaxFrameVlanSize = 1522, /*!< Max vlan frame size*/
-    kEnetMaxFrameDateSize = 1500, /*!< Max frame data size*/
-    kEnetMaxFrameBdNumbers = 7,   /*!< Max buffer descriptor numbers of a frame*/
-    kEnetFrameFcsLen = 4,         /*!< Fcs length*/
+    kEnetMaxTimeout = 0x10000,    /*!< Maximum timeout*/
+    kEnetMaxFrameSize = 1518,     /*!< Maximum frame size*/
+    kEnetMaxFrameVlanSize = 1522, /*!< Maximum VLAN frame size*/
+    kEnetMaxFrameDateSize = 1500, /*!< Maximum frame data size*/
+    kEnetMaxFrameBdNumbers = 7,   /*!< Maximum buffer descriptor numbers of a frame*/
+    kEnetFrameFcsLen = 4,         /*!< FCS length*/
+    kEnetEthernetHeadLen = 14     /*!< Ethernet Frame header length*/
 } enet_frame_max_t;
 
-/*! @brief Define the crc data for hash value calculation*/
+/*! @brief Defines the CRC data for a hash value calculation.*/
 typedef enum _enet_crc_parameter
 {
-    kEnetCrcData = 0xFFFFFFFFU,  /*!< Crc-32 max data */
-    kEnetCrcOffset = 8,          /*!< Crc-32 offset2*/
-    kEnetCrcMask1 = 0x3F         /*!< Crc-32 mask*/
+    kEnetCrcData = 0xFFFFFFFFU,  /*!< CRC-32 maximum data */
+    kEnetCrcOffset = 8,          /*!< CRC-32 offset2*/
+    kEnetCrcMask1 = 0x3F         /*!< CRC-32 mask*/
 } enet_crc_parameter_t;
 
-/*! @brief Define ENET protocol type and main parameters*/
+/*! @brief Defines the ENET protocol type and main parameters.*/
 typedef enum _enet_protocol_type
 {
     kEnetProtocolIeee8023 = 0x88F7,  /*!< Packet type Ethernet ieee802.3*/
-    kEnetProtocolIpv4 = 0x0800,      /*!< Packet type ipv4*/
-    kEnetProtocolIpv6 = 0x86dd,      /*!< Packet type ipv6*/
-    kEnetProtocol8021QVlan = 0x8100, /*!< Packet type vlan*/
-    kEnetPacketUdpVersion = 0x11,    /*!< Udp protocol type*/
-    kEnetPacketIpv4Version = 0x4,    /*!< Packet ip version ipv4*/
-    kEnetPacketIpv6Version = 0x6     /*!< Packet ip version IPV6*/
+    kEnetProtocolIpv4 = 0x0800,      /*!< Packet type IPv4*/
+    kEnetProtocolIpv6 = 0x86dd,      /*!< Packet type IPv6*/
+    kEnetProtocol8021QVlan = 0x8100, /*!< Packet type VLAN*/
+    kEnetPacketUdpVersion = 0x11,    /*!< UDP protocol type*/
+    kEnetPacketIpv4Version = 0x4,    /*!< Packet IP version IPv4*/
+    kEnetPacketIpv6Version = 0x6     /*!< Packet IP version IPv6*/
 } enet_protocol_type_t;
 
-/*! @brief Define multicast group structure for ENET device */
+/*! @brief Defines the ENET MAC control Configure*/
+typedef enum _enet_mac_control_flag
+{
+    kEnetSleepModeEnable = 0x1, /*!< ENET control sleep mode Enable*/
+    kEnetPayloadlenCheckEnable = 0x2, /*!< ENET receive payload length check Enable*/
+    kEnetRxFlowControlEnable = 0x4, /*!< ENET flow control, receiver detects PAUSE frames and stops transmitting data when a PAUSE frame is detected*/
+    kEnetRxCrcFwdEnable = 0x8, /*!< Received frame crc is stripped from the frame*/
+    kEnetRxPauseFwdEnable = 0x10,/*!< Pause frames are forwarded to the user application*/
+    kEnetRxPadRemoveEnable = 0x20, /*!< Padding is removed from received frames*/
+    kEnetRxBcRejectEnable = 0x40, /*!< Broadcast frame reject*/
+    kEnetRxPromiscuousEnable = 0x80, /*!< Promiscuous mode enabled*/
+    kEnetRxMiiLoopback = 0x100, /*!< MAC MII loopback mode*/
+} enet_mac_control_flag_t;
+
+/*! @brief Defines the multicast group structure for the ENET device. */
 typedef struct ENETMulticastGroup
 {
     enetMacAddr groupAdddr;        /*!< Multicast group address*/
     uint32_t hash;                 /*!< Hash value of the multicast group address*/
-    struct ENETMulticastGroup *next; /*!< Pointer of next group structure*/
-    struct ENETMulticastGroup *prv;  /*!< Pointer of the previou structure*/
+    struct ENETMulticastGroup *next; /*!< Pointer of the next group structure*/
+    struct ENETMulticastGroup *prv;  /*!< Pointer of the previous structure*/
 } enet_multicast_group_t;
 
-/*! @brief Define basic configuration structure for ENET device*/
+/*! @brief Defines the receive buffer descriptor configure structure.*/
+typedef struct ENETRxBdConfig
+{
+    uint8_t *rxBdPtrAlign;      /*!< Aligned receive buffer descriptor pointer */
+    uint8_t *rxBufferAlign;     /*!< Aligned receive data buffer pointer */
+    uint8_t *rxLargeBufferAlign; /*!< Aligned receive large data buffer pointer*/
+    uint8_t rxBdNum;             /*!< Aligned receive buffer descriptor pointer*/
+    uint8_t rxBufferNum;         /*!< Receive buffer number*/
+    uint8_t rxLargeBufferNum;    /*!< Large receive buffer number*/
+    uint32_t rxLargeBufferSizeAlign; /*!< Aligned large receive buffer size*/
+}enet_rxbd_config_t;
+
+/*! @brief Defines the transmit buffer descriptor configure structure.*/
+typedef struct ENETTxBdConfig
+{
+    uint8_t *txBdPtrAlign;      /*!< Aligned transmit buffer descriptor pointer*/
+    uint8_t *txBufferAlign;     /*!< Aligned transmit buffer descriptor pointer*/
+    uint8_t txBufferNum;         /*!< Transmit buffer number*/
+    uint32_t txBufferSizeAlign;  /*!< Aligned transmit buffer size*/
+}enet_txbd_config_t;
+
+/*! @brief Defines the basic configuration structure for the ENET device.*/
 typedef struct ENETMacConfig
 {
     uint16_t rxBufferSize;  /*!< Receive buffer size*/
-    uint16_t rxLargeBufferNumber; /*!< Receive large buffer number only needs when the bd size is smaller than the maximum frame length*/
-    uint16_t rxBufferAlignment;  /*!< Receive buffer alignment*/
-    uint16_t txBufferAlignment;  /*!< Transmit buffer alignment*/
+    uint16_t rxLargeBufferNumber; /*!< Receive large buffer number; Needed only when the BD size is smaller than the maximum frame length.*/
     uint16_t rxBdNumber;    /*!< Receive buffer descriptor number*/
     uint16_t txBdNumber;    /*!< Transmit buffer descriptor number*/
-    uint16_t bdAlignment;   /*!< Buffer descriptor alignment*/
-    enetMacAddr macAddr;    /*!< Mac hardware address*/
-    enet_config_rmii_t rmiiCfgMode;/*!< Rmii configure mode*/
+    enetMacAddr macAddr;    /*!< MAC hardware address*/
+    enet_config_rmii_t rmiiCfgMode;/*!< RMII configure mode*/
     enet_config_speed_t speed;     /*!< Speed configuration*/
     enet_config_duplex_t duplex;   /*!< Duplex configuration*/
-    bool isLoopEnabled;   /*!< Switcher to enable Mac loopback mode*/
-    bool isPromiscEnabled;/*!< Switcher to enable promiscuous*/
+    /*!< Mac control configure, it is recommended to use enet_mac_control_flag_t
+       it is special control set for loop mode, sleep mode, crc forward/terminate etc*/
+    uint32_t macCtlConfigure; 
     bool isTxAccelEnabled;/*!< Switcher to enable transmit accelerator*/
     bool isRxAccelEnabled;/*!< Switcher to enable receive accelerator*/
-    bool isStoreAndFwEnabled;      /*!< Switcher to enable store and forward*/
+    bool isStoreAndFwEnabled;  /*!< Switcher to enable store and forward*/
     enet_config_rx_accelerator_t rxAcceler; /*!< Receive accelerator configure*/
     enet_config_tx_accelerator_t txAcceler; /*!< Transmit accelerator configure*/
-    bool isVlanEnabled;    /*!< Switcher to enable vlan frame*/
-    bool isPhyAutoDiscover;/*!< Switcher to use phy auto discover*/
-    uint32_t miiClock;     /*!< Mii speed*/
+    bool isVlanEnabled;    /*!< Switcher to enable VLAN frame*/
+    bool isPhyAutoDiscover;/*!< Switcher to use PHY auto discover*/
+    uint32_t miiClock;     /*!< MII speed*/
 #if FSL_FEATURE_ENET_SUPPORT_PTP
-    uint16_t ptpRingBufferNumber; /*!< Ptp ring buffer number*/
-    bool isSlaveModeEnabled;      /*!< Ptp timer configuration*/
+    uint16_t ptpRingBufferNumber; /*!< PTP ring buffer number*/
+    bool isSlaveModeEnabled;      /*!< PTP timer configuration*/
 #endif
 } enet_mac_config_t;
 
-/*! @brief Define basic configuration for PHY*/
+/*! @brief Defines the basic configuration for PHY.*/
 typedef struct ENETPhyConfig
 {
     uint8_t phyAddr;    /*!< PHY address*/
-    bool isLoopEnabled; /*!< Switcher to enable PHY loop mode*/
+    bool isLoopEnabled; /*!< Switcher to enable the HY loop mode*/
 } enet_phy_config_t;
 
 #if FSL_FEATURE_ENET_SUPPORT_PTP
-/*! @brief Define ENET Mac ptp timestamp structure*/
+/*! @brief Defines the  ENET Mac PTP timestamp structure.*/
 typedef struct ENETMacPtpTime
 {
     uint64_t second;     /*!< Second*/
     uint32_t nanosecond; /*!< Nanosecond*/
 } enet_mac_ptp_time_t;
 
-/*! @brief Define ENET ptp timer drift structure*/
+/*! @brief Defines the ENET PTP timer drift structure.*/
 typedef struct ENETPtpDrift
 {
-    int32_t drift;    /*!< Drift for ptp timer to do adjust*/
+    int32_t drift;    /*!< Drift for the PTP timer to adjust*/
 } enet_ptp_drift_t;
 
-/*! @brief Define ENET Mac ptp time parameter*/
+/*! @brief Defines the ENET MAC PTP time parameter.*/
 typedef struct ENETPtpMasterTimeData
 {
-    uint8_t masterPtpInstance;/*!< Ptp master timer instance*/
-    uint64_t second;          /*!< Ptp master timer second */
+    uint8_t masterPtpInstance;/*!< PTP master timer instance*/
+    uint64_t second;          /*!< PTP master timer second */
 } enet_ptp_master_time_data_t;
 
-/*! @brief Define structure for ENET ptp message data and timestamp data*/
+/*! @brief Defines the structure for the ENET PTP message data and timestamp data.*/
 typedef struct ENETMacPtpTsData
 {
-    uint8_t version;              /*!< Ptp version*/
-    uint8_t sourcePortId[kEnetPtpSourcePortIdLen];/*!< Ptp source port ID*/
-    uint16_t sequenceId;          /*!< Ptp sequence ID*/
-    uint8_t messageType;          /*!< Ptp message type*/
-    enet_mac_ptp_time_t timeStamp;/*!< Ptp timestamp*/
+    uint8_t version;              /*!< PTP version*/
+    uint8_t sourcePortId[kEnetPtpSourcePortIdLen];/*!< PTP source port ID*/
+    uint16_t sequenceId;          /*!< PTP sequence ID*/
+    uint8_t messageType;          /*!< PTP message type*/
+    enet_mac_ptp_time_t timeStamp;/*!< PTP timestamp*/
 } enet_mac_ptp_ts_data_t;
 
-/*! @brief Define ENET ptp ring buffer structure for ptp message timestamp store*/
+/*! @brief Defines the ENET PTP ring buffer structure for the PTP message timestamp store.*/
 typedef struct ENETMacPtpTsRing
 {
     uint32_t front; /*!< The first index of the ring*/
     uint32_t end;   /*!< The end index of the ring*/
     uint32_t size;  /*!< The size of the ring*/
-    enet_mac_ptp_ts_data_t *ptpTsDataPtr;/*!< Ptp message data structure*/
+    enet_mac_ptp_ts_data_t *ptpTsDataPtr;/*!< PTP message data structure*/
 } enet_mac_ptp_ts_ring_t;
 
-/*! @brief Define ENET packet for ptp version2 message using layer2 Ethernet frame*/
+/*! @brief Defines the ENET packet for the PTP version2 message using the layer2 Ethernet frame.*/
 typedef struct ENETPtpL2packet
 {
     uint8_t packet[kEnetMaxFrameDateSize]; /*!< Buffer for ptpv2 message*/
-    uint16_t length;                       /*!< Ptp message length*/
+    uint16_t length;                       /*!< PTP message length*/
 } enet_ptp_l2packet_t;
 
-/*! @brief Define ENET ptpv2 packet queue using layer2 Ethernet frame*/
+/*! @brief Defines the ENET PTPv2 packet queue using the layer2 Ethernet frame.*/
 typedef struct ENETPtpL2queue
 {
-    enet_ptp_l2packet_t l2Packet[kEnetPtpL2bufferNumber]; /*!< Ptp layer2 packet*/
+    enet_ptp_l2packet_t l2Packet[kEnetPtpL2bufferNumber]; /*!< PTP layer2 packet*/
     uint16_t writeIdex;          /*!< Queue write index*/
     uint16_t readIdx;            /*!< Queue read index*/
 } enet_ptp_l2queue_t;
 
-/*! @brief Define ENET ptp layer2 Ethernet frame structure*/
+/*! @brief Defines the ENET PTP layer2 Ethernet frame structure.*/
 typedef struct ENETPtpL2Ethernet
 {
-    uint8_t *ptpMsg;     /*!< Ptp message*/
-    uint16_t length;     /*!< Length of ptp message*/
+    uint8_t *ptpMsg;     /*!< PTP message*/
+    uint16_t length;     /*!< Length of the PTP message*/
     enetMacAddr hwAddr;  /*!< Destination hardware address*/
 } enet_ptp_l2_ethernet_t;
 
-/*! @brief Define ENET ptp buffer structure for all 1588 data*/
+/*! @brief Defines the ENET PTP buffer structure for all 1588 data.*/
 typedef struct ENETPrivatePtpBuffer
 {
     enet_mac_ptp_ts_ring_t rxTimeStamp;/*!< Data structure for receive message*/
     enet_mac_ptp_ts_ring_t txTimeStamp;/*!< Data structure for transmit timestamp*/
     enet_ptp_l2queue_t *l2QueuePtr;    /*!< Data structure for layer2 Ethernet queue*/
-    uint64_t masterSecond;             /*!< Ptp time second when it's master time*/
+    uint64_t masterSecond;             /*!< PTP time second when it's master time*/
 } enet_private_ptp_buffer_t;
 #endif
 
-/*! @brief Define ENET header struct */
+/*! @brief Defines the ENET header structure. */
 typedef struct ENETEthernetHeader
 {
     enetMacAddr destAddr;  /*!< Destination address */
@@ -305,7 +340,7 @@ typedef struct ENETEthernetHeader
     uint16_t type;         /*!< Protocol type*/
 } enet_ethernet_header_t;
 
-/*! @brief Define ENET vlan frame header structure */
+/*! @brief Defines the ENET VLAN frame header structure. */
 typedef struct ENET8021vlanHeader
 {
     enetMacAddr destAddr;  /*!< Destination address */
@@ -315,12 +350,9 @@ typedef struct ENET8021vlanHeader
     uint16_t type;         /*!< Protocol type*/
 } enet_8021vlan_header_t;
 
-/*! @brief Define ENET Mac context structure for buffer address,buffer descriptor address etc*/
+/*! @brief Defines the ENET MAC context structure for the buffer address, buffer descriptor address, etc.*/
 typedef struct ENETMacContext
 {
-    uint8_t *bdUnAligned;     /*< UnAligned buffer descriptor*/
-    uint8_t *bufferUnAligned; /*< UnAligned buffer*/
-    uint8_t *largeBufferUnAligned; /*< UnAligned large buffer*/	
     uint8_t *rxBufferPtr;   /*!< Receive buffer pointer*/
     uint8_t *rxLargeBufferPtr; /*!< Receive large buffer descriptor*/
     uint8_t *txBufferPtr;   /*!< Transmit buffer pointer*/
@@ -335,11 +367,11 @@ typedef struct ENETMacContext
     uint32_t bufferdescSize;         /*!< ENET buffer descriptor size*/
     uint16_t rxBufferSizeAligned;      /*!< Receive buffer alignment size*/
 #if FSL_FEATURE_ENET_SUPPORT_PTP
-    enet_private_ptp_buffer_t *privatePtpPtr;/*!< Ptp private buffer pointer*/
+    enet_private_ptp_buffer_t privatePtp;/*!< PTP private buffer*/
 #endif
 } enet_mac_context_t;
 
-/*! @brief Define ENET packets statistic structure*/
+/*! @brief Defines the ENET packets statistic structure.*/
 typedef struct ENETMacStats
 {
     uint32_t statsRxTotal;   /*!< Total number of receive packets*/
@@ -351,9 +383,9 @@ typedef struct ENETMacStats
     uint32_t statsTxDiscard; /*!< Transmit discarded with error */
     uint32_t statsTxError;   /*!< Transmit error*/
     uint32_t statsRxAlign;   /*!< Receive non-octet alignment*/
-    uint32_t statsRxFcs;     /*!< Receive crc error*/
+    uint32_t statsRxFcs;     /*!< Receive CRC error*/
     uint32_t statsRxTruncate;/*!< Receive truncate*/
-    uint32_t statsRxLengthGreater;  /*!< Receive length greater than rcr[MAX_FL] */
+    uint32_t statsRxLengthGreater;  /*!< Receive length greater than RCR[MAX_FL] */
     uint32_t statsRxCollision;      /*!< Receive collision*/
     uint32_t statsRxOverRun;        /*!< Receive over run*/
     uint32_t statsTxOverFlow;       /*!< Transmit overflow*/
@@ -364,7 +396,7 @@ typedef struct ENETMacStats
     uint32_t statsTxSmall;          /*!< Transmit small packet*/
 } enet_stats_t;
 
-/*! @brief Define ENET Mac packet buffer structure*/
+/*! @brief Defines the ENET MAC packet buffer structure.*/
 typedef struct ENETMacPacketBuffer
 {
     uint8_t *data;
@@ -375,50 +407,47 @@ typedef struct ENETMacPacketBuffer
 typedef uint32_t (* enet_netif_callback_t)(void *enetPtr, enet_mac_packet_buffer_t *packetBuffer);
 #endif
 
-/*! @brief Define enet device data structure for ENET*/
+/*! @brief Defines the ENET device data structure for the ENET.*/
 typedef struct ENETDevIf
 {
     struct ENETDevIf *next; /*!< Next device structure address*/
-    void *netIfPtr;           /*!< Store the connected  upper layer instructure*/
+    void *netIfPtr;           /*!< Store the connected  upper layer in the structure*/
 #if ENET_RECEIVE_ALL_INTERRUPT
     void *enetNetifService;   /*!< Service function*/
 #endif
     enet_multicast_group_t *multiGroupPtr; /*!< Multicast group chain*/
     uint32_t deviceNumber;    /*!< Device number*/
     bool isInitialized;       /*!< Device initialized*/
-    uint16_t maxFrameSize;  /*!< Mac maximum frame size*/
-    enet_mac_config_t *macCfgPtr;/*!< Mac configuration structure*/
+    uint16_t maxFrameSize;  /*!< MAC maximum frame size*/
+    enet_mac_config_t *macCfgPtr;/*!< MAC configuration structure*/
     enet_phy_config_t *phyCfgPtr;/*!< PHY configuration structure*/
-    const struct ENETMacApi *macApiPtr;   /*!< Mac application interface structure*/
+    const struct ENETMacApi *macApiPtr;   /*!< MAC application interface structure*/
     void *phyApiPtr;             /*!< PHY application interface structure*/
-    enet_mac_context_t *macContextPtr; /*!< Mac context pointer*/
+    enet_mac_context_t *macContextPtr; /*!< MAC context pointer*/
 #if ENET_ENABLE_DETAIL_STATS
     enet_stats_t stats;                /*!< Packets statistic*/
 #endif
 #if ENET_RECEIVE_ALL_INTERRUPT
-    enet_netif_callback_t  enetNetifcall;  /*!< Receive callback function to upper layer*/
+    enet_netif_callback_t  enetNetifcall;  /*!< Receive callback function to the upper layer*/
 #else
     event_object_t enetReceiveSync;     /*!< Receive sync signal*/
 #endif
     lock_object_t enetContextSync;     /*!< Sync signal*/
 } enet_dev_if_t;
 
-/*! @brief Define basic application for ENET device*/
+/*! @brief Defines the basic application for the ENET device.*/
 typedef struct ENETMacApi
 {
-    uint32_t (* enet_mac_init)(enet_dev_if_t * enetIfPtr);/*!< Mac initialize interface*/
-    uint32_t (* enet_mac_close)(enet_dev_if_t * enetIfPtr);/*!< Mac close interface*/
-    uint32_t (* enet_mac_send)(enet_dev_if_t * enetIfPtr, uint8_t *packet, uint32_t size);/*!< Mac send packets*/
+    uint32_t (* enet_mac_init)(enet_dev_if_t * enetIfPtr, enet_rxbd_config_t *rxbdCfg, enet_txbd_config_t *txbdCfg);/*!< MAC initialize interface*/
+    uint32_t (* enet_mac_deinit)(enet_dev_if_t * enetIfPtr);/*!< MAC close interface*/
+    uint32_t (* enet_mac_send)(enet_dev_if_t * enetIfPtr, uint8_t *packet, uint32_t size);/*!< MAC send packets*/
 #if !ENET_RECEIVE_ALL_INTERRUPT
-    uint32_t (* enet_mac_receive)(enet_dev_if_t * enetIfPtr, enet_mac_packet_buffer_t *packBuffer);/*!< Mac receive interface*/
+    uint32_t (* enet_mac_receive)(enet_dev_if_t * enetIfPtr, enet_mac_packet_buffer_t *packBuffer);/*!< MAC receive interface*/
 #endif
-    uint32_t (* enet_mii_read)(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uint32_t *dataPtr);/*!< Mii read phy*/
-    uint32_t (* enet_mii_write)(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uint32_t data);/*!< Mii write phy*/
+    uint32_t (* enet_mii_read)(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uint32_t *dataPtr);/*!< MII reads PHY*/
+    uint32_t (* enet_mii_write)(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uint32_t data);/*!< MII writes PHY*/
     uint32_t (* enet_add_multicast_group)(uint32_t instance, enet_multicast_group_t *multiGroupPtr, uint8_t *groupAddr);/*!< Add multicast group*/
     uint32_t (* enet_leave_multicast_group)(uint32_t instance, enet_multicast_group_t *multiGroupPtr, uint8_t *groupAddr);/*!< Leave multicast group*/
-#if FSL_FEATURE_ENET_SUPPORT_PTP
-    uint32_t (* enet_ptp_ioctl)(enet_dev_if_t * enetIfPtr, uint32_t commandId, void *inOutPtr);/*!< Ptp ioctl*/
-#endif
 } enet_mac_api_t;
 
 /*******************************************************************
@@ -443,86 +472,80 @@ extern "C" {
 
 #if FSL_FEATURE_ENET_SUPPORT_PTP
 /*!
- * @brief Initialize the ENET ptp buffer ring with basic configuration.
+ * @brief Initializes the ENET PTP context structure with the basic configuration.
  *
- * @param ptpTsRingPtr The pointer to basic ptp configuration structure.
+ * @param macContextPtr The pointer to the ENET MAC macContext structure.
  * @return The execution status.
  */
-uint32_t enet_ptp_ring_init(enet_mac_ptp_ts_ring_t *ptpTsRingPtr);
-
-/*!
- * @brief Initialize the ENET ptp context structure with basic configuration.
- *
- * @param enetIfPtr The pointer to ENET basic configuration structure.
- * @return The execution status.
- */
-uint32_t enet_ptp_init(enet_dev_if_t *enetIfPtr);
+uint32_t enet_ptp_init(enet_private_ptp_buffer_t *privatePtpPtr, uint32_t ptpRxBufferNum, enet_mac_ptp_ts_data_t *ptpTsRxDataPtr, uint32_t ptpTxBufferNum, enet_mac_ptp_ts_data_t *ptpTsTxDataPtr);
   
 /*!
- * @brief Initialize the ENET ptp timer with basic configuration.
+ * @brief Initializes the ENET PTP timer with the basic configuration.
  *
- * After ptp start, the 1588 timer starts run. If you want the 1588 timer
- * the slave one please don't forget to enable the isSlaveEnabled flag.
+ * After the PTP starts, the 1588 timer also starts running. If the user wants the 1588 timer
+ * as the slave, enable the isSlaveEnabled flag.
  *
  * @param instance The ENET instance number.
- * @param ptpCfgPtr The pointer to basic ptp timer configuration structure.
+ * @param ptpCfgPtr The pointer to the basic PTP timer configuration structure.
  * @return The execution status.
  */
 uint32_t enet_ptp_start(uint32_t instance, bool isSlaveEnabled);
 
 /*!
- * @brief Parse the ENET packet. 
+ * @brief Parses the ENET packet. 
  *
- * Parse the ENET message and Check if it is a ptp message. If it is a ptp message
- * the message will be stored at ptp information structure. Message parsing 
- * decide if timestamp processing will be done after that.
+ * Parses the ENET message and checks if it is a PTP message. If it is a PTP message,
+ * the message is stored in the PTP information structure. Message parsing 
+ * decides whether timestamp processing is done after that.
  *
  * @param packet The ENET packet.
- * @param ptpTsPtr The pointer to ptp data structure.
- * @param isPtpMsg The ptp message flag.
+ * @param ptpTsPtr The pointer to the PTP data structure.
+ * @param isPtpMsg The PTP message flag.
+ * @param isFastEnabled The fast operation flag. If set, only check if it is a ptp message
+ *        and doesn't store any ptp message.
  * @return The execution status.
  */
-uint32_t enet_ptp_parse(uint8_t *packet, enet_mac_ptp_ts_data_t *ptpTsPtr, bool *isPtpMsg);
+uint32_t enet_ptp_parse(uint8_t *packet, enet_mac_ptp_ts_data_t *ptpTsPtr, bool *isPtpMsg, bool isFastEnabled);
 
 /*!
- * @brief Get current value of ENET ptp time.
+ * @brief Gets the current value of the ENET PTP time.
  *
- * @param ptpTimerPtr The ptp timer structure.
+ * @param ptpTimerPtr The PTP timer structure.
  * @return The execution status.
  */
 uint32_t enet_ptp_get_time(enet_mac_ptp_time_t *ptpTimerPtr);
 
 /*!
- * @brief Set current value of ENET ptp time.
+ * @brief Sets the current value of the ENET PTP time.
  *
- * @param ptpTimerPtr The ptp timer structure.
+ * @param ptpTimerPtr The PTP timer structure.
  * @return The execution status.
  */
 uint32_t enet_ptp_set_time(enet_mac_ptp_time_t *ptpTimerPtr);
 
 /*!
- * @brief Adjust ENET ptp time.
+ * @brief Adjusts the ENET PTP time.
  *
  * @param instance The ENET instance number.
- * @param drift The ptp timer drift value.
+ * @param drift The PTP timer drift value.
  * @return The execution status.
  */
 uint32_t enet_ptp_correction_time(uint32_t instance, int32_t drift);
 
 
 /*!
- * @brief Store transmit timestamp.
+ * @brief Stores the transmit timestamp.
  *
- * @param ptpBuffer The ptp buffer pointer.
+ * @param ptpBuffer The PTP buffer pointer.
  * @param bdPtr The current transmit buffer descriptor.
  * @return The execution status.
  */	
 uint32_t enet_ptp_store_tx_timestamp(enet_private_ptp_buffer_t *ptpBuffer,void *bdPtr);
 
 /*!
- * @brief Store receive timestamp.
+ * @brief Stores receive timestamp.
  *
- * @param ptpBuffer The ptp buffer pointer.
+ * @param ptpBuffer The PTP buffer pointer.
  * @param packet The current receive packet.
  * @param bdPtr The current receive buffer descriptor.
  * @return The execution status.
@@ -530,25 +553,25 @@ uint32_t enet_ptp_store_tx_timestamp(enet_private_ptp_buffer_t *ptpBuffer,void *
 uint32_t enet_ptp_store_rx_timestamp(enet_private_ptp_buffer_t *ptpBuffer, uint8_t *packet, void *bdPtr);
 
 /*!
- * @brief Initialize buffer queue for ptp layer2 Ethernet packets.
+ * @brief Initializes the buffer queue for the PTP layer2 Ethernet packets.
  *
- * @param ptpBuffer The ptp buffer pointer.
+ * @param ptpBuffer The PTP buffer pointer.
  * @return The execution status.
  */
-uint32_t enet_ptp_l2queue_init(enet_private_ptp_buffer_t *ptpBuffer);
+uint32_t enet_ptp_l2queue_init(enet_private_ptp_buffer_t *ptpBuffer, enet_ptp_l2queue_t *ptpL2QuePtr);
 
 /*!
- * @brief Add the ptp layer2 Ethernet packet to the ptp Ethernet packet queue.
+ * @brief Adds the PTP layer2 Ethernet packet to the PTP Ethernet packet queue.
  *
- * @param enetIfPtr The ENET context structure pointer.
+ * @param ptpQuePtr The ENET private ptp layer2 buffer queue structure pointer.
  * @param packet The packet buffer pointer.
  * @param length The packet length. 
  * @return The execution status.
  */
-uint32_t enet_ptp_service_l2packet(enet_dev_if_t * enetIfPtr, uint8_t *packet, uint16_t length);
+uint32_t enet_ptp_service_l2packet(enet_ptp_l2queue_t * ptpQuePtr, uint8_t *packet, uint16_t length);
 
 /*!
- * @brief Send the ptp layer2 Ethernet packet to net.
+ * @brief Sends the PTP layer2 Ethernet packet to the Net.
  *
  * @param enetIfPtr The ENET context structure.
  * @param paramPtr The buffer from upper layer. 
@@ -557,7 +580,7 @@ uint32_t enet_ptp_service_l2packet(enet_dev_if_t * enetIfPtr, uint8_t *packet, u
 uint32_t enet_ptp_send_l2packet(enet_dev_if_t * enetIfPtr, void *paramPtr);
 
 /*!
- * @brief Receive the ptp layer2 Ethernet packet from the net.
+ * @brief Receives the PTP layer2 Ethernet packet from the Net.
  *
  * @param enetIfPtr The ENET context structure.
  * @param paramPtr The buffer receive from net and will send to upper layer. 
@@ -566,7 +589,7 @@ uint32_t enet_ptp_send_l2packet(enet_dev_if_t * enetIfPtr, void *paramPtr);
 uint32_t enet_ptp_receive_l2packet(enet_dev_if_t * enetIfPtr,void *paramPtr);
 
 /*!
- * @brief The function provides the handler for 1588 stack to do ptp ioctl.
+ * @brief Provides the handler for the 1588 stack to do PTP IOCTL.
  *
  * @param enetIfPtr The ENET context structure.
  * @param commandId The command id.
@@ -576,7 +599,7 @@ uint32_t enet_ptp_receive_l2packet(enet_dev_if_t * enetIfPtr,void *paramPtr);
 uint32_t enet_ptp_ioctl(enet_dev_if_t * enetIfPtr, uint32_t commandId, void *inOutPtr);
 
 /*!
- * @brief Stop ENET ptp timer.
+ * @brief Stops the ENET PTP timer.
  *
  * @param instance The ENET instance number.
  * @return The execution status.
@@ -584,36 +607,36 @@ uint32_t enet_ptp_ioctl(enet_dev_if_t * enetIfPtr, uint32_t commandId, void *inO
 uint32_t enet_ptp_stop(uint32_t instance);
 
 /*!
- * @brief Check if the ptp ring buffer is full.
+ * @brief Checks whether the PTP ring buffer is full.
  *
- * @param ptpTsRingPtr The ENET ptp timestamp ring.
- * @return True if the ptp ring buffer is full else false.
+ * @param ptpTsRingPtr The ENET PTP timestamp ring.
+ * @return True if the PTP ring buffer is full. Otherwise, false.
  */
 bool enet_ptp_ring_is_full(enet_mac_ptp_ts_ring_t *ptpTsRingPtr);
 
 /*!
- * @brief Update the latest ring buffers.
+ * @brief Updates the latest ring buffers.
  *
- * Add the ptp message data to the ptp ring buffers and increase the 
- * ptp ring buffer index.
+ * Adds the PTP message data to the PTP ring buffers and increases the 
+ * PTP ring buffer index.
  *
- * @param ptpTsRingPtr The ENET ptp timestamp ring.
- * @param data The ptp data buffer.
+ * @param ptpTsRingPtr The ENET PTP timestamp ring.
+ * @param data The PTP data buffer.
  * @return The execution status.
  */
 uint32_t enet_ptp_ring_update(enet_mac_ptp_ts_ring_t *ptpTsRingPtr, enet_mac_ptp_ts_data_t *data);
 
 /*!
- * @brief Search the element in ring buffers with the message ID and Clock Id.
+ * @brief Searches the element in ring buffers with the message ID and Clock ID.
  *
- * @param ptpTsRingPtr The ENET ptp timestamp ring.
- * @param data The ptp data buffer.
+ * @param ptpTsRingPtr The ENET PTP timestamp ring.
+ * @param data The PTP data buffer.
  * @return The execution status.
  */
 uint32_t enet_ptp_ring_search(enet_mac_ptp_ts_ring_t *ptpTsRingPtr, enet_mac_ptp_ts_data_t *data);
 
 /*!
- * @brief Calculate ENET ptp ring buffer index.
+ * @brief Calculates the ENET PTP ring buffer index.
  *
  * @param size The ring size.
  * @param curIdx The current ring index.
@@ -626,15 +649,15 @@ static inline uint32_t enet_ptp_ring_index(uint32_t size, uint32_t curIdx, uint3
 }
 
 /*!
- * @brief Free all ring buffers.
+ * @brief Frees all ring buffers.
  *
- * @param enetContextPtr The ENET Mac context buffer.
+ * @param enetContextPtr The ENET MAC context buffer.
  * @return The execution status.
  */
 uint32_t enet_ptp_deinit(enet_mac_context_t *enetContextPtr);
 
 /*!
- * @brief The ENET ptp time interrupt handler.
+ * @brief The ENET PTP time interrupt handler.
  *
  * @param enetIfPtr The ENET context structure pointer.
  */
@@ -663,46 +686,99 @@ uint32_t enet_mii_read(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uin
 uint32_t enet_mii_write(uint32_t instance, uint32_t phyAddr, uint32_t phyReg, uint32_t data);
 
 /*!
- * @brief Initialize ENET buffer descriptors.
+ * @brief Initializes  ENET buffer descriptors.
  *
  * @param enetIfPtr The ENET context structure.
  * @return The execution status.
  */
 uint32_t enet_mac_bd_init(enet_dev_if_t * enetIfPtr);
 
- /*!
- * @brief Initialize ENET Mac rmii/mii interface.
+/*!
+ * @brief Initializes the ENET MAC MII(MDC/MDIO) interface.
  *
  * @param enetIfPtr The ENET context structure.
  * @return The execution status.
  */
 uint32_t enet_mac_mii_init(enet_dev_if_t * enetIfPtr);
 
- /*!
- * @brief Initialize ENET Mac FIFO and accelerator with the basic configuration.
+/*!
+ * @brief Initialize the ENET receive buffer descriptors.
+ *
+ * If you open ENET_RECEIVE_ALL_INTERRUPT to do receive 
+ * data buffer numbers can be the same as the receive descriptor numbers. 
+ * But if you close ENET_RECEIVE_ALL_INTERRUPT and choose polling receive 
+ * frames please make sure the receive data buffers are more than 
+ * buffer descriptor numbers to guarantee a good performance.
  *
  * @param enetIfPtr The ENET context structure.
+ * @param rxbdCfg The receive buffer descriptor configuration. 
  * @return The execution status.
  */
-uint32_t enet_mac_fifo_accelerator_init(enet_dev_if_t * enetIfPtr);
+uint32_t enet_mac_rxbd_init(enet_dev_if_t * enetIfPtr, enet_rxbd_config_t *rxbdCfg);
 
 /*!
- * @brief Close ENET device.
+ * @brief Deinitialize the ENET receive buffer descriptors.
+ *
+ * Deinitialize the ENET receive buffer descriptors. 
+ *
+ * @param enetIfPtr The ENET context structure.
+ * @return The execution status.
+ */ 
+
+uint32_t enet_mac_rxbd_deinit(enet_dev_if_t * enetIfPtr);
+
+/*!
+ * @brief Initialize the ENET transmit buffer descriptors.
+ *
+ * @param enetIfPtr The ENET context structure.
+ * @param txbdCfg The transmit buffer descriptor configuration. 
+ * @return The execution status.
+ */
+uint32_t enet_mac_txbd_init(enet_dev_if_t * enetIfPtr, enet_txbd_config_t *txbdCfg);
+
+/*!
+ * @brief Deinitialize the ENET transmit buffer descriptors.
+ *
+ * Deinitialize the ENET transmit buffer descriptors. 
+ *
+ * @param enetIfPtr The ENET context structure.
+ * @return The execution status.
+ */ 
+uint32_t enet_mac_txbd_deinit(enet_dev_if_t * enetIfPtr);
+
+/*!
+ * @brief Initializes ENET MAC FIFO and accelerator with the basic configuration.
  *
  * @param enetIfPtr The ENET context structure.
  * @return The execution status.
  */
-uint32_t enet_mac_close(enet_dev_if_t * enetIfPtr);
+uint32_t enet_mac_configure_fifo_accel(enet_dev_if_t * enetIfPtr);
+
+/*!
+ * @brief the ENET controller with the basic configuration.
+ *
+ * @param enetIfPtr The ENET context structure.
+ * @return The execution status.
+ */
+uint32_t enet_mac_configure_controller(enet_dev_if_t * enetIfPtr);
+
+/*!
+ * @brief Deinit the ENET device.
+ *
+ * @param enetIfPtr The ENET context structure.
+ * @return The execution status.
+ */
+uint32_t enet_mac_deinit(enet_dev_if_t * enetIfPtr);
 
 #if !ENET_RECEIVE_ALL_INTERRUPT
 /*!
- * @brief Update receive buffer descriptor.
+ * @brief Updates the receive buffer descriptor.
  *
- * This is used to update the used receive buffer descriptor ring to
- * make sure the used bds will be correctly used again. It will clean 
- * the status region and set the control region of the used receive buffer 
- * descriptor. If the isBufferUpdate flag is set the data buffer in the
- * buffer descriptor will be updated.
+ * This updates the used receive buffer descriptor ring to
+ * ensure that the used BDS is correctly used again. It  cleans 
+ * the status region and sets the control region of the used receive buffer 
+ * descriptor. If the isBufferUpdate flag is set, the data buffer in the
+ * buffer descriptor is updated.
  *
  * @param enetIfPtr The ENET context structure.
  * @param isBufferUpdate The data buffer update flag.
@@ -711,11 +787,11 @@ uint32_t enet_mac_close(enet_dev_if_t * enetIfPtr);
 uint32_t enet_mac_update_rxbd(enet_dev_if_t * enetIfPtr, bool isBufferUpdate);
 #else
 /*!
- * @brief Updata receive buffer descriptor.
+ * @brief Updates the receive buffer descriptor.
  *
- * To clear the status region and set the control region of the current receive buffer 
- * descriptor to make sure it will be right used again. It still increase the buffer 
- * descritor index to the next buffer descriptor.
+ * Clears the status region and sets the control region of the current receive buffer 
+ * descriptor to ensure that it is  used correctly again. It  increases the buffer 
+ * descriptor index to the next buffer descriptor.
  *
  * @param enetIfPtr The ENET context structure.
  * @return The execution status.
@@ -723,26 +799,26 @@ uint32_t enet_mac_update_rxbd(enet_dev_if_t * enetIfPtr, bool isBufferUpdate);
 uint32_t enet_mac_update_rxbd(enet_dev_if_t * enetIfPtr);
 #endif
 /*!
- * @brief Process ENET receive frame error statistic.
+ * @brief Processes the ENET receive frame error statistics.
  *
- * This interface is used to get the error statistic of the received frame.
- * because the error information is in the last bd of a frame, this interface
- * should be called when processing the last bd of a frame.
+ * This interface gets the error statistics of the received frame.
+ * Because the error information is in the last BD of a frame, this interface
+ * should be called when processing the last BD of a frame.
  *
  * @param enetIfPtr The ENET context structure.
- * @param data The current control and status data of buffer descriptor.
+ * @param data The current control and status data of the buffer descriptor.
  * @return The frame error status.
- *         - true if the frame is error. 
- *         - false if the frame is without any error.
+ *         - True if the frame has an error. 
+ *         - False if the frame does not have an error.
  */
 bool enet_mac_rx_error_stats(enet_dev_if_t * enetIfPtr, uint32_t data);
 
 /*!
- * @brief Process ENET transmit frame statistic.
+ * @brief Processes the ENET transmit frame statistics.
  *
- * This interface is used to get the error statistic of the transmit frame.
- * beacuse the error information is in the last bd of a frame, this interface
- * should be called when processing the last bd of a frame.
+ * This interface gets the error statistics of the transmit frame.
+ * Because the error information is in the last BD of a frame, this interface
+ * should be called when processing the last BD of a frame.
  *
  * @param enetIfPtr The ENET context structure.
  * @param curBd The current buffer descriptor.
@@ -752,10 +828,10 @@ void enet_mac_tx_error_stats(enet_dev_if_t * enetIfPtr,void *curBd);
 /*!
  * @brief ENET transmit buffer descriptor cleanup.
  *
- * First, store transmit frame error statistic and ptp timestamp of transmitted packets. 
+ * First, store the transmit frame error statistic and PTP timestamp of the transmitted packets. 
  * Second, clean up the used transmit buffer descriptors.
- * If the ptp 1588 feature is open, this interface will do capture 1588 timestamp. 
- * It is called by transmit interrupt handler.
+ * If the PTP 1588 feature is open, this interface  captures the 1588 timestamp. 
+ * It is called by the transmit interrupt handler.
  *
  * @param enetIfPtr The ENET context structure.
  * @return The execution status.
@@ -763,7 +839,7 @@ void enet_mac_tx_error_stats(enet_dev_if_t * enetIfPtr,void *curBd);
 uint32_t enet_mac_tx_cleanup(enet_dev_if_t * enetIfPtr);
 #if !ENET_RECEIVE_ALL_INTERRUPT
 /*!
- * @brief Receive ENET packets.
+ * @brief Receives ENET packets.
  *
  * @param enetIfPtr The ENET context structure.
  * @param packBuffer The received data buffer.
@@ -772,7 +848,7 @@ uint32_t enet_mac_tx_cleanup(enet_dev_if_t * enetIfPtr);
 uint32_t enet_mac_receive(enet_dev_if_t * enetIfPtr, enet_mac_packet_buffer_t *packBuffer);
 #else
 /*!
- * @brief Receive ENET packets.
+ * @brief Receives ENET packets.
  *
  * @param enetIfPtr The ENET context structure.
  * @return The execution status.
@@ -780,7 +856,7 @@ uint32_t enet_mac_receive(enet_dev_if_t * enetIfPtr, enet_mac_packet_buffer_t *p
 uint32_t enet_mac_receive(enet_dev_if_t * enetIfPtr);
 #endif
 /*!
- * @brief Transmit ENET packets.
+ * @brief Transmits ENET packets.
  *
  * @param enetIfPtr The ENET context structure.
  * @param packet The frame to be transmitted.
@@ -804,51 +880,52 @@ void enet_mac_rx_isr(void *enetIfPtr);
 void enet_mac_tx_isr(void *enetIfPtr);
 
 /*!
- * @brief Calculate crc hash value.
+ * @brief Calculates the CRC hash value.
  *
- * @param address The ENET Mac hardware address.
- * @param crcVlaue The calculated crc value of the Mac address.
+ * @param address The ENET MAC hardware address.
+ * @param crcVlaue The calculated CRC value of the Mac address.
  */
 void enet_mac_calculate_crc32(enetMacAddr address, uint32_t *crcValue);
 
 /*!
- * @brief Add ENET device to multicast group.
+ * @brief Adds the ENET device to a multicast group.
  *
  * @param instance The ENET instance number.
  * @param multiGroupPtr The ENET multicast group structure.
- * @param address The ENET Mac hardware address.
+ * @param address The ENET MAC hardware address.
  * @return The execution status.
  */
 uint32_t enet_mac_add_multicast_group(uint32_t instance, enet_multicast_group_t *multiGroupPtr, enetMacAddr address);
 
 /*!
- * @brief Move ENET device from a multicast group.
+ * @brief Moves the ENET device from a multicast group.
  *
  * @param instance The ENET instance number.
  * @param multiGroupPtr The ENET multicast group structure.
- * @param address The ENET Mac hardware address.
+ * @param address The ENET MAC hardware address.
  * @return The execution status.
  */
 uint32_t enet_mac_leave_multicast_group(uint32_t instance, enet_multicast_group_t *multiGroupPtr, enetMacAddr address);
 
 /*!
- * @brief Initialize the ENET with the basic configuration.
+ * @brief Initializes the ENET with the basic configuration.
  *
- * @param enetIfPtr The pointer to basic configuration structure.
+ * @param enetIfPtr The pointer to the basic configuration structure.
  * @return The execution status.
  */
-uint32_t enet_mac_init(enet_dev_if_t * enetIfPtr);
+uint32_t enet_mac_init(enet_dev_if_t * enetIfPtr, enet_rxbd_config_t *rxbdCfg,
+                            enet_txbd_config_t *txbdCfg);
 
 /*!
- * @brief Enqueue a data buffer to buffer queue.
+ * @brief Enqueues a data buffer to the buffer queue.
  *
  * @param queue The buffer queue.
- * @param buffer The buffer to add to the buffer queue
+ * @param buffer The buffer to add to the buffer queue.
  */
 void enet_mac_enqueue_buffer( void **queue, void *buffer);
 
 /*!
- * @brief Dequeue a buffer from buffer queue.
+ * @brief Dequeues a buffer from the buffer queue.
  *
  * @param queue The buffer queue.
  * @return The dequeued data buffer.

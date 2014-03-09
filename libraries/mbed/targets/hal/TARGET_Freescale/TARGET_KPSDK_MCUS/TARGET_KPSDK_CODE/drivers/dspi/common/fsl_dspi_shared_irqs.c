@@ -35,18 +35,18 @@
  ******************************************************************************/
 
 /*!
- * @brief Declare instantiations of the shared irq configuration. This is used in the irq handler 
- * to keep track of the driver type (master or slave) and the driver run-time state. 
+ * @brief Declare instantiations of the shared irq configuration. This is used in the irq handler
+ * to keep track of the driver type (master or slave) and the driver run-time state.
  */
 dspi_shared_irq_config_t g_dspiSharedIrqConfig[HW_SPI_INSTANCE_COUNT];
 
 /*!
- * @brief Table to save DSPI IRQ enum numbers defined in CMSIS files. 
+ * @brief Table to save DSPI IRQ enum numbers defined in CMSIS files.
  *
- * This is used by DSPI master and slave init functions to enable or disable DSPI interrupts. 
+ * This is used by DSPI master and slave init functions to enable or disable DSPI interrupts.
  * This table is indexed by the module instance number and returns DSPI IRQ numbers.
  */
-#if defined (K64F12_SERIES) || defined (K70F12_SERIES)   
+#if defined (K64F12_SERIES) || defined (K70F12_SERIES)
 IRQn_Type dspi_irq_ids[HW_SPI_INSTANCE_COUNT] = {SPI0_IRQn, SPI1_IRQn, SPI2_IRQn};
 #elif defined (K22F51212_SERIES)
 IRQn_Type dspi_irq_ids[HW_SPI_INSTANCE_COUNT] = {SPI0_IRQn, SPI1_IRQn};
@@ -62,8 +62,8 @@ static void dspi_handle_shared_irq(uint32_t instance);
  * Code
  ******************************************************************************/
 
-/*! 
- * @brief The function dspi_handle_shared_irq passes IRQ control to either the master or 
+/*!
+ * @brief The function dspi_handle_shared_irq passes IRQ control to either the master or
  * slave driver.
  *
  * The address of the IRQ handlers are checked to make sure they are non-zero before
@@ -92,9 +92,9 @@ static void dspi_handle_shared_irq(uint32_t instance)
     }
 }
 
-/*! 
- * @brief This function is the implementation of SPI0 handler named in startup code. 
- * 
+/*!
+ * @brief This function is the implementation of SPI0 handler named in startup code.
+ *
  * It passes the instance to the shared DSPI IRQ handler.
  */
 void SPI0_IRQHandler(void)
@@ -102,9 +102,9 @@ void SPI0_IRQHandler(void)
     dspi_handle_shared_irq(HW_SPI0);
 }
 
-/*! 
- * @brief This function is the implementation of SPI1 handler named in startup code. 
- * 
+/*!
+ * @brief This function is the implementation of SPI1 handler named in startup code.
+ *
  * It passes the instance to the shared DSPI IRQ handler.
  */
 void SPI1_IRQHandler(void)
@@ -112,10 +112,10 @@ void SPI1_IRQHandler(void)
     dspi_handle_shared_irq(HW_SPI1);
 }
 
-#if defined (K64F12_SERIES) || defined (K70F12_SERIES)   
-/*! 
- * @brief This function is the implementation of SPI2 handler named in startup code. 
- * 
+#if defined (K64F12_SERIES) || defined (K70F12_SERIES)
+/*!
+ * @brief This function is the implementation of SPI2 handler named in startup code.
+ *
  * It passes the instance to the shared DSPI IRQ handler.
  */
 void SPI2_IRQHandler(void)

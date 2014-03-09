@@ -123,7 +123,7 @@ static volatile channel_enabler_t gs_areChannelsEnabled;
 /* See sw_timer.h for documentation of this function.*/
 uint32_t sw_timer_init_service(void)
 {
-    pit_config_t pitConfig;
+    pit_user_config_t pitConfig;
   
     /* All channels are disabled*/
     gs_areChannelsEnabled = 0;

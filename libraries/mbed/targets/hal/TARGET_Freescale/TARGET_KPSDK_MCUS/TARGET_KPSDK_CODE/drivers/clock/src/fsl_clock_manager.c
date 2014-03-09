@@ -31,7 +31,6 @@
 #include "fsl_device_registers.h"
 #include "fsl_sim_hal.h"
 #include "fsl_clock_manager.h"
-#include "fsl_clock_configs.h"
 #include "fsl_clock_manager_private.h"
 
 /*******************************************************************************
@@ -450,7 +449,7 @@ clock_manager_error_code_t clock_manager_get_frequency_by_source(clock_source_na
         clock_hal_get_clock_divider(kSimClockDividerUsbfsDiv, &divider);
         clock_hal_get_clock_divider(kSimClockDividerUsbfsFrac, &frac);
         break;
-    case kSimClockDividerUsbDiv:                   /* USBSRC   K64, KL25 and K22*/
+    case kSimClockDividerUsbDiv:                   /* USBSRC   K64, KL25, KV31, and K22*/
         clock_hal_get_clock_divider(kSimClockDividerUsbDiv, &divider);
         clock_hal_get_clock_divider(kSimClockDividerUsbFrac, &frac);
         break;

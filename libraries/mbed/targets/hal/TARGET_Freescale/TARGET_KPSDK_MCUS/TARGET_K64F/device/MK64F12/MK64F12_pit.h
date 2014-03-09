@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -79,11 +79,11 @@ typedef union _hw_pit_mcr
 
 #ifndef __LANGUAGE_ASM__
 #define HW_PIT_MCR               (*(__IO hw_pit_mcr_t *) HW_PIT_MCR_ADDR)
-#define HW_PIT_MCR_RD            (HW_PIT_MCR.U)
+#define HW_PIT_MCR_RD()          (HW_PIT_MCR.U)
 #define HW_PIT_MCR_WR(v)         (HW_PIT_MCR.U = (v))
-#define HW_PIT_MCR_SET(v)        (HW_PIT_MCR_WR(HW_PIT_MCR_RD |  (v)))
-#define HW_PIT_MCR_CLR(v)        (HW_PIT_MCR_WR(HW_PIT_MCR_RD & ~(v)))
-#define HW_PIT_MCR_TOG(v)        (HW_PIT_MCR_WR(HW_PIT_MCR_RD ^  (v)))
+#define HW_PIT_MCR_SET(v)        (HW_PIT_MCR_WR(HW_PIT_MCR_RD() |  (v)))
+#define HW_PIT_MCR_CLR(v)        (HW_PIT_MCR_WR(HW_PIT_MCR_RD() & ~(v)))
+#define HW_PIT_MCR_TOG(v)        (HW_PIT_MCR_WR(HW_PIT_MCR_RD() ^  (v)))
 #endif
 //@}
 
@@ -208,7 +208,7 @@ typedef union _hw_pit_ldvaln
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the PIT_LDVALn_TSV field.
-#define BR_PIT_LDVALn_TSV(n) (HW_PIT_LDVALn(n).B.TSV)
+#define BR_PIT_LDVALn_TSV(n) (HW_PIT_LDVALn(n).U)
 #endif
 
 //! @brief Format value for bitfield PIT_LDVALn_TSV.
@@ -216,7 +216,7 @@ typedef union _hw_pit_ldvaln
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TSV field to a new value.
-#define BW_PIT_LDVALn_TSV(n, v) (HW_PIT_LDVALn_WR(n, (HW_PIT_LDVALn_RD(n) & ~BM_PIT_LDVALn_TSV) | BF_PIT_LDVALn_TSV(v)))
+#define BW_PIT_LDVALn_TSV(n, v) (HW_PIT_LDVALn_WR(n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -273,7 +273,7 @@ typedef union _hw_pit_cvaln
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the PIT_CVALn_TVL field.
-#define BR_PIT_CVALn_TVL(n)  (HW_PIT_CVALn(n).B.TVL)
+#define BR_PIT_CVALn_TVL(n)  (HW_PIT_CVALn(n).U)
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -286,7 +286,7 @@ typedef union _hw_pit_cvaln
  *
  * Reset value: 0x00000000U
  *
- * These register contain the control bits for each timer.
+ * These registers contain the control bits for each timer.
  */
 typedef union _hw_pit_tctrln
 {

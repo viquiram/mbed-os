@@ -607,6 +607,9 @@ void sai_hal_clear_tx_state_flag(uint8_t instance, sai_state_flag_t flag)
         case kSaiStateFlagFIFOError:
             BW_I2S_TCSR_FEF(instance,1);/* Write logic 1 to clear this bit */
             break;
+        case kSaiStateFlagSoftReset:
+            BW_I2S_TCSR_SR(instance, 0);
+            break;
         default:
             break;
     }
@@ -631,6 +634,9 @@ void sai_hal_clear_rx_state_flag(uint8_t instance, sai_state_flag_t flag)
             break;
         case kSaiStateFlagFIFOError:
             BW_I2S_RCSR_FEF(instance,1);
+            break;
+        case kSaiStateFlagSoftReset:
+            BW_I2S_RCSR_SR(instance, 0);
             break;
         default:
             break;

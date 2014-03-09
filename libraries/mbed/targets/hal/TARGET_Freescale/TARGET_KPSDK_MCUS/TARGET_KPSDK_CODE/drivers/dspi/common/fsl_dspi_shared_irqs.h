@@ -30,10 +30,10 @@
 #if !defined(__FSL_DSPI_IRQS_H__)
 #define __FSL_DSPI_IRQS_H__
 
+#include <stdbool.h>
 #include "fsl_device_registers.h"
 #include "fsl_dspi_master_driver.h"
 #include "fsl_dspi_slave_driver.h"
-#include <stdbool.h>
 
 /*!
  * @addtogroup dspi_shared_irq

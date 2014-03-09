@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -120,7 +120,7 @@ typedef union _hw_dac_datnl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the DAC_DATnL_DATA0 field.
-#define BR_DAC_DATnL_DATA0(x, n) (HW_DAC_DATnL(x, n).B.DATA0)
+#define BR_DAC_DATnL_DATA0(x, n) (HW_DAC_DATnL(x, n).U)
 #endif
 
 //! @brief Format value for bitfield DAC_DATnL_DATA0.
@@ -128,7 +128,7 @@ typedef union _hw_dac_datnl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DATA0 field to a new value.
-#define BW_DAC_DATnL_DATA0(x, n, v) (HW_DAC_DATnL_WR(x, n, (HW_DAC_DATnL_RD(x, n) & ~BM_DAC_DATnL_DATA0) | BF_DAC_DATnL_DATA0(v)))
+#define BW_DAC_DATnL_DATA0(x, n, v) (HW_DAC_DATnL_WR(x, n, v))
 #endif
 //@}
 //-------------------------------------------------------------------------------------------
@@ -222,9 +222,9 @@ typedef union _hw_dac_sr
     struct _hw_dac_sr_bitfields
     {
         uint8_t DACBFRPBF : 1;         //!< [0] DAC Buffer Read Pointer Bottom
-                                       //!< Position Flag
+                                       //! Position Flag
         uint8_t DACBFRPTF : 1;         //!< [1] DAC Buffer Read Pointer Top Position
-                                       //!< Flag
+                                       //! Flag
         uint8_t DACBFWMF : 1;          //!< [2] DAC Buffer Watermark Flag
         uint8_t RESERVED0 : 5;         //!< [7:3]
     } B;
@@ -347,9 +347,9 @@ typedef union _hw_dac_c0
     struct _hw_dac_c0_bitfields
     {
         uint8_t DACBBIEN : 1;          //!< [0] DAC Buffer Read Pointer Bottom Flag
-                                       //!< Interrupt Enable
+                                       //! Interrupt Enable
         uint8_t DACBTIEN : 1;          //!< [1] DAC Buffer Read Pointer Top Flag
-                                       //!< Interrupt Enable
+                                       //! Interrupt Enable
         uint8_t DACBWIEN : 1;          //!< [2] DAC Buffer Watermark Interrupt Enable
         uint8_t LPEN : 1;              //!< [3] DAC Low Power Control
         uint8_t DACSWTRG : 1;          //!< [4] DAC Software Trigger
@@ -502,11 +502,6 @@ typedef union _hw_dac_c0
 #define BP_DAC_C0_DACSWTRG   (4U)          //!< Bit position for DAC_C0_DACSWTRG.
 #define BM_DAC_C0_DACSWTRG   (0x10U)       //!< Bit mask for DAC_C0_DACSWTRG.
 #define BS_DAC_C0_DACSWTRG   (1U)          //!< Bit field size in bits for DAC_C0_DACSWTRG.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the DAC_C0_DACSWTRG field.
-#define BR_DAC_C0_DACSWTRG(x) (BITBAND_ACCESS8(HW_DAC_C0_ADDR(x), BP_DAC_C0_DACSWTRG))
-#endif
 
 //! @brief Format value for bitfield DAC_C0_DACSWTRG.
 #define BF_DAC_C0_DACSWTRG(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_DAC_C0_DACSWTRG), uint8_t) & BM_DAC_C0_DACSWTRG)
@@ -703,9 +698,9 @@ typedef union _hw_dac_c1
 /*!
  * @name Register DAC_C1, field DACBFWM[4:3] (RW)
  *
- * Controls when SR[DACBFWMF] will be set. When the DAC buffer read pointer
- * reaches the word defined by this field, which is 1-4 words away from the upper
- * limit (DACBUP), SR[DACBFWMF] will be set. This allows user configuration of the
+ * Controls when SR[DACBFWMF] is set. When the DAC buffer read pointer reaches
+ * the word defined by this field, which is 1-4 words away from the upper limit
+ * (DACBUP), SR[DACBFWMF] will be set. This allows user configuration of the
  * watermark interrupt.
  *
  * Values:
@@ -770,8 +765,6 @@ typedef union _hw_dac_c1
  * @brief HW_DAC_C2 - DAC Control Register 2 (RW)
  *
  * Reset value: 0x0FU
- *
- * Do not use 32- or 16-bit accesses to this register.
  */
 typedef union _hw_dac_c2
 {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -61,7 +61,7 @@
  * once after any system reset. If the MCU is configured for a disallowed or
  * reserved power mode, the MCU remains in its current power mode. For example, if the
  * MCU is in normal RUN mode and AVLP is 0, an attempt to enter VLPR mode using
- * PMCTRL[RUNM] is blocked and the RUNM bits remain 00b, indicating the MCU is
+ * PMCTRL[RUNM] is blocked and PMCTRL[RUNM] remains 00b, indicating the MCU is
  * still in Normal Run mode. This register is reset on Chip Reset not VLLS and by
  * reset types that trigger Chip Reset not VLLS. It is unaffected by reset types
  * that do not trigger Chip Reset not VLLS. See the Reset section details for more
@@ -91,11 +91,11 @@ typedef union _hw_smc_pmprot
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SMC_PMPROT            (*(__IO hw_smc_pmprot_t *) HW_SMC_PMPROT_ADDR)
-#define HW_SMC_PMPROT_RD         (HW_SMC_PMPROT.U)
+#define HW_SMC_PMPROT_RD()       (HW_SMC_PMPROT.U)
 #define HW_SMC_PMPROT_WR(v)      (HW_SMC_PMPROT.U = (v))
-#define HW_SMC_PMPROT_SET(v)     (HW_SMC_PMPROT_WR(HW_SMC_PMPROT_RD |  (v)))
-#define HW_SMC_PMPROT_CLR(v)     (HW_SMC_PMPROT_WR(HW_SMC_PMPROT_RD & ~(v)))
-#define HW_SMC_PMPROT_TOG(v)     (HW_SMC_PMPROT_WR(HW_SMC_PMPROT_RD ^  (v)))
+#define HW_SMC_PMPROT_SET(v)     (HW_SMC_PMPROT_WR(HW_SMC_PMPROT_RD() |  (v)))
+#define HW_SMC_PMPROT_CLR(v)     (HW_SMC_PMPROT_WR(HW_SMC_PMPROT_RD() & ~(v)))
+#define HW_SMC_PMPROT_TOG(v)     (HW_SMC_PMPROT_WR(HW_SMC_PMPROT_RD() ^  (v)))
 #endif
 //@}
 
@@ -136,7 +136,7 @@ typedef union _hw_smc_pmprot
  * @name Register SMC_PMPROT, field ALLS[3] (RW)
  *
  * Provided the appropriate control bits are set up in PMCTRL, this write-once
- * bit allows the MCU to enter any low-leakage stop mode (LLS).
+ * field allows the MCU to enter any low-leakage stop mode (LLS).
  *
  * Values:
  * - 0 - LLS is not allowed
@@ -165,11 +165,11 @@ typedef union _hw_smc_pmprot
  * @name Register SMC_PMPROT, field AVLP[5] (RW)
  *
  * Provided the appropriate control bits are set up in PMCTRL, this write-once
- * bit allows the MCU to enter any very-low-power mode (VLPR, VLPW, and VLPS).
+ * field allows the MCU to enter any very-low-power mode (VLPR, VLPW, and VLPS).
  *
  * Values:
- * - 0 - VLPR, VLPW and VLPS are not allowed
- * - 1 - VLPR, VLPW and VLPS are allowed
+ * - 0 - VLPR, VLPW, and VLPS are not allowed.
+ * - 1 - VLPR, VLPW, and VLPS are allowed.
  */
 //@{
 #define BP_SMC_PMPROT_AVLP   (5U)          //!< Bit position for SMC_PMPROT_AVLP.
@@ -200,7 +200,7 @@ typedef union _hw_smc_pmprot
  *
  * Reset value: 0x00U
  *
- * The PMCTRL register controls entry into low-power run and stop modes,
+ * The PMCTRL register controls entry into low-power Run and Stop modes,
  * provided that the selected power mode is allowed via an appropriate setting of the
  * protection (PMPROT) register. This register is reset on Chip POR not VLLS and by
  * reset types that trigger Chip POR not VLLS. It is unaffected by reset types
@@ -229,11 +229,11 @@ typedef union _hw_smc_pmctrl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SMC_PMCTRL            (*(__IO hw_smc_pmctrl_t *) HW_SMC_PMCTRL_ADDR)
-#define HW_SMC_PMCTRL_RD         (HW_SMC_PMCTRL.U)
+#define HW_SMC_PMCTRL_RD()       (HW_SMC_PMCTRL.U)
 #define HW_SMC_PMCTRL_WR(v)      (HW_SMC_PMCTRL.U = (v))
-#define HW_SMC_PMCTRL_SET(v)     (HW_SMC_PMCTRL_WR(HW_SMC_PMCTRL_RD |  (v)))
-#define HW_SMC_PMCTRL_CLR(v)     (HW_SMC_PMCTRL_WR(HW_SMC_PMCTRL_RD & ~(v)))
-#define HW_SMC_PMCTRL_TOG(v)     (HW_SMC_PMCTRL_WR(HW_SMC_PMCTRL_RD ^  (v)))
+#define HW_SMC_PMCTRL_SET(v)     (HW_SMC_PMCTRL_WR(HW_SMC_PMCTRL_RD() |  (v)))
+#define HW_SMC_PMCTRL_CLR(v)     (HW_SMC_PMCTRL_WR(HW_SMC_PMCTRL_RD() & ~(v)))
+#define HW_SMC_PMCTRL_TOG(v)     (HW_SMC_PMCTRL_WR(HW_SMC_PMCTRL_RD() ^  (v)))
 #endif
 //@}
 
@@ -248,7 +248,7 @@ typedef union _hw_smc_pmctrl
  * Sleep-On-Exit mode is entered with SLEEPDEEP=1 . Writes to this field are
  * blocked if the protection level has not been enabled using the PMPROT register.
  * After any system reset, this field is cleared by hardware on any successful write
- * to the PMPROT register. When set to VLLSx, the VLLSM bits in the VLLSCTRL
+ * to the PMPROT register. When set to VLLSx, the VLLSM field in the VLLSCTRL
  * register is used to further select the particular VLLS submode which will be
  * entered.
  *
@@ -277,7 +277,7 @@ typedef union _hw_smc_pmctrl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the STOPM field to a new value.
-#define BW_SMC_PMCTRL_STOPM(v) (HW_SMC_PMCTRL_WR((HW_SMC_PMCTRL_RD & ~BM_SMC_PMCTRL_STOPM) | BF_SMC_PMCTRL_STOPM(v)))
+#define BW_SMC_PMCTRL_STOPM(v) (HW_SMC_PMCTRL_WR((HW_SMC_PMCTRL_RD() & ~BM_SMC_PMCTRL_STOPM) | BF_SMC_PMCTRL_STOPM(v)))
 #endif
 //@}
 
@@ -286,7 +286,7 @@ typedef union _hw_smc_pmctrl
  *
  * When set, this read-only status bit indicates an interrupt or reset occured
  * during the previous stop mode entry sequence, preventing the system from
- * entering that mode. This bit is cleared by hardware at the beginning of any stop
+ * entering that mode. This field is cleared by hardware at the beginning of any stop
  * mode entry sequence and is set if the sequence was aborted.
  *
  * Values:
@@ -309,9 +309,8 @@ typedef union _hw_smc_pmctrl
  *
  * When written, causes entry into the selected run mode. Writes to this field
  * are blocked if the protection level has not been enabled using the PMPROT
- * register. This field is cleared by hardware on any exit to normal RUN mode. RUNM
- * may be set to VLPR only when PMSTAT=RUN. After being written to VLPR, RUNM
- * should not be written back to RUN until PMSTAT=VLPR.
+ * register. RUNM may be set to VLPR only when PMSTAT=RUN. After being written to
+ * VLPR, RUNM should not be written back to RUN until PMSTAT=VLPR.
  *
  * Values:
  * - 00 - Normal Run mode (RUN)
@@ -334,7 +333,7 @@ typedef union _hw_smc_pmctrl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RUNM field to a new value.
-#define BW_SMC_PMCTRL_RUNM(v) (HW_SMC_PMCTRL_WR((HW_SMC_PMCTRL_RD & ~BM_SMC_PMCTRL_RUNM) | BF_SMC_PMCTRL_RUNM(v)))
+#define BW_SMC_PMCTRL_RUNM(v) (HW_SMC_PMCTRL_WR((HW_SMC_PMCTRL_RD() & ~BM_SMC_PMCTRL_RUNM) | BF_SMC_PMCTRL_RUNM(v)))
 #endif
 //@}
 
@@ -406,11 +405,11 @@ typedef union _hw_smc_vllsctrl
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SMC_VLLSCTRL          (*(__IO hw_smc_vllsctrl_t *) HW_SMC_VLLSCTRL_ADDR)
-#define HW_SMC_VLLSCTRL_RD       (HW_SMC_VLLSCTRL.U)
+#define HW_SMC_VLLSCTRL_RD()     (HW_SMC_VLLSCTRL.U)
 #define HW_SMC_VLLSCTRL_WR(v)    (HW_SMC_VLLSCTRL.U = (v))
-#define HW_SMC_VLLSCTRL_SET(v)   (HW_SMC_VLLSCTRL_WR(HW_SMC_VLLSCTRL_RD |  (v)))
-#define HW_SMC_VLLSCTRL_CLR(v)   (HW_SMC_VLLSCTRL_WR(HW_SMC_VLLSCTRL_RD & ~(v)))
-#define HW_SMC_VLLSCTRL_TOG(v)   (HW_SMC_VLLSCTRL_WR(HW_SMC_VLLSCTRL_RD ^  (v)))
+#define HW_SMC_VLLSCTRL_SET(v)   (HW_SMC_VLLSCTRL_WR(HW_SMC_VLLSCTRL_RD() |  (v)))
+#define HW_SMC_VLLSCTRL_CLR(v)   (HW_SMC_VLLSCTRL_WR(HW_SMC_VLLSCTRL_RD() & ~(v)))
+#define HW_SMC_VLLSCTRL_TOG(v)   (HW_SMC_VLLSCTRL_WR(HW_SMC_VLLSCTRL_RD() ^  (v)))
 #endif
 //@}
 
@@ -448,7 +447,7 @@ typedef union _hw_smc_vllsctrl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the VLLSM field to a new value.
-#define BW_SMC_VLLSCTRL_VLLSM(v) (HW_SMC_VLLSCTRL_WR((HW_SMC_VLLSCTRL_RD & ~BM_SMC_VLLSCTRL_VLLSM) | BF_SMC_VLLSCTRL_VLLSM(v)))
+#define BW_SMC_VLLSCTRL_VLLSM(v) (HW_SMC_VLLSCTRL_WR((HW_SMC_VLLSCTRL_RD() & ~BM_SMC_VLLSCTRL_VLLSM) | BF_SMC_VLLSCTRL_VLLSM(v)))
 #endif
 //@}
 
@@ -459,8 +458,8 @@ typedef union _hw_smc_vllsctrl
  * in VLLS0 mode.
  *
  * Values:
- * - 0 - POR detect circuit is enabled in VLLS0
- * - 1 - POR detect circuit is disabled in VLLS0
+ * - 0 - POR detect circuit is enabled in VLLS0.
+ * - 1 - POR detect circuit is disabled in VLLS0.
  */
 //@{
 #define BP_SMC_VLLSCTRL_PORPO (5U)         //!< Bit position for SMC_VLLSCTRL_PORPO.
@@ -515,7 +514,7 @@ typedef union _hw_smc_pmstat
 
 #ifndef __LANGUAGE_ASM__
 #define HW_SMC_PMSTAT            (*(__I hw_smc_pmstat_t *) HW_SMC_PMSTAT_ADDR)
-#define HW_SMC_PMSTAT_RD         (HW_SMC_PMSTAT.U)
+#define HW_SMC_PMSTAT_RD()       (HW_SMC_PMSTAT.U)
 #endif
 //@}
 

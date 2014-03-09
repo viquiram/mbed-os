@@ -28,15 +28,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include "fsl_edma_driver.h"
+#include "fsl_clock_manager.h"
+#include "fsl_interrupt_manager.h"
+#include "fsl_os_abstraction.h"
 
 /*******************************************************************************
  * Variabled
  ******************************************************************************/
 
-/*! @brief Interrupt data sturcture. */
-extern IRQn_Type edma_irq_ids[HW_DMA_INSTANCE_COUNT][FSL_FEATURE_DMA_MODULE_CHANNEL];
-extern IRQn_Type edma_error_irq_ids[HW_DMA_INSTANCE_COUNT];
+/*! @brief Interrupt data structure. */
+extern const IRQn_Type edma_irq_ids[HW_DMA_INSTANCE_COUNT][FSL_FEATURE_DMA_MODULE_CHANNEL];
+extern const IRQn_Type edma_error_irq_ids[HW_DMA_INSTANCE_COUNT];
+
+/*! @brief Data structure for the eDMA device */
+typedef struct EdmaDevice {
+    edma_channel_t * volatile edmaChan[FSL_FEATURE_DMA_DMAMUX_CHANNELS];  /*!< Data pointer array for the
+                                                                     eDMA channel */
+    sync_object_t sema;                                         /*!< A semaphore for the eDMA driver. */
+} edma_device_t;
 
 /*! @brief EDMA global structure to maintain EDMA resource */
 edma_device_t g_edma;
@@ -148,6 +160,8 @@ edma_status_t edma_shutdown(void)
         clock_manager_set_gate(kClockModuleDMAMUX, i, false);
     }
 
+    sync_destroy(&g_edma.sema);
+
     return kStatus_EDMA_Success;
 }
 
@@ -224,7 +238,7 @@ uint32_t edma_request_channel(uint32_t channel, dma_request_source_t source, edm
                     if (!g_edma.edmaChan[j])
                     {
                         edma_claim_channel(j, source, chan);
-                        return i;
+                        return j;
                     }
                 }
             
@@ -395,7 +409,11 @@ void edma_update_descriptor_internal(edma_channel_t *chn)
         }
 
         /* Do with the underrun case.*/
-        if (chn->tcdRead == chn->tcdWrite)
+        uint8_t read, write;
+        write = chn->tcdWrite;
+        read = chn->tcdRead;
+
+        if (read == write)
         {
             chn->tcdUnderflow = true;
             chn->tcdWrite = (chn->tcdWrite + 1) % chn->tcdNumber;

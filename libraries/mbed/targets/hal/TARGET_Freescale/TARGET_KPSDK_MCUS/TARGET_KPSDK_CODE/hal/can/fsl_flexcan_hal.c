@@ -138,10 +138,6 @@ flexcan_status_t flexcan_hal_sw_reset(uint8_t instance)
         /* Wait until enabled*/
         while (BR_CAN_MCR_LPMACK(instance)){}
     }
-    else if (BR_CAN_MCR_MDIS(instance))
-    {
-        flexcan_hal_enable(instance);
-    }
 
     /* Reset the FLEXCAN*/
     HW_CAN_MCR_SET(instance, BM_CAN_MCR_SOFTRST);
@@ -200,7 +196,7 @@ flexcan_status_t flexcan_hal_select_clk(
  * if needed, mask all mask bits, and disable all MB interrupts. 
  *
  *END**************************************************************************/
-flexcan_status_t flexcan_hal_init(uint8_t instance, flexcan_config_t *data)
+flexcan_status_t flexcan_hal_init(uint8_t instance, const flexcan_user_config_t *data)
 {
     uint32_t i;
     assert(instance < HW_CAN_INSTANCE_COUNT);
@@ -267,9 +263,6 @@ flexcan_status_t flexcan_hal_init(uint8_t instance, flexcan_config_t *data)
 
     /* Disable all MB interrupts*/
     HW_CAN_IMASK1_WR(instance, 0x0);
-#if defined(CPU_MK70FN1M0VMJ12)
-/*    HW_CAN_IMASK2_WR(instance, 0x0);*/
-#endif
 
     return (kStatus_FLEXCAN_Success);
 }
@@ -293,7 +286,7 @@ void flexcan_hal_set_time_segments(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_SET(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait for entering the freeze mode*/
     while(!(BR_CAN_MCR_FRZACK(instance))) {}
@@ -309,7 +302,7 @@ void flexcan_hal_set_time_segments(
                                 CAN_CTRL1_RJW(time_seg->rjw)));
 
     /* De-assert Freeze mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
     /* Wait till exit of freeze mode*/
     while(BR_CAN_MCR_FRZACK(instance)){}
 }
@@ -347,7 +340,7 @@ void flexcan_hal_get_time_segments(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_set_mb_tx(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
     flexcan_mb_code_status_tx_t *cs,
     uint32_t msg_id,
@@ -425,7 +418,7 @@ flexcan_status_t flexcan_hal_set_mb_tx(
         /* Set IDE*/
         flexcan_reg_ptr->MB[mb_idx].CS |= CAN_CS_IDE_MASK;
 
-        /* Set SRR bit*/
+        /* Clear SRR bit*/
         flexcan_reg_ptr->MB[mb_idx].CS &= ~CAN_CS_SRR_MASK;
 
         /* Set the length of data in bytes*/
@@ -500,7 +493,7 @@ flexcan_status_t flexcan_hal_set_mb_tx(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_set_mb_rx(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
     flexcan_mb_code_status_rx_t *cs,
     uint32_t msg_id)
@@ -550,7 +543,7 @@ flexcan_status_t flexcan_hal_set_mb_rx(
         /* Set IDE*/
         flexcan_reg_ptr->MB[mb_idx].CS |= CAN_CS_IDE_MASK;
 
-        /* Set SRR bit*/
+        /* Clear SRR bit*/
         flexcan_reg_ptr->MB[mb_idx].CS &= ~CAN_CS_SRR_MASK;
 
         /* Set the length of data in bytes*/
@@ -608,7 +601,7 @@ flexcan_status_t flexcan_hal_set_mb_rx(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_get_mb(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx,
     flexcan_mb_t *mb)
 {
@@ -682,7 +675,10 @@ flexcan_status_t flexcan_hal_get_mb(
  * This function will the RX message buffer.
  *
  *END**************************************************************************/
-flexcan_status_t flexcan_hal_lock_rx_mb(uint8_t instance, flexcan_config_t *data, uint32_t mb_idx)
+flexcan_status_t flexcan_hal_lock_rx_mb(
+    uint8_t instance,
+    const flexcan_user_config_t *data,
+    uint32_t mb_idx)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
     assert(data);
@@ -718,7 +714,7 @@ void flexcan_hal_enable_rx_fifo(uint8_t instance)
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -727,7 +723,7 @@ void flexcan_hal_enable_rx_fifo(uint8_t instance)
     HW_CAN_MCR_SET(instance, BM_CAN_MCR_RFEN);
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -745,7 +741,7 @@ void flexcan_hal_disable_rx_fifo(uint8_t instance)
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait for entering the freeze mode*/
     while(!(BR_CAN_MCR_FRZACK(instance))){}
@@ -754,7 +750,7 @@ void flexcan_hal_disable_rx_fifo(uint8_t instance)
     HW_CAN_MCR_CLR(instance, BM_CAN_MCR_RFEN);
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -774,7 +770,7 @@ void flexcan_hal_set_rx_fifo_filters_number(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait for entering the freeze mode*/
     while(!(BR_CAN_MCR_FRZACK(instance))){}
@@ -783,7 +779,7 @@ void flexcan_hal_set_rx_fifo_filters_number(
     BW_CAN_CTRL2_RFFN(instance, number);
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -798,13 +794,13 @@ void flexcan_hal_set_rx_fifo_filters_number(
 *END**************************************************************************/
 void flexcan_hal_set_max_mb_number(
     uint8_t instance,
-    flexcan_config_t *data)
+    const flexcan_user_config_t *data)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
     assert(data);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while(!(BR_CAN_MCR_FRZACK(instance))){}
@@ -813,7 +809,7 @@ void flexcan_hal_set_max_mb_number(
     BW_CAN_MCR_MAXMB(instance, data->max_num_mb);
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -828,7 +824,7 @@ void flexcan_hal_set_max_mb_number(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_set_id_filter_table_elements(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     flexcan_rx_fifo_id_element_format_t id_format,
     flexcan_id_table_t *id_filter_table)
 {
@@ -1082,7 +1078,7 @@ flexcan_status_t flexcan_hal_set_id_filter_table_elements(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_set_rx_fifo(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     flexcan_rx_fifo_id_element_format_t id_format,
     flexcan_id_table_t *id_filter_table)
 {
@@ -1111,7 +1107,7 @@ flexcan_status_t flexcan_hal_set_rx_fifo(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_enable_mb_interrupt(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
@@ -1138,7 +1134,7 @@ flexcan_status_t flexcan_hal_enable_mb_interrupt(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_disable_mb_interrupt(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
@@ -1161,16 +1157,72 @@ flexcan_status_t flexcan_hal_disable_mb_interrupt(
  *
  * Function Name : flexcan_hal_enable_error_interrupt
  * Description   : Enable the error interrupts.
- * This function will enable Bus Off interrupt, Error interrupt, and Wake up
- * interrupt.
+ * This function will enable Error interrupt.
  *
  *END**************************************************************************/
 void flexcan_hal_enable_error_interrupt(uint8_t instance)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
-    /* Enable Bus Off interrupt and Error interrupt*/
-    HW_CAN_CTRL1_SET(instance, (CAN_CTRL1_BOFFMSK_MASK | CAN_CTRL1_ERRMSK_MASK));
+    /* Enable Error interrupt*/
+    HW_CAN_CTRL1_SET(instance, CAN_CTRL1_ERRMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_disable_error_interrupt
+ * Description   : Disable the error interrupts.
+ * This function will disable Error interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_disable_error_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Disable Error interrupt*/
+    HW_CAN_CTRL1_CLR(instance, CAN_CTRL1_ERRMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_enable_bus_off_interrupt
+ * Description   : Enable the Bus off interrupts.
+ * This function will enable Bus Off interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_enable_bus_off_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Enable Bus Off interrupt*/
+    HW_CAN_CTRL1_SET(instance, CAN_CTRL1_BOFFMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_disable_bus_off_interrupt
+ * Description   : Disable the Bus off interrupts.
+ * This function will disable Bus Off interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_disable_bus_off_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Disable Bus Off interrupt*/
+    HW_CAN_CTRL1_CLR(instance, CAN_CTRL1_BOFFMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_enable_wakeup_interrupt
+ * Description   : Enable the wakeup interrupts.
+ * This function will enable Wake up interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_enable_wakeup_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Enable Wake Up interrupt*/
     BW_CAN_MCR_WAKMSK(instance, 1);
@@ -1178,21 +1230,77 @@ void flexcan_hal_enable_error_interrupt(uint8_t instance)
 
 /*FUNCTION**********************************************************************
  *
- * Function Name : flexcan_hal_disable_error_interrupt
- * Description   : Disable the error interrupts.
- * This function will disable Bus Off interrupt, Error interrupt, and Wake up
- * interrupt.
+ * Function Name : flexcan_hal_disable_wakeup_interrupt
+ * Description   : Disable the wakeup interrupts.
+ * This function will disable Wake up interrupt.
  *
  *END**************************************************************************/
-void flexcan_hal_disable_error_interrupt(uint8_t instance)
+void flexcan_hal_disable_wakeup_interrupt(uint8_t instance)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
-    /* Disable Bus Off interrupt and Error interrupt*/
-    HW_CAN_CTRL1_CLR(instance, (CAN_CTRL1_BOFFMSK_MASK | CAN_CTRL1_ERRMSK_MASK));
-
     /* Disable Wake Up interrupt*/
     BW_CAN_MCR_WAKMSK(instance, 0);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_enable_tx_warning_interrupt
+ * Description   : Enable the TX warning interrupts.
+ * This function will enable TX warning interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_enable_tx_warning_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Enable TX warning interrupt*/
+    HW_CAN_CTRL1_SET(instance, CAN_CTRL1_TWRNMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_disable_tx_warning_interrupt
+ * Description   : Disable the TX warning interrupts.
+ * This function will disable TX warning interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_disable_tx_warning_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Disable TX warning interrupt*/
+    HW_CAN_CTRL1_CLR(instance, CAN_CTRL1_TWRNMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_enable_rx_warning_interrupt
+ * Description   : Enable the RX warning interrupts.
+ * This function will enable RX warning interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_enable_rx_warning_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Enable RX warning interrupt*/
+    HW_CAN_CTRL1_SET(instance, CAN_CTRL1_RWRNMSK_MASK);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : flexcan_hal_disable_rx_warning_interrupt
+ * Description   : Disable the RX warning interrupts.
+ * This function will disable RX warning interrupt.
+ *
+ *END**************************************************************************/
+void flexcan_hal_disable_rx_warning_interrupt(uint8_t instance)
+{
+    assert(instance < HW_CAN_INSTANCE_COUNT);
+
+    /* Disable RX warning interrupt*/
+    HW_CAN_CTRL1_CLR(instance, CAN_CTRL1_RWRNMSK_MASK);
 }
 
 /*FUNCTION**********************************************************************
@@ -1204,7 +1312,7 @@ void flexcan_hal_disable_error_interrupt(uint8_t instance)
 void flexcan_hal_exit_freeze_mode(uint8_t instance)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1219,7 +1327,7 @@ void flexcan_hal_exit_freeze_mode(uint8_t instance)
 void flexcan_hal_enter_freeze_mode(uint8_t instance)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_SET(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1233,7 +1341,7 @@ void flexcan_hal_enter_freeze_mode(uint8_t instance)
  *END**************************************************************************/
 uint8_t flexcan_hal_get_mb_int_flag(
     uint8_t instance,
-    flexcan_config_t *data,
+    const flexcan_user_config_t *data,
     uint32_t mb_idx)
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
@@ -1350,6 +1458,12 @@ void flexcan_hal_set_mask_type(
 {
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
+    /* Set Freeze mode*/
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
+
+    /* Wait for entering the freeze mode*/
+    while (!(BR_CAN_MCR_FRZACK(instance))){}
+
     /* Set RX masking type (RX global mask or RX individual mask)*/
     if (type == kFlexCanRxMask_Global)
     {
@@ -1361,6 +1475,12 @@ void flexcan_hal_set_mask_type(
         /* Enable Individual Rx Masking and Queue*/
         HW_CAN_MCR_SET(instance, BM_CAN_MCR_IRMQ);
     }
+
+    /* De-assert Freeze Mode*/
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
+
+    /* Wait till exit of freeze mode*/
+    while (BR_CAN_MCR_FRZACK(instance)){}
 }
 
 /*FUNCTION**********************************************************************
@@ -1376,7 +1496,7 @@ void flexcan_hal_set_rx_fifo_global_std_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1385,7 +1505,7 @@ void flexcan_hal_set_rx_fifo_global_std_mask(
     HW_CAN_RXFGMASK_WR(instance, CAN_ID_STD(std_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1404,7 +1524,7 @@ void flexcan_hal_set_rx_fifo_global_ext_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1413,7 +1533,7 @@ void flexcan_hal_set_rx_fifo_global_ext_mask(
     HW_CAN_RXFGMASK_WR(instance, CAN_ID_EXT(ext_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1427,7 +1547,7 @@ void flexcan_hal_set_rx_fifo_global_ext_mask(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_set_rx_individual_std_mask(
     uint8_t instance,
-    flexcan_config_t * data,
+    const flexcan_user_config_t * data,
     uint32_t mb_idx,
     uint32_t std_mask)
 {
@@ -1440,7 +1560,7 @@ flexcan_status_t flexcan_hal_set_rx_individual_std_mask(
     }
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1449,7 +1569,7 @@ flexcan_status_t flexcan_hal_set_rx_individual_std_mask(
     HW_CAN_RXIMRn_WR(instance, mb_idx, CAN_ID_STD(std_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1465,7 +1585,7 @@ flexcan_status_t flexcan_hal_set_rx_individual_std_mask(
  *END**************************************************************************/
 flexcan_status_t flexcan_hal_set_rx_individual_ext_mask(
     uint8_t instance,
-    flexcan_config_t * data,
+    const flexcan_user_config_t * data,
     uint32_t mb_idx,
     uint32_t ext_mask)
 {
@@ -1478,7 +1598,7 @@ flexcan_status_t flexcan_hal_set_rx_individual_ext_mask(
     }
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1487,7 +1607,7 @@ flexcan_status_t flexcan_hal_set_rx_individual_ext_mask(
     HW_CAN_RXIMRn_WR(instance, mb_idx, CAN_ID_EXT(ext_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1508,7 +1628,7 @@ void flexcan_hal_set_rx_mb_global_std_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1517,7 +1637,7 @@ void flexcan_hal_set_rx_mb_global_std_mask(
     HW_CAN_RXMGMASK_WR(instance, CAN_ID_STD(std_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1536,7 +1656,7 @@ void flexcan_hal_set_rx_mb_buf14_std_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1545,7 +1665,7 @@ void flexcan_hal_set_rx_mb_buf14_std_mask(
     HW_CAN_RX14MASK_WR(instance, CAN_ID_STD(std_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1564,7 +1684,7 @@ void flexcan_hal_set_rx_mb_buf15_std_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1573,7 +1693,7 @@ void flexcan_hal_set_rx_mb_buf15_std_mask(
     HW_CAN_RX15MASK_WR(instance, CAN_ID_STD(std_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1592,7 +1712,7 @@ void flexcan_hal_set_rx_mb_global_ext_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(HW_CAN_MCR_RD(instance))){}
@@ -1601,7 +1721,7 @@ void flexcan_hal_set_rx_mb_global_ext_mask(
     HW_CAN_RXMGMASK_WR(instance, CAN_ID_EXT(ext_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1620,7 +1740,7 @@ void flexcan_hal_set_rx_mb_buf14_ext_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1629,7 +1749,7 @@ void flexcan_hal_set_rx_mb_buf14_ext_mask(
     HW_CAN_RX14MASK_WR(instance, CAN_ID_EXT(ext_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1648,7 +1768,7 @@ void flexcan_hal_set_rx_mb_buf15_ext_mask(
     assert(instance < HW_CAN_INSTANCE_COUNT);
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1657,7 +1777,7 @@ void flexcan_hal_set_rx_mb_buf15_ext_mask(
     HW_CAN_RX15MASK_WR(instance, CAN_ID_EXT(ext_mask));
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1694,7 +1814,7 @@ flexcan_status_t flexcan_hal_enable_operation_mode(
     }
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1717,7 +1837,7 @@ flexcan_status_t flexcan_hal_enable_operation_mode(
     }
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}
@@ -1756,7 +1876,7 @@ flexcan_status_t flexcan_hal_disable_operation_mode(
     }
 
     /* Set Freeze mode*/
-    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT | BM_CAN_MCR_NOTRDY);
+    HW_CAN_MCR_SET(instance, BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT);
 
     /* Wait for entering the freeze mode*/
     while (!(BR_CAN_MCR_FRZACK(instance))){}
@@ -1779,7 +1899,7 @@ flexcan_status_t flexcan_hal_disable_operation_mode(
     }
 
     /* De-assert Freeze Mode*/
-    HW_CAN_MCR_CLR(instance, BM_CAN_MCR_FRZ);
+    HW_CAN_MCR_CLR(instance, (BM_CAN_MCR_FRZ | BM_CAN_MCR_HALT));
 
     /* Wait till exit of freeze mode*/
     while (BR_CAN_MCR_FRZACK(instance)){}

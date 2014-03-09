@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -61,61 +61,57 @@
  * - HW_ENET_FTRL - Frame Truncation Length
  * - HW_ENET_TACC - Transmit Accelerator Function Configuration
  * - HW_ENET_RACC - Receive Accelerator Function Configuration
- * - HW_ENET_RMON_T_DROP - Count of frames not counted correctly (RMON_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable.
- * - HW_ENET_RMON_T_PACKETS - RMON Tx packet count (RMON_T_PACKETS)
- * - HW_ENET_RMON_T_BC_PKT - RMON Tx Broadcast Packets (RMON_T_BC_PKT)
- * - HW_ENET_RMON_T_MC_PKT - RMON Tx Multicast Packets (RMON_T_MC_PKT)
- * - HW_ENET_RMON_T_CRC_ALIGN - RMON Tx Packets w CRC/Align error (RMON_T_CRC_ALIGN)
- * - HW_ENET_RMON_T_UNDERSIZE - RMON Tx Packets < 64 bytes, good CRC (RMON_T_UNDERSIZE)
- * - HW_ENET_RMON_T_OVERSIZE - RMON Tx Packets > MAX_FL bytes, good CRC (RMON_T_OVERSIZE)
- * - HW_ENET_RMON_T_FRAG - RMON Tx Packets < 64 bytes, bad CRC (RMON_T_FRAG)
- * - HW_ENET_RMON_T_JAB - RMON Tx Packets > MAX_FL bytes, bad CRC (RMON_T_JAB)
- * - HW_ENET_RMON_T_COL - RMON Tx collision count (RMON_T_COL)
- * - HW_ENET_RMON_T_P64 - RMON Tx 64 byte packets (RMON_T_P64)
- * - HW_ENET_RMON_T_P65TO127 - RMON Tx 65 to 127 byte packets (RMON_T_P65TO127)
- * - HW_ENET_RMON_T_P128TO255 - RMON Tx 128 to 255 byte packets (RMON_T_P128TO255)
- * - HW_ENET_RMON_T_P256TO511 - RMON Tx 256 to 511 byte packets (RMON_T_P256TO511)
- * - HW_ENET_RMON_T_P512TO1023 - RMON Tx 512 to 1023 byte packets (RMON_T_P512TO1023)
- * - HW_ENET_RMON_T_P1024TO2047 - RMON Tx 1024 to 2047 byte packets (RMON_T_P1024TO2047)
- * - HW_ENET_RMON_T_P_GTE2048 - RMON Tx packets w > 2048 bytes (RMON_T_P_GTE2048)
- * - HW_ENET_RMON_T_OCTETS - RMON Tx Octets (RMON_T_OCTETS)
- * - HW_ENET_IEEE_T_DROP - Count of frames not counted correctly (IEEE_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable.
- * - HW_ENET_IEEE_T_FRAME_OK - Frames Transmitted OK (IEEE_T_FRAME_OK)
- * - HW_ENET_IEEE_T_1COL - Frames Transmitted with Single Collision (IEEE_T_1COL)
- * - HW_ENET_IEEE_T_MCOL - Frames Transmitted with Multiple Collisions (IEEE_T_MCOL)
- * - HW_ENET_IEEE_T_DEF - Frames Transmitted after Deferral Delay (IEEE_T_DEF)
- * - HW_ENET_IEEE_T_LCOL - Frames Transmitted with Late Collision (IEEE_T_LCOL)
- * - HW_ENET_IEEE_T_EXCOL - Frames Transmitted with Excessive Collisions (IEEE_T_EXCOL)
- * - HW_ENET_IEEE_T_MACERR - Frames Transmitted with Tx FIFO Underrun (IEEE_T_MACERR)
- * - HW_ENET_IEEE_T_CSERR - Frames Transmitted with Carrier Sense Error (IEEE_T_CSERR)
- * - HW_ENET_IEEE_T_SQE - Frames Transmitted with SQE Error (IEEE_T_SQE). NOTE: Counter not implemented (read 0 always) as no SQE information is available.
- * - HW_ENET_IEEE_T_FDXFC - Flow Control Pause frames transmitted (IEEE_T_FDXFC)
- * - HW_ENET_IEEE_T_OCTETS_OK - Octet count for Frames Transmitted w/o Error (IEEE_T_OCTETS_OK). NOTE: Counts total octets (includes header and FCS fields).
- * - HW_ENET_RMON_R_PACKETS - RMON Rx packet count (RMON_R_PACKETS)
- * - HW_ENET_RMON_R_BC_PKT - RMON Rx Broadcast Packets (RMON_R_BC_PKT)
- * - HW_ENET_RMON_R_MC_PKT - RMON Rx Multicast Packets (RMON_R_MC_PKT)
- * - HW_ENET_RMON_R_CRC_ALIGN - RMON Rx Packets w CRC/Align error (RMON_R_CRC_ALIGN)
- * - HW_ENET_RMON_R_UNDERSIZE - RMON Rx Packets < 64 bytes, good CRC (RMON_R_UNDERSIZE)
- * - HW_ENET_RMON_R_OVERSIZE - RMON Rx Packets > MAX_FL bytes, good CRC (RMON_R_OVERSIZE)
- * - HW_ENET_RMON_R_FRAG - RMON Rx Packets < 64 bytes, bad CRC (RMON_R_FRAG)
- * - HW_ENET_RMON_R_JAB - RMON Rx Packets > MAX_FL bytes, bad CRC (RMON_R_JAB)
- * - HW_ENET_RMON_R_RESVD_0 - Reserved (RMON_R_RESVD_0)
- * - HW_ENET_RMON_R_P64 - RMON Rx 64 byte packets (RMON_R_P64)
- * - HW_ENET_RMON_R_P65TO127 - RMON Rx 65 to 127 byte packets (RMON_R_P65TO127)
- * - HW_ENET_RMON_R_P128TO255 - RMON Rx 128 to 255 byte packets (RMON_R_P128TO255)
- * - HW_ENET_RMON_R_P256TO511 - RMON Rx 256 to 511 byte packets (RMON_R_P256TO511)
- * - HW_ENET_RMON_R_P512TO1023 - RMON Rx 512 to 1023 byte packets (RMON_R_P512TO1023)
- * - HW_ENET_RMON_R_P1024TO2047 - RMON Rx 1024 to 2047 byte packets (RMON_R_P1024TO2047)
- * - HW_ENET_RMON_R_P_GTE2048 - RMON Rx packets w > 2048 bytes (RMON_R_P_GTE2048)
- * - HW_ENET_RMON_R_OCTETS - RMON Rx Octets (RMON_R_OCTETS)
- * - HW_ENET_RMON_R_DROP - Count of frames not counted correctly (IEEE_R_DROP). NOTE: Counter increments if a frame with valid/missing SFD character is detected and has been dropped. None of the other counters increments if this counter increments.
- * - HW_ENET_RMON_R_FRAME_OK - Frames Received OK (IEEE_R_FRAME_OK)
- * - HW_ENET_IEEE_R_CRC - Frames Received with CRC Error (IEEE_R_CRC)
- * - HW_ENET_IEEE_R_ALIGN - Frames Received with Alignment Error (IEEE_R_ALIGN)
- * - HW_ENET_IEEE_R_MACERR - Receive Fifo Overflow count (IEEE_R_MACERR)
- * - HW_ENET_IEEE_R_FDXFC - Flow Control Pause frames received (IEEE_R_FDXFC)
- * - HW_ENET_IEEE_R_OCTETS_OK - Octet count for Frames Rcvd w/o Error (IEEE_R_OCTETS_OK). Counts total octets (includes header and FCS fields).
- * - HW_ENET_ATCR - Timer Control Register
+ * - HW_ENET_RMON_T_PACKETS - Tx Packet Count Statistic Register
+ * - HW_ENET_RMON_T_BC_PKT - Tx Broadcast Packets Statistic Register
+ * - HW_ENET_RMON_T_MC_PKT - Tx Multicast Packets Statistic Register
+ * - HW_ENET_RMON_T_CRC_ALIGN - Tx Packets with CRC/Align Error Statistic Register
+ * - HW_ENET_RMON_T_UNDERSIZE - Tx Packets Less Than Bytes and Good CRC Statistic Register
+ * - HW_ENET_RMON_T_OVERSIZE - Tx Packets GT MAX_FL bytes and Good CRC Statistic Register
+ * - HW_ENET_RMON_T_FRAG - Tx Packets Less Than 64 Bytes and Bad CRC Statistic Register
+ * - HW_ENET_RMON_T_JAB - Tx Packets Greater Than MAX_FL bytes and Bad CRC Statistic Register
+ * - HW_ENET_RMON_T_COL - Tx Collision Count Statistic Register
+ * - HW_ENET_RMON_T_P64 - Tx 64-Byte Packets Statistic Register
+ * - HW_ENET_RMON_T_P65TO127 - Tx 65- to 127-byte Packets Statistic Register
+ * - HW_ENET_RMON_T_P128TO255 - Tx 128- to 255-byte Packets Statistic Register
+ * - HW_ENET_RMON_T_P256TO511 - Tx 256- to 511-byte Packets Statistic Register
+ * - HW_ENET_RMON_T_P512TO1023 - Tx 512- to 1023-byte Packets Statistic Register
+ * - HW_ENET_RMON_T_P1024TO2047 - Tx 1024- to 2047-byte Packets Statistic Register
+ * - HW_ENET_RMON_T_P_GTE2048 - Tx Packets Greater Than 2048 Bytes Statistic Register
+ * - HW_ENET_RMON_T_OCTETS - Tx Octets Statistic Register
+ * - HW_ENET_IEEE_T_FRAME_OK - Frames Transmitted OK Statistic Register
+ * - HW_ENET_IEEE_T_1COL - Frames Transmitted with Single Collision Statistic Register
+ * - HW_ENET_IEEE_T_MCOL - Frames Transmitted with Multiple Collisions Statistic Register
+ * - HW_ENET_IEEE_T_DEF - Frames Transmitted after Deferral Delay Statistic Register
+ * - HW_ENET_IEEE_T_LCOL - Frames Transmitted with Late Collision Statistic Register
+ * - HW_ENET_IEEE_T_EXCOL - Frames Transmitted with Excessive Collisions Statistic Register
+ * - HW_ENET_IEEE_T_MACERR - Frames Transmitted with Tx FIFO Underrun Statistic Register
+ * - HW_ENET_IEEE_T_CSERR - Frames Transmitted with Carrier Sense Error Statistic Register
+ * - HW_ENET_IEEE_T_FDXFC - Flow Control Pause Frames Transmitted Statistic Register
+ * - HW_ENET_IEEE_T_OCTETS_OK - Octet Count for Frames Transmitted w/o Error Statistic Register
+ * - HW_ENET_RMON_R_PACKETS - Rx Packet Count Statistic Register
+ * - HW_ENET_RMON_R_BC_PKT - Rx Broadcast Packets Statistic Register
+ * - HW_ENET_RMON_R_MC_PKT - Rx Multicast Packets Statistic Register
+ * - HW_ENET_RMON_R_CRC_ALIGN - Rx Packets with CRC/Align Error Statistic Register
+ * - HW_ENET_RMON_R_UNDERSIZE - Rx Packets with Less Than 64 Bytes and Good CRC Statistic Register
+ * - HW_ENET_RMON_R_OVERSIZE - Rx Packets Greater Than MAX_FL and Good CRC Statistic Register
+ * - HW_ENET_RMON_R_FRAG - Rx Packets Less Than 64 Bytes and Bad CRC Statistic Register
+ * - HW_ENET_RMON_R_JAB - Rx Packets Greater Than MAX_FL Bytes and Bad CRC Statistic Register
+ * - HW_ENET_RMON_R_P64 - Rx 64-Byte Packets Statistic Register
+ * - HW_ENET_RMON_R_P65TO127 - Rx 65- to 127-Byte Packets Statistic Register
+ * - HW_ENET_RMON_R_P128TO255 - Rx 128- to 255-Byte Packets Statistic Register
+ * - HW_ENET_RMON_R_P256TO511 - Rx 256- to 511-Byte Packets Statistic Register
+ * - HW_ENET_RMON_R_P512TO1023 - Rx 512- to 1023-Byte Packets Statistic Register
+ * - HW_ENET_RMON_R_P1024TO2047 - Rx 1024- to 2047-Byte Packets Statistic Register
+ * - HW_ENET_RMON_R_GTE2048 - Rx Packets Greater than 2048 Bytes Statistic Register
+ * - HW_ENET_RMON_R_OCTETS - Rx Octets Statistic Register
+ * - HW_ENET_IEEE_R_DROP - Frames not Counted Correctly Statistic Register
+ * - HW_ENET_IEEE_R_FRAME_OK - Frames Received OK Statistic Register
+ * - HW_ENET_IEEE_R_CRC - Frames Received with CRC Error Statistic Register
+ * - HW_ENET_IEEE_R_ALIGN - Frames Received with Alignment Error Statistic Register
+ * - HW_ENET_IEEE_R_MACERR - Receive FIFO Overflow Count Statistic Register
+ * - HW_ENET_IEEE_R_FDXFC - Flow Control Pause Frames Received Statistic Register
+ * - HW_ENET_IEEE_R_OCTETS_OK - Octet Count for Frames Received without Error Statistic Register
+ * - HW_ENET_ATCR - Adjustable Timer Control Register
  * - HW_ENET_ATVR - Timer Value Register
  * - HW_ENET_ATOFF - Timer Offset Register
  * - HW_ENET_ATPER - Timer Period Register
@@ -1388,7 +1384,9 @@ typedef union _hw_enet_ecr
  * FIFO pointers. Hardware clears this field under the following conditions: RESET
  * is set by software An error condition causes the EBERR field to set. ETHEREN
  * must be set at the very last step during ENET
- * configuration/setup/initialization, only after all other ENET-related registers have been configured.
+ * configuration/setup/initialization, only after all other ENET-related registers have been configured. If ETHEREN
+ * is cleared to 0 by software then then next time ETHEREN is set, the EIR
+ * interrupts must cleared to 0 due to previous pending interrupts.
  *
  * Values:
  * - 0 - Reception immediately stops and transmission stops after a bad CRC is
@@ -1826,7 +1824,7 @@ typedef union _hw_enet_mscr
         uint32_t RESERVED0 : 1;        //!< [0]
         uint32_t MII_SPEED : 6;        //!< [6:1] MII Speed
         uint32_t DIS_PRE : 1;          //!< [7] Disable Preamble
-        uint32_t HOLDTIME : 3;         //!< [10:8] Holdtime On MDIO Output
+        uint32_t HOLDTIME : 3;         //!< [10:8] Hold time On MDIO Output
         uint32_t RESERVED1 : 21;       //!< [31:11]
     } B;
 } hw_enet_mscr_t;
@@ -1912,7 +1910,7 @@ typedef union _hw_enet_mscr
 /*!
  * @name Register ENET_MSCR, field HOLDTIME[10:8] (RW)
  *
- * IEEE802.3 clause 22 defines a minimum of 10 ns for the holdtime on the MDIO
+ * IEEE802.3 clause 22 defines a minimum of 10 ns for the hold time on the MDIO
  * output. Depending on the host bus frequency, the setting may need to be
  * increased.
  *
@@ -2826,7 +2824,7 @@ typedef union _hw_enet_palr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_PALR_PADDR1 field.
-#define BR_ENET_PALR_PADDR1(x) (HW_ENET_PALR(x).B.PADDR1)
+#define BR_ENET_PALR_PADDR1(x) (HW_ENET_PALR(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_PALR_PADDR1.
@@ -2834,7 +2832,7 @@ typedef union _hw_enet_palr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PADDR1 field to a new value.
-#define BW_ENET_PALR_PADDR1(x, v) (HW_ENET_PALR_WR(x, (HW_ENET_PALR_RD(x) & ~BM_ENET_PALR_PADDR1) | BF_ENET_PALR_PADDR1(v)))
+#define BW_ENET_PALR_PADDR1(x, v) (HW_ENET_PALR_WR(x, v))
 #endif
 //@}
 
@@ -3075,7 +3073,7 @@ typedef union _hw_enet_iaur
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_IAUR_IADDR1 field.
-#define BR_ENET_IAUR_IADDR1(x) (HW_ENET_IAUR(x).B.IADDR1)
+#define BR_ENET_IAUR_IADDR1(x) (HW_ENET_IAUR(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_IAUR_IADDR1.
@@ -3083,7 +3081,7 @@ typedef union _hw_enet_iaur
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the IADDR1 field to a new value.
-#define BW_ENET_IAUR_IADDR1(x, v) (HW_ENET_IAUR_WR(x, (HW_ENET_IAUR_RD(x) & ~BM_ENET_IAUR_IADDR1) | BF_ENET_IAUR_IADDR1(v)))
+#define BW_ENET_IAUR_IADDR1(x, v) (HW_ENET_IAUR_WR(x, v))
 #endif
 //@}
 
@@ -3146,7 +3144,7 @@ typedef union _hw_enet_ialr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_IALR_IADDR2 field.
-#define BR_ENET_IALR_IADDR2(x) (HW_ENET_IALR(x).B.IADDR2)
+#define BR_ENET_IALR_IADDR2(x) (HW_ENET_IALR(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_IALR_IADDR2.
@@ -3154,7 +3152,7 @@ typedef union _hw_enet_ialr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the IADDR2 field to a new value.
-#define BW_ENET_IALR_IADDR2(x, v) (HW_ENET_IALR_WR(x, (HW_ENET_IALR_RD(x) & ~BM_ENET_IALR_IADDR2) | BF_ENET_IALR_IADDR2(v)))
+#define BW_ENET_IALR_IADDR2(x, v) (HW_ENET_IALR_WR(x, v))
 #endif
 //@}
 
@@ -3216,7 +3214,7 @@ typedef union _hw_enet_gaur
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_GAUR_GADDR1 field.
-#define BR_ENET_GAUR_GADDR1(x) (HW_ENET_GAUR(x).B.GADDR1)
+#define BR_ENET_GAUR_GADDR1(x) (HW_ENET_GAUR(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_GAUR_GADDR1.
@@ -3224,7 +3222,7 @@ typedef union _hw_enet_gaur
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the GADDR1 field to a new value.
-#define BW_ENET_GAUR_GADDR1(x, v) (HW_ENET_GAUR_WR(x, (HW_ENET_GAUR_RD(x) & ~BM_ENET_GAUR_GADDR1) | BF_ENET_GAUR_GADDR1(v)))
+#define BW_ENET_GAUR_GADDR1(x, v) (HW_ENET_GAUR_WR(x, v))
 #endif
 //@}
 
@@ -3286,7 +3284,7 @@ typedef union _hw_enet_galr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_GALR_GADDR2 field.
-#define BR_ENET_GALR_GADDR2(x) (HW_ENET_GALR(x).B.GADDR2)
+#define BR_ENET_GALR_GADDR2(x) (HW_ENET_GALR(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_GALR_GADDR2.
@@ -3294,7 +3292,7 @@ typedef union _hw_enet_galr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the GADDR2 field to a new value.
-#define BW_ENET_GALR_GADDR2(x, v) (HW_ENET_GALR_WR(x, (HW_ENET_GALR_RD(x) & ~BM_ENET_GALR_GADDR2) | BF_ENET_GALR_GADDR2(v)))
+#define BW_ENET_GALR_GADDR2(x, v) (HW_ENET_GALR_WR(x, v))
 #endif
 //@}
 
@@ -3308,14 +3306,21 @@ typedef union _hw_enet_galr
  *
  * Reset value: 0x00000000U
  *
- * If TFR[STRFWD] is cleared, TFWR[TFWR] controls the amount of data required in
- * the transmit FIFO before transmission of a frame can begin. This allows you
+ * If TFWR[STRFWD] is cleared, TFWR[TFWR] controls the amount of data required
+ * in the transmit FIFO before transmission of a frame can begin. This allows you
  * to minimize transmit latency (TFWR = 00 or 01) or allow for larger bus access
- * latency (TFWR = 11) due to contention for the system bus. Setting the watermark
- * to a high value minimizes the risk of transmit FIFO underrun due to
+ * latency (TFWR = 11) due to contention for the system bus. Setting the
+ * watermark to a high value minimizes the risk of transmit FIFO underrun due to
  * contention for the system bus. The byte counts associated with the TFWR field may need
  * to be modified to match a given system requirement. For example, worst case
- * bus access latency by the transmit data DMA channel.
+ * bus access latency by the transmit data DMA channel. When the FIFO level
+ * reaches the value the TFWR field and when the STR_FWD is set to '0', the MAC
+ * transmit control logic starts frame transmission even before the end-of-frame is
+ * available in the FIFO (cut-through operation). If a complete frame has a size
+ * smaller than the threshold programmed with TFWR, the MAC also transmits the Frame
+ * to the line. To enable store and forward on the Transmit path, set STR_FWD to
+ * '1'. In this case, the MAC starts to transmit data only when a complete frame
+ * is stored in the Transmit FIFO.
  */
 typedef union _hw_enet_tfwr
 {
@@ -3353,12 +3358,13 @@ typedef union _hw_enet_tfwr
 /*!
  * @name Register ENET_TFWR, field TFWR[5:0] (RW)
  *
- * If STRFWD is cleared, this field indicates the number of bytes written to the
- * transmit FIFO before transmission of a frame begins. If a frame with less
- * than the threshold is written, it is still sent independently of this threshold
- * setting. The threshold is relevant only if the frame is larger than the
- * threshold given. This chip may not support the maximum number of bytes written shown
- * below. See the chip-specific information for the ENET module for this value.
+ * If TFWR[STRFWD] is cleared, this field indicates the number of bytes, in
+ * steps of 64 bytes, written to the transmit FIFO before transmission of a frame
+ * begins. If a frame with less than the threshold is written, it is still sent
+ * independently of this threshold setting. The threshold is relevant only if the
+ * frame is larger than the threshold given. This chip may not support the maximum
+ * number of bytes written shown below. See the chip-specific information for the
+ * ENET module for this value.
  *
  * Values:
  * - 000000 - 64 bytes written.
@@ -3391,7 +3397,7 @@ typedef union _hw_enet_tfwr
  * @name Register ENET_TFWR, field STRFWD[8] (RW)
  *
  * Values:
- * - 0 - Disabled, the transmission start threshold is programmed in TFWR.
+ * - 0 - Reset. The transmission start threshold is programmed in TFWR[TFWR].
  * - 1 - Enabled.
  */
 //@{
@@ -3644,7 +3650,7 @@ typedef union _hw_enet_rsfl
     struct _hw_enet_rsfl_bitfields
     {
         uint32_t RX_SECTION_FULL : 8;  //!< [7:0] Value Of Receive FIFO
-                                       //!< Section Full Threshold
+                                       //! Section Full Threshold
         uint32_t RESERVED0 : 24;       //!< [31:8]
     } B;
 } hw_enet_rsfl_t;
@@ -3676,7 +3682,8 @@ typedef union _hw_enet_rsfl
  * Value, in 64-bit words, of the receive FIFO section full threshold. Clear
  * this field to enable store and forward on the RX FIFO. When programming a value
  * greater than 0 (cut-through operation), it must be greater than
- * RAEM[RX_ALMOST_EMPTY].
+ * RAEM[RX_ALMOST_EMPTY]. When the FIFO level reaches the value in this field, data is available
+ * in the Receive FIFO (cut-through operation).
  */
 //@{
 #define BP_ENET_RSFL_RX_SECTION_FULL (0U)  //!< Bit position for ENET_RSFL_RX_SECTION_FULL.
@@ -3713,10 +3720,10 @@ typedef union _hw_enet_rsem
     struct _hw_enet_rsem_bitfields
     {
         uint32_t RX_SECTION_EMPTY : 8; //!< [7:0] Value Of The Receive FIFO
-                                       //!< Section Empty Threshold
+                                       //! Section Empty Threshold
         uint32_t RESERVED0 : 8;        //!< [15:8]
         uint32_t STAT_SECTION_EMPTY : 5; //!< [20:16] RX Status FIFO Section
-                                       //!< Empty Threshold
+                                       //! Empty Threshold
         uint32_t RESERVED1 : 11;       //!< [31:21]
     } B;
 } hw_enet_rsem_t;
@@ -3745,7 +3752,12 @@ typedef union _hw_enet_rsem
 /*!
  * @name Register ENET_RSEM, field RX_SECTION_EMPTY[7:0] (RW)
  *
- * Value, in 64-bit words, of the receive FIFO section empty threshold.
+ * Value, in 64-bit words, of the receive FIFO section empty threshold. When the
+ * FIFO has reached this level, a pause frame will be issued. A value of 0
+ * disables automatic pause frame generation. When the FIFO level goes below the value
+ * programmed in this field, an XON pause frame is issued to indicate the FIFO
+ * congestion is cleared to the remote Ethernet client. The section-empty
+ * threshold indications from both FIFOs are OR'ed to cause XOFF pause frame generation.
  */
 //@{
 #define BP_ENET_RSEM_RX_SECTION_EMPTY (0U) //!< Bit position for ENET_RSEM_RX_SECTION_EMPTY.
@@ -3810,7 +3822,7 @@ typedef union _hw_enet_raem
     struct _hw_enet_raem_bitfields
     {
         uint32_t RX_ALMOST_EMPTY : 8;  //!< [7:0] Value Of The Receive FIFO
-                                       //!< Almost Empty Threshold
+                                       //! Almost Empty Threshold
         uint32_t RESERVED0 : 24;       //!< [31:8]
     } B;
 } hw_enet_raem_t;
@@ -3839,7 +3851,12 @@ typedef union _hw_enet_raem
 /*!
  * @name Register ENET_RAEM, field RX_ALMOST_EMPTY[7:0] (RW)
  *
- * Value, in 64-bit words, of the receive FIFO almost empty threshold.
+ * Value, in 64-bit words, of the receive FIFO almost empty threshold. When the
+ * FIFO level reaches the value programmed in this field and the end-of-frame has
+ * not been received for the frame yet, the core receive read control stops FIFO
+ * read (and subsequently stops transferring data to the MAC client
+ * application). It continues to deliver the frame, if again more data than the threshold or
+ * the end-of-frame is available in the FIFO. A minimum value of 4 should be set.
  */
 //@{
 #define BP_ENET_RAEM_RX_ALMOST_EMPTY (0U)  //!< Bit position for ENET_RAEM_RX_ALMOST_EMPTY.
@@ -3876,7 +3893,7 @@ typedef union _hw_enet_rafl
     struct _hw_enet_rafl_bitfields
     {
         uint32_t RX_ALMOST_FULL : 8;   //!< [7:0] Value Of The Receive FIFO
-                                       //!< Almost Full Threshold
+                                       //! Almost Full Threshold
         uint32_t RESERVED0 : 24;       //!< [31:8]
     } B;
 } hw_enet_rafl_t;
@@ -3905,7 +3922,12 @@ typedef union _hw_enet_rafl
 /*!
  * @name Register ENET_RAFL, field RX_ALMOST_FULL[7:0] (RW)
  *
- * Value, in 64-bit words, of the receive FIFO almost full threshold.
+ * Value, in 64-bit words, of the receive FIFO almost full threshold. When the
+ * FIFO level comes close to the maximum, so that there is no more space for at
+ * least RX_ALMOST_FULL number of words, the MAC stops writing data in the FIFO and
+ * truncates the received frame to avoid FIFO overflow. The corresponding error
+ * status will be set when the frame is delivered to the application. A minimum
+ * value of 4 should be set.
  */
 //@{
 #define BP_ENET_RAFL_RX_ALMOST_FULL (0U)   //!< Bit position for ENET_RAFL_RX_ALMOST_FULL.
@@ -3942,7 +3964,7 @@ typedef union _hw_enet_tsem
     struct _hw_enet_tsem_bitfields
     {
         uint32_t TX_SECTION_EMPTY : 8; //!< [7:0] Value Of The Transmit FIFO
-                                       //!< Section Empty Threshold
+                                       //! Section Empty Threshold
         uint32_t RESERVED0 : 24;       //!< [31:8]
     } B;
 } hw_enet_tsem_t;
@@ -3971,7 +3993,9 @@ typedef union _hw_enet_tsem
 /*!
  * @name Register ENET_TSEM, field TX_SECTION_EMPTY[7:0] (RW)
  *
- * Value, in 64-bit words, of the transmit FIFO section empty threshold.
+ * Value, in 64-bit words, of the transmit FIFO section empty threshold. See
+ * Transmit FIFOFour programmable thresholds are available which control the core
+ * operation. for more information.
  */
 //@{
 #define BP_ENET_TSEM_TX_SECTION_EMPTY (0U) //!< Bit position for ENET_TSEM_TX_SECTION_EMPTY.
@@ -4008,7 +4032,7 @@ typedef union _hw_enet_taem
     struct _hw_enet_taem_bitfields
     {
         uint32_t TX_ALMOST_EMPTY : 8;  //!< [7:0] Value of Transmit FIFO
-                                       //!< Almost Empty Threshold
+                                       //! Almost Empty Threshold
         uint32_t RESERVED0 : 24;       //!< [31:8]
     } B;
 } hw_enet_taem_t;
@@ -4037,7 +4061,12 @@ typedef union _hw_enet_taem
 /*!
  * @name Register ENET_TAEM, field TX_ALMOST_EMPTY[7:0] (RW)
  *
- * Value, in 64-bit words, of the transmit FIFO almost empty threshold.
+ * Value, in 64-bit words, of the transmit FIFO almost empty threshold. When the
+ * FIFO level reaches the value programmed in this field, and no end-of-frame is
+ * available for the frame, the MAC transmit logic, to avoid FIFO underflow,
+ * stops reading the FIFO and transmits a frame with an MII error indication. See
+ * Transmit FIFOFour programmable thresholds are available which control the core
+ * operation. for more information. A minimum value of 4 should be set.
  */
 //@{
 #define BP_ENET_TAEM_TX_ALMOST_EMPTY (0U)  //!< Bit position for ENET_TAEM_TX_ALMOST_EMPTY.
@@ -4074,7 +4103,7 @@ typedef union _hw_enet_tafl
     struct _hw_enet_tafl_bitfields
     {
         uint32_t TX_ALMOST_FULL : 8;   //!< [7:0] Value Of The Transmit FIFO
-                                       //!< Almost Full Threshold
+                                       //! Almost Full Threshold
         uint32_t RESERVED0 : 24;       //!< [31:8]
     } B;
 } hw_enet_tafl_t;
@@ -4106,9 +4135,15 @@ typedef union _hw_enet_tafl
  * Value, in 64-bit words, of the transmit FIFO almost full threshold. A minimum
  * value of six is required . A recommended value of at least 8 should be set
  * allowing a latency of two clock cycles to the application. If more latency is
- * required the value can be increased as necessary (latency = TAFL - 5). A FIFO
- * overflow is a fatal error and requires a global reset on the transmit datapath
- * or at least deassertion of ETHEREN.
+ * required the value can be increased as necessary (latency = TAFL - 5). When the
+ * FIFO level comes close to the maximum, so that there is no more space for at
+ * least TX_ALMOST_FULL number of words, the pin ff_tx_rdy is deasserted. If the
+ * application does not react on this signal, the FIFO write control logic, to
+ * avoid FIFO overflow, truncates the current frame and sets the error status. As a
+ * result, the frame will be transmitted with an GMII/MII error indication. See
+ * Transmit FIFOFour programmable thresholds are available which control the core
+ * operation. for more information. A FIFO overflow is a fatal error and requires
+ * a global reset on the transmit datapath or at least deassertion of ETHEREN.
  */
 //@{
 #define BP_ENET_TAFL_TX_ALMOST_FULL (0U)   //!< Bit position for ENET_TAFL_TX_ALMOST_FULL.
@@ -4419,14 +4454,14 @@ typedef union _hw_enet_racc
     struct _hw_enet_racc_bitfields
     {
         uint32_t PADREM : 1;           //!< [0] Enable Padding Removal For Short IP
-                                       //!< Frames
+                                       //! Frames
         uint32_t IPDIS : 1;            //!< [1] Enable Discard Of Frames With Wrong IPv4
-                                       //!< Header Checksum
+                                       //! Header Checksum
         uint32_t PRODIS : 1;           //!< [2] Enable Discard Of Frames With Wrong
-                                       //!< Protocol Checksum
+                                       //! Protocol Checksum
         uint32_t RESERVED0 : 3;        //!< [5:3]
         uint32_t LINEDIS : 1;          //!< [6] Enable Discard Of Frames With MAC
-                                       //!< Layer Errors
+                                       //! Layer Errors
         uint32_t SHIFT16 : 1;          //!< [7] RX FIFO Shift-16
         uint32_t RESERVED1 : 24;       //!< [31:8]
     } B;
@@ -4597,52 +4632,12 @@ typedef union _hw_enet_racc
 //@}
 
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_DROP - Count of frames not counted correctly (RMON_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable.
+// HW_ENET_RMON_T_PACKETS - Tx Packet Count Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_DROP - Count of frames not counted correctly (RMON_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable. (RW)
- *
- * Reset value: 0x00000000U
- */
-typedef union _hw_enet_rmon_t_drop
-{
-    uint32_t U;
-    struct _hw_enet_rmon_t_drop_bitfields
-    {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
-    } B;
-} hw_enet_rmon_t_drop_t;
-#endif
-
-/*!
- * @name Constants and macros for entire ENET_RMON_T_DROP register
- */
-//@{
-#define HW_ENET_RMON_T_DROP_ADDR(x) (REGS_ENET_BASE(x) + 0x200U)
-
-#ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_DROP(x)   (*(__IO hw_enet_rmon_t_drop_t *) HW_ENET_RMON_T_DROP_ADDR(x))
-#define HW_ENET_RMON_T_DROP_RD(x) (HW_ENET_RMON_T_DROP(x).U)
-#define HW_ENET_RMON_T_DROP_WR(x, v) (HW_ENET_RMON_T_DROP(x).U = (v))
-#define HW_ENET_RMON_T_DROP_SET(x, v) (HW_ENET_RMON_T_DROP_WR(x, HW_ENET_RMON_T_DROP_RD(x) |  (v)))
-#define HW_ENET_RMON_T_DROP_CLR(x, v) (HW_ENET_RMON_T_DROP_WR(x, HW_ENET_RMON_T_DROP_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_DROP_TOG(x, v) (HW_ENET_RMON_T_DROP_WR(x, HW_ENET_RMON_T_DROP_RD(x) ^  (v)))
-#endif
-//@}
-
-/*
- * Constants & macros for individual ENET_RMON_T_DROP bitfields
- */
-
-//-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_PACKETS - RMON Tx packet count (RMON_T_PACKETS)
-//-------------------------------------------------------------------------------------------
-
-#ifndef __LANGUAGE_ASM__
-/*!
- * @brief HW_ENET_RMON_T_PACKETS - RMON Tx packet count (RMON_T_PACKETS) (RW)
+ * @brief HW_ENET_RMON_T_PACKETS - Tx Packet Count Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4651,7 +4646,8 @@ typedef union _hw_enet_rmon_t_packets
     uint32_t U;
     struct _hw_enet_rmon_t_packets_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_packets_t;
 #endif
@@ -4663,12 +4659,8 @@ typedef union _hw_enet_rmon_t_packets
 #define HW_ENET_RMON_T_PACKETS_ADDR(x) (REGS_ENET_BASE(x) + 0x204U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_PACKETS(x) (*(__IO hw_enet_rmon_t_packets_t *) HW_ENET_RMON_T_PACKETS_ADDR(x))
+#define HW_ENET_RMON_T_PACKETS(x) (*(__I hw_enet_rmon_t_packets_t *) HW_ENET_RMON_T_PACKETS_ADDR(x))
 #define HW_ENET_RMON_T_PACKETS_RD(x) (HW_ENET_RMON_T_PACKETS(x).U)
-#define HW_ENET_RMON_T_PACKETS_WR(x, v) (HW_ENET_RMON_T_PACKETS(x).U = (v))
-#define HW_ENET_RMON_T_PACKETS_SET(x, v) (HW_ENET_RMON_T_PACKETS_WR(x, HW_ENET_RMON_T_PACKETS_RD(x) |  (v)))
-#define HW_ENET_RMON_T_PACKETS_CLR(x, v) (HW_ENET_RMON_T_PACKETS_WR(x, HW_ENET_RMON_T_PACKETS_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_PACKETS_TOG(x, v) (HW_ENET_RMON_T_PACKETS_WR(x, HW_ENET_RMON_T_PACKETS_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4676,22 +4668,39 @@ typedef union _hw_enet_rmon_t_packets
  * Constants & macros for individual ENET_RMON_T_PACKETS bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_PACKETS, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_PACKETS_TXPKTS (0U) //!< Bit position for ENET_RMON_T_PACKETS_TXPKTS.
+#define BM_ENET_RMON_T_PACKETS_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_PACKETS_TXPKTS.
+#define BS_ENET_RMON_T_PACKETS_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_PACKETS_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_PACKETS_TXPKTS field.
+#define BR_ENET_RMON_T_PACKETS_TXPKTS(x) (HW_ENET_RMON_T_PACKETS(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_BC_PKT - RMON Tx Broadcast Packets (RMON_T_BC_PKT)
+// HW_ENET_RMON_T_BC_PKT - Tx Broadcast Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_BC_PKT - RMON Tx Broadcast Packets (RMON_T_BC_PKT) (RW)
+ * @brief HW_ENET_RMON_T_BC_PKT - Tx Broadcast Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
+ *
+ * RMON Tx Broadcast Packets
  */
 typedef union _hw_enet_rmon_t_bc_pkt
 {
     uint32_t U;
     struct _hw_enet_rmon_t_bc_pkt_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Broadcast packets
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_bc_pkt_t;
 #endif
@@ -4703,12 +4712,8 @@ typedef union _hw_enet_rmon_t_bc_pkt
 #define HW_ENET_RMON_T_BC_PKT_ADDR(x) (REGS_ENET_BASE(x) + 0x208U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_BC_PKT(x) (*(__IO hw_enet_rmon_t_bc_pkt_t *) HW_ENET_RMON_T_BC_PKT_ADDR(x))
+#define HW_ENET_RMON_T_BC_PKT(x) (*(__I hw_enet_rmon_t_bc_pkt_t *) HW_ENET_RMON_T_BC_PKT_ADDR(x))
 #define HW_ENET_RMON_T_BC_PKT_RD(x) (HW_ENET_RMON_T_BC_PKT(x).U)
-#define HW_ENET_RMON_T_BC_PKT_WR(x, v) (HW_ENET_RMON_T_BC_PKT(x).U = (v))
-#define HW_ENET_RMON_T_BC_PKT_SET(x, v) (HW_ENET_RMON_T_BC_PKT_WR(x, HW_ENET_RMON_T_BC_PKT_RD(x) |  (v)))
-#define HW_ENET_RMON_T_BC_PKT_CLR(x, v) (HW_ENET_RMON_T_BC_PKT_WR(x, HW_ENET_RMON_T_BC_PKT_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_BC_PKT_TOG(x, v) (HW_ENET_RMON_T_BC_PKT_WR(x, HW_ENET_RMON_T_BC_PKT_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4716,13 +4721,27 @@ typedef union _hw_enet_rmon_t_bc_pkt
  * Constants & macros for individual ENET_RMON_T_BC_PKT bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_BC_PKT, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_BC_PKT_TXPKTS (0U)  //!< Bit position for ENET_RMON_T_BC_PKT_TXPKTS.
+#define BM_ENET_RMON_T_BC_PKT_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_BC_PKT_TXPKTS.
+#define BS_ENET_RMON_T_BC_PKT_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_BC_PKT_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_BC_PKT_TXPKTS field.
+#define BR_ENET_RMON_T_BC_PKT_TXPKTS(x) (HW_ENET_RMON_T_BC_PKT(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_MC_PKT - RMON Tx Multicast Packets (RMON_T_MC_PKT)
+// HW_ENET_RMON_T_MC_PKT - Tx Multicast Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_MC_PKT - RMON Tx Multicast Packets (RMON_T_MC_PKT) (RW)
+ * @brief HW_ENET_RMON_T_MC_PKT - Tx Multicast Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4731,7 +4750,8 @@ typedef union _hw_enet_rmon_t_mc_pkt
     uint32_t U;
     struct _hw_enet_rmon_t_mc_pkt_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Multicast packets
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_mc_pkt_t;
 #endif
@@ -4743,12 +4763,8 @@ typedef union _hw_enet_rmon_t_mc_pkt
 #define HW_ENET_RMON_T_MC_PKT_ADDR(x) (REGS_ENET_BASE(x) + 0x20CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_MC_PKT(x) (*(__IO hw_enet_rmon_t_mc_pkt_t *) HW_ENET_RMON_T_MC_PKT_ADDR(x))
+#define HW_ENET_RMON_T_MC_PKT(x) (*(__I hw_enet_rmon_t_mc_pkt_t *) HW_ENET_RMON_T_MC_PKT_ADDR(x))
 #define HW_ENET_RMON_T_MC_PKT_RD(x) (HW_ENET_RMON_T_MC_PKT(x).U)
-#define HW_ENET_RMON_T_MC_PKT_WR(x, v) (HW_ENET_RMON_T_MC_PKT(x).U = (v))
-#define HW_ENET_RMON_T_MC_PKT_SET(x, v) (HW_ENET_RMON_T_MC_PKT_WR(x, HW_ENET_RMON_T_MC_PKT_RD(x) |  (v)))
-#define HW_ENET_RMON_T_MC_PKT_CLR(x, v) (HW_ENET_RMON_T_MC_PKT_WR(x, HW_ENET_RMON_T_MC_PKT_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_MC_PKT_TOG(x, v) (HW_ENET_RMON_T_MC_PKT_WR(x, HW_ENET_RMON_T_MC_PKT_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4756,13 +4772,27 @@ typedef union _hw_enet_rmon_t_mc_pkt
  * Constants & macros for individual ENET_RMON_T_MC_PKT bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_MC_PKT, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_MC_PKT_TXPKTS (0U)  //!< Bit position for ENET_RMON_T_MC_PKT_TXPKTS.
+#define BM_ENET_RMON_T_MC_PKT_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_MC_PKT_TXPKTS.
+#define BS_ENET_RMON_T_MC_PKT_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_MC_PKT_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_MC_PKT_TXPKTS field.
+#define BR_ENET_RMON_T_MC_PKT_TXPKTS(x) (HW_ENET_RMON_T_MC_PKT(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_CRC_ALIGN - RMON Tx Packets w CRC/Align error (RMON_T_CRC_ALIGN)
+// HW_ENET_RMON_T_CRC_ALIGN - Tx Packets with CRC/Align Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_CRC_ALIGN - RMON Tx Packets w CRC/Align error (RMON_T_CRC_ALIGN) (RW)
+ * @brief HW_ENET_RMON_T_CRC_ALIGN - Tx Packets with CRC/Align Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4771,7 +4801,8 @@ typedef union _hw_enet_rmon_t_crc_align
     uint32_t U;
     struct _hw_enet_rmon_t_crc_align_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packets with CRC/align error
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_crc_align_t;
 #endif
@@ -4783,12 +4814,8 @@ typedef union _hw_enet_rmon_t_crc_align
 #define HW_ENET_RMON_T_CRC_ALIGN_ADDR(x) (REGS_ENET_BASE(x) + 0x210U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_CRC_ALIGN(x) (*(__IO hw_enet_rmon_t_crc_align_t *) HW_ENET_RMON_T_CRC_ALIGN_ADDR(x))
+#define HW_ENET_RMON_T_CRC_ALIGN(x) (*(__I hw_enet_rmon_t_crc_align_t *) HW_ENET_RMON_T_CRC_ALIGN_ADDR(x))
 #define HW_ENET_RMON_T_CRC_ALIGN_RD(x) (HW_ENET_RMON_T_CRC_ALIGN(x).U)
-#define HW_ENET_RMON_T_CRC_ALIGN_WR(x, v) (HW_ENET_RMON_T_CRC_ALIGN(x).U = (v))
-#define HW_ENET_RMON_T_CRC_ALIGN_SET(x, v) (HW_ENET_RMON_T_CRC_ALIGN_WR(x, HW_ENET_RMON_T_CRC_ALIGN_RD(x) |  (v)))
-#define HW_ENET_RMON_T_CRC_ALIGN_CLR(x, v) (HW_ENET_RMON_T_CRC_ALIGN_WR(x, HW_ENET_RMON_T_CRC_ALIGN_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_CRC_ALIGN_TOG(x, v) (HW_ENET_RMON_T_CRC_ALIGN_WR(x, HW_ENET_RMON_T_CRC_ALIGN_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4796,13 +4823,27 @@ typedef union _hw_enet_rmon_t_crc_align
  * Constants & macros for individual ENET_RMON_T_CRC_ALIGN bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_CRC_ALIGN, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_CRC_ALIGN_TXPKTS (0U) //!< Bit position for ENET_RMON_T_CRC_ALIGN_TXPKTS.
+#define BM_ENET_RMON_T_CRC_ALIGN_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_CRC_ALIGN_TXPKTS.
+#define BS_ENET_RMON_T_CRC_ALIGN_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_CRC_ALIGN_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_CRC_ALIGN_TXPKTS field.
+#define BR_ENET_RMON_T_CRC_ALIGN_TXPKTS(x) (HW_ENET_RMON_T_CRC_ALIGN(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_UNDERSIZE - RMON Tx Packets < 64 bytes, good CRC (RMON_T_UNDERSIZE)
+// HW_ENET_RMON_T_UNDERSIZE - Tx Packets Less Than Bytes and Good CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_UNDERSIZE - RMON Tx Packets < 64 bytes, good CRC (RMON_T_UNDERSIZE) (RW)
+ * @brief HW_ENET_RMON_T_UNDERSIZE - Tx Packets Less Than Bytes and Good CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4811,7 +4852,8 @@ typedef union _hw_enet_rmon_t_undersize
     uint32_t U;
     struct _hw_enet_rmon_t_undersize_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_undersize_t;
 #endif
@@ -4823,12 +4865,8 @@ typedef union _hw_enet_rmon_t_undersize
 #define HW_ENET_RMON_T_UNDERSIZE_ADDR(x) (REGS_ENET_BASE(x) + 0x214U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_UNDERSIZE(x) (*(__IO hw_enet_rmon_t_undersize_t *) HW_ENET_RMON_T_UNDERSIZE_ADDR(x))
+#define HW_ENET_RMON_T_UNDERSIZE(x) (*(__I hw_enet_rmon_t_undersize_t *) HW_ENET_RMON_T_UNDERSIZE_ADDR(x))
 #define HW_ENET_RMON_T_UNDERSIZE_RD(x) (HW_ENET_RMON_T_UNDERSIZE(x).U)
-#define HW_ENET_RMON_T_UNDERSIZE_WR(x, v) (HW_ENET_RMON_T_UNDERSIZE(x).U = (v))
-#define HW_ENET_RMON_T_UNDERSIZE_SET(x, v) (HW_ENET_RMON_T_UNDERSIZE_WR(x, HW_ENET_RMON_T_UNDERSIZE_RD(x) |  (v)))
-#define HW_ENET_RMON_T_UNDERSIZE_CLR(x, v) (HW_ENET_RMON_T_UNDERSIZE_WR(x, HW_ENET_RMON_T_UNDERSIZE_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_UNDERSIZE_TOG(x, v) (HW_ENET_RMON_T_UNDERSIZE_WR(x, HW_ENET_RMON_T_UNDERSIZE_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4836,13 +4874,27 @@ typedef union _hw_enet_rmon_t_undersize
  * Constants & macros for individual ENET_RMON_T_UNDERSIZE bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_UNDERSIZE, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_UNDERSIZE_TXPKTS (0U) //!< Bit position for ENET_RMON_T_UNDERSIZE_TXPKTS.
+#define BM_ENET_RMON_T_UNDERSIZE_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_UNDERSIZE_TXPKTS.
+#define BS_ENET_RMON_T_UNDERSIZE_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_UNDERSIZE_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_UNDERSIZE_TXPKTS field.
+#define BR_ENET_RMON_T_UNDERSIZE_TXPKTS(x) (HW_ENET_RMON_T_UNDERSIZE(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_OVERSIZE - RMON Tx Packets > MAX_FL bytes, good CRC (RMON_T_OVERSIZE)
+// HW_ENET_RMON_T_OVERSIZE - Tx Packets GT MAX_FL bytes and Good CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_OVERSIZE - RMON Tx Packets > MAX_FL bytes, good CRC (RMON_T_OVERSIZE) (RW)
+ * @brief HW_ENET_RMON_T_OVERSIZE - Tx Packets GT MAX_FL bytes and Good CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4851,7 +4903,8 @@ typedef union _hw_enet_rmon_t_oversize
     uint32_t U;
     struct _hw_enet_rmon_t_oversize_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_oversize_t;
 #endif
@@ -4863,12 +4916,8 @@ typedef union _hw_enet_rmon_t_oversize
 #define HW_ENET_RMON_T_OVERSIZE_ADDR(x) (REGS_ENET_BASE(x) + 0x218U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_OVERSIZE(x) (*(__IO hw_enet_rmon_t_oversize_t *) HW_ENET_RMON_T_OVERSIZE_ADDR(x))
+#define HW_ENET_RMON_T_OVERSIZE(x) (*(__I hw_enet_rmon_t_oversize_t *) HW_ENET_RMON_T_OVERSIZE_ADDR(x))
 #define HW_ENET_RMON_T_OVERSIZE_RD(x) (HW_ENET_RMON_T_OVERSIZE(x).U)
-#define HW_ENET_RMON_T_OVERSIZE_WR(x, v) (HW_ENET_RMON_T_OVERSIZE(x).U = (v))
-#define HW_ENET_RMON_T_OVERSIZE_SET(x, v) (HW_ENET_RMON_T_OVERSIZE_WR(x, HW_ENET_RMON_T_OVERSIZE_RD(x) |  (v)))
-#define HW_ENET_RMON_T_OVERSIZE_CLR(x, v) (HW_ENET_RMON_T_OVERSIZE_WR(x, HW_ENET_RMON_T_OVERSIZE_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_OVERSIZE_TOG(x, v) (HW_ENET_RMON_T_OVERSIZE_WR(x, HW_ENET_RMON_T_OVERSIZE_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4876,22 +4925,39 @@ typedef union _hw_enet_rmon_t_oversize
  * Constants & macros for individual ENET_RMON_T_OVERSIZE bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_OVERSIZE, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_OVERSIZE_TXPKTS (0U) //!< Bit position for ENET_RMON_T_OVERSIZE_TXPKTS.
+#define BM_ENET_RMON_T_OVERSIZE_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_OVERSIZE_TXPKTS.
+#define BS_ENET_RMON_T_OVERSIZE_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_OVERSIZE_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_OVERSIZE_TXPKTS field.
+#define BR_ENET_RMON_T_OVERSIZE_TXPKTS(x) (HW_ENET_RMON_T_OVERSIZE(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_FRAG - RMON Tx Packets < 64 bytes, bad CRC (RMON_T_FRAG)
+// HW_ENET_RMON_T_FRAG - Tx Packets Less Than 64 Bytes and Bad CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_FRAG - RMON Tx Packets < 64 bytes, bad CRC (RMON_T_FRAG) (RW)
+ * @brief HW_ENET_RMON_T_FRAG - Tx Packets Less Than 64 Bytes and Bad CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
+ *
+ * .
  */
 typedef union _hw_enet_rmon_t_frag
 {
     uint32_t U;
     struct _hw_enet_rmon_t_frag_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_frag_t;
 #endif
@@ -4903,12 +4969,8 @@ typedef union _hw_enet_rmon_t_frag
 #define HW_ENET_RMON_T_FRAG_ADDR(x) (REGS_ENET_BASE(x) + 0x21CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_FRAG(x)   (*(__IO hw_enet_rmon_t_frag_t *) HW_ENET_RMON_T_FRAG_ADDR(x))
+#define HW_ENET_RMON_T_FRAG(x)   (*(__I hw_enet_rmon_t_frag_t *) HW_ENET_RMON_T_FRAG_ADDR(x))
 #define HW_ENET_RMON_T_FRAG_RD(x) (HW_ENET_RMON_T_FRAG(x).U)
-#define HW_ENET_RMON_T_FRAG_WR(x, v) (HW_ENET_RMON_T_FRAG(x).U = (v))
-#define HW_ENET_RMON_T_FRAG_SET(x, v) (HW_ENET_RMON_T_FRAG_WR(x, HW_ENET_RMON_T_FRAG_RD(x) |  (v)))
-#define HW_ENET_RMON_T_FRAG_CLR(x, v) (HW_ENET_RMON_T_FRAG_WR(x, HW_ENET_RMON_T_FRAG_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_FRAG_TOG(x, v) (HW_ENET_RMON_T_FRAG_WR(x, HW_ENET_RMON_T_FRAG_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4916,13 +4978,27 @@ typedef union _hw_enet_rmon_t_frag
  * Constants & macros for individual ENET_RMON_T_FRAG bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_FRAG, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_FRAG_TXPKTS (0U)    //!< Bit position for ENET_RMON_T_FRAG_TXPKTS.
+#define BM_ENET_RMON_T_FRAG_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_FRAG_TXPKTS.
+#define BS_ENET_RMON_T_FRAG_TXPKTS (16U)   //!< Bit field size in bits for ENET_RMON_T_FRAG_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_FRAG_TXPKTS field.
+#define BR_ENET_RMON_T_FRAG_TXPKTS(x) (HW_ENET_RMON_T_FRAG(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_JAB - RMON Tx Packets > MAX_FL bytes, bad CRC (RMON_T_JAB)
+// HW_ENET_RMON_T_JAB - Tx Packets Greater Than MAX_FL bytes and Bad CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_JAB - RMON Tx Packets > MAX_FL bytes, bad CRC (RMON_T_JAB) (RW)
+ * @brief HW_ENET_RMON_T_JAB - Tx Packets Greater Than MAX_FL bytes and Bad CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4931,7 +5007,8 @@ typedef union _hw_enet_rmon_t_jab
     uint32_t U;
     struct _hw_enet_rmon_t_jab_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_jab_t;
 #endif
@@ -4943,12 +5020,8 @@ typedef union _hw_enet_rmon_t_jab
 #define HW_ENET_RMON_T_JAB_ADDR(x) (REGS_ENET_BASE(x) + 0x220U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_JAB(x)    (*(__IO hw_enet_rmon_t_jab_t *) HW_ENET_RMON_T_JAB_ADDR(x))
+#define HW_ENET_RMON_T_JAB(x)    (*(__I hw_enet_rmon_t_jab_t *) HW_ENET_RMON_T_JAB_ADDR(x))
 #define HW_ENET_RMON_T_JAB_RD(x) (HW_ENET_RMON_T_JAB(x).U)
-#define HW_ENET_RMON_T_JAB_WR(x, v) (HW_ENET_RMON_T_JAB(x).U = (v))
-#define HW_ENET_RMON_T_JAB_SET(x, v) (HW_ENET_RMON_T_JAB_WR(x, HW_ENET_RMON_T_JAB_RD(x) |  (v)))
-#define HW_ENET_RMON_T_JAB_CLR(x, v) (HW_ENET_RMON_T_JAB_WR(x, HW_ENET_RMON_T_JAB_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_JAB_TOG(x, v) (HW_ENET_RMON_T_JAB_WR(x, HW_ENET_RMON_T_JAB_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4956,13 +5029,27 @@ typedef union _hw_enet_rmon_t_jab
  * Constants & macros for individual ENET_RMON_T_JAB bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_JAB, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_JAB_TXPKTS (0U)     //!< Bit position for ENET_RMON_T_JAB_TXPKTS.
+#define BM_ENET_RMON_T_JAB_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_JAB_TXPKTS.
+#define BS_ENET_RMON_T_JAB_TXPKTS (16U)    //!< Bit field size in bits for ENET_RMON_T_JAB_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_JAB_TXPKTS field.
+#define BR_ENET_RMON_T_JAB_TXPKTS(x) (HW_ENET_RMON_T_JAB(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_COL - RMON Tx collision count (RMON_T_COL)
+// HW_ENET_RMON_T_COL - Tx Collision Count Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_COL - RMON Tx collision count (RMON_T_COL) (RW)
+ * @brief HW_ENET_RMON_T_COL - Tx Collision Count Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -4971,7 +5058,8 @@ typedef union _hw_enet_rmon_t_col
     uint32_t U;
     struct _hw_enet_rmon_t_col_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_col_t;
 #endif
@@ -4983,12 +5071,8 @@ typedef union _hw_enet_rmon_t_col
 #define HW_ENET_RMON_T_COL_ADDR(x) (REGS_ENET_BASE(x) + 0x224U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_COL(x)    (*(__IO hw_enet_rmon_t_col_t *) HW_ENET_RMON_T_COL_ADDR(x))
+#define HW_ENET_RMON_T_COL(x)    (*(__I hw_enet_rmon_t_col_t *) HW_ENET_RMON_T_COL_ADDR(x))
 #define HW_ENET_RMON_T_COL_RD(x) (HW_ENET_RMON_T_COL(x).U)
-#define HW_ENET_RMON_T_COL_WR(x, v) (HW_ENET_RMON_T_COL(x).U = (v))
-#define HW_ENET_RMON_T_COL_SET(x, v) (HW_ENET_RMON_T_COL_WR(x, HW_ENET_RMON_T_COL_RD(x) |  (v)))
-#define HW_ENET_RMON_T_COL_CLR(x, v) (HW_ENET_RMON_T_COL_WR(x, HW_ENET_RMON_T_COL_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_COL_TOG(x, v) (HW_ENET_RMON_T_COL_WR(x, HW_ENET_RMON_T_COL_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -4996,22 +5080,39 @@ typedef union _hw_enet_rmon_t_col
  * Constants & macros for individual ENET_RMON_T_COL bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_COL, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_COL_TXPKTS (0U)     //!< Bit position for ENET_RMON_T_COL_TXPKTS.
+#define BM_ENET_RMON_T_COL_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_COL_TXPKTS.
+#define BS_ENET_RMON_T_COL_TXPKTS (16U)    //!< Bit field size in bits for ENET_RMON_T_COL_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_COL_TXPKTS field.
+#define BR_ENET_RMON_T_COL_TXPKTS(x) (HW_ENET_RMON_T_COL(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P64 - RMON Tx 64 byte packets (RMON_T_P64)
+// HW_ENET_RMON_T_P64 - Tx 64-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P64 - RMON Tx 64 byte packets (RMON_T_P64) (RW)
+ * @brief HW_ENET_RMON_T_P64 - Tx 64-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
+ *
+ * .
  */
 typedef union _hw_enet_rmon_t_p64
 {
     uint32_t U;
     struct _hw_enet_rmon_t_p64_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p64_t;
 #endif
@@ -5023,12 +5124,8 @@ typedef union _hw_enet_rmon_t_p64
 #define HW_ENET_RMON_T_P64_ADDR(x) (REGS_ENET_BASE(x) + 0x228U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P64(x)    (*(__IO hw_enet_rmon_t_p64_t *) HW_ENET_RMON_T_P64_ADDR(x))
+#define HW_ENET_RMON_T_P64(x)    (*(__I hw_enet_rmon_t_p64_t *) HW_ENET_RMON_T_P64_ADDR(x))
 #define HW_ENET_RMON_T_P64_RD(x) (HW_ENET_RMON_T_P64(x).U)
-#define HW_ENET_RMON_T_P64_WR(x, v) (HW_ENET_RMON_T_P64(x).U = (v))
-#define HW_ENET_RMON_T_P64_SET(x, v) (HW_ENET_RMON_T_P64_WR(x, HW_ENET_RMON_T_P64_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P64_CLR(x, v) (HW_ENET_RMON_T_P64_WR(x, HW_ENET_RMON_T_P64_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P64_TOG(x, v) (HW_ENET_RMON_T_P64_WR(x, HW_ENET_RMON_T_P64_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5036,13 +5133,27 @@ typedef union _hw_enet_rmon_t_p64
  * Constants & macros for individual ENET_RMON_T_P64 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P64, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P64_TXPKTS (0U)     //!< Bit position for ENET_RMON_T_P64_TXPKTS.
+#define BM_ENET_RMON_T_P64_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P64_TXPKTS.
+#define BS_ENET_RMON_T_P64_TXPKTS (16U)    //!< Bit field size in bits for ENET_RMON_T_P64_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P64_TXPKTS field.
+#define BR_ENET_RMON_T_P64_TXPKTS(x) (HW_ENET_RMON_T_P64(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P65TO127 - RMON Tx 65 to 127 byte packets (RMON_T_P65TO127)
+// HW_ENET_RMON_T_P65TO127 - Tx 65- to 127-byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P65TO127 - RMON Tx 65 to 127 byte packets (RMON_T_P65TO127) (RW)
+ * @brief HW_ENET_RMON_T_P65TO127 - Tx 65- to 127-byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5051,7 +5162,8 @@ typedef union _hw_enet_rmon_t_p65to127
     uint32_t U;
     struct _hw_enet_rmon_t_p65to127_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p65to127_t;
 #endif
@@ -5063,12 +5175,8 @@ typedef union _hw_enet_rmon_t_p65to127
 #define HW_ENET_RMON_T_P65TO127_ADDR(x) (REGS_ENET_BASE(x) + 0x22CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P65TO127(x) (*(__IO hw_enet_rmon_t_p65to127_t *) HW_ENET_RMON_T_P65TO127_ADDR(x))
+#define HW_ENET_RMON_T_P65TO127(x) (*(__I hw_enet_rmon_t_p65to127_t *) HW_ENET_RMON_T_P65TO127_ADDR(x))
 #define HW_ENET_RMON_T_P65TO127_RD(x) (HW_ENET_RMON_T_P65TO127(x).U)
-#define HW_ENET_RMON_T_P65TO127_WR(x, v) (HW_ENET_RMON_T_P65TO127(x).U = (v))
-#define HW_ENET_RMON_T_P65TO127_SET(x, v) (HW_ENET_RMON_T_P65TO127_WR(x, HW_ENET_RMON_T_P65TO127_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P65TO127_CLR(x, v) (HW_ENET_RMON_T_P65TO127_WR(x, HW_ENET_RMON_T_P65TO127_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P65TO127_TOG(x, v) (HW_ENET_RMON_T_P65TO127_WR(x, HW_ENET_RMON_T_P65TO127_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5076,13 +5184,27 @@ typedef union _hw_enet_rmon_t_p65to127
  * Constants & macros for individual ENET_RMON_T_P65TO127 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P65TO127, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P65TO127_TXPKTS (0U) //!< Bit position for ENET_RMON_T_P65TO127_TXPKTS.
+#define BM_ENET_RMON_T_P65TO127_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P65TO127_TXPKTS.
+#define BS_ENET_RMON_T_P65TO127_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_P65TO127_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P65TO127_TXPKTS field.
+#define BR_ENET_RMON_T_P65TO127_TXPKTS(x) (HW_ENET_RMON_T_P65TO127(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P128TO255 - RMON Tx 128 to 255 byte packets (RMON_T_P128TO255)
+// HW_ENET_RMON_T_P128TO255 - Tx 128- to 255-byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P128TO255 - RMON Tx 128 to 255 byte packets (RMON_T_P128TO255) (RW)
+ * @brief HW_ENET_RMON_T_P128TO255 - Tx 128- to 255-byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5091,7 +5213,8 @@ typedef union _hw_enet_rmon_t_p128to255
     uint32_t U;
     struct _hw_enet_rmon_t_p128to255_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p128to255_t;
 #endif
@@ -5103,12 +5226,8 @@ typedef union _hw_enet_rmon_t_p128to255
 #define HW_ENET_RMON_T_P128TO255_ADDR(x) (REGS_ENET_BASE(x) + 0x230U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P128TO255(x) (*(__IO hw_enet_rmon_t_p128to255_t *) HW_ENET_RMON_T_P128TO255_ADDR(x))
+#define HW_ENET_RMON_T_P128TO255(x) (*(__I hw_enet_rmon_t_p128to255_t *) HW_ENET_RMON_T_P128TO255_ADDR(x))
 #define HW_ENET_RMON_T_P128TO255_RD(x) (HW_ENET_RMON_T_P128TO255(x).U)
-#define HW_ENET_RMON_T_P128TO255_WR(x, v) (HW_ENET_RMON_T_P128TO255(x).U = (v))
-#define HW_ENET_RMON_T_P128TO255_SET(x, v) (HW_ENET_RMON_T_P128TO255_WR(x, HW_ENET_RMON_T_P128TO255_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P128TO255_CLR(x, v) (HW_ENET_RMON_T_P128TO255_WR(x, HW_ENET_RMON_T_P128TO255_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P128TO255_TOG(x, v) (HW_ENET_RMON_T_P128TO255_WR(x, HW_ENET_RMON_T_P128TO255_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5116,13 +5235,27 @@ typedef union _hw_enet_rmon_t_p128to255
  * Constants & macros for individual ENET_RMON_T_P128TO255 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P128TO255, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P128TO255_TXPKTS (0U) //!< Bit position for ENET_RMON_T_P128TO255_TXPKTS.
+#define BM_ENET_RMON_T_P128TO255_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P128TO255_TXPKTS.
+#define BS_ENET_RMON_T_P128TO255_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_P128TO255_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P128TO255_TXPKTS field.
+#define BR_ENET_RMON_T_P128TO255_TXPKTS(x) (HW_ENET_RMON_T_P128TO255(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P256TO511 - RMON Tx 256 to 511 byte packets (RMON_T_P256TO511)
+// HW_ENET_RMON_T_P256TO511 - Tx 256- to 511-byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P256TO511 - RMON Tx 256 to 511 byte packets (RMON_T_P256TO511) (RW)
+ * @brief HW_ENET_RMON_T_P256TO511 - Tx 256- to 511-byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5131,7 +5264,8 @@ typedef union _hw_enet_rmon_t_p256to511
     uint32_t U;
     struct _hw_enet_rmon_t_p256to511_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p256to511_t;
 #endif
@@ -5143,12 +5277,8 @@ typedef union _hw_enet_rmon_t_p256to511
 #define HW_ENET_RMON_T_P256TO511_ADDR(x) (REGS_ENET_BASE(x) + 0x234U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P256TO511(x) (*(__IO hw_enet_rmon_t_p256to511_t *) HW_ENET_RMON_T_P256TO511_ADDR(x))
+#define HW_ENET_RMON_T_P256TO511(x) (*(__I hw_enet_rmon_t_p256to511_t *) HW_ENET_RMON_T_P256TO511_ADDR(x))
 #define HW_ENET_RMON_T_P256TO511_RD(x) (HW_ENET_RMON_T_P256TO511(x).U)
-#define HW_ENET_RMON_T_P256TO511_WR(x, v) (HW_ENET_RMON_T_P256TO511(x).U = (v))
-#define HW_ENET_RMON_T_P256TO511_SET(x, v) (HW_ENET_RMON_T_P256TO511_WR(x, HW_ENET_RMON_T_P256TO511_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P256TO511_CLR(x, v) (HW_ENET_RMON_T_P256TO511_WR(x, HW_ENET_RMON_T_P256TO511_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P256TO511_TOG(x, v) (HW_ENET_RMON_T_P256TO511_WR(x, HW_ENET_RMON_T_P256TO511_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5156,22 +5286,39 @@ typedef union _hw_enet_rmon_t_p256to511
  * Constants & macros for individual ENET_RMON_T_P256TO511 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P256TO511, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P256TO511_TXPKTS (0U) //!< Bit position for ENET_RMON_T_P256TO511_TXPKTS.
+#define BM_ENET_RMON_T_P256TO511_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P256TO511_TXPKTS.
+#define BS_ENET_RMON_T_P256TO511_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_P256TO511_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P256TO511_TXPKTS field.
+#define BR_ENET_RMON_T_P256TO511_TXPKTS(x) (HW_ENET_RMON_T_P256TO511(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P512TO1023 - RMON Tx 512 to 1023 byte packets (RMON_T_P512TO1023)
+// HW_ENET_RMON_T_P512TO1023 - Tx 512- to 1023-byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P512TO1023 - RMON Tx 512 to 1023 byte packets (RMON_T_P512TO1023) (RW)
+ * @brief HW_ENET_RMON_T_P512TO1023 - Tx 512- to 1023-byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
+ *
+ * .
  */
 typedef union _hw_enet_rmon_t_p512to1023
 {
     uint32_t U;
     struct _hw_enet_rmon_t_p512to1023_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p512to1023_t;
 #endif
@@ -5183,12 +5330,8 @@ typedef union _hw_enet_rmon_t_p512to1023
 #define HW_ENET_RMON_T_P512TO1023_ADDR(x) (REGS_ENET_BASE(x) + 0x238U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P512TO1023(x) (*(__IO hw_enet_rmon_t_p512to1023_t *) HW_ENET_RMON_T_P512TO1023_ADDR(x))
+#define HW_ENET_RMON_T_P512TO1023(x) (*(__I hw_enet_rmon_t_p512to1023_t *) HW_ENET_RMON_T_P512TO1023_ADDR(x))
 #define HW_ENET_RMON_T_P512TO1023_RD(x) (HW_ENET_RMON_T_P512TO1023(x).U)
-#define HW_ENET_RMON_T_P512TO1023_WR(x, v) (HW_ENET_RMON_T_P512TO1023(x).U = (v))
-#define HW_ENET_RMON_T_P512TO1023_SET(x, v) (HW_ENET_RMON_T_P512TO1023_WR(x, HW_ENET_RMON_T_P512TO1023_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P512TO1023_CLR(x, v) (HW_ENET_RMON_T_P512TO1023_WR(x, HW_ENET_RMON_T_P512TO1023_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P512TO1023_TOG(x, v) (HW_ENET_RMON_T_P512TO1023_WR(x, HW_ENET_RMON_T_P512TO1023_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5196,13 +5339,27 @@ typedef union _hw_enet_rmon_t_p512to1023
  * Constants & macros for individual ENET_RMON_T_P512TO1023 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P512TO1023, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P512TO1023_TXPKTS (0U) //!< Bit position for ENET_RMON_T_P512TO1023_TXPKTS.
+#define BM_ENET_RMON_T_P512TO1023_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P512TO1023_TXPKTS.
+#define BS_ENET_RMON_T_P512TO1023_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_P512TO1023_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P512TO1023_TXPKTS field.
+#define BR_ENET_RMON_T_P512TO1023_TXPKTS(x) (HW_ENET_RMON_T_P512TO1023(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P1024TO2047 - RMON Tx 1024 to 2047 byte packets (RMON_T_P1024TO2047)
+// HW_ENET_RMON_T_P1024TO2047 - Tx 1024- to 2047-byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P1024TO2047 - RMON Tx 1024 to 2047 byte packets (RMON_T_P1024TO2047) (RW)
+ * @brief HW_ENET_RMON_T_P1024TO2047 - Tx 1024- to 2047-byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5211,7 +5368,8 @@ typedef union _hw_enet_rmon_t_p1024to2047
     uint32_t U;
     struct _hw_enet_rmon_t_p1024to2047_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p1024to2047_t;
 #endif
@@ -5223,12 +5381,8 @@ typedef union _hw_enet_rmon_t_p1024to2047
 #define HW_ENET_RMON_T_P1024TO2047_ADDR(x) (REGS_ENET_BASE(x) + 0x23CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P1024TO2047(x) (*(__IO hw_enet_rmon_t_p1024to2047_t *) HW_ENET_RMON_T_P1024TO2047_ADDR(x))
+#define HW_ENET_RMON_T_P1024TO2047(x) (*(__I hw_enet_rmon_t_p1024to2047_t *) HW_ENET_RMON_T_P1024TO2047_ADDR(x))
 #define HW_ENET_RMON_T_P1024TO2047_RD(x) (HW_ENET_RMON_T_P1024TO2047(x).U)
-#define HW_ENET_RMON_T_P1024TO2047_WR(x, v) (HW_ENET_RMON_T_P1024TO2047(x).U = (v))
-#define HW_ENET_RMON_T_P1024TO2047_SET(x, v) (HW_ENET_RMON_T_P1024TO2047_WR(x, HW_ENET_RMON_T_P1024TO2047_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P1024TO2047_CLR(x, v) (HW_ENET_RMON_T_P1024TO2047_WR(x, HW_ENET_RMON_T_P1024TO2047_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P1024TO2047_TOG(x, v) (HW_ENET_RMON_T_P1024TO2047_WR(x, HW_ENET_RMON_T_P1024TO2047_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5236,13 +5390,27 @@ typedef union _hw_enet_rmon_t_p1024to2047
  * Constants & macros for individual ENET_RMON_T_P1024TO2047 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P1024TO2047, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P1024TO2047_TXPKTS (0U) //!< Bit position for ENET_RMON_T_P1024TO2047_TXPKTS.
+#define BM_ENET_RMON_T_P1024TO2047_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P1024TO2047_TXPKTS.
+#define BS_ENET_RMON_T_P1024TO2047_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_P1024TO2047_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P1024TO2047_TXPKTS field.
+#define BR_ENET_RMON_T_P1024TO2047_TXPKTS(x) (HW_ENET_RMON_T_P1024TO2047(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_P_GTE2048 - RMON Tx packets w > 2048 bytes (RMON_T_P_GTE2048)
+// HW_ENET_RMON_T_P_GTE2048 - Tx Packets Greater Than 2048 Bytes Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_P_GTE2048 - RMON Tx packets w > 2048 bytes (RMON_T_P_GTE2048) (RW)
+ * @brief HW_ENET_RMON_T_P_GTE2048 - Tx Packets Greater Than 2048 Bytes Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5251,7 +5419,8 @@ typedef union _hw_enet_rmon_t_p_gte2048
     uint32_t U;
     struct _hw_enet_rmon_t_p_gte2048_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXPKTS : 16;          //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_t_p_gte2048_t;
 #endif
@@ -5263,12 +5432,8 @@ typedef union _hw_enet_rmon_t_p_gte2048
 #define HW_ENET_RMON_T_P_GTE2048_ADDR(x) (REGS_ENET_BASE(x) + 0x240U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_P_GTE2048(x) (*(__IO hw_enet_rmon_t_p_gte2048_t *) HW_ENET_RMON_T_P_GTE2048_ADDR(x))
+#define HW_ENET_RMON_T_P_GTE2048(x) (*(__I hw_enet_rmon_t_p_gte2048_t *) HW_ENET_RMON_T_P_GTE2048_ADDR(x))
 #define HW_ENET_RMON_T_P_GTE2048_RD(x) (HW_ENET_RMON_T_P_GTE2048(x).U)
-#define HW_ENET_RMON_T_P_GTE2048_WR(x, v) (HW_ENET_RMON_T_P_GTE2048(x).U = (v))
-#define HW_ENET_RMON_T_P_GTE2048_SET(x, v) (HW_ENET_RMON_T_P_GTE2048_WR(x, HW_ENET_RMON_T_P_GTE2048_RD(x) |  (v)))
-#define HW_ENET_RMON_T_P_GTE2048_CLR(x, v) (HW_ENET_RMON_T_P_GTE2048_WR(x, HW_ENET_RMON_T_P_GTE2048_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_P_GTE2048_TOG(x, v) (HW_ENET_RMON_T_P_GTE2048_WR(x, HW_ENET_RMON_T_P_GTE2048_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5276,13 +5441,27 @@ typedef union _hw_enet_rmon_t_p_gte2048
  * Constants & macros for individual ENET_RMON_T_P_GTE2048 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_T_P_GTE2048, field TXPKTS[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_T_P_GTE2048_TXPKTS (0U) //!< Bit position for ENET_RMON_T_P_GTE2048_TXPKTS.
+#define BM_ENET_RMON_T_P_GTE2048_TXPKTS (0x0000FFFFU) //!< Bit mask for ENET_RMON_T_P_GTE2048_TXPKTS.
+#define BS_ENET_RMON_T_P_GTE2048_TXPKTS (16U) //!< Bit field size in bits for ENET_RMON_T_P_GTE2048_TXPKTS.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_T_P_GTE2048_TXPKTS field.
+#define BR_ENET_RMON_T_P_GTE2048_TXPKTS(x) (HW_ENET_RMON_T_P_GTE2048(x).B.TXPKTS)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_T_OCTETS - RMON Tx Octets (RMON_T_OCTETS)
+// HW_ENET_RMON_T_OCTETS - Tx Octets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_T_OCTETS - RMON Tx Octets (RMON_T_OCTETS) (RW)
+ * @brief HW_ENET_RMON_T_OCTETS - Tx Octets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5291,7 +5470,7 @@ typedef union _hw_enet_rmon_t_octets
     uint32_t U;
     struct _hw_enet_rmon_t_octets_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t TXOCTS : 32;          //!< [31:0] Octet count
     } B;
 } hw_enet_rmon_t_octets_t;
 #endif
@@ -5303,12 +5482,8 @@ typedef union _hw_enet_rmon_t_octets
 #define HW_ENET_RMON_T_OCTETS_ADDR(x) (REGS_ENET_BASE(x) + 0x244U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_T_OCTETS(x) (*(__IO hw_enet_rmon_t_octets_t *) HW_ENET_RMON_T_OCTETS_ADDR(x))
+#define HW_ENET_RMON_T_OCTETS(x) (*(__I hw_enet_rmon_t_octets_t *) HW_ENET_RMON_T_OCTETS_ADDR(x))
 #define HW_ENET_RMON_T_OCTETS_RD(x) (HW_ENET_RMON_T_OCTETS(x).U)
-#define HW_ENET_RMON_T_OCTETS_WR(x, v) (HW_ENET_RMON_T_OCTETS(x).U = (v))
-#define HW_ENET_RMON_T_OCTETS_SET(x, v) (HW_ENET_RMON_T_OCTETS_WR(x, HW_ENET_RMON_T_OCTETS_RD(x) |  (v)))
-#define HW_ENET_RMON_T_OCTETS_CLR(x, v) (HW_ENET_RMON_T_OCTETS_WR(x, HW_ENET_RMON_T_OCTETS_RD(x) & ~(v)))
-#define HW_ENET_RMON_T_OCTETS_TOG(x, v) (HW_ENET_RMON_T_OCTETS_WR(x, HW_ENET_RMON_T_OCTETS_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5316,53 +5491,27 @@ typedef union _hw_enet_rmon_t_octets
  * Constants & macros for individual ENET_RMON_T_OCTETS bitfields
  */
 
-//-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_DROP - Count of frames not counted correctly (IEEE_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable.
-//-------------------------------------------------------------------------------------------
-
-#ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_DROP - Count of frames not counted correctly (IEEE_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable. (RW)
- *
- * Reset value: 0x00000000U
- */
-typedef union _hw_enet_ieee_t_drop
-{
-    uint32_t U;
-    struct _hw_enet_ieee_t_drop_bitfields
-    {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
-    } B;
-} hw_enet_ieee_t_drop_t;
-#endif
-
-/*!
- * @name Constants and macros for entire ENET_IEEE_T_DROP register
+ * @name Register ENET_RMON_T_OCTETS, field TXOCTS[31:0] (RO)
  */
 //@{
-#define HW_ENET_IEEE_T_DROP_ADDR(x) (REGS_ENET_BASE(x) + 0x248U)
+#define BP_ENET_RMON_T_OCTETS_TXOCTS (0U)  //!< Bit position for ENET_RMON_T_OCTETS_TXOCTS.
+#define BM_ENET_RMON_T_OCTETS_TXOCTS (0xFFFFFFFFU) //!< Bit mask for ENET_RMON_T_OCTETS_TXOCTS.
+#define BS_ENET_RMON_T_OCTETS_TXOCTS (32U) //!< Bit field size in bits for ENET_RMON_T_OCTETS_TXOCTS.
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_DROP(x)   (*(__IO hw_enet_ieee_t_drop_t *) HW_ENET_IEEE_T_DROP_ADDR(x))
-#define HW_ENET_IEEE_T_DROP_RD(x) (HW_ENET_IEEE_T_DROP(x).U)
-#define HW_ENET_IEEE_T_DROP_WR(x, v) (HW_ENET_IEEE_T_DROP(x).U = (v))
-#define HW_ENET_IEEE_T_DROP_SET(x, v) (HW_ENET_IEEE_T_DROP_WR(x, HW_ENET_IEEE_T_DROP_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_DROP_CLR(x, v) (HW_ENET_IEEE_T_DROP_WR(x, HW_ENET_IEEE_T_DROP_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_DROP_TOG(x, v) (HW_ENET_IEEE_T_DROP_WR(x, HW_ENET_IEEE_T_DROP_RD(x) ^  (v)))
+//! @brief Read current value of the ENET_RMON_T_OCTETS_TXOCTS field.
+#define BR_ENET_RMON_T_OCTETS_TXOCTS(x) (HW_ENET_RMON_T_OCTETS(x).U)
 #endif
 //@}
 
-/*
- * Constants & macros for individual ENET_IEEE_T_DROP bitfields
- */
-
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_FRAME_OK - Frames Transmitted OK (IEEE_T_FRAME_OK)
+// HW_ENET_IEEE_T_FRAME_OK - Frames Transmitted OK Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_FRAME_OK - Frames Transmitted OK (IEEE_T_FRAME_OK) (RW)
+ * @brief HW_ENET_IEEE_T_FRAME_OK - Frames Transmitted OK Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5371,7 +5520,8 @@ typedef union _hw_enet_ieee_t_frame_ok
     uint32_t U;
     struct _hw_enet_ieee_t_frame_ok_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_frame_ok_t;
 #endif
@@ -5383,12 +5533,8 @@ typedef union _hw_enet_ieee_t_frame_ok
 #define HW_ENET_IEEE_T_FRAME_OK_ADDR(x) (REGS_ENET_BASE(x) + 0x24CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_FRAME_OK(x) (*(__IO hw_enet_ieee_t_frame_ok_t *) HW_ENET_IEEE_T_FRAME_OK_ADDR(x))
+#define HW_ENET_IEEE_T_FRAME_OK(x) (*(__I hw_enet_ieee_t_frame_ok_t *) HW_ENET_IEEE_T_FRAME_OK_ADDR(x))
 #define HW_ENET_IEEE_T_FRAME_OK_RD(x) (HW_ENET_IEEE_T_FRAME_OK(x).U)
-#define HW_ENET_IEEE_T_FRAME_OK_WR(x, v) (HW_ENET_IEEE_T_FRAME_OK(x).U = (v))
-#define HW_ENET_IEEE_T_FRAME_OK_SET(x, v) (HW_ENET_IEEE_T_FRAME_OK_WR(x, HW_ENET_IEEE_T_FRAME_OK_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_FRAME_OK_CLR(x, v) (HW_ENET_IEEE_T_FRAME_OK_WR(x, HW_ENET_IEEE_T_FRAME_OK_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_FRAME_OK_TOG(x, v) (HW_ENET_IEEE_T_FRAME_OK_WR(x, HW_ENET_IEEE_T_FRAME_OK_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5396,13 +5542,27 @@ typedef union _hw_enet_ieee_t_frame_ok
  * Constants & macros for individual ENET_IEEE_T_FRAME_OK bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_FRAME_OK, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_FRAME_OK_COUNT (0U) //!< Bit position for ENET_IEEE_T_FRAME_OK_COUNT.
+#define BM_ENET_IEEE_T_FRAME_OK_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_FRAME_OK_COUNT.
+#define BS_ENET_IEEE_T_FRAME_OK_COUNT (16U) //!< Bit field size in bits for ENET_IEEE_T_FRAME_OK_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_FRAME_OK_COUNT field.
+#define BR_ENET_IEEE_T_FRAME_OK_COUNT(x) (HW_ENET_IEEE_T_FRAME_OK(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_1COL - Frames Transmitted with Single Collision (IEEE_T_1COL)
+// HW_ENET_IEEE_T_1COL - Frames Transmitted with Single Collision Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_1COL - Frames Transmitted with Single Collision (IEEE_T_1COL) (RW)
+ * @brief HW_ENET_IEEE_T_1COL - Frames Transmitted with Single Collision Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5411,7 +5571,8 @@ typedef union _hw_enet_ieee_t_1col
     uint32_t U;
     struct _hw_enet_ieee_t_1col_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_1col_t;
 #endif
@@ -5423,12 +5584,8 @@ typedef union _hw_enet_ieee_t_1col
 #define HW_ENET_IEEE_T_1COL_ADDR(x) (REGS_ENET_BASE(x) + 0x250U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_1COL(x)   (*(__IO hw_enet_ieee_t_1col_t *) HW_ENET_IEEE_T_1COL_ADDR(x))
+#define HW_ENET_IEEE_T_1COL(x)   (*(__I hw_enet_ieee_t_1col_t *) HW_ENET_IEEE_T_1COL_ADDR(x))
 #define HW_ENET_IEEE_T_1COL_RD(x) (HW_ENET_IEEE_T_1COL(x).U)
-#define HW_ENET_IEEE_T_1COL_WR(x, v) (HW_ENET_IEEE_T_1COL(x).U = (v))
-#define HW_ENET_IEEE_T_1COL_SET(x, v) (HW_ENET_IEEE_T_1COL_WR(x, HW_ENET_IEEE_T_1COL_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_1COL_CLR(x, v) (HW_ENET_IEEE_T_1COL_WR(x, HW_ENET_IEEE_T_1COL_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_1COL_TOG(x, v) (HW_ENET_IEEE_T_1COL_WR(x, HW_ENET_IEEE_T_1COL_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5436,13 +5593,27 @@ typedef union _hw_enet_ieee_t_1col
  * Constants & macros for individual ENET_IEEE_T_1COL bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_1COL, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_1COL_COUNT (0U)     //!< Bit position for ENET_IEEE_T_1COL_COUNT.
+#define BM_ENET_IEEE_T_1COL_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_1COL_COUNT.
+#define BS_ENET_IEEE_T_1COL_COUNT (16U)    //!< Bit field size in bits for ENET_IEEE_T_1COL_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_1COL_COUNT field.
+#define BR_ENET_IEEE_T_1COL_COUNT(x) (HW_ENET_IEEE_T_1COL(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_MCOL - Frames Transmitted with Multiple Collisions (IEEE_T_MCOL)
+// HW_ENET_IEEE_T_MCOL - Frames Transmitted with Multiple Collisions Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_MCOL - Frames Transmitted with Multiple Collisions (IEEE_T_MCOL) (RW)
+ * @brief HW_ENET_IEEE_T_MCOL - Frames Transmitted with Multiple Collisions Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5451,7 +5622,8 @@ typedef union _hw_enet_ieee_t_mcol
     uint32_t U;
     struct _hw_enet_ieee_t_mcol_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_mcol_t;
 #endif
@@ -5463,12 +5635,8 @@ typedef union _hw_enet_ieee_t_mcol
 #define HW_ENET_IEEE_T_MCOL_ADDR(x) (REGS_ENET_BASE(x) + 0x254U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_MCOL(x)   (*(__IO hw_enet_ieee_t_mcol_t *) HW_ENET_IEEE_T_MCOL_ADDR(x))
+#define HW_ENET_IEEE_T_MCOL(x)   (*(__I hw_enet_ieee_t_mcol_t *) HW_ENET_IEEE_T_MCOL_ADDR(x))
 #define HW_ENET_IEEE_T_MCOL_RD(x) (HW_ENET_IEEE_T_MCOL(x).U)
-#define HW_ENET_IEEE_T_MCOL_WR(x, v) (HW_ENET_IEEE_T_MCOL(x).U = (v))
-#define HW_ENET_IEEE_T_MCOL_SET(x, v) (HW_ENET_IEEE_T_MCOL_WR(x, HW_ENET_IEEE_T_MCOL_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_MCOL_CLR(x, v) (HW_ENET_IEEE_T_MCOL_WR(x, HW_ENET_IEEE_T_MCOL_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_MCOL_TOG(x, v) (HW_ENET_IEEE_T_MCOL_WR(x, HW_ENET_IEEE_T_MCOL_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5476,13 +5644,27 @@ typedef union _hw_enet_ieee_t_mcol
  * Constants & macros for individual ENET_IEEE_T_MCOL bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_MCOL, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_MCOL_COUNT (0U)     //!< Bit position for ENET_IEEE_T_MCOL_COUNT.
+#define BM_ENET_IEEE_T_MCOL_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_MCOL_COUNT.
+#define BS_ENET_IEEE_T_MCOL_COUNT (16U)    //!< Bit field size in bits for ENET_IEEE_T_MCOL_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_MCOL_COUNT field.
+#define BR_ENET_IEEE_T_MCOL_COUNT(x) (HW_ENET_IEEE_T_MCOL(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_DEF - Frames Transmitted after Deferral Delay (IEEE_T_DEF)
+// HW_ENET_IEEE_T_DEF - Frames Transmitted after Deferral Delay Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_DEF - Frames Transmitted after Deferral Delay (IEEE_T_DEF) (RW)
+ * @brief HW_ENET_IEEE_T_DEF - Frames Transmitted after Deferral Delay Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5491,7 +5673,8 @@ typedef union _hw_enet_ieee_t_def
     uint32_t U;
     struct _hw_enet_ieee_t_def_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_def_t;
 #endif
@@ -5503,12 +5686,8 @@ typedef union _hw_enet_ieee_t_def
 #define HW_ENET_IEEE_T_DEF_ADDR(x) (REGS_ENET_BASE(x) + 0x258U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_DEF(x)    (*(__IO hw_enet_ieee_t_def_t *) HW_ENET_IEEE_T_DEF_ADDR(x))
+#define HW_ENET_IEEE_T_DEF(x)    (*(__I hw_enet_ieee_t_def_t *) HW_ENET_IEEE_T_DEF_ADDR(x))
 #define HW_ENET_IEEE_T_DEF_RD(x) (HW_ENET_IEEE_T_DEF(x).U)
-#define HW_ENET_IEEE_T_DEF_WR(x, v) (HW_ENET_IEEE_T_DEF(x).U = (v))
-#define HW_ENET_IEEE_T_DEF_SET(x, v) (HW_ENET_IEEE_T_DEF_WR(x, HW_ENET_IEEE_T_DEF_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_DEF_CLR(x, v) (HW_ENET_IEEE_T_DEF_WR(x, HW_ENET_IEEE_T_DEF_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_DEF_TOG(x, v) (HW_ENET_IEEE_T_DEF_WR(x, HW_ENET_IEEE_T_DEF_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5516,13 +5695,27 @@ typedef union _hw_enet_ieee_t_def
  * Constants & macros for individual ENET_IEEE_T_DEF bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_DEF, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_DEF_COUNT (0U)      //!< Bit position for ENET_IEEE_T_DEF_COUNT.
+#define BM_ENET_IEEE_T_DEF_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_DEF_COUNT.
+#define BS_ENET_IEEE_T_DEF_COUNT (16U)     //!< Bit field size in bits for ENET_IEEE_T_DEF_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_DEF_COUNT field.
+#define BR_ENET_IEEE_T_DEF_COUNT(x) (HW_ENET_IEEE_T_DEF(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_LCOL - Frames Transmitted with Late Collision (IEEE_T_LCOL)
+// HW_ENET_IEEE_T_LCOL - Frames Transmitted with Late Collision Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_LCOL - Frames Transmitted with Late Collision (IEEE_T_LCOL) (RW)
+ * @brief HW_ENET_IEEE_T_LCOL - Frames Transmitted with Late Collision Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5531,7 +5724,8 @@ typedef union _hw_enet_ieee_t_lcol
     uint32_t U;
     struct _hw_enet_ieee_t_lcol_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_lcol_t;
 #endif
@@ -5543,12 +5737,8 @@ typedef union _hw_enet_ieee_t_lcol
 #define HW_ENET_IEEE_T_LCOL_ADDR(x) (REGS_ENET_BASE(x) + 0x25CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_LCOL(x)   (*(__IO hw_enet_ieee_t_lcol_t *) HW_ENET_IEEE_T_LCOL_ADDR(x))
+#define HW_ENET_IEEE_T_LCOL(x)   (*(__I hw_enet_ieee_t_lcol_t *) HW_ENET_IEEE_T_LCOL_ADDR(x))
 #define HW_ENET_IEEE_T_LCOL_RD(x) (HW_ENET_IEEE_T_LCOL(x).U)
-#define HW_ENET_IEEE_T_LCOL_WR(x, v) (HW_ENET_IEEE_T_LCOL(x).U = (v))
-#define HW_ENET_IEEE_T_LCOL_SET(x, v) (HW_ENET_IEEE_T_LCOL_WR(x, HW_ENET_IEEE_T_LCOL_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_LCOL_CLR(x, v) (HW_ENET_IEEE_T_LCOL_WR(x, HW_ENET_IEEE_T_LCOL_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_LCOL_TOG(x, v) (HW_ENET_IEEE_T_LCOL_WR(x, HW_ENET_IEEE_T_LCOL_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5556,13 +5746,27 @@ typedef union _hw_enet_ieee_t_lcol
  * Constants & macros for individual ENET_IEEE_T_LCOL bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_LCOL, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_LCOL_COUNT (0U)     //!< Bit position for ENET_IEEE_T_LCOL_COUNT.
+#define BM_ENET_IEEE_T_LCOL_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_LCOL_COUNT.
+#define BS_ENET_IEEE_T_LCOL_COUNT (16U)    //!< Bit field size in bits for ENET_IEEE_T_LCOL_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_LCOL_COUNT field.
+#define BR_ENET_IEEE_T_LCOL_COUNT(x) (HW_ENET_IEEE_T_LCOL(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_EXCOL - Frames Transmitted with Excessive Collisions (IEEE_T_EXCOL)
+// HW_ENET_IEEE_T_EXCOL - Frames Transmitted with Excessive Collisions Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_EXCOL - Frames Transmitted with Excessive Collisions (IEEE_T_EXCOL) (RW)
+ * @brief HW_ENET_IEEE_T_EXCOL - Frames Transmitted with Excessive Collisions Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5571,7 +5775,8 @@ typedef union _hw_enet_ieee_t_excol
     uint32_t U;
     struct _hw_enet_ieee_t_excol_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_excol_t;
 #endif
@@ -5583,12 +5788,8 @@ typedef union _hw_enet_ieee_t_excol
 #define HW_ENET_IEEE_T_EXCOL_ADDR(x) (REGS_ENET_BASE(x) + 0x260U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_EXCOL(x)  (*(__IO hw_enet_ieee_t_excol_t *) HW_ENET_IEEE_T_EXCOL_ADDR(x))
+#define HW_ENET_IEEE_T_EXCOL(x)  (*(__I hw_enet_ieee_t_excol_t *) HW_ENET_IEEE_T_EXCOL_ADDR(x))
 #define HW_ENET_IEEE_T_EXCOL_RD(x) (HW_ENET_IEEE_T_EXCOL(x).U)
-#define HW_ENET_IEEE_T_EXCOL_WR(x, v) (HW_ENET_IEEE_T_EXCOL(x).U = (v))
-#define HW_ENET_IEEE_T_EXCOL_SET(x, v) (HW_ENET_IEEE_T_EXCOL_WR(x, HW_ENET_IEEE_T_EXCOL_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_EXCOL_CLR(x, v) (HW_ENET_IEEE_T_EXCOL_WR(x, HW_ENET_IEEE_T_EXCOL_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_EXCOL_TOG(x, v) (HW_ENET_IEEE_T_EXCOL_WR(x, HW_ENET_IEEE_T_EXCOL_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5596,13 +5797,27 @@ typedef union _hw_enet_ieee_t_excol
  * Constants & macros for individual ENET_IEEE_T_EXCOL bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_EXCOL, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_EXCOL_COUNT (0U)    //!< Bit position for ENET_IEEE_T_EXCOL_COUNT.
+#define BM_ENET_IEEE_T_EXCOL_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_EXCOL_COUNT.
+#define BS_ENET_IEEE_T_EXCOL_COUNT (16U)   //!< Bit field size in bits for ENET_IEEE_T_EXCOL_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_EXCOL_COUNT field.
+#define BR_ENET_IEEE_T_EXCOL_COUNT(x) (HW_ENET_IEEE_T_EXCOL(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_MACERR - Frames Transmitted with Tx FIFO Underrun (IEEE_T_MACERR)
+// HW_ENET_IEEE_T_MACERR - Frames Transmitted with Tx FIFO Underrun Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_MACERR - Frames Transmitted with Tx FIFO Underrun (IEEE_T_MACERR) (RW)
+ * @brief HW_ENET_IEEE_T_MACERR - Frames Transmitted with Tx FIFO Underrun Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5611,7 +5826,8 @@ typedef union _hw_enet_ieee_t_macerr
     uint32_t U;
     struct _hw_enet_ieee_t_macerr_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_macerr_t;
 #endif
@@ -5623,12 +5839,8 @@ typedef union _hw_enet_ieee_t_macerr
 #define HW_ENET_IEEE_T_MACERR_ADDR(x) (REGS_ENET_BASE(x) + 0x264U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_MACERR(x) (*(__IO hw_enet_ieee_t_macerr_t *) HW_ENET_IEEE_T_MACERR_ADDR(x))
+#define HW_ENET_IEEE_T_MACERR(x) (*(__I hw_enet_ieee_t_macerr_t *) HW_ENET_IEEE_T_MACERR_ADDR(x))
 #define HW_ENET_IEEE_T_MACERR_RD(x) (HW_ENET_IEEE_T_MACERR(x).U)
-#define HW_ENET_IEEE_T_MACERR_WR(x, v) (HW_ENET_IEEE_T_MACERR(x).U = (v))
-#define HW_ENET_IEEE_T_MACERR_SET(x, v) (HW_ENET_IEEE_T_MACERR_WR(x, HW_ENET_IEEE_T_MACERR_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_MACERR_CLR(x, v) (HW_ENET_IEEE_T_MACERR_WR(x, HW_ENET_IEEE_T_MACERR_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_MACERR_TOG(x, v) (HW_ENET_IEEE_T_MACERR_WR(x, HW_ENET_IEEE_T_MACERR_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5636,13 +5848,27 @@ typedef union _hw_enet_ieee_t_macerr
  * Constants & macros for individual ENET_IEEE_T_MACERR bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_MACERR, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_MACERR_COUNT (0U)   //!< Bit position for ENET_IEEE_T_MACERR_COUNT.
+#define BM_ENET_IEEE_T_MACERR_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_MACERR_COUNT.
+#define BS_ENET_IEEE_T_MACERR_COUNT (16U)  //!< Bit field size in bits for ENET_IEEE_T_MACERR_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_MACERR_COUNT field.
+#define BR_ENET_IEEE_T_MACERR_COUNT(x) (HW_ENET_IEEE_T_MACERR(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_CSERR - Frames Transmitted with Carrier Sense Error (IEEE_T_CSERR)
+// HW_ENET_IEEE_T_CSERR - Frames Transmitted with Carrier Sense Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_CSERR - Frames Transmitted with Carrier Sense Error (IEEE_T_CSERR) (RW)
+ * @brief HW_ENET_IEEE_T_CSERR - Frames Transmitted with Carrier Sense Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5651,7 +5877,8 @@ typedef union _hw_enet_ieee_t_cserr
     uint32_t U;
     struct _hw_enet_ieee_t_cserr_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_cserr_t;
 #endif
@@ -5663,12 +5890,8 @@ typedef union _hw_enet_ieee_t_cserr
 #define HW_ENET_IEEE_T_CSERR_ADDR(x) (REGS_ENET_BASE(x) + 0x268U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_CSERR(x)  (*(__IO hw_enet_ieee_t_cserr_t *) HW_ENET_IEEE_T_CSERR_ADDR(x))
+#define HW_ENET_IEEE_T_CSERR(x)  (*(__I hw_enet_ieee_t_cserr_t *) HW_ENET_IEEE_T_CSERR_ADDR(x))
 #define HW_ENET_IEEE_T_CSERR_RD(x) (HW_ENET_IEEE_T_CSERR(x).U)
-#define HW_ENET_IEEE_T_CSERR_WR(x, v) (HW_ENET_IEEE_T_CSERR(x).U = (v))
-#define HW_ENET_IEEE_T_CSERR_SET(x, v) (HW_ENET_IEEE_T_CSERR_WR(x, HW_ENET_IEEE_T_CSERR_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_CSERR_CLR(x, v) (HW_ENET_IEEE_T_CSERR_WR(x, HW_ENET_IEEE_T_CSERR_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_CSERR_TOG(x, v) (HW_ENET_IEEE_T_CSERR_WR(x, HW_ENET_IEEE_T_CSERR_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5676,53 +5899,27 @@ typedef union _hw_enet_ieee_t_cserr
  * Constants & macros for individual ENET_IEEE_T_CSERR bitfields
  */
 
-//-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_SQE - Frames Transmitted with SQE Error (IEEE_T_SQE). NOTE: Counter not implemented (read 0 always) as no SQE information is available.
-//-------------------------------------------------------------------------------------------
-
-#ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_SQE - Frames Transmitted with SQE Error (IEEE_T_SQE). NOTE: Counter not implemented (read 0 always) as no SQE information is available. (RW)
- *
- * Reset value: 0x00000000U
- */
-typedef union _hw_enet_ieee_t_sqe
-{
-    uint32_t U;
-    struct _hw_enet_ieee_t_sqe_bitfields
-    {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
-    } B;
-} hw_enet_ieee_t_sqe_t;
-#endif
-
-/*!
- * @name Constants and macros for entire ENET_IEEE_T_SQE register
+ * @name Register ENET_IEEE_T_CSERR, field COUNT[15:0] (RO)
  */
 //@{
-#define HW_ENET_IEEE_T_SQE_ADDR(x) (REGS_ENET_BASE(x) + 0x26CU)
+#define BP_ENET_IEEE_T_CSERR_COUNT (0U)    //!< Bit position for ENET_IEEE_T_CSERR_COUNT.
+#define BM_ENET_IEEE_T_CSERR_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_CSERR_COUNT.
+#define BS_ENET_IEEE_T_CSERR_COUNT (16U)   //!< Bit field size in bits for ENET_IEEE_T_CSERR_COUNT.
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_SQE(x)    (*(__IO hw_enet_ieee_t_sqe_t *) HW_ENET_IEEE_T_SQE_ADDR(x))
-#define HW_ENET_IEEE_T_SQE_RD(x) (HW_ENET_IEEE_T_SQE(x).U)
-#define HW_ENET_IEEE_T_SQE_WR(x, v) (HW_ENET_IEEE_T_SQE(x).U = (v))
-#define HW_ENET_IEEE_T_SQE_SET(x, v) (HW_ENET_IEEE_T_SQE_WR(x, HW_ENET_IEEE_T_SQE_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_SQE_CLR(x, v) (HW_ENET_IEEE_T_SQE_WR(x, HW_ENET_IEEE_T_SQE_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_SQE_TOG(x, v) (HW_ENET_IEEE_T_SQE_WR(x, HW_ENET_IEEE_T_SQE_RD(x) ^  (v)))
+//! @brief Read current value of the ENET_IEEE_T_CSERR_COUNT field.
+#define BR_ENET_IEEE_T_CSERR_COUNT(x) (HW_ENET_IEEE_T_CSERR(x).B.COUNT)
 #endif
 //@}
 
-/*
- * Constants & macros for individual ENET_IEEE_T_SQE bitfields
- */
-
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_FDXFC - Flow Control Pause frames transmitted (IEEE_T_FDXFC)
+// HW_ENET_IEEE_T_FDXFC - Flow Control Pause Frames Transmitted Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_FDXFC - Flow Control Pause frames transmitted (IEEE_T_FDXFC) (RW)
+ * @brief HW_ENET_IEEE_T_FDXFC - Flow Control Pause Frames Transmitted Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5731,7 +5928,8 @@ typedef union _hw_enet_ieee_t_fdxfc
     uint32_t U;
     struct _hw_enet_ieee_t_fdxfc_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_t_fdxfc_t;
 #endif
@@ -5743,12 +5941,8 @@ typedef union _hw_enet_ieee_t_fdxfc
 #define HW_ENET_IEEE_T_FDXFC_ADDR(x) (REGS_ENET_BASE(x) + 0x270U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_FDXFC(x)  (*(__IO hw_enet_ieee_t_fdxfc_t *) HW_ENET_IEEE_T_FDXFC_ADDR(x))
+#define HW_ENET_IEEE_T_FDXFC(x)  (*(__I hw_enet_ieee_t_fdxfc_t *) HW_ENET_IEEE_T_FDXFC_ADDR(x))
 #define HW_ENET_IEEE_T_FDXFC_RD(x) (HW_ENET_IEEE_T_FDXFC(x).U)
-#define HW_ENET_IEEE_T_FDXFC_WR(x, v) (HW_ENET_IEEE_T_FDXFC(x).U = (v))
-#define HW_ENET_IEEE_T_FDXFC_SET(x, v) (HW_ENET_IEEE_T_FDXFC_WR(x, HW_ENET_IEEE_T_FDXFC_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_FDXFC_CLR(x, v) (HW_ENET_IEEE_T_FDXFC_WR(x, HW_ENET_IEEE_T_FDXFC_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_FDXFC_TOG(x, v) (HW_ENET_IEEE_T_FDXFC_WR(x, HW_ENET_IEEE_T_FDXFC_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5756,22 +5950,38 @@ typedef union _hw_enet_ieee_t_fdxfc
  * Constants & macros for individual ENET_IEEE_T_FDXFC bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_FDXFC, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_FDXFC_COUNT (0U)    //!< Bit position for ENET_IEEE_T_FDXFC_COUNT.
+#define BM_ENET_IEEE_T_FDXFC_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_T_FDXFC_COUNT.
+#define BS_ENET_IEEE_T_FDXFC_COUNT (16U)   //!< Bit field size in bits for ENET_IEEE_T_FDXFC_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_FDXFC_COUNT field.
+#define BR_ENET_IEEE_T_FDXFC_COUNT(x) (HW_ENET_IEEE_T_FDXFC(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_T_OCTETS_OK - Octet count for Frames Transmitted w/o Error (IEEE_T_OCTETS_OK). NOTE: Counts total octets (includes header and FCS fields).
+// HW_ENET_IEEE_T_OCTETS_OK - Octet Count for Frames Transmitted w/o Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_T_OCTETS_OK - Octet count for Frames Transmitted w/o Error (IEEE_T_OCTETS_OK). NOTE: Counts total octets (includes header and FCS fields). (RW)
+ * @brief HW_ENET_IEEE_T_OCTETS_OK - Octet Count for Frames Transmitted w/o Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
+ *
+ * Counts total octets (includes header and FCS fields).
  */
 typedef union _hw_enet_ieee_t_octets_ok
 {
     uint32_t U;
     struct _hw_enet_ieee_t_octets_ok_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 32;           //!< [31:0] Octet count
     } B;
 } hw_enet_ieee_t_octets_ok_t;
 #endif
@@ -5783,12 +5993,8 @@ typedef union _hw_enet_ieee_t_octets_ok
 #define HW_ENET_IEEE_T_OCTETS_OK_ADDR(x) (REGS_ENET_BASE(x) + 0x274U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_T_OCTETS_OK(x) (*(__IO hw_enet_ieee_t_octets_ok_t *) HW_ENET_IEEE_T_OCTETS_OK_ADDR(x))
+#define HW_ENET_IEEE_T_OCTETS_OK(x) (*(__I hw_enet_ieee_t_octets_ok_t *) HW_ENET_IEEE_T_OCTETS_OK_ADDR(x))
 #define HW_ENET_IEEE_T_OCTETS_OK_RD(x) (HW_ENET_IEEE_T_OCTETS_OK(x).U)
-#define HW_ENET_IEEE_T_OCTETS_OK_WR(x, v) (HW_ENET_IEEE_T_OCTETS_OK(x).U = (v))
-#define HW_ENET_IEEE_T_OCTETS_OK_SET(x, v) (HW_ENET_IEEE_T_OCTETS_OK_WR(x, HW_ENET_IEEE_T_OCTETS_OK_RD(x) |  (v)))
-#define HW_ENET_IEEE_T_OCTETS_OK_CLR(x, v) (HW_ENET_IEEE_T_OCTETS_OK_WR(x, HW_ENET_IEEE_T_OCTETS_OK_RD(x) & ~(v)))
-#define HW_ENET_IEEE_T_OCTETS_OK_TOG(x, v) (HW_ENET_IEEE_T_OCTETS_OK_WR(x, HW_ENET_IEEE_T_OCTETS_OK_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5796,13 +6002,27 @@ typedef union _hw_enet_ieee_t_octets_ok
  * Constants & macros for individual ENET_IEEE_T_OCTETS_OK bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_T_OCTETS_OK, field COUNT[31:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_T_OCTETS_OK_COUNT (0U) //!< Bit position for ENET_IEEE_T_OCTETS_OK_COUNT.
+#define BM_ENET_IEEE_T_OCTETS_OK_COUNT (0xFFFFFFFFU) //!< Bit mask for ENET_IEEE_T_OCTETS_OK_COUNT.
+#define BS_ENET_IEEE_T_OCTETS_OK_COUNT (32U) //!< Bit field size in bits for ENET_IEEE_T_OCTETS_OK_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_T_OCTETS_OK_COUNT field.
+#define BR_ENET_IEEE_T_OCTETS_OK_COUNT(x) (HW_ENET_IEEE_T_OCTETS_OK(x).U)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_PACKETS - RMON Rx packet count (RMON_R_PACKETS)
+// HW_ENET_RMON_R_PACKETS - Rx Packet Count Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_PACKETS - RMON Rx packet count (RMON_R_PACKETS) (RW)
+ * @brief HW_ENET_RMON_R_PACKETS - Rx Packet Count Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5811,7 +6031,8 @@ typedef union _hw_enet_rmon_r_packets
     uint32_t U;
     struct _hw_enet_rmon_r_packets_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_packets_t;
 #endif
@@ -5823,12 +6044,8 @@ typedef union _hw_enet_rmon_r_packets
 #define HW_ENET_RMON_R_PACKETS_ADDR(x) (REGS_ENET_BASE(x) + 0x284U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_PACKETS(x) (*(__IO hw_enet_rmon_r_packets_t *) HW_ENET_RMON_R_PACKETS_ADDR(x))
+#define HW_ENET_RMON_R_PACKETS(x) (*(__I hw_enet_rmon_r_packets_t *) HW_ENET_RMON_R_PACKETS_ADDR(x))
 #define HW_ENET_RMON_R_PACKETS_RD(x) (HW_ENET_RMON_R_PACKETS(x).U)
-#define HW_ENET_RMON_R_PACKETS_WR(x, v) (HW_ENET_RMON_R_PACKETS(x).U = (v))
-#define HW_ENET_RMON_R_PACKETS_SET(x, v) (HW_ENET_RMON_R_PACKETS_WR(x, HW_ENET_RMON_R_PACKETS_RD(x) |  (v)))
-#define HW_ENET_RMON_R_PACKETS_CLR(x, v) (HW_ENET_RMON_R_PACKETS_WR(x, HW_ENET_RMON_R_PACKETS_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_PACKETS_TOG(x, v) (HW_ENET_RMON_R_PACKETS_WR(x, HW_ENET_RMON_R_PACKETS_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5836,13 +6053,27 @@ typedef union _hw_enet_rmon_r_packets
  * Constants & macros for individual ENET_RMON_R_PACKETS bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_PACKETS, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_PACKETS_COUNT (0U)  //!< Bit position for ENET_RMON_R_PACKETS_COUNT.
+#define BM_ENET_RMON_R_PACKETS_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_PACKETS_COUNT.
+#define BS_ENET_RMON_R_PACKETS_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_PACKETS_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_PACKETS_COUNT field.
+#define BR_ENET_RMON_R_PACKETS_COUNT(x) (HW_ENET_RMON_R_PACKETS(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_BC_PKT - RMON Rx Broadcast Packets (RMON_R_BC_PKT)
+// HW_ENET_RMON_R_BC_PKT - Rx Broadcast Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_BC_PKT - RMON Rx Broadcast Packets (RMON_R_BC_PKT) (RW)
+ * @brief HW_ENET_RMON_R_BC_PKT - Rx Broadcast Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5851,7 +6082,8 @@ typedef union _hw_enet_rmon_r_bc_pkt
     uint32_t U;
     struct _hw_enet_rmon_r_bc_pkt_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_bc_pkt_t;
 #endif
@@ -5863,12 +6095,8 @@ typedef union _hw_enet_rmon_r_bc_pkt
 #define HW_ENET_RMON_R_BC_PKT_ADDR(x) (REGS_ENET_BASE(x) + 0x288U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_BC_PKT(x) (*(__IO hw_enet_rmon_r_bc_pkt_t *) HW_ENET_RMON_R_BC_PKT_ADDR(x))
+#define HW_ENET_RMON_R_BC_PKT(x) (*(__I hw_enet_rmon_r_bc_pkt_t *) HW_ENET_RMON_R_BC_PKT_ADDR(x))
 #define HW_ENET_RMON_R_BC_PKT_RD(x) (HW_ENET_RMON_R_BC_PKT(x).U)
-#define HW_ENET_RMON_R_BC_PKT_WR(x, v) (HW_ENET_RMON_R_BC_PKT(x).U = (v))
-#define HW_ENET_RMON_R_BC_PKT_SET(x, v) (HW_ENET_RMON_R_BC_PKT_WR(x, HW_ENET_RMON_R_BC_PKT_RD(x) |  (v)))
-#define HW_ENET_RMON_R_BC_PKT_CLR(x, v) (HW_ENET_RMON_R_BC_PKT_WR(x, HW_ENET_RMON_R_BC_PKT_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_BC_PKT_TOG(x, v) (HW_ENET_RMON_R_BC_PKT_WR(x, HW_ENET_RMON_R_BC_PKT_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5876,13 +6104,27 @@ typedef union _hw_enet_rmon_r_bc_pkt
  * Constants & macros for individual ENET_RMON_R_BC_PKT bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_BC_PKT, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_BC_PKT_COUNT (0U)   //!< Bit position for ENET_RMON_R_BC_PKT_COUNT.
+#define BM_ENET_RMON_R_BC_PKT_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_BC_PKT_COUNT.
+#define BS_ENET_RMON_R_BC_PKT_COUNT (16U)  //!< Bit field size in bits for ENET_RMON_R_BC_PKT_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_BC_PKT_COUNT field.
+#define BR_ENET_RMON_R_BC_PKT_COUNT(x) (HW_ENET_RMON_R_BC_PKT(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_MC_PKT - RMON Rx Multicast Packets (RMON_R_MC_PKT)
+// HW_ENET_RMON_R_MC_PKT - Rx Multicast Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_MC_PKT - RMON Rx Multicast Packets (RMON_R_MC_PKT) (RW)
+ * @brief HW_ENET_RMON_R_MC_PKT - Rx Multicast Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5891,7 +6133,8 @@ typedef union _hw_enet_rmon_r_mc_pkt
     uint32_t U;
     struct _hw_enet_rmon_r_mc_pkt_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_mc_pkt_t;
 #endif
@@ -5903,12 +6146,8 @@ typedef union _hw_enet_rmon_r_mc_pkt
 #define HW_ENET_RMON_R_MC_PKT_ADDR(x) (REGS_ENET_BASE(x) + 0x28CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_MC_PKT(x) (*(__IO hw_enet_rmon_r_mc_pkt_t *) HW_ENET_RMON_R_MC_PKT_ADDR(x))
+#define HW_ENET_RMON_R_MC_PKT(x) (*(__I hw_enet_rmon_r_mc_pkt_t *) HW_ENET_RMON_R_MC_PKT_ADDR(x))
 #define HW_ENET_RMON_R_MC_PKT_RD(x) (HW_ENET_RMON_R_MC_PKT(x).U)
-#define HW_ENET_RMON_R_MC_PKT_WR(x, v) (HW_ENET_RMON_R_MC_PKT(x).U = (v))
-#define HW_ENET_RMON_R_MC_PKT_SET(x, v) (HW_ENET_RMON_R_MC_PKT_WR(x, HW_ENET_RMON_R_MC_PKT_RD(x) |  (v)))
-#define HW_ENET_RMON_R_MC_PKT_CLR(x, v) (HW_ENET_RMON_R_MC_PKT_WR(x, HW_ENET_RMON_R_MC_PKT_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_MC_PKT_TOG(x, v) (HW_ENET_RMON_R_MC_PKT_WR(x, HW_ENET_RMON_R_MC_PKT_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5916,13 +6155,27 @@ typedef union _hw_enet_rmon_r_mc_pkt
  * Constants & macros for individual ENET_RMON_R_MC_PKT bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_MC_PKT, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_MC_PKT_COUNT (0U)   //!< Bit position for ENET_RMON_R_MC_PKT_COUNT.
+#define BM_ENET_RMON_R_MC_PKT_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_MC_PKT_COUNT.
+#define BS_ENET_RMON_R_MC_PKT_COUNT (16U)  //!< Bit field size in bits for ENET_RMON_R_MC_PKT_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_MC_PKT_COUNT field.
+#define BR_ENET_RMON_R_MC_PKT_COUNT(x) (HW_ENET_RMON_R_MC_PKT(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_CRC_ALIGN - RMON Rx Packets w CRC/Align error (RMON_R_CRC_ALIGN)
+// HW_ENET_RMON_R_CRC_ALIGN - Rx Packets with CRC/Align Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_CRC_ALIGN - RMON Rx Packets w CRC/Align error (RMON_R_CRC_ALIGN) (RW)
+ * @brief HW_ENET_RMON_R_CRC_ALIGN - Rx Packets with CRC/Align Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5931,7 +6184,8 @@ typedef union _hw_enet_rmon_r_crc_align
     uint32_t U;
     struct _hw_enet_rmon_r_crc_align_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_crc_align_t;
 #endif
@@ -5943,12 +6197,8 @@ typedef union _hw_enet_rmon_r_crc_align
 #define HW_ENET_RMON_R_CRC_ALIGN_ADDR(x) (REGS_ENET_BASE(x) + 0x290U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_CRC_ALIGN(x) (*(__IO hw_enet_rmon_r_crc_align_t *) HW_ENET_RMON_R_CRC_ALIGN_ADDR(x))
+#define HW_ENET_RMON_R_CRC_ALIGN(x) (*(__I hw_enet_rmon_r_crc_align_t *) HW_ENET_RMON_R_CRC_ALIGN_ADDR(x))
 #define HW_ENET_RMON_R_CRC_ALIGN_RD(x) (HW_ENET_RMON_R_CRC_ALIGN(x).U)
-#define HW_ENET_RMON_R_CRC_ALIGN_WR(x, v) (HW_ENET_RMON_R_CRC_ALIGN(x).U = (v))
-#define HW_ENET_RMON_R_CRC_ALIGN_SET(x, v) (HW_ENET_RMON_R_CRC_ALIGN_WR(x, HW_ENET_RMON_R_CRC_ALIGN_RD(x) |  (v)))
-#define HW_ENET_RMON_R_CRC_ALIGN_CLR(x, v) (HW_ENET_RMON_R_CRC_ALIGN_WR(x, HW_ENET_RMON_R_CRC_ALIGN_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_CRC_ALIGN_TOG(x, v) (HW_ENET_RMON_R_CRC_ALIGN_WR(x, HW_ENET_RMON_R_CRC_ALIGN_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5956,13 +6206,27 @@ typedef union _hw_enet_rmon_r_crc_align
  * Constants & macros for individual ENET_RMON_R_CRC_ALIGN bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_CRC_ALIGN, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_CRC_ALIGN_COUNT (0U) //!< Bit position for ENET_RMON_R_CRC_ALIGN_COUNT.
+#define BM_ENET_RMON_R_CRC_ALIGN_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_CRC_ALIGN_COUNT.
+#define BS_ENET_RMON_R_CRC_ALIGN_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_CRC_ALIGN_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_CRC_ALIGN_COUNT field.
+#define BR_ENET_RMON_R_CRC_ALIGN_COUNT(x) (HW_ENET_RMON_R_CRC_ALIGN(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_UNDERSIZE - RMON Rx Packets < 64 bytes, good CRC (RMON_R_UNDERSIZE)
+// HW_ENET_RMON_R_UNDERSIZE - Rx Packets with Less Than 64 Bytes and Good CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_UNDERSIZE - RMON Rx Packets < 64 bytes, good CRC (RMON_R_UNDERSIZE) (RW)
+ * @brief HW_ENET_RMON_R_UNDERSIZE - Rx Packets with Less Than 64 Bytes and Good CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -5971,7 +6235,8 @@ typedef union _hw_enet_rmon_r_undersize
     uint32_t U;
     struct _hw_enet_rmon_r_undersize_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_undersize_t;
 #endif
@@ -5983,12 +6248,8 @@ typedef union _hw_enet_rmon_r_undersize
 #define HW_ENET_RMON_R_UNDERSIZE_ADDR(x) (REGS_ENET_BASE(x) + 0x294U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_UNDERSIZE(x) (*(__IO hw_enet_rmon_r_undersize_t *) HW_ENET_RMON_R_UNDERSIZE_ADDR(x))
+#define HW_ENET_RMON_R_UNDERSIZE(x) (*(__I hw_enet_rmon_r_undersize_t *) HW_ENET_RMON_R_UNDERSIZE_ADDR(x))
 #define HW_ENET_RMON_R_UNDERSIZE_RD(x) (HW_ENET_RMON_R_UNDERSIZE(x).U)
-#define HW_ENET_RMON_R_UNDERSIZE_WR(x, v) (HW_ENET_RMON_R_UNDERSIZE(x).U = (v))
-#define HW_ENET_RMON_R_UNDERSIZE_SET(x, v) (HW_ENET_RMON_R_UNDERSIZE_WR(x, HW_ENET_RMON_R_UNDERSIZE_RD(x) |  (v)))
-#define HW_ENET_RMON_R_UNDERSIZE_CLR(x, v) (HW_ENET_RMON_R_UNDERSIZE_WR(x, HW_ENET_RMON_R_UNDERSIZE_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_UNDERSIZE_TOG(x, v) (HW_ENET_RMON_R_UNDERSIZE_WR(x, HW_ENET_RMON_R_UNDERSIZE_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -5996,13 +6257,27 @@ typedef union _hw_enet_rmon_r_undersize
  * Constants & macros for individual ENET_RMON_R_UNDERSIZE bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_UNDERSIZE, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_UNDERSIZE_COUNT (0U) //!< Bit position for ENET_RMON_R_UNDERSIZE_COUNT.
+#define BM_ENET_RMON_R_UNDERSIZE_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_UNDERSIZE_COUNT.
+#define BS_ENET_RMON_R_UNDERSIZE_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_UNDERSIZE_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_UNDERSIZE_COUNT field.
+#define BR_ENET_RMON_R_UNDERSIZE_COUNT(x) (HW_ENET_RMON_R_UNDERSIZE(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_OVERSIZE - RMON Rx Packets > MAX_FL bytes, good CRC (RMON_R_OVERSIZE)
+// HW_ENET_RMON_R_OVERSIZE - Rx Packets Greater Than MAX_FL and Good CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_OVERSIZE - RMON Rx Packets > MAX_FL bytes, good CRC (RMON_R_OVERSIZE) (RW)
+ * @brief HW_ENET_RMON_R_OVERSIZE - Rx Packets Greater Than MAX_FL and Good CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6011,7 +6286,8 @@ typedef union _hw_enet_rmon_r_oversize
     uint32_t U;
     struct _hw_enet_rmon_r_oversize_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_oversize_t;
 #endif
@@ -6023,12 +6299,8 @@ typedef union _hw_enet_rmon_r_oversize
 #define HW_ENET_RMON_R_OVERSIZE_ADDR(x) (REGS_ENET_BASE(x) + 0x298U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_OVERSIZE(x) (*(__IO hw_enet_rmon_r_oversize_t *) HW_ENET_RMON_R_OVERSIZE_ADDR(x))
+#define HW_ENET_RMON_R_OVERSIZE(x) (*(__I hw_enet_rmon_r_oversize_t *) HW_ENET_RMON_R_OVERSIZE_ADDR(x))
 #define HW_ENET_RMON_R_OVERSIZE_RD(x) (HW_ENET_RMON_R_OVERSIZE(x).U)
-#define HW_ENET_RMON_R_OVERSIZE_WR(x, v) (HW_ENET_RMON_R_OVERSIZE(x).U = (v))
-#define HW_ENET_RMON_R_OVERSIZE_SET(x, v) (HW_ENET_RMON_R_OVERSIZE_WR(x, HW_ENET_RMON_R_OVERSIZE_RD(x) |  (v)))
-#define HW_ENET_RMON_R_OVERSIZE_CLR(x, v) (HW_ENET_RMON_R_OVERSIZE_WR(x, HW_ENET_RMON_R_OVERSIZE_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_OVERSIZE_TOG(x, v) (HW_ENET_RMON_R_OVERSIZE_WR(x, HW_ENET_RMON_R_OVERSIZE_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6036,13 +6308,27 @@ typedef union _hw_enet_rmon_r_oversize
  * Constants & macros for individual ENET_RMON_R_OVERSIZE bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_OVERSIZE, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_OVERSIZE_COUNT (0U) //!< Bit position for ENET_RMON_R_OVERSIZE_COUNT.
+#define BM_ENET_RMON_R_OVERSIZE_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_OVERSIZE_COUNT.
+#define BS_ENET_RMON_R_OVERSIZE_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_OVERSIZE_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_OVERSIZE_COUNT field.
+#define BR_ENET_RMON_R_OVERSIZE_COUNT(x) (HW_ENET_RMON_R_OVERSIZE(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_FRAG - RMON Rx Packets < 64 bytes, bad CRC (RMON_R_FRAG)
+// HW_ENET_RMON_R_FRAG - Rx Packets Less Than 64 Bytes and Bad CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_FRAG - RMON Rx Packets < 64 bytes, bad CRC (RMON_R_FRAG) (RW)
+ * @brief HW_ENET_RMON_R_FRAG - Rx Packets Less Than 64 Bytes and Bad CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6051,7 +6337,8 @@ typedef union _hw_enet_rmon_r_frag
     uint32_t U;
     struct _hw_enet_rmon_r_frag_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_frag_t;
 #endif
@@ -6063,12 +6350,8 @@ typedef union _hw_enet_rmon_r_frag
 #define HW_ENET_RMON_R_FRAG_ADDR(x) (REGS_ENET_BASE(x) + 0x29CU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_FRAG(x)   (*(__IO hw_enet_rmon_r_frag_t *) HW_ENET_RMON_R_FRAG_ADDR(x))
+#define HW_ENET_RMON_R_FRAG(x)   (*(__I hw_enet_rmon_r_frag_t *) HW_ENET_RMON_R_FRAG_ADDR(x))
 #define HW_ENET_RMON_R_FRAG_RD(x) (HW_ENET_RMON_R_FRAG(x).U)
-#define HW_ENET_RMON_R_FRAG_WR(x, v) (HW_ENET_RMON_R_FRAG(x).U = (v))
-#define HW_ENET_RMON_R_FRAG_SET(x, v) (HW_ENET_RMON_R_FRAG_WR(x, HW_ENET_RMON_R_FRAG_RD(x) |  (v)))
-#define HW_ENET_RMON_R_FRAG_CLR(x, v) (HW_ENET_RMON_R_FRAG_WR(x, HW_ENET_RMON_R_FRAG_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_FRAG_TOG(x, v) (HW_ENET_RMON_R_FRAG_WR(x, HW_ENET_RMON_R_FRAG_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6076,13 +6359,27 @@ typedef union _hw_enet_rmon_r_frag
  * Constants & macros for individual ENET_RMON_R_FRAG bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_FRAG, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_FRAG_COUNT (0U)     //!< Bit position for ENET_RMON_R_FRAG_COUNT.
+#define BM_ENET_RMON_R_FRAG_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_FRAG_COUNT.
+#define BS_ENET_RMON_R_FRAG_COUNT (16U)    //!< Bit field size in bits for ENET_RMON_R_FRAG_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_FRAG_COUNT field.
+#define BR_ENET_RMON_R_FRAG_COUNT(x) (HW_ENET_RMON_R_FRAG(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_JAB - RMON Rx Packets > MAX_FL bytes, bad CRC (RMON_R_JAB)
+// HW_ENET_RMON_R_JAB - Rx Packets Greater Than MAX_FL Bytes and Bad CRC Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_JAB - RMON Rx Packets > MAX_FL bytes, bad CRC (RMON_R_JAB) (RW)
+ * @brief HW_ENET_RMON_R_JAB - Rx Packets Greater Than MAX_FL Bytes and Bad CRC Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6091,7 +6388,8 @@ typedef union _hw_enet_rmon_r_jab
     uint32_t U;
     struct _hw_enet_rmon_r_jab_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_jab_t;
 #endif
@@ -6103,12 +6401,8 @@ typedef union _hw_enet_rmon_r_jab
 #define HW_ENET_RMON_R_JAB_ADDR(x) (REGS_ENET_BASE(x) + 0x2A0U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_JAB(x)    (*(__IO hw_enet_rmon_r_jab_t *) HW_ENET_RMON_R_JAB_ADDR(x))
+#define HW_ENET_RMON_R_JAB(x)    (*(__I hw_enet_rmon_r_jab_t *) HW_ENET_RMON_R_JAB_ADDR(x))
 #define HW_ENET_RMON_R_JAB_RD(x) (HW_ENET_RMON_R_JAB(x).U)
-#define HW_ENET_RMON_R_JAB_WR(x, v) (HW_ENET_RMON_R_JAB(x).U = (v))
-#define HW_ENET_RMON_R_JAB_SET(x, v) (HW_ENET_RMON_R_JAB_WR(x, HW_ENET_RMON_R_JAB_RD(x) |  (v)))
-#define HW_ENET_RMON_R_JAB_CLR(x, v) (HW_ENET_RMON_R_JAB_WR(x, HW_ENET_RMON_R_JAB_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_JAB_TOG(x, v) (HW_ENET_RMON_R_JAB_WR(x, HW_ENET_RMON_R_JAB_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6116,53 +6410,27 @@ typedef union _hw_enet_rmon_r_jab
  * Constants & macros for individual ENET_RMON_R_JAB bitfields
  */
 
-//-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_RESVD_0 - Reserved (RMON_R_RESVD_0)
-//-------------------------------------------------------------------------------------------
-
-#ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_RESVD_0 - Reserved (RMON_R_RESVD_0) (RW)
- *
- * Reset value: 0x00000000U
- */
-typedef union _hw_enet_rmon_r_resvd_0
-{
-    uint32_t U;
-    struct _hw_enet_rmon_r_resvd_0_bitfields
-    {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
-    } B;
-} hw_enet_rmon_r_resvd_0_t;
-#endif
-
-/*!
- * @name Constants and macros for entire ENET_RMON_R_RESVD_0 register
+ * @name Register ENET_RMON_R_JAB, field COUNT[15:0] (RO)
  */
 //@{
-#define HW_ENET_RMON_R_RESVD_0_ADDR(x) (REGS_ENET_BASE(x) + 0x2A4U)
+#define BP_ENET_RMON_R_JAB_COUNT (0U)      //!< Bit position for ENET_RMON_R_JAB_COUNT.
+#define BM_ENET_RMON_R_JAB_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_JAB_COUNT.
+#define BS_ENET_RMON_R_JAB_COUNT (16U)     //!< Bit field size in bits for ENET_RMON_R_JAB_COUNT.
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_RESVD_0(x) (*(__IO hw_enet_rmon_r_resvd_0_t *) HW_ENET_RMON_R_RESVD_0_ADDR(x))
-#define HW_ENET_RMON_R_RESVD_0_RD(x) (HW_ENET_RMON_R_RESVD_0(x).U)
-#define HW_ENET_RMON_R_RESVD_0_WR(x, v) (HW_ENET_RMON_R_RESVD_0(x).U = (v))
-#define HW_ENET_RMON_R_RESVD_0_SET(x, v) (HW_ENET_RMON_R_RESVD_0_WR(x, HW_ENET_RMON_R_RESVD_0_RD(x) |  (v)))
-#define HW_ENET_RMON_R_RESVD_0_CLR(x, v) (HW_ENET_RMON_R_RESVD_0_WR(x, HW_ENET_RMON_R_RESVD_0_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_RESVD_0_TOG(x, v) (HW_ENET_RMON_R_RESVD_0_WR(x, HW_ENET_RMON_R_RESVD_0_RD(x) ^  (v)))
+//! @brief Read current value of the ENET_RMON_R_JAB_COUNT field.
+#define BR_ENET_RMON_R_JAB_COUNT(x) (HW_ENET_RMON_R_JAB(x).B.COUNT)
 #endif
 //@}
 
-/*
- * Constants & macros for individual ENET_RMON_R_RESVD_0 bitfields
- */
-
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P64 - RMON Rx 64 byte packets (RMON_R_P64)
+// HW_ENET_RMON_R_P64 - Rx 64-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P64 - RMON Rx 64 byte packets (RMON_R_P64) (RW)
+ * @brief HW_ENET_RMON_R_P64 - Rx 64-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6171,7 +6439,8 @@ typedef union _hw_enet_rmon_r_p64
     uint32_t U;
     struct _hw_enet_rmon_r_p64_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_p64_t;
 #endif
@@ -6183,12 +6452,8 @@ typedef union _hw_enet_rmon_r_p64
 #define HW_ENET_RMON_R_P64_ADDR(x) (REGS_ENET_BASE(x) + 0x2A8U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P64(x)    (*(__IO hw_enet_rmon_r_p64_t *) HW_ENET_RMON_R_P64_ADDR(x))
+#define HW_ENET_RMON_R_P64(x)    (*(__I hw_enet_rmon_r_p64_t *) HW_ENET_RMON_R_P64_ADDR(x))
 #define HW_ENET_RMON_R_P64_RD(x) (HW_ENET_RMON_R_P64(x).U)
-#define HW_ENET_RMON_R_P64_WR(x, v) (HW_ENET_RMON_R_P64(x).U = (v))
-#define HW_ENET_RMON_R_P64_SET(x, v) (HW_ENET_RMON_R_P64_WR(x, HW_ENET_RMON_R_P64_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P64_CLR(x, v) (HW_ENET_RMON_R_P64_WR(x, HW_ENET_RMON_R_P64_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P64_TOG(x, v) (HW_ENET_RMON_R_P64_WR(x, HW_ENET_RMON_R_P64_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6196,13 +6461,27 @@ typedef union _hw_enet_rmon_r_p64
  * Constants & macros for individual ENET_RMON_R_P64 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_P64, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_P64_COUNT (0U)      //!< Bit position for ENET_RMON_R_P64_COUNT.
+#define BM_ENET_RMON_R_P64_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_P64_COUNT.
+#define BS_ENET_RMON_R_P64_COUNT (16U)     //!< Bit field size in bits for ENET_RMON_R_P64_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_P64_COUNT field.
+#define BR_ENET_RMON_R_P64_COUNT(x) (HW_ENET_RMON_R_P64(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P65TO127 - RMON Rx 65 to 127 byte packets (RMON_R_P65TO127)
+// HW_ENET_RMON_R_P65TO127 - Rx 65- to 127-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P65TO127 - RMON Rx 65 to 127 byte packets (RMON_R_P65TO127) (RW)
+ * @brief HW_ENET_RMON_R_P65TO127 - Rx 65- to 127-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6211,7 +6490,8 @@ typedef union _hw_enet_rmon_r_p65to127
     uint32_t U;
     struct _hw_enet_rmon_r_p65to127_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_p65to127_t;
 #endif
@@ -6223,12 +6503,8 @@ typedef union _hw_enet_rmon_r_p65to127
 #define HW_ENET_RMON_R_P65TO127_ADDR(x) (REGS_ENET_BASE(x) + 0x2ACU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P65TO127(x) (*(__IO hw_enet_rmon_r_p65to127_t *) HW_ENET_RMON_R_P65TO127_ADDR(x))
+#define HW_ENET_RMON_R_P65TO127(x) (*(__I hw_enet_rmon_r_p65to127_t *) HW_ENET_RMON_R_P65TO127_ADDR(x))
 #define HW_ENET_RMON_R_P65TO127_RD(x) (HW_ENET_RMON_R_P65TO127(x).U)
-#define HW_ENET_RMON_R_P65TO127_WR(x, v) (HW_ENET_RMON_R_P65TO127(x).U = (v))
-#define HW_ENET_RMON_R_P65TO127_SET(x, v) (HW_ENET_RMON_R_P65TO127_WR(x, HW_ENET_RMON_R_P65TO127_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P65TO127_CLR(x, v) (HW_ENET_RMON_R_P65TO127_WR(x, HW_ENET_RMON_R_P65TO127_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P65TO127_TOG(x, v) (HW_ENET_RMON_R_P65TO127_WR(x, HW_ENET_RMON_R_P65TO127_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6236,13 +6512,27 @@ typedef union _hw_enet_rmon_r_p65to127
  * Constants & macros for individual ENET_RMON_R_P65TO127 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_P65TO127, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_P65TO127_COUNT (0U) //!< Bit position for ENET_RMON_R_P65TO127_COUNT.
+#define BM_ENET_RMON_R_P65TO127_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_P65TO127_COUNT.
+#define BS_ENET_RMON_R_P65TO127_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_P65TO127_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_P65TO127_COUNT field.
+#define BR_ENET_RMON_R_P65TO127_COUNT(x) (HW_ENET_RMON_R_P65TO127(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P128TO255 - RMON Rx 128 to 255 byte packets (RMON_R_P128TO255)
+// HW_ENET_RMON_R_P128TO255 - Rx 128- to 255-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P128TO255 - RMON Rx 128 to 255 byte packets (RMON_R_P128TO255) (RW)
+ * @brief HW_ENET_RMON_R_P128TO255 - Rx 128- to 255-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6251,7 +6541,8 @@ typedef union _hw_enet_rmon_r_p128to255
     uint32_t U;
     struct _hw_enet_rmon_r_p128to255_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_p128to255_t;
 #endif
@@ -6263,12 +6554,8 @@ typedef union _hw_enet_rmon_r_p128to255
 #define HW_ENET_RMON_R_P128TO255_ADDR(x) (REGS_ENET_BASE(x) + 0x2B0U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P128TO255(x) (*(__IO hw_enet_rmon_r_p128to255_t *) HW_ENET_RMON_R_P128TO255_ADDR(x))
+#define HW_ENET_RMON_R_P128TO255(x) (*(__I hw_enet_rmon_r_p128to255_t *) HW_ENET_RMON_R_P128TO255_ADDR(x))
 #define HW_ENET_RMON_R_P128TO255_RD(x) (HW_ENET_RMON_R_P128TO255(x).U)
-#define HW_ENET_RMON_R_P128TO255_WR(x, v) (HW_ENET_RMON_R_P128TO255(x).U = (v))
-#define HW_ENET_RMON_R_P128TO255_SET(x, v) (HW_ENET_RMON_R_P128TO255_WR(x, HW_ENET_RMON_R_P128TO255_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P128TO255_CLR(x, v) (HW_ENET_RMON_R_P128TO255_WR(x, HW_ENET_RMON_R_P128TO255_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P128TO255_TOG(x, v) (HW_ENET_RMON_R_P128TO255_WR(x, HW_ENET_RMON_R_P128TO255_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6276,13 +6563,27 @@ typedef union _hw_enet_rmon_r_p128to255
  * Constants & macros for individual ENET_RMON_R_P128TO255 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_P128TO255, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_P128TO255_COUNT (0U) //!< Bit position for ENET_RMON_R_P128TO255_COUNT.
+#define BM_ENET_RMON_R_P128TO255_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_P128TO255_COUNT.
+#define BS_ENET_RMON_R_P128TO255_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_P128TO255_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_P128TO255_COUNT field.
+#define BR_ENET_RMON_R_P128TO255_COUNT(x) (HW_ENET_RMON_R_P128TO255(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P256TO511 - RMON Rx 256 to 511 byte packets (RMON_R_P256TO511)
+// HW_ENET_RMON_R_P256TO511 - Rx 256- to 511-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P256TO511 - RMON Rx 256 to 511 byte packets (RMON_R_P256TO511) (RW)
+ * @brief HW_ENET_RMON_R_P256TO511 - Rx 256- to 511-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6291,7 +6592,8 @@ typedef union _hw_enet_rmon_r_p256to511
     uint32_t U;
     struct _hw_enet_rmon_r_p256to511_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_p256to511_t;
 #endif
@@ -6303,12 +6605,8 @@ typedef union _hw_enet_rmon_r_p256to511
 #define HW_ENET_RMON_R_P256TO511_ADDR(x) (REGS_ENET_BASE(x) + 0x2B4U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P256TO511(x) (*(__IO hw_enet_rmon_r_p256to511_t *) HW_ENET_RMON_R_P256TO511_ADDR(x))
+#define HW_ENET_RMON_R_P256TO511(x) (*(__I hw_enet_rmon_r_p256to511_t *) HW_ENET_RMON_R_P256TO511_ADDR(x))
 #define HW_ENET_RMON_R_P256TO511_RD(x) (HW_ENET_RMON_R_P256TO511(x).U)
-#define HW_ENET_RMON_R_P256TO511_WR(x, v) (HW_ENET_RMON_R_P256TO511(x).U = (v))
-#define HW_ENET_RMON_R_P256TO511_SET(x, v) (HW_ENET_RMON_R_P256TO511_WR(x, HW_ENET_RMON_R_P256TO511_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P256TO511_CLR(x, v) (HW_ENET_RMON_R_P256TO511_WR(x, HW_ENET_RMON_R_P256TO511_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P256TO511_TOG(x, v) (HW_ENET_RMON_R_P256TO511_WR(x, HW_ENET_RMON_R_P256TO511_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6316,13 +6614,27 @@ typedef union _hw_enet_rmon_r_p256to511
  * Constants & macros for individual ENET_RMON_R_P256TO511 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_P256TO511, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_P256TO511_COUNT (0U) //!< Bit position for ENET_RMON_R_P256TO511_COUNT.
+#define BM_ENET_RMON_R_P256TO511_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_P256TO511_COUNT.
+#define BS_ENET_RMON_R_P256TO511_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_P256TO511_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_P256TO511_COUNT field.
+#define BR_ENET_RMON_R_P256TO511_COUNT(x) (HW_ENET_RMON_R_P256TO511(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P512TO1023 - RMON Rx 512 to 1023 byte packets (RMON_R_P512TO1023)
+// HW_ENET_RMON_R_P512TO1023 - Rx 512- to 1023-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P512TO1023 - RMON Rx 512 to 1023 byte packets (RMON_R_P512TO1023) (RW)
+ * @brief HW_ENET_RMON_R_P512TO1023 - Rx 512- to 1023-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6331,7 +6643,8 @@ typedef union _hw_enet_rmon_r_p512to1023
     uint32_t U;
     struct _hw_enet_rmon_r_p512to1023_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_p512to1023_t;
 #endif
@@ -6343,12 +6656,8 @@ typedef union _hw_enet_rmon_r_p512to1023
 #define HW_ENET_RMON_R_P512TO1023_ADDR(x) (REGS_ENET_BASE(x) + 0x2B8U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P512TO1023(x) (*(__IO hw_enet_rmon_r_p512to1023_t *) HW_ENET_RMON_R_P512TO1023_ADDR(x))
+#define HW_ENET_RMON_R_P512TO1023(x) (*(__I hw_enet_rmon_r_p512to1023_t *) HW_ENET_RMON_R_P512TO1023_ADDR(x))
 #define HW_ENET_RMON_R_P512TO1023_RD(x) (HW_ENET_RMON_R_P512TO1023(x).U)
-#define HW_ENET_RMON_R_P512TO1023_WR(x, v) (HW_ENET_RMON_R_P512TO1023(x).U = (v))
-#define HW_ENET_RMON_R_P512TO1023_SET(x, v) (HW_ENET_RMON_R_P512TO1023_WR(x, HW_ENET_RMON_R_P512TO1023_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P512TO1023_CLR(x, v) (HW_ENET_RMON_R_P512TO1023_WR(x, HW_ENET_RMON_R_P512TO1023_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P512TO1023_TOG(x, v) (HW_ENET_RMON_R_P512TO1023_WR(x, HW_ENET_RMON_R_P512TO1023_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6356,13 +6665,27 @@ typedef union _hw_enet_rmon_r_p512to1023
  * Constants & macros for individual ENET_RMON_R_P512TO1023 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_P512TO1023, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_P512TO1023_COUNT (0U) //!< Bit position for ENET_RMON_R_P512TO1023_COUNT.
+#define BM_ENET_RMON_R_P512TO1023_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_P512TO1023_COUNT.
+#define BS_ENET_RMON_R_P512TO1023_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_P512TO1023_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_P512TO1023_COUNT field.
+#define BR_ENET_RMON_R_P512TO1023_COUNT(x) (HW_ENET_RMON_R_P512TO1023(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P1024TO2047 - RMON Rx 1024 to 2047 byte packets (RMON_R_P1024TO2047)
+// HW_ENET_RMON_R_P1024TO2047 - Rx 1024- to 2047-Byte Packets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P1024TO2047 - RMON Rx 1024 to 2047 byte packets (RMON_R_P1024TO2047) (RW)
+ * @brief HW_ENET_RMON_R_P1024TO2047 - Rx 1024- to 2047-Byte Packets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6371,7 +6694,8 @@ typedef union _hw_enet_rmon_r_p1024to2047
     uint32_t U;
     struct _hw_enet_rmon_r_p1024to2047_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_rmon_r_p1024to2047_t;
 #endif
@@ -6383,12 +6707,8 @@ typedef union _hw_enet_rmon_r_p1024to2047
 #define HW_ENET_RMON_R_P1024TO2047_ADDR(x) (REGS_ENET_BASE(x) + 0x2BCU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P1024TO2047(x) (*(__IO hw_enet_rmon_r_p1024to2047_t *) HW_ENET_RMON_R_P1024TO2047_ADDR(x))
+#define HW_ENET_RMON_R_P1024TO2047(x) (*(__I hw_enet_rmon_r_p1024to2047_t *) HW_ENET_RMON_R_P1024TO2047_ADDR(x))
 #define HW_ENET_RMON_R_P1024TO2047_RD(x) (HW_ENET_RMON_R_P1024TO2047(x).U)
-#define HW_ENET_RMON_R_P1024TO2047_WR(x, v) (HW_ENET_RMON_R_P1024TO2047(x).U = (v))
-#define HW_ENET_RMON_R_P1024TO2047_SET(x, v) (HW_ENET_RMON_R_P1024TO2047_WR(x, HW_ENET_RMON_R_P1024TO2047_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P1024TO2047_CLR(x, v) (HW_ENET_RMON_R_P1024TO2047_WR(x, HW_ENET_RMON_R_P1024TO2047_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P1024TO2047_TOG(x, v) (HW_ENET_RMON_R_P1024TO2047_WR(x, HW_ENET_RMON_R_P1024TO2047_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6396,53 +6716,78 @@ typedef union _hw_enet_rmon_r_p1024to2047
  * Constants & macros for individual ENET_RMON_R_P1024TO2047 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_P1024TO2047, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_P1024TO2047_COUNT (0U) //!< Bit position for ENET_RMON_R_P1024TO2047_COUNT.
+#define BM_ENET_RMON_R_P1024TO2047_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_P1024TO2047_COUNT.
+#define BS_ENET_RMON_R_P1024TO2047_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_P1024TO2047_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_P1024TO2047_COUNT field.
+#define BR_ENET_RMON_R_P1024TO2047_COUNT(x) (HW_ENET_RMON_R_P1024TO2047(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_P_GTE2048 - RMON Rx packets w > 2048 bytes (RMON_R_P_GTE2048)
+// HW_ENET_RMON_R_GTE2048 - Rx Packets Greater than 2048 Bytes Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_P_GTE2048 - RMON Rx packets w > 2048 bytes (RMON_R_P_GTE2048) (RW)
+ * @brief HW_ENET_RMON_R_GTE2048 - Rx Packets Greater than 2048 Bytes Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
-typedef union _hw_enet_rmon_r_p_gte2048
+typedef union _hw_enet_rmon_r_gte2048
 {
     uint32_t U;
-    struct _hw_enet_rmon_r_p_gte2048_bitfields
+    struct _hw_enet_rmon_r_gte2048_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Packet count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
-} hw_enet_rmon_r_p_gte2048_t;
+} hw_enet_rmon_r_gte2048_t;
 #endif
 
 /*!
- * @name Constants and macros for entire ENET_RMON_R_P_GTE2048 register
+ * @name Constants and macros for entire ENET_RMON_R_GTE2048 register
  */
 //@{
-#define HW_ENET_RMON_R_P_GTE2048_ADDR(x) (REGS_ENET_BASE(x) + 0x2C0U)
+#define HW_ENET_RMON_R_GTE2048_ADDR(x) (REGS_ENET_BASE(x) + 0x2C0U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_P_GTE2048(x) (*(__IO hw_enet_rmon_r_p_gte2048_t *) HW_ENET_RMON_R_P_GTE2048_ADDR(x))
-#define HW_ENET_RMON_R_P_GTE2048_RD(x) (HW_ENET_RMON_R_P_GTE2048(x).U)
-#define HW_ENET_RMON_R_P_GTE2048_WR(x, v) (HW_ENET_RMON_R_P_GTE2048(x).U = (v))
-#define HW_ENET_RMON_R_P_GTE2048_SET(x, v) (HW_ENET_RMON_R_P_GTE2048_WR(x, HW_ENET_RMON_R_P_GTE2048_RD(x) |  (v)))
-#define HW_ENET_RMON_R_P_GTE2048_CLR(x, v) (HW_ENET_RMON_R_P_GTE2048_WR(x, HW_ENET_RMON_R_P_GTE2048_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_P_GTE2048_TOG(x, v) (HW_ENET_RMON_R_P_GTE2048_WR(x, HW_ENET_RMON_R_P_GTE2048_RD(x) ^  (v)))
+#define HW_ENET_RMON_R_GTE2048(x) (*(__I hw_enet_rmon_r_gte2048_t *) HW_ENET_RMON_R_GTE2048_ADDR(x))
+#define HW_ENET_RMON_R_GTE2048_RD(x) (HW_ENET_RMON_R_GTE2048(x).U)
 #endif
 //@}
 
 /*
- * Constants & macros for individual ENET_RMON_R_P_GTE2048 bitfields
+ * Constants & macros for individual ENET_RMON_R_GTE2048 bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_GTE2048, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_GTE2048_COUNT (0U)  //!< Bit position for ENET_RMON_R_GTE2048_COUNT.
+#define BM_ENET_RMON_R_GTE2048_COUNT (0x0000FFFFU) //!< Bit mask for ENET_RMON_R_GTE2048_COUNT.
+#define BS_ENET_RMON_R_GTE2048_COUNT (16U) //!< Bit field size in bits for ENET_RMON_R_GTE2048_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_GTE2048_COUNT field.
+#define BR_ENET_RMON_R_GTE2048_COUNT(x) (HW_ENET_RMON_R_GTE2048(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_OCTETS - RMON Rx Octets (RMON_R_OCTETS)
+// HW_ENET_RMON_R_OCTETS - Rx Octets Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_OCTETS - RMON Rx Octets (RMON_R_OCTETS) (RW)
+ * @brief HW_ENET_RMON_R_OCTETS - Rx Octets Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6451,7 +6796,7 @@ typedef union _hw_enet_rmon_r_octets
     uint32_t U;
     struct _hw_enet_rmon_r_octets_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 32;           //!< [31:0] Octet count
     } B;
 } hw_enet_rmon_r_octets_t;
 #endif
@@ -6463,12 +6808,8 @@ typedef union _hw_enet_rmon_r_octets
 #define HW_ENET_RMON_R_OCTETS_ADDR(x) (REGS_ENET_BASE(x) + 0x2C4U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_OCTETS(x) (*(__IO hw_enet_rmon_r_octets_t *) HW_ENET_RMON_R_OCTETS_ADDR(x))
+#define HW_ENET_RMON_R_OCTETS(x) (*(__I hw_enet_rmon_r_octets_t *) HW_ENET_RMON_R_OCTETS_ADDR(x))
 #define HW_ENET_RMON_R_OCTETS_RD(x) (HW_ENET_RMON_R_OCTETS(x).U)
-#define HW_ENET_RMON_R_OCTETS_WR(x, v) (HW_ENET_RMON_R_OCTETS(x).U = (v))
-#define HW_ENET_RMON_R_OCTETS_SET(x, v) (HW_ENET_RMON_R_OCTETS_WR(x, HW_ENET_RMON_R_OCTETS_RD(x) |  (v)))
-#define HW_ENET_RMON_R_OCTETS_CLR(x, v) (HW_ENET_RMON_R_OCTETS_WR(x, HW_ENET_RMON_R_OCTETS_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_OCTETS_TOG(x, v) (HW_ENET_RMON_R_OCTETS_WR(x, HW_ENET_RMON_R_OCTETS_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6476,93 +6817,133 @@ typedef union _hw_enet_rmon_r_octets
  * Constants & macros for individual ENET_RMON_R_OCTETS bitfields
  */
 
+/*!
+ * @name Register ENET_RMON_R_OCTETS, field COUNT[31:0] (RO)
+ */
+//@{
+#define BP_ENET_RMON_R_OCTETS_COUNT (0U)   //!< Bit position for ENET_RMON_R_OCTETS_COUNT.
+#define BM_ENET_RMON_R_OCTETS_COUNT (0xFFFFFFFFU) //!< Bit mask for ENET_RMON_R_OCTETS_COUNT.
+#define BS_ENET_RMON_R_OCTETS_COUNT (32U)  //!< Bit field size in bits for ENET_RMON_R_OCTETS_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_RMON_R_OCTETS_COUNT field.
+#define BR_ENET_RMON_R_OCTETS_COUNT(x) (HW_ENET_RMON_R_OCTETS(x).U)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_DROP - Count of frames not counted correctly (IEEE_R_DROP). NOTE: Counter increments if a frame with valid/missing SFD character is detected and has been dropped. None of the other counters increments if this counter increments.
+// HW_ENET_IEEE_R_DROP - Frames not Counted Correctly Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_DROP - Count of frames not counted correctly (IEEE_R_DROP). NOTE: Counter increments if a frame with valid/missing SFD character is detected and has been dropped. None of the other counters increments if this counter increments. (RW)
+ * @brief HW_ENET_IEEE_R_DROP - Frames not Counted Correctly Statistic Register (RO)
  *
  * Reset value: 0x00000000U
+ *
+ * Counter increments if a frame with invalid or missing SFD character is
+ * detected and has been dropped. None of the other counters increments if this counter
+ * increments.
  */
-typedef union _hw_enet_rmon_r_drop
+typedef union _hw_enet_ieee_r_drop
 {
     uint32_t U;
-    struct _hw_enet_rmon_r_drop_bitfields
+    struct _hw_enet_ieee_r_drop_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
-} hw_enet_rmon_r_drop_t;
+} hw_enet_ieee_r_drop_t;
 #endif
 
 /*!
- * @name Constants and macros for entire ENET_RMON_R_DROP register
+ * @name Constants and macros for entire ENET_IEEE_R_DROP register
  */
 //@{
-#define HW_ENET_RMON_R_DROP_ADDR(x) (REGS_ENET_BASE(x) + 0x2C8U)
+#define HW_ENET_IEEE_R_DROP_ADDR(x) (REGS_ENET_BASE(x) + 0x2C8U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_DROP(x)   (*(__IO hw_enet_rmon_r_drop_t *) HW_ENET_RMON_R_DROP_ADDR(x))
-#define HW_ENET_RMON_R_DROP_RD(x) (HW_ENET_RMON_R_DROP(x).U)
-#define HW_ENET_RMON_R_DROP_WR(x, v) (HW_ENET_RMON_R_DROP(x).U = (v))
-#define HW_ENET_RMON_R_DROP_SET(x, v) (HW_ENET_RMON_R_DROP_WR(x, HW_ENET_RMON_R_DROP_RD(x) |  (v)))
-#define HW_ENET_RMON_R_DROP_CLR(x, v) (HW_ENET_RMON_R_DROP_WR(x, HW_ENET_RMON_R_DROP_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_DROP_TOG(x, v) (HW_ENET_RMON_R_DROP_WR(x, HW_ENET_RMON_R_DROP_RD(x) ^  (v)))
+#define HW_ENET_IEEE_R_DROP(x)   (*(__I hw_enet_ieee_r_drop_t *) HW_ENET_IEEE_R_DROP_ADDR(x))
+#define HW_ENET_IEEE_R_DROP_RD(x) (HW_ENET_IEEE_R_DROP(x).U)
 #endif
 //@}
 
 /*
- * Constants & macros for individual ENET_RMON_R_DROP bitfields
+ * Constants & macros for individual ENET_IEEE_R_DROP bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_DROP, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_DROP_COUNT (0U)     //!< Bit position for ENET_IEEE_R_DROP_COUNT.
+#define BM_ENET_IEEE_R_DROP_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_R_DROP_COUNT.
+#define BS_ENET_IEEE_R_DROP_COUNT (16U)    //!< Bit field size in bits for ENET_IEEE_R_DROP_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_DROP_COUNT field.
+#define BR_ENET_IEEE_R_DROP_COUNT(x) (HW_ENET_IEEE_R_DROP(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_RMON_R_FRAME_OK - Frames Received OK (IEEE_R_FRAME_OK)
+// HW_ENET_IEEE_R_FRAME_OK - Frames Received OK Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_RMON_R_FRAME_OK - Frames Received OK (IEEE_R_FRAME_OK) (RW)
+ * @brief HW_ENET_IEEE_R_FRAME_OK - Frames Received OK Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
-typedef union _hw_enet_rmon_r_frame_ok
+typedef union _hw_enet_ieee_r_frame_ok
 {
     uint32_t U;
-    struct _hw_enet_rmon_r_frame_ok_bitfields
+    struct _hw_enet_ieee_r_frame_ok_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
-} hw_enet_rmon_r_frame_ok_t;
+} hw_enet_ieee_r_frame_ok_t;
 #endif
 
 /*!
- * @name Constants and macros for entire ENET_RMON_R_FRAME_OK register
+ * @name Constants and macros for entire ENET_IEEE_R_FRAME_OK register
  */
 //@{
-#define HW_ENET_RMON_R_FRAME_OK_ADDR(x) (REGS_ENET_BASE(x) + 0x2CCU)
+#define HW_ENET_IEEE_R_FRAME_OK_ADDR(x) (REGS_ENET_BASE(x) + 0x2CCU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_RMON_R_FRAME_OK(x) (*(__IO hw_enet_rmon_r_frame_ok_t *) HW_ENET_RMON_R_FRAME_OK_ADDR(x))
-#define HW_ENET_RMON_R_FRAME_OK_RD(x) (HW_ENET_RMON_R_FRAME_OK(x).U)
-#define HW_ENET_RMON_R_FRAME_OK_WR(x, v) (HW_ENET_RMON_R_FRAME_OK(x).U = (v))
-#define HW_ENET_RMON_R_FRAME_OK_SET(x, v) (HW_ENET_RMON_R_FRAME_OK_WR(x, HW_ENET_RMON_R_FRAME_OK_RD(x) |  (v)))
-#define HW_ENET_RMON_R_FRAME_OK_CLR(x, v) (HW_ENET_RMON_R_FRAME_OK_WR(x, HW_ENET_RMON_R_FRAME_OK_RD(x) & ~(v)))
-#define HW_ENET_RMON_R_FRAME_OK_TOG(x, v) (HW_ENET_RMON_R_FRAME_OK_WR(x, HW_ENET_RMON_R_FRAME_OK_RD(x) ^  (v)))
+#define HW_ENET_IEEE_R_FRAME_OK(x) (*(__I hw_enet_ieee_r_frame_ok_t *) HW_ENET_IEEE_R_FRAME_OK_ADDR(x))
+#define HW_ENET_IEEE_R_FRAME_OK_RD(x) (HW_ENET_IEEE_R_FRAME_OK(x).U)
 #endif
 //@}
 
 /*
- * Constants & macros for individual ENET_RMON_R_FRAME_OK bitfields
+ * Constants & macros for individual ENET_IEEE_R_FRAME_OK bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_FRAME_OK, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_FRAME_OK_COUNT (0U) //!< Bit position for ENET_IEEE_R_FRAME_OK_COUNT.
+#define BM_ENET_IEEE_R_FRAME_OK_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_R_FRAME_OK_COUNT.
+#define BS_ENET_IEEE_R_FRAME_OK_COUNT (16U) //!< Bit field size in bits for ENET_IEEE_R_FRAME_OK_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_FRAME_OK_COUNT field.
+#define BR_ENET_IEEE_R_FRAME_OK_COUNT(x) (HW_ENET_IEEE_R_FRAME_OK(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_R_CRC - Frames Received with CRC Error (IEEE_R_CRC)
+// HW_ENET_IEEE_R_CRC - Frames Received with CRC Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_R_CRC - Frames Received with CRC Error (IEEE_R_CRC) (RW)
+ * @brief HW_ENET_IEEE_R_CRC - Frames Received with CRC Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6571,7 +6952,8 @@ typedef union _hw_enet_ieee_r_crc
     uint32_t U;
     struct _hw_enet_ieee_r_crc_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_r_crc_t;
 #endif
@@ -6583,12 +6965,8 @@ typedef union _hw_enet_ieee_r_crc
 #define HW_ENET_IEEE_R_CRC_ADDR(x) (REGS_ENET_BASE(x) + 0x2D0U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_R_CRC(x)    (*(__IO hw_enet_ieee_r_crc_t *) HW_ENET_IEEE_R_CRC_ADDR(x))
+#define HW_ENET_IEEE_R_CRC(x)    (*(__I hw_enet_ieee_r_crc_t *) HW_ENET_IEEE_R_CRC_ADDR(x))
 #define HW_ENET_IEEE_R_CRC_RD(x) (HW_ENET_IEEE_R_CRC(x).U)
-#define HW_ENET_IEEE_R_CRC_WR(x, v) (HW_ENET_IEEE_R_CRC(x).U = (v))
-#define HW_ENET_IEEE_R_CRC_SET(x, v) (HW_ENET_IEEE_R_CRC_WR(x, HW_ENET_IEEE_R_CRC_RD(x) |  (v)))
-#define HW_ENET_IEEE_R_CRC_CLR(x, v) (HW_ENET_IEEE_R_CRC_WR(x, HW_ENET_IEEE_R_CRC_RD(x) & ~(v)))
-#define HW_ENET_IEEE_R_CRC_TOG(x, v) (HW_ENET_IEEE_R_CRC_WR(x, HW_ENET_IEEE_R_CRC_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6596,13 +6974,27 @@ typedef union _hw_enet_ieee_r_crc
  * Constants & macros for individual ENET_IEEE_R_CRC bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_CRC, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_CRC_COUNT (0U)      //!< Bit position for ENET_IEEE_R_CRC_COUNT.
+#define BM_ENET_IEEE_R_CRC_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_R_CRC_COUNT.
+#define BS_ENET_IEEE_R_CRC_COUNT (16U)     //!< Bit field size in bits for ENET_IEEE_R_CRC_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_CRC_COUNT field.
+#define BR_ENET_IEEE_R_CRC_COUNT(x) (HW_ENET_IEEE_R_CRC(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_R_ALIGN - Frames Received with Alignment Error (IEEE_R_ALIGN)
+// HW_ENET_IEEE_R_ALIGN - Frames Received with Alignment Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_R_ALIGN - Frames Received with Alignment Error (IEEE_R_ALIGN) (RW)
+ * @brief HW_ENET_IEEE_R_ALIGN - Frames Received with Alignment Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6611,7 +7003,8 @@ typedef union _hw_enet_ieee_r_align
     uint32_t U;
     struct _hw_enet_ieee_r_align_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_r_align_t;
 #endif
@@ -6623,12 +7016,8 @@ typedef union _hw_enet_ieee_r_align
 #define HW_ENET_IEEE_R_ALIGN_ADDR(x) (REGS_ENET_BASE(x) + 0x2D4U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_R_ALIGN(x)  (*(__IO hw_enet_ieee_r_align_t *) HW_ENET_IEEE_R_ALIGN_ADDR(x))
+#define HW_ENET_IEEE_R_ALIGN(x)  (*(__I hw_enet_ieee_r_align_t *) HW_ENET_IEEE_R_ALIGN_ADDR(x))
 #define HW_ENET_IEEE_R_ALIGN_RD(x) (HW_ENET_IEEE_R_ALIGN(x).U)
-#define HW_ENET_IEEE_R_ALIGN_WR(x, v) (HW_ENET_IEEE_R_ALIGN(x).U = (v))
-#define HW_ENET_IEEE_R_ALIGN_SET(x, v) (HW_ENET_IEEE_R_ALIGN_WR(x, HW_ENET_IEEE_R_ALIGN_RD(x) |  (v)))
-#define HW_ENET_IEEE_R_ALIGN_CLR(x, v) (HW_ENET_IEEE_R_ALIGN_WR(x, HW_ENET_IEEE_R_ALIGN_RD(x) & ~(v)))
-#define HW_ENET_IEEE_R_ALIGN_TOG(x, v) (HW_ENET_IEEE_R_ALIGN_WR(x, HW_ENET_IEEE_R_ALIGN_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6636,13 +7025,27 @@ typedef union _hw_enet_ieee_r_align
  * Constants & macros for individual ENET_IEEE_R_ALIGN bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_ALIGN, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_ALIGN_COUNT (0U)    //!< Bit position for ENET_IEEE_R_ALIGN_COUNT.
+#define BM_ENET_IEEE_R_ALIGN_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_R_ALIGN_COUNT.
+#define BS_ENET_IEEE_R_ALIGN_COUNT (16U)   //!< Bit field size in bits for ENET_IEEE_R_ALIGN_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_ALIGN_COUNT field.
+#define BR_ENET_IEEE_R_ALIGN_COUNT(x) (HW_ENET_IEEE_R_ALIGN(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_R_MACERR - Receive Fifo Overflow count (IEEE_R_MACERR)
+// HW_ENET_IEEE_R_MACERR - Receive FIFO Overflow Count Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_R_MACERR - Receive Fifo Overflow count (IEEE_R_MACERR) (RW)
+ * @brief HW_ENET_IEEE_R_MACERR - Receive FIFO Overflow Count Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6651,7 +7054,8 @@ typedef union _hw_enet_ieee_r_macerr
     uint32_t U;
     struct _hw_enet_ieee_r_macerr_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_r_macerr_t;
 #endif
@@ -6663,12 +7067,8 @@ typedef union _hw_enet_ieee_r_macerr
 #define HW_ENET_IEEE_R_MACERR_ADDR(x) (REGS_ENET_BASE(x) + 0x2D8U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_R_MACERR(x) (*(__IO hw_enet_ieee_r_macerr_t *) HW_ENET_IEEE_R_MACERR_ADDR(x))
+#define HW_ENET_IEEE_R_MACERR(x) (*(__I hw_enet_ieee_r_macerr_t *) HW_ENET_IEEE_R_MACERR_ADDR(x))
 #define HW_ENET_IEEE_R_MACERR_RD(x) (HW_ENET_IEEE_R_MACERR(x).U)
-#define HW_ENET_IEEE_R_MACERR_WR(x, v) (HW_ENET_IEEE_R_MACERR(x).U = (v))
-#define HW_ENET_IEEE_R_MACERR_SET(x, v) (HW_ENET_IEEE_R_MACERR_WR(x, HW_ENET_IEEE_R_MACERR_RD(x) |  (v)))
-#define HW_ENET_IEEE_R_MACERR_CLR(x, v) (HW_ENET_IEEE_R_MACERR_WR(x, HW_ENET_IEEE_R_MACERR_RD(x) & ~(v)))
-#define HW_ENET_IEEE_R_MACERR_TOG(x, v) (HW_ENET_IEEE_R_MACERR_WR(x, HW_ENET_IEEE_R_MACERR_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6676,13 +7076,27 @@ typedef union _hw_enet_ieee_r_macerr
  * Constants & macros for individual ENET_IEEE_R_MACERR bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_MACERR, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_MACERR_COUNT (0U)   //!< Bit position for ENET_IEEE_R_MACERR_COUNT.
+#define BM_ENET_IEEE_R_MACERR_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_R_MACERR_COUNT.
+#define BS_ENET_IEEE_R_MACERR_COUNT (16U)  //!< Bit field size in bits for ENET_IEEE_R_MACERR_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_MACERR_COUNT field.
+#define BR_ENET_IEEE_R_MACERR_COUNT(x) (HW_ENET_IEEE_R_MACERR(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_R_FDXFC - Flow Control Pause frames received (IEEE_R_FDXFC)
+// HW_ENET_IEEE_R_FDXFC - Flow Control Pause Frames Received Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_R_FDXFC - Flow Control Pause frames received (IEEE_R_FDXFC) (RW)
+ * @brief HW_ENET_IEEE_R_FDXFC - Flow Control Pause Frames Received Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6691,7 +7105,8 @@ typedef union _hw_enet_ieee_r_fdxfc
     uint32_t U;
     struct _hw_enet_ieee_r_fdxfc_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 16;           //!< [15:0] Pause frame count
+        uint32_t RESERVED0 : 16;       //!< [31:16]
     } B;
 } hw_enet_ieee_r_fdxfc_t;
 #endif
@@ -6703,12 +7118,8 @@ typedef union _hw_enet_ieee_r_fdxfc
 #define HW_ENET_IEEE_R_FDXFC_ADDR(x) (REGS_ENET_BASE(x) + 0x2DCU)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_R_FDXFC(x)  (*(__IO hw_enet_ieee_r_fdxfc_t *) HW_ENET_IEEE_R_FDXFC_ADDR(x))
+#define HW_ENET_IEEE_R_FDXFC(x)  (*(__I hw_enet_ieee_r_fdxfc_t *) HW_ENET_IEEE_R_FDXFC_ADDR(x))
 #define HW_ENET_IEEE_R_FDXFC_RD(x) (HW_ENET_IEEE_R_FDXFC(x).U)
-#define HW_ENET_IEEE_R_FDXFC_WR(x, v) (HW_ENET_IEEE_R_FDXFC(x).U = (v))
-#define HW_ENET_IEEE_R_FDXFC_SET(x, v) (HW_ENET_IEEE_R_FDXFC_WR(x, HW_ENET_IEEE_R_FDXFC_RD(x) |  (v)))
-#define HW_ENET_IEEE_R_FDXFC_CLR(x, v) (HW_ENET_IEEE_R_FDXFC_WR(x, HW_ENET_IEEE_R_FDXFC_RD(x) & ~(v)))
-#define HW_ENET_IEEE_R_FDXFC_TOG(x, v) (HW_ENET_IEEE_R_FDXFC_WR(x, HW_ENET_IEEE_R_FDXFC_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6716,13 +7127,27 @@ typedef union _hw_enet_ieee_r_fdxfc
  * Constants & macros for individual ENET_IEEE_R_FDXFC bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_FDXFC, field COUNT[15:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_FDXFC_COUNT (0U)    //!< Bit position for ENET_IEEE_R_FDXFC_COUNT.
+#define BM_ENET_IEEE_R_FDXFC_COUNT (0x0000FFFFU) //!< Bit mask for ENET_IEEE_R_FDXFC_COUNT.
+#define BS_ENET_IEEE_R_FDXFC_COUNT (16U)   //!< Bit field size in bits for ENET_IEEE_R_FDXFC_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_FDXFC_COUNT field.
+#define BR_ENET_IEEE_R_FDXFC_COUNT(x) (HW_ENET_IEEE_R_FDXFC(x).B.COUNT)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_IEEE_R_OCTETS_OK - Octet count for Frames Rcvd w/o Error (IEEE_R_OCTETS_OK). Counts total octets (includes header and FCS fields).
+// HW_ENET_IEEE_R_OCTETS_OK - Octet Count for Frames Received without Error Statistic Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_IEEE_R_OCTETS_OK - Octet count for Frames Rcvd w/o Error (IEEE_R_OCTETS_OK). Counts total octets (includes header and FCS fields). (RW)
+ * @brief HW_ENET_IEEE_R_OCTETS_OK - Octet Count for Frames Received without Error Statistic Register (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -6731,7 +7156,7 @@ typedef union _hw_enet_ieee_r_octets_ok
     uint32_t U;
     struct _hw_enet_ieee_r_octets_ok_bitfields
     {
-        uint32_t RESERVED0 : 32;       //!< [31:0]
+        uint32_t COUNT : 32;           //!< [31:0] Octet count
     } B;
 } hw_enet_ieee_r_octets_ok_t;
 #endif
@@ -6743,12 +7168,8 @@ typedef union _hw_enet_ieee_r_octets_ok
 #define HW_ENET_IEEE_R_OCTETS_OK_ADDR(x) (REGS_ENET_BASE(x) + 0x2E0U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_IEEE_R_OCTETS_OK(x) (*(__IO hw_enet_ieee_r_octets_ok_t *) HW_ENET_IEEE_R_OCTETS_OK_ADDR(x))
+#define HW_ENET_IEEE_R_OCTETS_OK(x) (*(__I hw_enet_ieee_r_octets_ok_t *) HW_ENET_IEEE_R_OCTETS_OK_ADDR(x))
 #define HW_ENET_IEEE_R_OCTETS_OK_RD(x) (HW_ENET_IEEE_R_OCTETS_OK(x).U)
-#define HW_ENET_IEEE_R_OCTETS_OK_WR(x, v) (HW_ENET_IEEE_R_OCTETS_OK(x).U = (v))
-#define HW_ENET_IEEE_R_OCTETS_OK_SET(x, v) (HW_ENET_IEEE_R_OCTETS_OK_WR(x, HW_ENET_IEEE_R_OCTETS_OK_RD(x) |  (v)))
-#define HW_ENET_IEEE_R_OCTETS_OK_CLR(x, v) (HW_ENET_IEEE_R_OCTETS_OK_WR(x, HW_ENET_IEEE_R_OCTETS_OK_RD(x) & ~(v)))
-#define HW_ENET_IEEE_R_OCTETS_OK_TOG(x, v) (HW_ENET_IEEE_R_OCTETS_OK_WR(x, HW_ENET_IEEE_R_OCTETS_OK_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -6756,13 +7177,27 @@ typedef union _hw_enet_ieee_r_octets_ok
  * Constants & macros for individual ENET_IEEE_R_OCTETS_OK bitfields
  */
 
+/*!
+ * @name Register ENET_IEEE_R_OCTETS_OK, field COUNT[31:0] (RO)
+ */
+//@{
+#define BP_ENET_IEEE_R_OCTETS_OK_COUNT (0U) //!< Bit position for ENET_IEEE_R_OCTETS_OK_COUNT.
+#define BM_ENET_IEEE_R_OCTETS_OK_COUNT (0xFFFFFFFFU) //!< Bit mask for ENET_IEEE_R_OCTETS_OK_COUNT.
+#define BS_ENET_IEEE_R_OCTETS_OK_COUNT (32U) //!< Bit field size in bits for ENET_IEEE_R_OCTETS_OK_COUNT.
+
+#ifndef __LANGUAGE_ASM__
+//! @brief Read current value of the ENET_IEEE_R_OCTETS_OK_COUNT field.
+#define BR_ENET_IEEE_R_OCTETS_OK_COUNT(x) (HW_ENET_IEEE_R_OCTETS_OK(x).U)
+#endif
+//@}
+
 //-------------------------------------------------------------------------------------------
-// HW_ENET_ATCR - Timer Control Register
+// HW_ENET_ATCR - Adjustable Timer Control Register
 //-------------------------------------------------------------------------------------------
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_ATCR - Timer Control Register (RW)
+ * @brief HW_ENET_ATCR - Adjustable Timer Control Register (RW)
  *
  * Reset value: 0x00000000U
  *
@@ -7091,7 +7526,7 @@ typedef union _hw_enet_atvr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_ATVR_ATIME field.
-#define BR_ENET_ATVR_ATIME(x) (HW_ENET_ATVR(x).B.ATIME)
+#define BR_ENET_ATVR_ATIME(x) (HW_ENET_ATVR(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_ATVR_ATIME.
@@ -7099,7 +7534,7 @@ typedef union _hw_enet_atvr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the ATIME field to a new value.
-#define BW_ENET_ATVR_ATIME(x, v) (HW_ENET_ATVR_WR(x, (HW_ENET_ATVR_RD(x) & ~BM_ENET_ATVR_ATIME) | BF_ENET_ATVR_ATIME(v)))
+#define BW_ENET_ATVR_ATIME(x, v) (HW_ENET_ATVR_WR(x, v))
 #endif
 //@}
 
@@ -7157,7 +7592,7 @@ typedef union _hw_enet_atoff
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_ATOFF_OFFSET field.
-#define BR_ENET_ATOFF_OFFSET(x) (HW_ENET_ATOFF(x).B.OFFSET)
+#define BR_ENET_ATOFF_OFFSET(x) (HW_ENET_ATOFF(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_ATOFF_OFFSET.
@@ -7165,7 +7600,7 @@ typedef union _hw_enet_atoff
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the OFFSET field to a new value.
-#define BW_ENET_ATOFF_OFFSET(x, v) (HW_ENET_ATOFF_WR(x, (HW_ENET_ATOFF_RD(x) & ~BM_ENET_ATOFF_OFFSET) | BF_ENET_ATOFF_OFFSET(v)))
+#define BW_ENET_ATOFF_OFFSET(x, v) (HW_ENET_ATOFF_WR(x, v))
 #endif
 //@}
 
@@ -7227,7 +7662,7 @@ typedef union _hw_enet_atper
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_ATPER_PERIOD field.
-#define BR_ENET_ATPER_PERIOD(x) (HW_ENET_ATPER(x).B.PERIOD)
+#define BR_ENET_ATPER_PERIOD(x) (HW_ENET_ATPER(x).U)
 #endif
 
 //! @brief Format value for bitfield ENET_ATPER_PERIOD.
@@ -7235,7 +7670,7 @@ typedef union _hw_enet_atper
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the PERIOD field to a new value.
-#define BW_ENET_ATPER_PERIOD(x, v) (HW_ENET_ATPER_WR(x, (HW_ENET_ATPER_RD(x) & ~BM_ENET_ATPER_PERIOD) | BF_ENET_ATPER_PERIOD(v)))
+#define BW_ENET_ATPER_PERIOD(x, v) (HW_ENET_ATPER_WR(x, v))
 #endif
 //@}
 
@@ -7324,7 +7759,7 @@ typedef union _hw_enet_atinc
     struct _hw_enet_atinc_bitfields
     {
         uint32_t INC : 7;              //!< [6:0] Clock Period Of The Timestamping Clock
-                                       //!< (ts_clk) In Nanoseconds
+                                       //! (ts_clk) In Nanoseconds
         uint32_t RESERVED0 : 1;        //!< [7]
         uint32_t INC_CORR : 7;         //!< [14:8] Correction Increment Value
         uint32_t RESERVED1 : 17;       //!< [31:15]
@@ -7382,8 +7817,8 @@ typedef union _hw_enet_atinc
  * @name Register ENET_ATINC, field INC_CORR[14:8] (RW)
  *
  * This value is added every time the correction timer expires (every clock
- * cycle given in ATCOR). A value smaller than INC slows the timer, while a value
- * larger than INC speeds the timer.
+ * cycle given in ATCOR). A value less than INC slows down the timer. A value greater
+ * than INC speeds up the timer.
  */
 //@{
 #define BP_ENET_ATINC_INC_CORR (8U)        //!< Bit position for ENET_ATINC_INC_CORR.
@@ -7410,7 +7845,7 @@ typedef union _hw_enet_atinc
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_ENET_ATSTMP - Timestamp of Last Transmitted Frame (RW)
+ * @brief HW_ENET_ATSTMP - Timestamp of Last Transmitted Frame (RO)
  *
  * Reset value: 0x00000000U
  */
@@ -7431,12 +7866,8 @@ typedef union _hw_enet_atstmp
 #define HW_ENET_ATSTMP_ADDR(x)   (REGS_ENET_BASE(x) + 0x418U)
 
 #ifndef __LANGUAGE_ASM__
-#define HW_ENET_ATSTMP(x)        (*(__IO hw_enet_atstmp_t *) HW_ENET_ATSTMP_ADDR(x))
+#define HW_ENET_ATSTMP(x)        (*(__I hw_enet_atstmp_t *) HW_ENET_ATSTMP_ADDR(x))
 #define HW_ENET_ATSTMP_RD(x)     (HW_ENET_ATSTMP(x).U)
-#define HW_ENET_ATSTMP_WR(x, v)  (HW_ENET_ATSTMP(x).U = (v))
-#define HW_ENET_ATSTMP_SET(x, v) (HW_ENET_ATSTMP_WR(x, HW_ENET_ATSTMP_RD(x) |  (v)))
-#define HW_ENET_ATSTMP_CLR(x, v) (HW_ENET_ATSTMP_WR(x, HW_ENET_ATSTMP_RD(x) & ~(v)))
-#define HW_ENET_ATSTMP_TOG(x, v) (HW_ENET_ATSTMP_WR(x, HW_ENET_ATSTMP_RD(x) ^  (v)))
 #endif
 //@}
 
@@ -7445,7 +7876,7 @@ typedef union _hw_enet_atstmp
  */
 
 /*!
- * @name Register ENET_ATSTMP, field TIMESTAMP[31:0] (RW)
+ * @name Register ENET_ATSTMP, field TIMESTAMP[31:0] (RO)
  *
  * Timestamp of the last frame transmitted by the core that had TxBD[TS] set .
  * This register is only valid when EIR[TS_AVAIL] is set.
@@ -7457,15 +7888,7 @@ typedef union _hw_enet_atstmp
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_ATSTMP_TIMESTAMP field.
-#define BR_ENET_ATSTMP_TIMESTAMP(x) (HW_ENET_ATSTMP(x).B.TIMESTAMP)
-#endif
-
-//! @brief Format value for bitfield ENET_ATSTMP_TIMESTAMP.
-#define BF_ENET_ATSTMP_TIMESTAMP(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_ENET_ATSTMP_TIMESTAMP), uint32_t) & BM_ENET_ATSTMP_TIMESTAMP)
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Set the TIMESTAMP field to a new value.
-#define BW_ENET_ATSTMP_TIMESTAMP(x, v) (HW_ENET_ATSTMP_WR(x, (HW_ENET_ATSTMP_RD(x) & ~BM_ENET_ATSTMP_TIMESTAMP) | BF_ENET_ATSTMP_TIMESTAMP(v)))
+#define BR_ENET_ATSTMP_TIMESTAMP(x) (HW_ENET_ATSTMP(x).U)
 #endif
 //@}
 
@@ -7771,7 +8194,7 @@ typedef union _hw_enet_tcsrn
  *
  * Sets when input capture or output compare occurs. This flag is double
  * buffered between the module clock and 1588 clock domains. When this field is 1, it
- * can be cleared to 0 by writing 1to it.
+ * can be cleared to 0 by writing 1 to it.
  *
  * Values:
  * - 0 - Input Capture or Output Compare has not occurred
@@ -7867,7 +8290,7 @@ typedef union _hw_enet_tccrn
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the ENET_TCCRn_TCC field.
-#define BR_ENET_TCCRn_TCC(x, n) (HW_ENET_TCCRn(x, n).B.TCC)
+#define BR_ENET_TCCRn_TCC(x, n) (HW_ENET_TCCRn(x, n).U)
 #endif
 
 //! @brief Format value for bitfield ENET_TCCRn_TCC.
@@ -7875,7 +8298,7 @@ typedef union _hw_enet_tccrn
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TCC field to a new value.
-#define BW_ENET_TCCRn_TCC(x, n, v) (HW_ENET_TCCRn_WR(x, n, (HW_ENET_TCCRn_RD(x, n) & ~BM_ENET_TCCRn_TCC) | BF_ENET_TCCRn_TCC(v)))
+#define BW_ENET_TCCRn_TCC(x, n, v) (HW_ENET_TCCRn_WR(x, n, v))
 #endif
 //@}
 
@@ -7934,71 +8357,70 @@ typedef struct _hw_enet
     uint8_t _reserved12[12];
     __IO hw_enet_tacc_t TACC;              //!< [0x1C0] Transmit Accelerator Function Configuration
     __IO hw_enet_racc_t RACC;              //!< [0x1C4] Receive Accelerator Function Configuration
-    uint8_t _reserved13[56];
-    __IO hw_enet_rmon_t_drop_t RMON_T_DROP; //!< [0x200] Count of frames not counted correctly (RMON_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable.
-    __IO hw_enet_rmon_t_packets_t RMON_T_PACKETS; //!< [0x204] RMON Tx packet count (RMON_T_PACKETS)
-    __IO hw_enet_rmon_t_bc_pkt_t RMON_T_BC_PKT; //!< [0x208] RMON Tx Broadcast Packets (RMON_T_BC_PKT)
-    __IO hw_enet_rmon_t_mc_pkt_t RMON_T_MC_PKT; //!< [0x20C] RMON Tx Multicast Packets (RMON_T_MC_PKT)
-    __IO hw_enet_rmon_t_crc_align_t RMON_T_CRC_ALIGN; //!< [0x210] RMON Tx Packets w CRC/Align error (RMON_T_CRC_ALIGN)
-    __IO hw_enet_rmon_t_undersize_t RMON_T_UNDERSIZE; //!< [0x214] RMON Tx Packets < 64 bytes, good CRC (RMON_T_UNDERSIZE)
-    __IO hw_enet_rmon_t_oversize_t RMON_T_OVERSIZE; //!< [0x218] RMON Tx Packets > MAX_FL bytes, good CRC (RMON_T_OVERSIZE)
-    __IO hw_enet_rmon_t_frag_t RMON_T_FRAG; //!< [0x21C] RMON Tx Packets < 64 bytes, bad CRC (RMON_T_FRAG)
-    __IO hw_enet_rmon_t_jab_t RMON_T_JAB;  //!< [0x220] RMON Tx Packets > MAX_FL bytes, bad CRC (RMON_T_JAB)
-    __IO hw_enet_rmon_t_col_t RMON_T_COL;  //!< [0x224] RMON Tx collision count (RMON_T_COL)
-    __IO hw_enet_rmon_t_p64_t RMON_T_P64;  //!< [0x228] RMON Tx 64 byte packets (RMON_T_P64)
-    __IO hw_enet_rmon_t_p65to127_t RMON_T_P65TO127; //!< [0x22C] RMON Tx 65 to 127 byte packets (RMON_T_P65TO127)
-    __IO hw_enet_rmon_t_p128to255_t RMON_T_P128TO255; //!< [0x230] RMON Tx 128 to 255 byte packets (RMON_T_P128TO255)
-    __IO hw_enet_rmon_t_p256to511_t RMON_T_P256TO511; //!< [0x234] RMON Tx 256 to 511 byte packets (RMON_T_P256TO511)
-    __IO hw_enet_rmon_t_p512to1023_t RMON_T_P512TO1023; //!< [0x238] RMON Tx 512 to 1023 byte packets (RMON_T_P512TO1023)
-    __IO hw_enet_rmon_t_p1024to2047_t RMON_T_P1024TO2047; //!< [0x23C] RMON Tx 1024 to 2047 byte packets (RMON_T_P1024TO2047)
-    __IO hw_enet_rmon_t_p_gte2048_t RMON_T_P_GTE2048; //!< [0x240] RMON Tx packets w > 2048 bytes (RMON_T_P_GTE2048)
-    __IO hw_enet_rmon_t_octets_t RMON_T_OCTETS; //!< [0x244] RMON Tx Octets (RMON_T_OCTETS)
-    __IO hw_enet_ieee_t_drop_t IEEE_T_DROP; //!< [0x248] Count of frames not counted correctly (IEEE_T_DROP). NOTE: Counter not implemented (read 0 always) as not applicable.
-    __IO hw_enet_ieee_t_frame_ok_t IEEE_T_FRAME_OK; //!< [0x24C] Frames Transmitted OK (IEEE_T_FRAME_OK)
-    __IO hw_enet_ieee_t_1col_t IEEE_T_1COL; //!< [0x250] Frames Transmitted with Single Collision (IEEE_T_1COL)
-    __IO hw_enet_ieee_t_mcol_t IEEE_T_MCOL; //!< [0x254] Frames Transmitted with Multiple Collisions (IEEE_T_MCOL)
-    __IO hw_enet_ieee_t_def_t IEEE_T_DEF;  //!< [0x258] Frames Transmitted after Deferral Delay (IEEE_T_DEF)
-    __IO hw_enet_ieee_t_lcol_t IEEE_T_LCOL; //!< [0x25C] Frames Transmitted with Late Collision (IEEE_T_LCOL)
-    __IO hw_enet_ieee_t_excol_t IEEE_T_EXCOL; //!< [0x260] Frames Transmitted with Excessive Collisions (IEEE_T_EXCOL)
-    __IO hw_enet_ieee_t_macerr_t IEEE_T_MACERR; //!< [0x264] Frames Transmitted with Tx FIFO Underrun (IEEE_T_MACERR)
-    __IO hw_enet_ieee_t_cserr_t IEEE_T_CSERR; //!< [0x268] Frames Transmitted with Carrier Sense Error (IEEE_T_CSERR)
-    __IO hw_enet_ieee_t_sqe_t IEEE_T_SQE;  //!< [0x26C] Frames Transmitted with SQE Error (IEEE_T_SQE). NOTE: Counter not implemented (read 0 always) as no SQE information is available.
-    __IO hw_enet_ieee_t_fdxfc_t IEEE_T_FDXFC; //!< [0x270] Flow Control Pause frames transmitted (IEEE_T_FDXFC)
-    __IO hw_enet_ieee_t_octets_ok_t IEEE_T_OCTETS_OK; //!< [0x274] Octet count for Frames Transmitted w/o Error (IEEE_T_OCTETS_OK). NOTE: Counts total octets (includes header and FCS fields).
-    uint8_t _reserved14[12];
-    __IO hw_enet_rmon_r_packets_t RMON_R_PACKETS; //!< [0x284] RMON Rx packet count (RMON_R_PACKETS)
-    __IO hw_enet_rmon_r_bc_pkt_t RMON_R_BC_PKT; //!< [0x288] RMON Rx Broadcast Packets (RMON_R_BC_PKT)
-    __IO hw_enet_rmon_r_mc_pkt_t RMON_R_MC_PKT; //!< [0x28C] RMON Rx Multicast Packets (RMON_R_MC_PKT)
-    __IO hw_enet_rmon_r_crc_align_t RMON_R_CRC_ALIGN; //!< [0x290] RMON Rx Packets w CRC/Align error (RMON_R_CRC_ALIGN)
-    __IO hw_enet_rmon_r_undersize_t RMON_R_UNDERSIZE; //!< [0x294] RMON Rx Packets < 64 bytes, good CRC (RMON_R_UNDERSIZE)
-    __IO hw_enet_rmon_r_oversize_t RMON_R_OVERSIZE; //!< [0x298] RMON Rx Packets > MAX_FL bytes, good CRC (RMON_R_OVERSIZE)
-    __IO hw_enet_rmon_r_frag_t RMON_R_FRAG; //!< [0x29C] RMON Rx Packets < 64 bytes, bad CRC (RMON_R_FRAG)
-    __IO hw_enet_rmon_r_jab_t RMON_R_JAB;  //!< [0x2A0] RMON Rx Packets > MAX_FL bytes, bad CRC (RMON_R_JAB)
-    __IO hw_enet_rmon_r_resvd_0_t RMON_R_RESVD_0; //!< [0x2A4] Reserved (RMON_R_RESVD_0)
-    __IO hw_enet_rmon_r_p64_t RMON_R_P64;  //!< [0x2A8] RMON Rx 64 byte packets (RMON_R_P64)
-    __IO hw_enet_rmon_r_p65to127_t RMON_R_P65TO127; //!< [0x2AC] RMON Rx 65 to 127 byte packets (RMON_R_P65TO127)
-    __IO hw_enet_rmon_r_p128to255_t RMON_R_P128TO255; //!< [0x2B0] RMON Rx 128 to 255 byte packets (RMON_R_P128TO255)
-    __IO hw_enet_rmon_r_p256to511_t RMON_R_P256TO511; //!< [0x2B4] RMON Rx 256 to 511 byte packets (RMON_R_P256TO511)
-    __IO hw_enet_rmon_r_p512to1023_t RMON_R_P512TO1023; //!< [0x2B8] RMON Rx 512 to 1023 byte packets (RMON_R_P512TO1023)
-    __IO hw_enet_rmon_r_p1024to2047_t RMON_R_P1024TO2047; //!< [0x2BC] RMON Rx 1024 to 2047 byte packets (RMON_R_P1024TO2047)
-    __IO hw_enet_rmon_r_p_gte2048_t RMON_R_P_GTE2048; //!< [0x2C0] RMON Rx packets w > 2048 bytes (RMON_R_P_GTE2048)
-    __IO hw_enet_rmon_r_octets_t RMON_R_OCTETS; //!< [0x2C4] RMON Rx Octets (RMON_R_OCTETS)
-    __IO hw_enet_rmon_r_drop_t RMON_R_DROP; //!< [0x2C8] Count of frames not counted correctly (IEEE_R_DROP). NOTE: Counter increments if a frame with valid/missing SFD character is detected and has been dropped. None of the other counters increments if this counter increments.
-    __IO hw_enet_rmon_r_frame_ok_t RMON_R_FRAME_OK; //!< [0x2CC] Frames Received OK (IEEE_R_FRAME_OK)
-    __IO hw_enet_ieee_r_crc_t IEEE_R_CRC;  //!< [0x2D0] Frames Received with CRC Error (IEEE_R_CRC)
-    __IO hw_enet_ieee_r_align_t IEEE_R_ALIGN; //!< [0x2D4] Frames Received with Alignment Error (IEEE_R_ALIGN)
-    __IO hw_enet_ieee_r_macerr_t IEEE_R_MACERR; //!< [0x2D8] Receive Fifo Overflow count (IEEE_R_MACERR)
-    __IO hw_enet_ieee_r_fdxfc_t IEEE_R_FDXFC; //!< [0x2DC] Flow Control Pause frames received (IEEE_R_FDXFC)
-    __IO hw_enet_ieee_r_octets_ok_t IEEE_R_OCTETS_OK; //!< [0x2E0] Octet count for Frames Rcvd w/o Error (IEEE_R_OCTETS_OK). Counts total octets (includes header and FCS fields).
-    uint8_t _reserved15[284];
-    __IO hw_enet_atcr_t ATCR;              //!< [0x400] Timer Control Register
+    uint8_t _reserved13[60];
+    __I hw_enet_rmon_t_packets_t RMON_T_PACKETS; //!< [0x204] Tx Packet Count Statistic Register
+    __I hw_enet_rmon_t_bc_pkt_t RMON_T_BC_PKT; //!< [0x208] Tx Broadcast Packets Statistic Register
+    __I hw_enet_rmon_t_mc_pkt_t RMON_T_MC_PKT; //!< [0x20C] Tx Multicast Packets Statistic Register
+    __I hw_enet_rmon_t_crc_align_t RMON_T_CRC_ALIGN; //!< [0x210] Tx Packets with CRC/Align Error Statistic Register
+    __I hw_enet_rmon_t_undersize_t RMON_T_UNDERSIZE; //!< [0x214] Tx Packets Less Than Bytes and Good CRC Statistic Register
+    __I hw_enet_rmon_t_oversize_t RMON_T_OVERSIZE; //!< [0x218] Tx Packets GT MAX_FL bytes and Good CRC Statistic Register
+    __I hw_enet_rmon_t_frag_t RMON_T_FRAG; //!< [0x21C] Tx Packets Less Than 64 Bytes and Bad CRC Statistic Register
+    __I hw_enet_rmon_t_jab_t RMON_T_JAB;   //!< [0x220] Tx Packets Greater Than MAX_FL bytes and Bad CRC Statistic Register
+    __I hw_enet_rmon_t_col_t RMON_T_COL;   //!< [0x224] Tx Collision Count Statistic Register
+    __I hw_enet_rmon_t_p64_t RMON_T_P64;   //!< [0x228] Tx 64-Byte Packets Statistic Register
+    __I hw_enet_rmon_t_p65to127_t RMON_T_P65TO127; //!< [0x22C] Tx 65- to 127-byte Packets Statistic Register
+    __I hw_enet_rmon_t_p128to255_t RMON_T_P128TO255; //!< [0x230] Tx 128- to 255-byte Packets Statistic Register
+    __I hw_enet_rmon_t_p256to511_t RMON_T_P256TO511; //!< [0x234] Tx 256- to 511-byte Packets Statistic Register
+    __I hw_enet_rmon_t_p512to1023_t RMON_T_P512TO1023; //!< [0x238] Tx 512- to 1023-byte Packets Statistic Register
+    __I hw_enet_rmon_t_p1024to2047_t RMON_T_P1024TO2047; //!< [0x23C] Tx 1024- to 2047-byte Packets Statistic Register
+    __I hw_enet_rmon_t_p_gte2048_t RMON_T_P_GTE2048; //!< [0x240] Tx Packets Greater Than 2048 Bytes Statistic Register
+    __I hw_enet_rmon_t_octets_t RMON_T_OCTETS; //!< [0x244] Tx Octets Statistic Register
+    uint8_t _reserved14[4];
+    __I hw_enet_ieee_t_frame_ok_t IEEE_T_FRAME_OK; //!< [0x24C] Frames Transmitted OK Statistic Register
+    __I hw_enet_ieee_t_1col_t IEEE_T_1COL; //!< [0x250] Frames Transmitted with Single Collision Statistic Register
+    __I hw_enet_ieee_t_mcol_t IEEE_T_MCOL; //!< [0x254] Frames Transmitted with Multiple Collisions Statistic Register
+    __I hw_enet_ieee_t_def_t IEEE_T_DEF;   //!< [0x258] Frames Transmitted after Deferral Delay Statistic Register
+    __I hw_enet_ieee_t_lcol_t IEEE_T_LCOL; //!< [0x25C] Frames Transmitted with Late Collision Statistic Register
+    __I hw_enet_ieee_t_excol_t IEEE_T_EXCOL; //!< [0x260] Frames Transmitted with Excessive Collisions Statistic Register
+    __I hw_enet_ieee_t_macerr_t IEEE_T_MACERR; //!< [0x264] Frames Transmitted with Tx FIFO Underrun Statistic Register
+    __I hw_enet_ieee_t_cserr_t IEEE_T_CSERR; //!< [0x268] Frames Transmitted with Carrier Sense Error Statistic Register
+    uint8_t _reserved15[4];
+    __I hw_enet_ieee_t_fdxfc_t IEEE_T_FDXFC; //!< [0x270] Flow Control Pause Frames Transmitted Statistic Register
+    __I hw_enet_ieee_t_octets_ok_t IEEE_T_OCTETS_OK; //!< [0x274] Octet Count for Frames Transmitted w/o Error Statistic Register
+    uint8_t _reserved16[12];
+    __I hw_enet_rmon_r_packets_t RMON_R_PACKETS; //!< [0x284] Rx Packet Count Statistic Register
+    __I hw_enet_rmon_r_bc_pkt_t RMON_R_BC_PKT; //!< [0x288] Rx Broadcast Packets Statistic Register
+    __I hw_enet_rmon_r_mc_pkt_t RMON_R_MC_PKT; //!< [0x28C] Rx Multicast Packets Statistic Register
+    __I hw_enet_rmon_r_crc_align_t RMON_R_CRC_ALIGN; //!< [0x290] Rx Packets with CRC/Align Error Statistic Register
+    __I hw_enet_rmon_r_undersize_t RMON_R_UNDERSIZE; //!< [0x294] Rx Packets with Less Than 64 Bytes and Good CRC Statistic Register
+    __I hw_enet_rmon_r_oversize_t RMON_R_OVERSIZE; //!< [0x298] Rx Packets Greater Than MAX_FL and Good CRC Statistic Register
+    __I hw_enet_rmon_r_frag_t RMON_R_FRAG; //!< [0x29C] Rx Packets Less Than 64 Bytes and Bad CRC Statistic Register
+    __I hw_enet_rmon_r_jab_t RMON_R_JAB;   //!< [0x2A0] Rx Packets Greater Than MAX_FL Bytes and Bad CRC Statistic Register
+    uint8_t _reserved17[4];
+    __I hw_enet_rmon_r_p64_t RMON_R_P64;   //!< [0x2A8] Rx 64-Byte Packets Statistic Register
+    __I hw_enet_rmon_r_p65to127_t RMON_R_P65TO127; //!< [0x2AC] Rx 65- to 127-Byte Packets Statistic Register
+    __I hw_enet_rmon_r_p128to255_t RMON_R_P128TO255; //!< [0x2B0] Rx 128- to 255-Byte Packets Statistic Register
+    __I hw_enet_rmon_r_p256to511_t RMON_R_P256TO511; //!< [0x2B4] Rx 256- to 511-Byte Packets Statistic Register
+    __I hw_enet_rmon_r_p512to1023_t RMON_R_P512TO1023; //!< [0x2B8] Rx 512- to 1023-Byte Packets Statistic Register
+    __I hw_enet_rmon_r_p1024to2047_t RMON_R_P1024TO2047; //!< [0x2BC] Rx 1024- to 2047-Byte Packets Statistic Register
+    __I hw_enet_rmon_r_gte2048_t RMON_R_GTE2048; //!< [0x2C0] Rx Packets Greater than 2048 Bytes Statistic Register
+    __I hw_enet_rmon_r_octets_t RMON_R_OCTETS; //!< [0x2C4] Rx Octets Statistic Register
+    __I hw_enet_ieee_r_drop_t IEEE_R_DROP; //!< [0x2C8] Frames not Counted Correctly Statistic Register
+    __I hw_enet_ieee_r_frame_ok_t IEEE_R_FRAME_OK; //!< [0x2CC] Frames Received OK Statistic Register
+    __I hw_enet_ieee_r_crc_t IEEE_R_CRC;   //!< [0x2D0] Frames Received with CRC Error Statistic Register
+    __I hw_enet_ieee_r_align_t IEEE_R_ALIGN; //!< [0x2D4] Frames Received with Alignment Error Statistic Register
+    __I hw_enet_ieee_r_macerr_t IEEE_R_MACERR; //!< [0x2D8] Receive FIFO Overflow Count Statistic Register
+    __I hw_enet_ieee_r_fdxfc_t IEEE_R_FDXFC; //!< [0x2DC] Flow Control Pause Frames Received Statistic Register
+    __I hw_enet_ieee_r_octets_ok_t IEEE_R_OCTETS_OK; //!< [0x2E0] Octet Count for Frames Received without Error Statistic Register
+    uint8_t _reserved18[284];
+    __IO hw_enet_atcr_t ATCR;              //!< [0x400] Adjustable Timer Control Register
     __IO hw_enet_atvr_t ATVR;              //!< [0x404] Timer Value Register
     __IO hw_enet_atoff_t ATOFF;            //!< [0x408] Timer Offset Register
     __IO hw_enet_atper_t ATPER;            //!< [0x40C] Timer Period Register
     __IO hw_enet_atcor_t ATCOR;            //!< [0x410] Timer Correction Register
     __IO hw_enet_atinc_t ATINC;            //!< [0x414] Time-Stamping Clock Period Register
-    __IO hw_enet_atstmp_t ATSTMP;          //!< [0x418] Timestamp of Last Transmitted Frame
-    uint8_t _reserved16[488];
+    __I hw_enet_atstmp_t ATSTMP;           //!< [0x418] Timestamp of Last Transmitted Frame
+    uint8_t _reserved19[488];
     __IO hw_enet_tgsr_t TGSR;              //!< [0x604] Timer Global Status Register
     struct {
         __IO hw_enet_tcsrn_t TCSRn;        //!< [0x608] Timer Control Status Register

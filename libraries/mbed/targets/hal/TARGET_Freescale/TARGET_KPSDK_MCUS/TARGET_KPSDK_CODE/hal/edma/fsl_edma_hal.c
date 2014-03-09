@@ -39,7 +39,7 @@
  * Description   : Init edma module.
  *
  *END**************************************************************************/
-void edma_hal_init(uint32_t instance, edma_config_t *init)
+void edma_hal_init(uint32_t instance, const edma_config_t *init)
 {
     assert(instance < HW_DMA_INSTANCE_COUNT);
     assert(init);

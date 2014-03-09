@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -69,8 +69,9 @@ static const uint32_t __g_regs_DMAMUX_base_addresses[] = {
  * Each of the DMA channels can be independently enabled/disabled and associated
  * with one of the DMA slots (peripheral slots or always-on slots) in the
  * system. Setting multiple CHCFG registers with the same source value will result in
- * unpredictable behavior. Before changing the trigger or source settings, a DMA
- * channel must be disabled via the CHCFGn[ENBL] bit.
+ * unpredictable behavior. This is true, even if a channel is disabled (ENBL==0).
+ * Before changing the trigger or source settings, a DMA channel must be disabled
+ * via CHCFGn[ENBL].
  */
 typedef union _hw_dmamux_chcfgn
 {
@@ -138,11 +139,11 @@ typedef union _hw_dmamux_chcfgn
  * Enables the periodic trigger capability for the triggered DMA channel.
  *
  * Values:
- * - 0 - Triggering is disabled. If triggering is disabled and the ENBL bit is
- *     set, the DMA Channel will simply route the specified source to the DMA
- *     channel. (Normal mode)
- * - 1 - Triggering is enabled. If triggering is enabled and the ENBL bit is
- *     set, the DMAMUX is in Periodic Trigger mode.
+ * - 0 - Triggering is disabled. If triggering is disabled and ENBL is set, the
+ *     DMA Channel will simply route the specified source to the DMA channel.
+ *     (Normal mode)
+ * - 1 - Triggering is enabled. If triggering is enabled and ENBL is set, the
+ *     DMAMUX is in Periodic Trigger mode.
  */
 //@{
 #define BP_DMAMUX_CHCFGn_TRIG (6U)         //!< Bit position for DMAMUX_CHCFGn_TRIG.

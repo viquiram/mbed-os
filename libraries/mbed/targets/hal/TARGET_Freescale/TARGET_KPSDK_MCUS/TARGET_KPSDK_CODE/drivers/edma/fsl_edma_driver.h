@@ -31,14 +31,9 @@
 #define __FSL_EDMA_DRIVER_H__
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 #include "fsl_edma_request.h"
 #include "fsl_edma_hal.h"
 #include "fsl_dmamux_hal.h"
-#include "fsl_interrupt_manager.h"
-#include "fsl_clock_manager.h"
-#include "fsl_os_abstraction.h"
 
 /*!
  * @addtogroup edma_driver
@@ -50,93 +45,83 @@
  ******************************************************************************/
 
 /*!
- * @brief Status of DMA hardware descriptor
+ * @brief Status of the DMA hardware descriptor
  *
- * Define the status of DMA descriptor. The status of descriptor is not limited to
- * these 2 states. It can also be any the value between 0~0xFFFFFFFF to stand for
- * left bytes for specified descriptor.
+ * Defines the status of the DMA descriptor. The status of the descriptor is not limited to
+ * these two states. It can also be any the value between 0~0xFFFFFFFF for
+ * left bytes of a specified descriptor.
  */
 typedef enum _edma_descriptor_internal_status {
-    kEdmaDescriptorDone = 0U,				/*!< The descriptor is already finished */
-    kEdmaDescriptorPrepared = 0xFFFFFFFFU	/*!< The descriptor is being consumed or not consumed. */
+    kEdmaDescriptorDone = 0U,               /*!< The descriptor is finished. */
+    kEdmaDescriptorPrepared = 0xFFFFFFFFU   /*!< The descriptor is either consumed or not consumed. */
 } edma_descriptor_internal_status_t;
 
 /*! @brief Alignment for eDMA TCD start address. */
 typedef enum _edma_tcd_alignment {
-    kEdmaTcdAlignment = 0x20U,        /*!< Alignment of eDMA TCD. */
-    kEdmaTcdAlignmentMask = 0x1FU     /*!< Alignment mask of eDMA TCD. */
+    kEdmaTcdAlignment = 0x20U,        /*!< Alignment of the eDMA TCD. */
+    kEdmaTcdAlignmentMask = 0x1FU     /*!< Alignment mask of the eDMA TCD. */
 } edma_tcd_alignment_t;
 
 /*!
- * @brief Constant for status of DMA allocation.
+ * @brief A constant for the DMA allocation status.
  *
- * Structure used for dma_request_channel.
+ * A structure used for the dma_request_channel.
  */
 typedef enum _edma_channel_type {
-    kEdmaInvalidChannel = 0xFFU, /*!< Macros indicating the failure of channel request. */
+    kEdmaInvalidChannel = 0xFFU, /*!< Macros indicate the failure of the channel request. */
     kEdmaAnyChannel = 0xFEU      /*!< Macros used when requesting channel.  */
-                                /*!< kEdmaAnyChannel means a request of dynamically channel allocation. */
+                                /*!< kEdmaAnyChannel means a request of a dynamic channel allocation. */
 } edma_channel_type_t;
 
 /*!
- * @brief Channel status for eDMA channel.
+ * @brief Channel status for an eDMA channel.
  *
- * Structure describing the status of DMA channel. User can get the status from channel callback
+ * A structure describing the DMA channel status. The user can get the status from the channel callback
  * function.
  */
 typedef enum _edma_channel_status {
-	kEdmaIdle,				    /*!< DMA channel is idle. */
-	kEdmaNormal,				    /*!< DMA channel is occupied. */
-	kEdmaError				    /*!< Error happens in DMA channel. */
+    kEdmaIdle,                  /*!< DMA channel is idle. */
+    kEdmaNormal,                    /*!< DMA channel is occupied. */
+    kEdmaError                  /*!< An error occurs in the DMA channel. */
 } edma_channel_status_t;
 
-/*! @brief Type for DMA transfer. */
+/*! @brief A type for the DMA transfer. */
 typedef enum _edma_transfer_type {
-	kEdmaPeripheralToMemory,	    /*!< Transfer from peripheral to memory */
-	kEdmaMemoryToPeripheral,	    /*!< Transfer from memory to peripheral */
-	kEdmaMemoryToMemory,		    /*!< Transfer from memory to memory */
-	kEdmaPeripheralToPeripheral  /*!< Transfer from peripheral to peripheral */
+    kEdmaPeripheralToMemory,        /*!< Transfer from peripheral to memory */
+    kEdmaMemoryToPeripheral,        /*!< Transfer from memory to peripheral */
+    kEdmaMemoryToMemory,            /*!< Transfer from memory to memory */
+    kEdmaPeripheralToPeripheral  /*!< Transfer from peripheral to peripheral */
 } edma_transfer_type_t;
 
 /*!
- * @brief Definition for DMA channel's callback function.
+ * @brief Definition for the DMA channel callback function.
  *
- * Prototype for callback function registered into DMA driver.
+ * Prototype for the callback function registered in the DMA driver.
  */
 typedef void (*edma_callback_t)(void *parameter, edma_channel_status_t status);
 
-/*! @brief Data structure for configuring discrete memory transfer. */
+/*! @brief Data structure for configuring a discrete memory transfer. */
 typedef struct EdmaScatterList {
-	uint32_t address;			/*!< Address of buffer. */
-	uint32_t length;		    /*!< Lenght of buffer. */
+    uint32_t address;           /*!< Address of buffer. */
+    uint32_t length;            /*!< Length of buffer. */
 } edma_scatter_list_t;
 
-/*! @brief data struct for DMA channel. */
+/*! @brief Data structure for the DMA channel. */
 typedef struct EdmaChannel {
-    uint8_t module;					/*!< eDMA physical Module indicator. */
-    uint8_t channel;				/*!< eDMA physical channel indicator. */
-    uint8_t dmamuxModule;			/*!< DMA mux module indicator. */
-    uint8_t dmamuxChannel;			/*!< DMA mux channel indicator. */
-
-    edma_callback_t callback;		/*!< Callback for edma channel. */
-    void *parameter;				/*!< Parameter for callback function. */
-
-    edma_channel_status_t status;	/*!< Channel status. */
-    uint8_t tcdNumber;				/*!< Length of hardware descriptor chain. */
-    uint8_t tcdWrite;               /*!< Indicator for user's descriptor updating. */
-    uint8_t tcdRead;                /*!< Indicator for DMA controller's consuming. */ 
-    uint32_t tcdLeftBytes;          /*!< Left bytes to be transferred for current tcd. */
-    bool tcdUnderflow;              /*!< Flag telling whether user failed to feed descriptor in
+    uint8_t module;                 /*!< eDMA physical module indicator */
+    uint8_t channel;                /*!< eDMA physical channel indicator */
+    uint8_t dmamuxModule;           /*!< DMA Mux module indicator. */
+    uint8_t dmamuxChannel;          /*!< DMA Mux channel indicator. */
+    edma_callback_t callback;       /*!< Callback for the eDMA channel. */
+    void *parameter;                /*!< Parameter for the callback function. */
+    volatile edma_channel_status_t status;   /*!< Channel status. */
+    uint8_t tcdNumber;              /*!< Length of the hardware descriptor chain. */
+    volatile uint8_t tcdWrite;               /*!< Indicator for updates of the user descriptor. */
+    volatile uint8_t tcdRead;                /*!< Indicator for the consuming of the DMA controller. */
+    uint32_t tcdLeftBytes;          /*!< Left bytes to be transferred for a current TCD. */
+    volatile bool tcdUnderflow;              /*!< Flag indicating whether the user failed to feed a descriptor in
                                          time. */
 } edma_channel_t;
-
-/*! @brief data struct for eDMA device */
-typedef struct EdmaDevice {
-    edma_channel_t *edmaChan[FSL_FEATURE_DMA_DMAMUX_CHANNELS];	/*!< Data pointer array for
-                                                                     eDMA channel. */
-    sync_object_t sema;	                                        /*!< Semaphore for eDMA driver. */
-} edma_device_t;
-
 
 /*******************************************************************************
  * API
@@ -152,46 +137,46 @@ extern "C" {
   */
 
 /*!
- * @brief Initialize eDMA.
+ * @brief Initializes eDMA.
  *
  */
 edma_status_t edma_init(void);
 
 /*!
- * @brief Deinitilize eDMA.
+ * @brief De-initilizes eDMA.
  *
  */
 edma_status_t edma_shutdown(void);
 
 /*!
- * @brief Register callback function and parameter.
+ * @brief Registers the callback function and a parameter.
  *
- * User register callback function and parameter for specified eDMA channel. When channel
- * interrupt or channel error happens. The callback will be called and a parameter along
- * with user parameter will be provided to tell the channel status.
+ * The user register callback function and parameter for a specified eDMA channel. When channel
+ * interrupt or channel error occurs, the callback function is called and a parameter along
+ * with user parameter is provided to indicate the channel status.
  * 
  * @param chn Handler for eDMA channel.
  * @param callback Callback function.
- * @param para parameter for callback functions.
+ * @param para A parameter for callback functions.
  *
  */
 void edma_register_callback(edma_channel_t *chn, edma_callback_t callback, void *para);
 
 /*!
- * @brief Get the status of eDMA channel descriptor chain.
+ * @brief Gets the status of the eDMA channel descriptor chain.
  *
- * This function can tell user the status of descriptor chains. User need to provide the memory
- * space to store the descriptor status. parameter descriptorStatus is the pointer pointing to 
- * descriptorStatus. If the descriptorStaus is not able to point to a valid memory space and the
- * length of memory is not enough to store the descriptor status. Error will happen inside DMA
- * driver. Every descriptor need a uint32_t to store the status.
- * If the return descriptorStatus[n] is equal = kEdmaDescriptorPrepared, it means the descriptor
- * is consuming or it is already prepared but not consumed. For other value, it means the left
+ * This function indicates the status of descriptor chains. The user needs to provide the memory
+ * space to store the descriptor status. A parameter descriptorStatus is the pointer for the
+ * descriptorStatus. If the descriptorStaus can't point to a valid memory space and the
+ * length of the memory is not enough to store the descriptor status, an error occurs inside the DMA
+ * driver. Every descriptor needs a uint32_t to store the status.
+ * If the return descriptorStatus[n] is equal to the kEdmaDescriptorPrepared, the descriptor
+ * is either consuming or it is already prepared but not consumed. Any other value indicates the left
  * bytes to be transferred for this descriptor. If the value is equal to 0, it means the descriptor
- * is already finished. User can update the memory belong to this descriptor safely.
- * To get a precise status of descriptor, user can first stop the channel. The ongoing descriptor
- * will be updated with a value indicating bytes to be transferred for this descriptor. If not,
- * its descriptor will only tell that this descriptor is ongoing with a value of
+ * is already finished. The user can update the memory for this descriptor safely.
+ * To get a precise status of the descriptor, the user can first stop the channel. The ongoing descriptor
+ * is updated with a value indicating bytes to be transferred for this descriptor. If not,
+ * it indicates that this descriptor is ongoing with a value of
  * kEdmaDescriptorPrepared.
  *
  * @param chn Handler for eDMA channel.
@@ -201,103 +186,102 @@ void edma_register_callback(edma_channel_t *chn, edma_callback_t callback, void 
 edma_status_t edma_get_descriptor_status(edma_channel_t *chn, uint32_t *descriptorStatus);
 
 /*!
- * @brief Request an eDMA channel.
+ * @brief Requests an eDMA channel.
  *
- * This function provide to ways to allocate a DMA channel. The first way is statically allocation.
- * The second way is dynamically allocation.
- * To allocate a channel dynamically, User need to set the channel parameter with the value of 
- * kDmaAnyChannel. Driver would search into all available free channel and assign the first searched
- * channel to user.
- * For the statically allocation, user need to set the channel parameter with the value of specified
- * channel. If the channel is available, Driver will assign the channel for user.
- * Notes: User is responsible to provide the handler memory for DMA channel. Driver will initialize
- * the handler and configure the handler memory.
+ * This function provides two ways to allocate a DMA channel: static allocation and dynamic allocation.
+ * To allocate a channel dynamically, the user should set the channel parameter with the value of 
+ * kDmaAnyChannel. The driver searches  all available channels and assigns the first 
+ * channel to the user.
+ * To allocate the channel statically, the user should set the channel parameter with the value of a specified
+ * channel. If the channel is available, the driver assigns the channel to the user.
+ * Note that the user must provide the handler memory for the DMA channel. The driver initializes
+ * the handler and configures the handler memory.
  *
- * @param channel eDMA channel number. If channel is assigned with a valid channel number,
- * DMA driver will try to assign specified channel to user. If channel is assigned with
- * kDmaAnyChannel, DMA driver will search all available channels and assign the first channel to User.
+ * @param channel eDMA channel number. If a channel is assigned with a valid channel number,
+ * the DMA driver tries to assign a specified channel to the user. If a channel is assigned with a
+ * kDmaAnyChannel, the DMA driver searches all available channels and assigns the first channel to the user.
  * @param source eDMA hardware request.
- * @param chan Memory pointing to eDMA channel. User need to assure the handler memory is valid and
- * it would not be released or changed by other codes before channel free operation.
+ * @param chan Memory pointing to eDMA channel. The user must ensure that the handler memory is valid and
+ * that it will not be released or changed by another code before the channel is freed.
  *
- * @return If channel allocation is successfully, the return value tell the requested channel. If
- * not, driver will return a value kDmaInvalidChannel to tell request operation is failed.
+ * @return If the channel allocation is successful, the return value indicates the requested channel. If
+ * not, the driver  returns a  kDmaInvalidChannel value to indicate that the requested operation has failed.
  */
 uint32_t edma_request_channel(uint32_t channel, dma_request_source_t source, edma_channel_t *chan);
 
 /*!
- * @brief Free eDMA channel's hardware and software resource.
+ * @brief Frees eDMA channel hardware and software resource.
  *
- * This function free relevant software and hardware resource. Request and Free operation need to 
- * be called in pair. 
+ * This function frees the relevant software and hardware resources. The request and the freeing operation need to 
+ * be called in a pair. 
  *
- * @param chn Memory pointing to eDMA channel.
+ * @param chn Memory pointing to the eDMA channel
  *
  */
 edma_status_t edma_free_channel(edma_channel_t *chn);
 
 /*!
- * @brief Start an eDMA channel.
+ * @brief Starts an eDMA channel.
  *
- * Start an eDMA channel. Driver start an eDMA channel by enable the DMA request. Software start
- * bit is not used in this eDMA Peripheral driver.
+ * Starts an eDMA channel. The driver starts an eDMA channel by enabling the DMA request. The software start
+ * bit is not used in the eDMA peripheral driver.
  *
- * @param chn Memory pointing to eDMA channel.
+ * @param chn Memory pointing to the eDMA channel.
  *
  */
 edma_status_t edma_start_channel(edma_channel_t *chn);
 
 /*!
- * @brief Stop an eDMA channel.
+ * @brief Stops an eDMA channel.
  *
- * This function stop a eDMA channel and update the descriptor chain status. At the same time, the
- * ongoing descriptor's left bytes to be transferred will be updated and user can get the status
- * of all descriptor by calling edma_get_descriptor_status().
+ * This function stops an eDMA channel and updates the descriptor chain status. By calling the edma_get_descriptor_status() function,
+ * the ongoing left bytes of the descriptor are updated and the user can simultaneously get the status
+ * of all descriptors.
  *
- * @param chn Memory pointing to eDMA channel.
+ * @param chn Memory pointing to the eDMA channel
  */
 edma_status_t edma_stop_channel(edma_channel_t *chn);
 
 /*!
- * @brief Update the status of particular descriptor in eDMA
+ * @brief Updates the status of a particular descriptor in the eDMA.
  *
  * This function is designed for the loop descriptor chain. When descriptor is chained in loop
- * mode, DMA will consume descriptors again and again. At the same time, user may need to update
- * the content belong to consumed descriptor. This function is used to update the descriptor 
- * state from "CONSUMED" to "TO BE CONSUMED". In this case, DMA driver can work out whether 
+ * mode, the DMA constantly consumes descriptors. At the same time, the user may need to update
+ * the content belonging to a consumed descriptor. This function is used to update the descriptor 
+ * state from "CONSUMED" to "TO BE CONSUMED". In this case, the DMA driver can work out whether the 
  * underflow happens on the loop descriptor chain. 
- * This function can only update descriptor one-by-one in sequence but not for specified
+ * This function can only update descriptors one-by-one in a sequence but not a specified
  * descriptor.
  *
- * @param chn Memory pointing to eDMA channel.
+ * @param chn Memory pointing to the eDMA channel
  */
 edma_status_t edma_update_descriptor(edma_channel_t *chn);
 
 /*!
- * @brief Configure DMA transfer in scatter-gather mode.
+ * @brief Configures the DMA transfer in a scatter-gather mode.
  *
- * This function configure descriptors into loop chain. User passed a block of memory into this
- * function. This memory are divided into "period" sub blocks. DMA driver will configure "period"
- * descriptors. Each descriptor stands for a sub block. DMA driver will transfer data from 1st
- * descriptor to the end of descriptor. Then DMA driver will wrap to the first descriptor to continue
- * the loop. Interrupt handler is called on every finish of descriptor. In the interrupt handler or
- * other task context, user can get to know whether an specified descriptor are being transferred,
- * already transferred, or to be transferred by calling edma_get_descriptor_status(). At the same
- * time, User can call edma_update_descriptor() to tell DMA driver that the content belong to 
- * some descriptor is already updated thus DMA need count it as and underflow while DMA next time
- * loop to this descriptor.
+ * This function configures descriptors in a loop chain. The user passes a block of memory into this
+ * function. The memory is divided into "period" sub blocks. The DMA driver  configures "period"
+ * descriptors. Each descriptor stands for a sub block. The DMA driver  transfers data from the 1st
+ * descriptor to the last descriptor. Then, the DMA driver  wraps to the first descriptor to continue
+ * the loop. The interrupt handler is called on every finish of a descriptor. The user can find out whether a descriptor is in the process of being transferred,
+ * is already transferred, or to be transferred by calling the edma_get_descriptor_status() function in the interrupt handler or any
+ * other task context. At the same
+ * time, the user can call the edma_update_descriptor() function to tell the DMA driver that the content belonging to 
+ * a descriptor is already updated and the DMA needs to count it as and underflow next time it
+ * loops to this descriptor.
  *
- * @param chn Memory pointing to eDMA channel.
- * @param stcd Memory pointing to software tcds. User must prepare this memory block. The required
- * memory size is equal to "period" * size of(edma_software_tcd_t). At the same time, the "stcd"
- * must align with 32 bytes. If not, error will happen on eDMA driver.
- * @param srcAddr Source register address or start memory address.
- * @param destAddr Destination register address or start memory address.
- * @param size size to be transferred on every DMA write/read. Source/Dest share the same write/read
+ * @param chn Memory pointing to the eDMA channel
+ * @param stcd Memory pointing to software TCDs. The user must prepare this memory block. The required
+ * memory size is equal to a "period" * size of(edma_software_tcd_t). At the same time, the "stcd"
+ * must align with 32 bytes. If not, an error occurs in the eDMA driver.
+ * @param srcAddr A source register address or a start memory address.
+ * @param destAddr A destination register address or a start memory address.
+ * @param size Size to be transferred on every DMA write/read. Source/Dest share the same write/read
  * size.
- * @param watermark size write/read for every trigger of DMA request. 
+ * @param watermark size write/read for every trigger of the DMA request. 
  * @param length Total length of Memory.
- * @period number of descriptor will be configured for this transfer configuration.
+ * @period A number of the descriptor that is configured for this transfer configuration.
  */
 edma_status_t edma_config_loop(
                             edma_software_tcd_t *stcd, edma_channel_t *chn, edma_transfer_type_t type,
@@ -305,7 +289,7 @@ edma_status_t edma_config_loop(
                             uint32_t watermark, uint32_t length, uint8_t period);
 
 /*!
- * @brief Configure DMA transfer in scatter-gather mode.
+ * @brief Configures the DMA transfer in scatter-gather mode.
  *
  * This function configure descriptors into sing-end chain. User passed blocks of memory into 
  * this function. Interrupt will only be triggered on the last memory block is finished. The
@@ -315,20 +299,20 @@ edma_status_t edma_config_loop(
  * first one to the last one and then stop.
  *
  * @param chn Memory pointing to eDMA channel.
- * @param stcd Memory pointing to software tcds. User must prepare this memory block. The required
- * memory size is equal to "number" * size of(edma_software_tcd_t). At the same time, the "stcd"
- * must align with 32 bytes. If not, error will happen on eDMA driver.
- * @param type transfer type.
- * @param srcScatterList data structure storing the address and length to be transferred for source
- * memory blocks. If source memory is peripheral, length is not used.
- * @param destScatterList data structure storing the address and length to be transferred for dest
- * memory blocks. If in memory to memory transfer mode, User need to assure the length of dest
- * scatter gather list are equal to source scatter gather list. If dest memory is peripheral
- * register, length is not used.
- * @param size size to be transferred on every DMA write/read. Source/Dest share the same write/read
+ * @param stcd Memory pointing to software TCDs. The user must prepare this memory block. The required
+ * memory size is equal to the "number" * size of(edma_software_tcd_t). At the same time, the "stcd"
+ * must align with 32 bytes. If not, an error occurs in the eDMA driver.
+ * @param type Transfer type.
+ * @param srcScatterList Data structure storing the address and length to be transferred for source
+ * memory blocks. If source memory is peripheral, the length is not used.
+ * @param destScatterList Data structure storing the address and length to be transferred for dest
+ * memory blocks. If in the memory-to-memory transfer mode, the user must ensure that the length of the dest
+ * scatter gather list is equal to the source scatter gather list. If the dest memory is a peripheral
+ * register, the length is not used.
+ * @param size Size to be transferred on each DMA write/read. Source/Dest share the same write/read
  * size.
- * @param watermark size write/read for every trigger of DMA request. 
- * @prame number number of memory block contained in the scatter gather list.
+ * @param watermark Size write/read for each trigger of the DMA request. 
+ * @prame number A number of memory block contained in the scatter gather list.
  */
 edma_status_t edma_config_scatter_gather(
                             edma_software_tcd_t *stcd, edma_channel_t *chn, edma_transfer_type_t type,
@@ -337,13 +321,13 @@ edma_status_t edma_config_scatter_gather(
                             uint8_t number);
 
 /*!
- * @brief eDMA IRQ handler.
+ * @brief eDMA IRQ Handler
  *
  */
 void EDMA_IRQ_HANDLER(uint32_t channel);
 
 /*!
- * @brief eDMA ERROR IRQ Handler.
+ * @brief eDMA ERROR IRQ Handler
  *
  */
 void DMA_ERR_IRQHandler(uint32_t instance);

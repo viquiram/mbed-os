@@ -29,6 +29,7 @@
  */
 
 #include "fsl_wdog_driver.h"
+#include "fsl_interrupt_manager.h"
 
 /*******************************************************************************
  * Definitions
@@ -65,7 +66,7 @@ static void wdog_unlock(void)
  * will run immediately according to the configure.
  *
  *END*********************************************************************/
-void wdog_init(wdog_init_t* init_ptr)
+void wdog_init(const wdog_user_config_t* init_ptr)
 {
     assert(init_ptr);
 

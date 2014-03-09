@@ -28,12 +28,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <assert.h>
+#include <string.h>
 #include "fsl_uart_driver.h"
 #include "fsl_clock_manager.h"
 #include "fsl_interrupt_manager.h"
 #include "fsl_uart_irq.h"
-#include <assert.h>
-#include <string.h>
 
 /*******************************************************************************
  * Definitions
@@ -47,11 +47,11 @@ extern IRQn_Type uart_irq_ids[UART_INSTANCE_COUNT];
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
-static uart_status_t uart_start_send_data(uart_state_t * uartState, uint8_t * sendBuffer,
-                              uint32_t txByteCount);
+static uart_status_t uart_start_send_data(uart_state_t * uartState, const uint8_t * sendBuffer,
+                                          uint32_t txByteCount);
 static void uart_complete_send_data(uart_state_t * uartState);
 static uart_status_t uart_start_receive_data(uart_state_t * uartState, uint8_t * rxBuffer,
-                                 uint32_t requestedByteCount);
+                                             uint32_t requestedByteCount);
 static void uart_complete_receive_data(uart_state_t * uartState);
 /*******************************************************************************
  * Code
@@ -74,11 +74,11 @@ static void uart_complete_receive_data(uart_state_t * uartState);
  *    uartConfig.parityMode = kUartParityDisabled;
  *    uartConfig.stopBitCount = kUartOneStopBit;
  *    uart_state_t uartState;
- *    uart_init(uartInstance, &uartConfig, &uartState);
+ *    uart_init(uartInstance, &uartState, &uartConfig);
  *
  *END**************************************************************************/
-uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUserConfig,
-                   uart_state_t * uartState)
+uart_status_t uart_init(uint32_t uartInstance, uart_state_t * uartState,
+                        const uart_user_config_t * uartUserConfig)
 {
     uint32_t uartSourceClock;
     uart_status_t errorCode = kStatus_UART_Success;
@@ -170,11 +170,11 @@ uart_status_t uart_init(uint32_t uartInstance, const uart_user_config_t * uartUs
     uart_hal_flush_rx_fifo(uartInstance);
 #else
     /* For modules that do not support a FIFO, they have a data buffer that essentially
-	 * acts likes a one-entry FIFO, thus to make the code cleaner, we'll
-	 * equate txFifoEntryCount to 1.  Also note that TDRE flag will set only when the tx
+     * acts likes a one-entry FIFO, thus to make the code cleaner, we'll
+     * equate txFifoEntryCount to 1.  Also note that TDRE flag will set only when the tx
      * buffer is empty.
      */
-	 uartState->txFifoEntryCount = 1;
+    uartState->txFifoEntryCount = 1;
 #endif
 
     /* Initialize the UART instance */
@@ -248,8 +248,8 @@ void uart_shutdown(uart_state_t * uartState)
  * the transmit is complete. This blocking function is used to send data through the UART port.
  *
  *END**************************************************************************/
-uart_status_t uart_send_data(uart_state_t * uartState, uint8_t * sendBuffer, uint32_t txByteCount,
-                        uint32_t timeout)
+uart_status_t uart_send_data(uart_state_t * uartState, const uint8_t * sendBuffer,
+                             uint32_t txByteCount, uint32_t timeout)
 {
     assert(sendBuffer);
 
@@ -301,8 +301,8 @@ uart_status_t uart_send_data(uart_state_t * uartState, uint8_t * sendBuffer, uin
  * operation (simultaneously transmit and receive).
  *
  *END**************************************************************************/
-uart_status_t uart_send_data_async(uart_state_t * uartState, uint8_t * sendBuffer,
-                              uint32_t txByteCount)
+uart_status_t uart_send_data_async(uart_state_t * uartState, const uint8_t * sendBuffer,
+                                   uint32_t txByteCount)
 {
     assert(sendBuffer);
 
@@ -321,8 +321,8 @@ uart_status_t uart_send_data_async(uart_state_t * uartState, uint8_t * sendBuffe
  * @brief Initiate (start) a transmit by beginning the process of sending data and enabling
  *        the interrupt. This is not a public API as it is called from other driver functions.
  */
- static uart_status_t uart_start_send_data(uart_state_t * uartState, uint8_t * sendBuffer,
-                              uint32_t txByteCount)
+ static uart_status_t uart_start_send_data(uart_state_t * uartState, const uint8_t * sendBuffer,
+                                           uint32_t txByteCount)
 {
     uint32_t uartInstance = uartState->instance;
 
@@ -333,7 +333,7 @@ uart_status_t uart_send_data_async(uart_state_t * uartState, uint8_t * sendBuffe
     }
 
     /* Initialize the module driver state struct  */
-    uartState->sendBuffer = (const uint8_t *)sendBuffer;
+    uartState->sendBuffer = sendBuffer;
     uartState->remainingSendByteCount = txByteCount;
     uartState->transmittedByteCount = 0;
 

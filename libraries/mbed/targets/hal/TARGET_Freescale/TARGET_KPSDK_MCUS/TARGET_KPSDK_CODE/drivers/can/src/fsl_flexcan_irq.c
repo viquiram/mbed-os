@@ -35,12 +35,12 @@
  * Variables
  ******************************************************************************/
 #if defined (K64F12_SERIES)
-IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_FEATURE_CAN_INTERRUPT_COUNT] = 
+IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_CAN_INTERRUPT_COUNT] = 
 {
     {CAN0_ORed_Message_buffer_IRQn, CAN0_Bus_Off_IRQn, CAN0_Error_IRQn, CAN0_Wake_Up_IRQn}
 };
 #elif defined (K70F12_SERIES)
-IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_FEATURE_CAN_INTERRUPT_COUNT] = 
+IRQn_Type flexcan_irq_ids[HW_CAN_INSTANCE_COUNT][FSL_CAN_INTERRUPT_COUNT] = 
 {
     {CAN0_ORed_Message_buffer_IRQn, CAN0_Bus_Off_IRQn, CAN0_Error_IRQn, CAN0_Wake_Up_IRQn},
     {CAN1_ORed_Message_buffer_IRQn, CAN1_Bus_Off_IRQn, CAN1_Error_IRQn, CAN1_Wake_Up_IRQn}

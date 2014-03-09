@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -1483,7 +1483,7 @@ typedef union _hw_can_rxmgmask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CAN_RXMGMASK_MG field.
-#define BR_CAN_RXMGMASK_MG(x) (HW_CAN_RXMGMASK(x).B.MG)
+#define BR_CAN_RXMGMASK_MG(x) (HW_CAN_RXMGMASK(x).U)
 #endif
 
 //! @brief Format value for bitfield CAN_RXMGMASK_MG.
@@ -1491,7 +1491,7 @@ typedef union _hw_can_rxmgmask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the MG field to a new value.
-#define BW_CAN_RXMGMASK_MG(x, v) (HW_CAN_RXMGMASK_WR(x, (HW_CAN_RXMGMASK_RD(x) & ~BM_CAN_RXMGMASK_MG) | BF_CAN_RXMGMASK_MG(v)))
+#define BW_CAN_RXMGMASK_MG(x, v) (HW_CAN_RXMGMASK_WR(x, v))
 #endif
 //@}
 
@@ -1559,7 +1559,7 @@ typedef union _hw_can_rx14mask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CAN_RX14MASK_RX14M field.
-#define BR_CAN_RX14MASK_RX14M(x) (HW_CAN_RX14MASK(x).B.RX14M)
+#define BR_CAN_RX14MASK_RX14M(x) (HW_CAN_RX14MASK(x).U)
 #endif
 
 //! @brief Format value for bitfield CAN_RX14MASK_RX14M.
@@ -1567,7 +1567,7 @@ typedef union _hw_can_rx14mask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RX14M field to a new value.
-#define BW_CAN_RX14MASK_RX14M(x, v) (HW_CAN_RX14MASK_WR(x, (HW_CAN_RX14MASK_RD(x) & ~BM_CAN_RX14MASK_RX14M) | BF_CAN_RX14MASK_RX14M(v)))
+#define BW_CAN_RX14MASK_RX14M(x, v) (HW_CAN_RX14MASK_WR(x, v))
 #endif
 //@}
 
@@ -1635,7 +1635,7 @@ typedef union _hw_can_rx15mask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CAN_RX15MASK_RX15M field.
-#define BR_CAN_RX15MASK_RX15M(x) (HW_CAN_RX15MASK(x).B.RX15M)
+#define BR_CAN_RX15MASK_RX15M(x) (HW_CAN_RX15MASK(x).U)
 #endif
 
 //! @brief Format value for bitfield CAN_RX15MASK_RX15M.
@@ -1643,7 +1643,7 @@ typedef union _hw_can_rx15mask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RX15M field to a new value.
-#define BW_CAN_RX15MASK_RX15M(x, v) (HW_CAN_RX15MASK_WR(x, (HW_CAN_RX15MASK_RD(x) & ~BM_CAN_RX15MASK_RX15M) | BF_CAN_RX15MASK_RX15M(v)))
+#define BW_CAN_RX15MASK_RX15M(x, v) (HW_CAN_RX15MASK_WR(x, v))
 #endif
 //@}
 
@@ -2346,7 +2346,7 @@ typedef union _hw_can_imask1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CAN_IMASK1_BUFLM field.
-#define BR_CAN_IMASK1_BUFLM(x) (HW_CAN_IMASK1(x).B.BUFLM)
+#define BR_CAN_IMASK1_BUFLM(x) (HW_CAN_IMASK1(x).U)
 #endif
 
 //! @brief Format value for bitfield CAN_IMASK1_BUFLM.
@@ -2354,7 +2354,7 @@ typedef union _hw_can_imask1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the BUFLM field to a new value.
-#define BW_CAN_IMASK1_BUFLM(x, v) (HW_CAN_IMASK1_WR(x, (HW_CAN_IMASK1_RD(x) & ~BM_CAN_IMASK1_BUFLM) | BF_CAN_IMASK1_BUFLM(v)))
+#define BW_CAN_IMASK1_BUFLM(x, v) (HW_CAN_IMASK1_WR(x, v))
 #endif
 //@}
 
@@ -2364,7 +2364,7 @@ typedef union _hw_can_imask1
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_CAN_IFLAG1 - Interrupt Flags 1 register (RW)
+ * @brief HW_CAN_IFLAG1 - Interrupt Flags 1 register (W1C)
  *
  * Reset value: 0x00000000U
  *
@@ -2395,10 +2395,10 @@ typedef union _hw_can_iflag1
         uint32_t BUF0I : 1;            //!< [0] Buffer MB0 Interrupt Or "reserved"
         uint32_t BUF4TO1I : 4;         //!< [4:1] Buffer MB i Interrupt Or "reserved"
         uint32_t BUF5I : 1;            //!< [5] Buffer MB5 Interrupt Or "Frames
-                                       //!< available in Rx FIFO"
+                                       //! available in Rx FIFO"
         uint32_t BUF6I : 1;            //!< [6] Buffer MB6 Interrupt Or "Rx FIFO Warning"
         uint32_t BUF7I : 1;            //!< [7] Buffer MB7 Interrupt Or "Rx FIFO
-                                       //!< Overflow"
+                                       //! Overflow"
         uint32_t BUF31TO8I : 24;       //!< [31:8] Buffer MBi Interrupt
     } B;
 } hw_can_iflag1_t;
@@ -2648,7 +2648,7 @@ typedef union _hw_can_ctrl2
     {
         uint32_t RESERVED0 : 16;       //!< [15:0]
         uint32_t EACEN : 1;            //!< [16] Entire Frame Arbitration Field
-                                       //!< Comparison Enable For Rx Mailboxes
+                                       //! Comparison Enable For Rx Mailboxes
         uint32_t RRS : 1;              //!< [17] Remote Request Storing
         uint32_t MRP : 1;              //!< [18] Mailboxes Reception Priority
         uint32_t TASD : 5;             //!< [23:19] Tx Arbitration Start Delay
@@ -3183,7 +3183,7 @@ typedef union _hw_can_rxfgmask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CAN_RXFGMASK_FGM field.
-#define BR_CAN_RXFGMASK_FGM(x) (HW_CAN_RXFGMASK(x).B.FGM)
+#define BR_CAN_RXFGMASK_FGM(x) (HW_CAN_RXFGMASK(x).U)
 #endif
 
 //! @brief Format value for bitfield CAN_RXFGMASK_FGM.
@@ -3191,7 +3191,7 @@ typedef union _hw_can_rxfgmask
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FGM field to a new value.
-#define BW_CAN_RXFGMASK_FGM(x, v) (HW_CAN_RXFGMASK_WR(x, (HW_CAN_RXFGMASK_RD(x) & ~BM_CAN_RXFGMASK_FGM) | BF_CAN_RXFGMASK_FGM(v)))
+#define BW_CAN_RXFGMASK_FGM(x, v) (HW_CAN_RXFGMASK_WR(x, v))
 #endif
 //@}
 
@@ -3218,7 +3218,7 @@ typedef union _hw_can_rxfir
     struct _hw_can_rxfir_bitfields
     {
         uint32_t IDHIT : 9;            //!< [8:0] Identifier Acceptance Filter Hit
-                                       //!< Indicator
+                                       //! Indicator
         uint32_t RESERVED0 : 23;       //!< [31:9]
     } B;
 } hw_can_rxfir_t;
@@ -3276,17 +3276,17 @@ typedef union _hw_can_cs
     struct _hw_can_cs_bitfields
     {
         uint32_t TIME_STAMP : 16;      //!< [15:0] Free-Running Counter Time
-                                       //!< stamp. This 16-bit field is a copy of the Free-Running Timer, captured for
-                                       //!< Tx and Rx frames at the time when the beginning of the Identifier
-                                       //!< field appears on the CAN bus.
+                                       //! stamp. This 16-bit field is a copy of the Free-Running Timer, captured for
+                                       //! Tx and Rx frames at the time when the beginning of the Identifier
+                                       //! field appears on the CAN bus.
         uint32_t DLC : 4;              //!< [19:16] Length of the data to be
-                                       //!< stored/transmitted.
+                                       //! stored/transmitted.
         uint32_t RTR : 1;              //!< [20] Remote Transmission Request. One/zero for
-                                       //!< remote/data frame.
+                                       //! remote/data frame.
         uint32_t IDE : 1;              //!< [21] ID Extended. One/zero for
-                                       //!< extended/standard format frame.
+                                       //! extended/standard format frame.
         uint32_t SRR : 1;              //!< [22] Substitute Remote Request. Contains a
-                                       //!< fixed recessive bit.
+                                       //! fixed recessive bit.
         uint32_t RESERVED0 : 1;        //!< [23] Reserved
         uint32_t CODE : 4;             //!< [27:24] Reserved
         uint32_t RESERVED1 : 4;        //!< [31:28] Reserved
@@ -3463,13 +3463,13 @@ typedef union _hw_can_id
     struct _hw_can_id_bitfields
     {
         uint32_t EXT : 18;             //!< [17:0] Contains extended (LOW word)
-                                       //!< identifier of message buffer.
+                                       //! identifier of message buffer.
         uint32_t STD : 11;             //!< [28:18] Contains standard/extended (HIGH
-                                       //!< word) identifier of message buffer.
+                                       //! word) identifier of message buffer.
         uint32_t PRIO : 3;             //!< [31:29] Local priority. This 3-bit fieldis
-                                       //!< only used when LPRIO_EN bit is set in MCR and it only makes sense for
-                                       //!< Tx buffers. These bits are not transmitted. They are appended to the
-                                       //!< regular ID to define the transmission priority.
+                                       //! only used when LPRIO_EN bit is set in MCR and it only makes sense for Tx
+                                       //! buffers. These bits are not transmitted. They are appended to the
+                                       //! regular ID to define the transmission priority.
     } B;
 } hw_can_id_t;
 #endif
@@ -3898,7 +3898,7 @@ typedef union _hw_can_rximrn
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CAN_RXIMRn_MI field.
-#define BR_CAN_RXIMRn_MI(x, n) (HW_CAN_RXIMRn(x, n).B.MI)
+#define BR_CAN_RXIMRn_MI(x, n) (HW_CAN_RXIMRn(x, n).U)
 #endif
 
 //! @brief Format value for bitfield CAN_RXIMRn_MI.
@@ -3906,7 +3906,7 @@ typedef union _hw_can_rximrn
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the MI field to a new value.
-#define BW_CAN_RXIMRn_MI(x, n, v) (HW_CAN_RXIMRn_WR(x, n, (HW_CAN_RXIMRn_RD(x, n) & ~BM_CAN_RXIMRn_MI) | BF_CAN_RXIMRn_MI(v)))
+#define BW_CAN_RXIMRn_MI(x, n, v) (HW_CAN_RXIMRn_WR(x, n, v))
 #endif
 //@}
 

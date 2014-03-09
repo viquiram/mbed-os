@@ -30,13 +30,11 @@
 #ifndef __FSL_WDOG_HAL_H__
 #define __FSL_WDOG_HAL_H__
 
-#include "fsl_wdog_features.h"
-#include "fsl_device_registers.h"
-#include <stdbool.h>
-#include <string.h>
+#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <assert.h>
+#include "fsl_wdog_features.h"
+#include "fsl_device_registers.h"
 
 /*! 
  * @addtogroup wdog_hal
@@ -115,7 +113,7 @@ static inline bool wdog_hal_is_enabled(void)
  * @brief Enable and disable watchdog interrupt.
  *
  * This function is used to configure the WDOG interrupt.
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param isEnabled 0 means disable watchdog interrupt. 1 means enable watchdog interrupt.
@@ -137,9 +135,9 @@ static inline bool wdog_hal_is_interrupt_enabled(void)
 /*!
  * @brief set watchdog clock Source.
  *
- * This function is used to set the WDOG clock source, there are two clock sources can be used,
- * one is LPO clock and the other is bus clock.
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * This function is used to set the WDOG clock source. There are two clock sources that can be used,
+ * the LPO clock and the bus clock.
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param clockSource watchdog clock source, see wdog_clock_source_t.
@@ -149,8 +147,8 @@ void wdog_hal_set_clock_source(wdog_clock_source_t clockSource);
 /*!
  * @brief Get watchdog clock Source.
  *
- * This function is used to get the WDOG clock source, there are two clock sources can be used,
- * one is LPO clock and the other is bus clock.
+ * This function is used to get the WDOG clock source. There are two clock sources that can be used,
+ * the LPO clock and the bus clock.
  *
  * @return watchdog clock source, see wdog_clock_source_t.
  */
@@ -163,7 +161,7 @@ static inline wdog_clock_source_t wdog_hal_get_clock_source(void)
  * @brief Enable and disable watchdog window mode.
  *
  * This function is used to configure the WDOG window mode.
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param isEnabled 0 means disable watchdog window mode. 1 means enable watchdog window mode.
@@ -185,9 +183,9 @@ static inline bool wdog_hal_is_window_mode_enabled(void)
 /*!
  * @brief Enable and disable watchdog write-once-only register update.
  *
- * This function is used to configure the WDOG register update feature, if disable means that
- * all WDOG register will never be written again unless Power On Reset.
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * This function is used to configure the WDOG register update feature. If disabled, it means that
+ * all WDOG registers will never be written again unless Power On Reset.
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param isEnabled 0 means disable watchdog write-once-only register update.
@@ -211,7 +209,7 @@ static inline bool wdog_hal_is_register_update_enabled(void)
  * @brief Set whether watchdog is working while cpu is in debug mode.
  *
  * This function is used to configure whether the WDOG is enabled in CPU debug mode. 
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param isEnabled 0 means watchdog is disabled in CPU debug mode.
@@ -235,7 +233,7 @@ static inline bool wdog_hal_is_cpu_debug_mode_enabled(void)
  * @brief Set whether watchdog is working while cpu is in stop mode.
  *
  * This function is used to configure whether the WDOG is enabled in CPU stop mode. 
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param isEnabled 0 means watchdog is disabled in CPU stop mode.
@@ -248,7 +246,7 @@ void wdog_hal_configure_enabled_in_cpu_stop_mode(bool isEnabled);
  *
  * This function is used to check whether WDOG works in CPU stop mode.
  *
- * @return 0 means not work while in cpu stop mode, 1 means works while in cpu stop mode.
+ * @return 0 means not work while in CPU stop mode, 1 means works while in CPU stop mode.
  */
 static inline bool wdog_hal_is_cpu_stop_mode_enabled(void)
 {
@@ -256,10 +254,10 @@ static inline bool wdog_hal_is_cpu_stop_mode_enabled(void)
 }
 
 /*!
- * @brief Set whether watchdog is working while cpu is in wait mode.
+ * @brief Set whether watchdog is working while CPU is in wait mode.
  *
  * This function is used to configure whether the WDOG is enabled in CPU wait mode. 
- * Configure is saved in internal configure buffer and write back to register in wdog_hal_enable 
+ * The configuration is saved in an internal configure buffer and written back to the register in wdog_hal_enable 
  * function, so this function must be called before wdog_hal_enable is called.
  *
  * @param isEnabled 0 means watchdog is disabled in CPU wait mode.
@@ -272,7 +270,7 @@ void wdog_hal_configure_enabled_in_cpu_wait_mode(bool isEnabled);
  *
  * This function is used to check whether WDOG works in CPU wait mode.
  *
- * @return 0 means not work while in cpu wait mode, 1 means works while in cpu wait mode.
+ * @return 0 means not work while in CPU wait mode, 1 means works while in CPU wait mode.
  */
 
 static inline bool wdog_hal_is_cpu_wait_mode_enabled(void)
@@ -355,9 +353,9 @@ static inline void wdog_hal_set_clock_prescaler(wdog_clock_prescaler_t clockPres
 /*!
  * @brief Get watchdog clock prescaler.
  *
- * This function is used to get the WDOG clock proscaler.
+ * This function is used to get the WDOG clock prescaler.
  * 
- * @return WDOG clock proscaler.
+ * @return WDOG clock prescaler.
  */
 static inline wdog_clock_prescaler_t wdog_hal_get_clock_prescaler(void)
 {
@@ -393,7 +391,7 @@ static inline uint32_t wdog_hal_get_window_value(void)
  * @brief Unlock watchdog register written.
  * 
  * This function is used to unlock the WDOG register written.
- * This function must be called before any configure is set because watchdog register
+ * This function must be called before any configuration is set because watchdog register
  * will be locked automatically after a WCT(256 bus cycles).
  *
  */
@@ -407,7 +405,7 @@ static inline void wdog_hal_unlock(void)
  * @brief Refresh watchdog timer.
  *
  * This function is used to feed the WDOG.
- * This function should be called before watchdog timer is timeout, otherwise a RESET
+ * This function should be called before watchdog timer is in timeout, otherwise a RESET
  * will assert.
  *
  */
@@ -433,11 +431,11 @@ static inline void wdog_hal_reset_chip(void)
 }
 
 /*!
- * @brief Get chip reset count that reset by watchdog.
+ * @brief Get chip reset count that was reset by watchdog.
  *
- * This function is used to get the vlaue of WDOG_RSTCNT.
+ * This function is used to get the value of WDOG_RSTCNT.
  *
- * @return Chip reset count that reset by watchdog.
+ * @return Chip reset count that was reset by watchdog.
  */
 static inline uint32_t wdog_hal_get_reset_count(void)
 {
@@ -445,7 +443,7 @@ static inline uint32_t wdog_hal_get_reset_count(void)
 }
 
 /*!
- * @brief Clear chip reset count that reset by watchdog.
+ * @brief Clear chip reset count that was reset by watchdog.
  *
  * This function is used to clear the WDOG_RSTCNT.
  *

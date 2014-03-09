@@ -43,7 +43,7 @@
  * Definitions
  ******************************************************************************/
 
-/*! @brief clock manager clock names mapping into sim clock name*/
+/*! @brief Clock manager clock names mapping into the SIM clock name*/
 sim_clock_names_t kClockNameSimMap[kClockNameCount] = {
    /* default clocks*/
    kSimCoreClock,                         /**/
@@ -87,7 +87,7 @@ sim_clock_names_t kClockNameSimMap[kClockNameCount] = {
    kSimReserved
 };
 
-/*! @brief clock manager clock source names mapping into sim clock source name*/
+/*! @brief Clock manager clock source names mapping into the SIM clock source name*/
 sim_clock_source_names_t kClockSourceNameSimMap[kClockSourceMax] = {
     kSimClockNfcSrc,                   /* NFCSRC*/
     kSimClockEsdhcSrc,                 /* ESDHCSRC K70*/
@@ -96,7 +96,7 @@ sim_clock_source_names_t kClockSourceNameSimMap[kClockSourceMax] = {
     kSimClockTimeSrc,                  /* TIMESRC*/
     kSimClockRmiiSrc,                  /* RMIISRC*/
     kSimClockUsbfSrc,                  /* USBFSRC  K70*/
-    kSimClockUsbSrc,                   /* USBSRC   K64, KL25 and K22*/
+    kSimClockUsbSrc,                   /* USBSRC   K64, KL25, KV31, and K22*/
     kSimClockUsbhSrc,                  /* USBHSRC*/
     kSimClockUart0Src,                 /* UART0SRC*/
     kSimClockTpmSrc,                   /* TPMSRC*/
@@ -110,7 +110,7 @@ sim_clock_source_names_t kClockSourceNameSimMap[kClockSourceMax] = {
     kSimClockRtcClkoutSel              /* RTCCLKOUTSEL */
 };
 
-/*! @brief clock manager clock module names mapping into sim clock moudle name*/
+/*! @brief Clock manager clock module names mapping into the SIM clock module name*/
 sim_clock_gate_module_names_t kClockModuleNameSimMap[kClockModuleMax] = {
     /* System modules*/
     kSimClockModuleDMA,                    /**/
@@ -162,6 +162,7 @@ sim_clock_gate_module_names_t kClockModuleNameSimMap[kClockModuleMax] = {
     kSimClockModuleI2C,                    /*   instance 0, 1*/
     kSimClockModuleUART,                   /*   instance 0 - 5*/
     kSimClockModuleESDHC,                  /**/
+    kSimClockModuleLPUART,                 /**/
 
     /* Human-machine Interfaces*/
     kSimClockModuleTSI,                    /**/
@@ -174,51 +175,51 @@ extern const sim_clock_source_value_t *kSimClockSourceValueTable[];
  * API
  ******************************************************************************/
 
-/*! @name system out clock access API*/
+/*! @name System out clock access API*/
 /*@{*/
 
 /*!
- * @brief Get the current out clock.
+ * @brief Gets the current out clock.
  *
  * @param none
  *
- * @return frequency    out clock frequency for clock system
+ * @return frequency    Out clock frequency for the clock system
  */
 extern uint32_t clock_hal_get_outclk(void);
 
 /*!
- * @brief Get the current fll clock.
+ * @brief Gets the current FLL clock.
  *
  * @param none
  *
- * @return frequency    fll clock frequency for clock system
+ * @return frequency    FLL clock frequency for the clock system
  */
 extern uint32_t clock_hal_get_fllclk(void);
 
 /*!
- * @brief Get the current pll0 clock.
+ * @brief Gets the current PLL0 clock.
  *
  * @param none
  *
- * @return frequency    pll0 clock frequency for clock system
+ * @return frequency    PLL0 clock frequency for the clock system
  */
 extern uint32_t clock_hal_get_pll0clk(void);
 
 /*!
- * @brief Get the current pll1 clock.
+ * @brief Gets the current PLL1 clock.
  *
  * @param none
  *
- * @return frequency    pll1 clock frequency for clock system
+ * @return frequency    PLL1 clock frequency for the clock system
  */
 extern uint32_t clock_hal_get_pll1clk(void);
 
 /*!
- * @brief Get the current ir (internal reference) clock.
+ * @brief Get the current IR (internal reference) clock.
  *
  * @param none
  *
- * @return frequency    ir clock frequency for clock system
+ * @return frequency    IR clock frequency for the clock system
  */
 extern uint32_t clock_hal_get_irclk(void);
 

@@ -144,6 +144,7 @@ typedef enum _sim_clock_gate_module_names {
     kSimClockModuleI2C,                    /*   instance 0, 1*/
     kSimClockModuleUART,                   /*   instance 0 - 5*/
     kSimClockModuleESDHC,                  /**/
+    kSimClockModuleLPUART,                 /**/
 
     /* Human-machine Interfaces*/
     kSimClockModuleTSI,                    /**/
@@ -160,7 +161,7 @@ typedef enum _sim_clock_source_names {
     kSimClockTimeSrc,                  /* TIMESRC*/
     kSimClockRmiiSrc,                  /* RMIISRC*/
     kSimClockUsbfSrc,                  /* USBFSRC  K70*/
-    kSimClockUsbSrc,                   /* USBSRC   K64, KL25 and K22*/
+    kSimClockUsbSrc,                   /* USBSRC   K64, KL25, KV31, and K22*/
     kSimClockUsbhSrc,                  /* USBHSRC*/
     kSimClockUart0Src,                 /* UART0SRC*/
     kSimClockTpmSrc,                   /* TPMSRC*/
@@ -195,35 +196,35 @@ typedef enum _sim_clock_divider_names {
     kSimClockDividerMax
 } sim_clock_divider_names_t;
 
-/*! @brief sim USB voltage regulator in standby mode setting during stop modes */
+/*! @brief SIM USB voltage regulator in standby mode setting during stop modes */
 typedef enum _sim_usbsstby_stop
 {
     kSimUsbsstbyNoRegulator,        /* regulator not in standby during Stop modes */
     kSimUsbsstbyWithRegulator       /* regulator in standby during Stop modes */
 } sim_usbsstby_stop_t;
 
-/*! @brief sim USB voltage regulator in standby mode setting during VLPR and VLPW modes */
+/*! @brief SIM USB voltage regulator in standby mode setting during VLPR and VLPW modes */
 typedef enum _sim_usbvstby_stop
 {
     kSimUsbvstbyNoRegulator,        /* regulator not in standby during VLPR and VLPW modes */
     kSimUsbvstbyWithRegulator       /* regulator in standby during VLPR and VLPW modes */
 } sim_usbvstby_stop_t;
 
-/*! @brief sim CMT/UART pad drive strength */
+/*! @brief SIM CMT/UART pad drive strength */
 typedef enum _sim_cmtuartpad_strengh
 {
     kSimCmtuartSinglePad,           /* Single-pad drive strength for CMT IRO or UART0_TXD */
     kSimCmtuartDualPad              /* Dual-pad drive strength for CMT IRO or UART0_TXD */
 } sim_cmtuartpad_strengh_t;
 
-/*! @brief sim PTD7 pad drive strength */
+/*! @brief SIM PTD7 pad drive strength */
 typedef enum _sim_ptd7pad_strengh
 {
     kSimPtd7padSinglePad,           /* Single-pad drive strength for PTD7 */
     kSimPtd7padDualPad              /* Dual-pad drive strength for PTD7 */
 } sim_ptd7pad_strengh_t;
 
-/*! @brief sim Flexbus security level */
+/*! @brief SIM FlexBus security level */
 typedef enum _sim_flexbus_security_level
 {
     kSimFbslLevel0,                 /* All off-chip accesses (op code and data) via the FlexBus */
@@ -234,14 +235,14 @@ typedef enum _sim_flexbus_security_level
     kSimFbslLevel3                  /* Off-chip op code accesses and data accesses are allowed */
 } sim_flexbus_security_level_t;
 
-/*! @brief sim ADCx pre-trigger select */
+/*! @brief SIM ADCx pre-trigger select */
 typedef enum _sim_pretrgsel
 {
     kSimAdcPretrgselA,              /* Pre-trigger A selected for ADCx */
     kSimAdcPretrgselB               /* Pre-trigger B selected for ADCx */
 } sim_pretrgsel_t;
 
-/*! @brief sim ADCx trigger select */
+/*! @brief SIM ADCx trigger select */
 typedef enum _sim_trgsel
 {
     kSimAdcTrgselExt,               /* External trigger */
@@ -262,7 +263,7 @@ typedef enum _sim_trgsel
     kSimAdcTrgSelHigSpeedComp3      /* High speed comparator 3 asynchronous interrupt */
 } sim_trgsel_t;
 
-/*! @brief sim receive data source select */
+/*! @brief SIM receive data source select */
 typedef enum _sim_uart_rxsrc
 {
     kSimUartRxsrcPin,               /* UARTx_RX Pin */
@@ -271,7 +272,7 @@ typedef enum _sim_uart_rxsrc
     kSimUartRxsrcReserved           /* Reserved */
 } sim_uart_rxsrc_t;
 
-/*! @brief sim transmit data source select */
+/*! @brief SIM transmit data source select */
 typedef enum _sim_uart_txsrc
 {
     kSimUartTxsrcPin,               /* UARTx_TX Pin */
@@ -280,21 +281,21 @@ typedef enum _sim_uart_txsrc
     kSimUartTxsrcReserved           /* Reserved */
 } sim_uart_txsrc_t;
 
-/*! @brief sim FlexTimer x trigger y select */
+/*! @brief SIM FlexTimer x trigger y select */
 typedef enum _sim_ftm_trg_src
 {
     kSimFtmTrgSrc0,                 /* FlexTimer x trigger y select 0 */
     kSimFtmTrgSrc1                  /* FlexTimer x trigger y select 1 */
 } sim_ftm_trg_src_t;
 
-/*! @brief sim FlexTimer external clock select */
+/*! @brief SIM FlexTimer external clock select */
 typedef enum _sim_ftm_clk_sel
 {
     kSimFtmClkSel0,                 /* FTM CLKIN0 pin. */
     kSimFtmClkSel1                  /* FTM CLKIN1 pin. */
 } sim_ftm_clk_sel_t;
 
-/*! @brief sim FlexTimer x channel y input capture source select */
+/*! @brief SIM FlexTimer x channel y input capture source select */
 typedef enum _sim_ftm_ch_src
 {
     kSimFtmChSrc0,                 /* See RM for details of each selection for each channel */
@@ -303,28 +304,28 @@ typedef enum _sim_ftm_ch_src
     kSimFtmChSrc3                  /* See RM for details of each selection for each channel */
 } sim_ftm_ch_src_t;
 
-/*! @brief sim FlexTimer x Fault y select */
+/*! @brief SIM FlexTimer x Fault y select */
 typedef enum _sim_ftm_flt_sel
 {
     kSimFtmFltSel0,                 /* FlexTimer x fault y select 0 */
     kSimFtmFltSel1                  /* FlexTimer x fault y select 1 */
 } sim_ftm_flt_sel_t;
 
-/*! @brief sim Timer/PWM external clock select */
+/*! @brief SIM Timer/PWM external clock select */
 typedef enum _sim_tpm_clk_sel
 {
     kSimTpmClkSel0,                 /* Timer/PWM TPM_CLKIN0 pin. */
     kSimTpmClkSel1                  /* Timer/PWM TPM_CLKIN1 pin. */
 } sim_tpm_clk_sel_t;
 
-/*! @brief sim Timer/PWM x channel y input capture source select */
+/*! @brief SIM Timer/PWM x channel y input capture source select */
 typedef enum _sim_tpm_ch_src
 {
     kSimTpmChSrc0,                 /* TPMx_CH0 signal */
     kSimTpmChSrc1                  /* CMP0 output */
 } sim_tpm_ch_src_t;
 
-/*! @brief sim hal API return status*/
+/*! @brief SIM HAL API return status*/
 typedef enum _sim_hal_status {
     kSimHalSuccess,
     kSimHalFail,
@@ -333,7 +334,7 @@ typedef enum _sim_hal_status {
     kSimHalNoSuchDivider
 } sim_hal_status_t;
 
-/*! @brief Clock gate module config table structure*/
+/*! @brief Clock gate module configuration table structure*/
 typedef struct SimClockGateModuleConfig {
     sim_clock_gate_module_names_t   clockGateModuleName;  /*!< clock module name*/
     uint8_t                         deviceInstance;       /*!< device instance*/
@@ -353,21 +354,21 @@ typedef struct SimClockSourceValue {
     sim_clock_divider_names_t       dividerName;          /*!< divider name*/
 } sim_clock_source_value_t;
 
-/*! @brief Clock name config table structure*/
+/*! @brief Clock name configuration table structure*/
 typedef struct SimClockNameConfig {
     sim_clock_names_t                   clockName;            /*!< clock name*/
-    bool                                useOtherRefClock;     /*!< if it will use other ref clock*/
+    bool                                useOtherRefClock;     /*!< if it  uses the other ref clock*/
     sim_clock_names_t                   otherRefClockName;    /*!< other ref clock name*/
     sim_clock_divider_names_t           dividerName;          /*!< clock divider name*/
 } sim_clock_name_config_t;
 
-/*! @brief clock name config table for specified cpu defined in fsl_clock_module_names_Kxxx.h*/
+/*! @brief clock name configuration table for specified CPU defined in fsl_clock_module_names_Kxxx.h*/
 extern const sim_clock_name_config_t kSimClockNameConfigTable[];
 
-/*! @brief sim configuration table for clock module names*/
+/*! @brief SIM configuration table for clock module names*/
 extern const sim_clock_gate_module_config_t kSimClockGateModuleConfigTable[];
 
-/*! @brief clock source value table for specified cpu */
+/*! @brief clock source value table for specified CPU */
 extern const sim_clock_source_value_t *kClockSourceValueTable[];
 
 /*******************************************************************************
@@ -382,84 +383,84 @@ extern "C" {
 /*@{*/
 
 /*!
- * @brief Enable or disable the clock for specified clock module
+ * @brief Enables or disables the clock for a specified clock module.
  *
- * This function will enable/disable the clock for specified clock module and instance.
+ * This function  enables/disables the clock for a specified clock module and instance.
  *
- * @param clockModule Clock module name defined in sim_clock_gate_module_names_t
+ * @param clockModule Clock module name defined in the sim_clock_gate_module_names_t
  * @param instance    Module instance  
  * @param enable      Enable or disable the clock
  *                    - true:  enable the clock
  *                    - false: disable the clock
- * @return status     If the clock module name doesn't exist, it will return an error.
+ * @return status     If the clock module name doesn't exist, it  returns an error.
  */
 sim_hal_status_t clock_hal_set_gate(sim_clock_gate_module_names_t clockModule, uint8_t instance,
                                     bool enable);
 
 /*!
- * @brief Get the clock enable or disable state
+ * @brief Gets the clock enabled or disabled state.
  *
- * This function will get the current clock gate status of the specified clock
- * moudle and instance.
+ * This function  gets the current clock gate status of the specified clock
+ * module and instance.
  *
  * @param clockModule Clock module name defined in sim_clock_gate_module_names_t
  * @param instance    Module instance
  * @param isEnabled   returned status, clock is enabled or disabled for the module.
  *                    - true: enabled
  *                    - false: disabled
- * @return status     if the clock module name doesn't exist, it will return an error.
+ * @return status     if the clock module name doesn't exist, it  returns an error.
  */
 sim_hal_status_t clock_hal_get_gate(sim_clock_gate_module_names_t clockModule, uint8_t instance, 
                                     bool *isEnabled);
 
 /*!
- * @brief Set clock source setting
+ * @brief Sets the clock source setting.
  *
- * This function will set the settings for specified clock source. Each clock 
- * source has its clock selection settings. Refer to reference manual for 
- * details of settings for each clock source. Refer to sim_clock_source_names_t 
+ * This function  sets the settings for a specified clock source. Each clock 
+ * source has its own clock selection settings. See the chip reference manual for 
+ * clock source detailed settings and the sim_clock_source_names_t 
  * for clock sources.
  *
  * @param clockSource Clock source name defined in sim_clock_source_names_t
  * @param setting     Setting value
- * @return status     If the clock source doesn't exist, it will return an error.
+ * @return status     If the clock source doesn't exist, it  returns an error.
  */
 sim_hal_status_t clock_hal_set_clock_source(sim_clock_source_names_t clockSource, uint8_t setting);
 
 /*!
- * @brief Get clock source setting
+ * @brief Gets the clock source setting.
  *
- * This function will get the settings for specified clock source. Each clock 
- * source has its clock selection settings. Refer to reference manual for 
- * details of settings for each clock source. Refer to sim_clock_source_names_t
+ * This function  gets the settings for a specified clock source. Each clock 
+ * source has its own clock selection settings. See the reference manual for 
+ * clock source detailed settings and the sim_clock_source_names_t
  * for clock sources.
  *
  * @param clockSource Clock source name
  * @param setting     Current setting for the clock source
- * @return status     If the clock source doesn't exist, it will return an error.
+ * @return status     If the clock source doesn't exist, it  returns an error.
  */
 sim_hal_status_t clock_hal_get_clock_source(sim_clock_source_names_t clockSource, 
                                             uint8_t *setting);
 
 /*!
- * @brief Set clock divider setting
+ * @brief Sets the clock divider setting.
  *
- * This function will set the setting for specified clock divider. Refer to 
- * reference manual for supported clock divider and value range. Refer to 
+ * This function  sets the setting for a specified clock divider. See the
+ * reference manual for a supported clock divider and value range and the 
  * sim_clock_divider_names_t for dividers.
  *
  * @param clockDivider Clock divider name
  * @param divider      Divider setting
- * @return status      If the clock divider doesn't exist, it will return an error.
+ * @return status      If the clock divider doesn't exist, it  returns an error.
  */
 sim_hal_status_t clock_hal_set_clock_divider(sim_clock_divider_names_t clockDivider, 
                                              uint32_t setting);
 
 /*!
- * @brief Set clock out dividers setting
+ * @brief Sets the clock out dividers setting.
  *
- * This function will set the setting for all clock out dividers at the same time.
- * Refer to reference manual for supported clock divider and value range. Refer to 
+ * This function  sets the setting for all clock out dividers at the same time.
+ * See the reference manual for a supported clock divider and value range and the 
  * sim_clock_divider_names_t for clock out dividers.
  *
  * @param outdiv1      Outdivider1 setting
@@ -471,15 +472,15 @@ void clock_hal_set_clock_out_dividers(uint32_t outdiv1, uint32_t outdiv2,
                                       uint32_t outdiv3, uint32_t outdiv4);
 
 /*!
- * @brief Get clock divider setting
+ * @brief Gets the clock divider setting.
  *
- * This function will get the setting for specified clock divider. Refer to 
- * reference manual for supported clock divider and value range. Refer to 
+ * This function  gets the setting for a specified clock divider. See the
+ * reference manual for a supported clock divider and value range and the 
  * sim_clock_divider_names_t for dividers.
  *
  * @param clockDivider Clock divider name
  * @param divider      Divider value pointer
- * @return status      If the clock divider doesn't exist, it will return an error.
+ * @return status      If the clock divider doesn't exist, it  returns an error.
  */
 sim_hal_status_t clock_hal_get_clock_divider(sim_clock_divider_names_t clockDivider,
                                              uint32_t *setting);
@@ -490,9 +491,9 @@ sim_hal_status_t clock_hal_get_clock_divider(sim_clock_divider_names_t clockDivi
 /*@{*/
 
 /*!
- * @brief Set USB voltage regulator enable setting 
+ * @brief Sets the USB voltage regulator enabled setting.
  *
- * This function will control whether the USB voltage regulator is enabled. This bit
+ * This function  controls whether the USB voltage regulator is enabled. This bit
  * can only be written when the SOPT1CFG[URWE] bit is set. 
  *
  * @param enable   USB voltage regulator enable setting
@@ -505,11 +506,11 @@ static inline void sim_set_usbregen(bool enable)
 }
 
 /*!
- * @brief Get USB voltage regulator enable setting 
+ * @brief Gets the USB voltage regulator enabled setting.
  *
- * This function will get USB voltage regulator enable setting 
+ * This function  gets the USB voltage regulator enabled setting.
  *
- * @return enabled True if USB voltage regulator is enabled.
+ * @return enabled True if the USB voltage regulator is enabled.
  */
 static inline bool sim_get_usbregen(void)
 {
@@ -517,10 +518,10 @@ static inline bool sim_get_usbregen(void)
 }
 
 /*!
- * @brief Set USB voltage regulator in standby mode setting during Stop, VLPS, LLS or VLLS 
+ * @brief Sets the USB voltage regulator in a standby mode setting during Stop, VLPS, LLS, and VLLS.
  *
- * This function will control whether the USB voltage regulator is placed in standby
- * mode during Stop, VLPS, LLS and VLLS modes. This bit can only be written when the
+ * This function  controls whether the USB voltage regulator is placed in a standby
+ * mode during Stop, VLPS, LLS, and VLLS modes. This bit can only be written when the
  * SOPT1CFG[USSWE] bit is set. 
  *
  * @param setting   USB voltage regulator in standby mode setting
@@ -535,11 +536,11 @@ static inline void sim_set_usbsstby(sim_usbsstby_stop_t setting)
 }
 
 /*!
- * @brief Get USB voltage regulator in standby mode setting
+ * @brief Gets the USB voltage regulator in a standby mode setting.
  *
- * This function will get USB voltage regulator in standby mode setting 
+ * This function  gets the USB voltage regulator in a standby mode setting.
  *
- * @return setting  USB voltage regulator in standby mode setting
+ * @return setting  USB voltage regulator in a standby mode setting
  */
 static inline sim_usbsstby_stop_t sim_get_usbsstby(void)
 {
@@ -547,10 +548,10 @@ static inline sim_usbsstby_stop_t sim_get_usbsstby(void)
 }
 
 /*!
- * @brief Set USB voltage regulator in standby mode during VLPR or VLPW 
+ * @brief Sets the USB voltage regulator in a standby mode during the VLPR or the VLPW.
  *
- * This function will control whether the USB voltage regulator is placed in standby
- * mode during VLPR and VLPW modes. This bit can only be written when the 
+ * This function  controls whether the USB voltage regulator is placed in a standby
+ * mode during the VLPR and the VLPW modes. This bit can only be written when the 
  * SOPT1CFG[UVSWE] bit is set. 
  *
  * @param setting   USB voltage regulator in standby mode setting
@@ -563,11 +564,11 @@ static inline void sim_set_usbvstby(sim_usbvstby_stop_t setting)
 }
 
 /*!
- * @brief Get USB voltage regulator in standby mode during VLPR or VLPW
+ * @brief Gets the USB voltage regulator in a standby mode during the VLPR or the VLPW.
  *
- * This function will get USB voltage regulator in standby mode during VLPR or VLPW 
+ * This function  gets the USB voltage regulator in a standby mode during the VLPR or the VLPW.
  *
- * @return setting  USB voltage regulator in standby mode during VLPR or VLPW
+ * @return setting  USB voltage regulator in a standby mode during the VLPR or the VLPW
  */
 static inline sim_usbvstby_stop_t sim_get_usbvstby(void)
 {
@@ -576,9 +577,9 @@ static inline sim_usbvstby_stop_t sim_get_usbvstby(void)
 
 #if FSL_FEATURE_SIM_OPT_HAS_RAMSIZE
 /*!
- * @brief Get RAM size
+ * @brief Gets the RAM size.
  *
- * This function will get the RAM size. The field specifies the amount of system RAM
+ * This function  gets the RAM size. The field specifies the amount of system RAM, which is 
  * available on the device.
  *
  * @return size  RAM size on the device
@@ -590,10 +591,10 @@ static inline uint32_t sim_get_ramsize(void)
 #endif /* FSL_FEATURE_SIM_OPT_HAS_RAMSIZE */
 
 /*!
- * @brief Set USB voltage regulator stop standby write enable setting 
+ * @brief Sets the USB voltage regulator stop standby write enable setting.
  *
- * This function will control whether USB voltage regulator stop standby write enable
- * featuer. Writing one to this bit allows the SOPT1[USBSSTBY] bit to be written. This
+ * This function  controls whether the USB voltage regulator stop  standby write
+ * feature is enabled. Writing one to this bit allows the SOPT1[USBSSTBY] bit to be written. This
  * register bit clears after a write to SOPT1[USBSSTBY]. 
  *
  * @param enable  USB voltage regulator stop standby write enable setting
@@ -606,11 +607,11 @@ static inline void sim_set_usswe(bool enable)
 }
 
 /*!
- * @brief Get USB voltage regulator stop standby write enable setting 
+ * @brief Gets the USB voltage regulator stop standby write enable setting.
  *
- * This function will get USB voltage regulator stop standby write enable setting 
+ * This function  gets the USB voltage regulator stop standby write enable setting.
  *
- * @return enabled True if USB voltage regulator stop standby write is enabled.
+ * @return enabled True if the USB voltage regulator stop standby write is enabled.
  */
 static inline bool sim_get_usswe(void)
 {
@@ -618,10 +619,10 @@ static inline bool sim_get_usswe(void)
 }
 
 /*!
- * @brief Set USB voltage regulator VLP standby write enable setting 
+ * @brief Sets the USB voltage regulator VLP standby write enable setting.
  *
- * This function will control whether USB voltage regulator VLP standby write enable
- * featuer. Writing one to this bit allows the SOPT1[USBVSTBY] bit to be written. This
+ * This function  controls whether USB voltage regulator VLP standby write
+ * feature is enabled. Writing one to this bit allows the SOPT1[USBVSTBY] bit to be written. This
  * register bit clears after a write to SOPT1[USBVSTBY]. 
  *
  * @param enable   USB voltage regulator VLP standby write enable setting
@@ -634,11 +635,11 @@ static inline void sim_set_uvswe(bool enable)
 }
 
 /*!
- * @brief Get USB voltage regulator VLP standby write enable setting 
+ * @brief Gets the USB voltage regulator VLP standby write enable setting.
  *
- * This function will get USB voltage regulator VLP standby write enable setting 
+ * This function  gets the USB voltage regulator VLP standby write enable setting.
  *
- * @return enabled True if USB voltage regulator VLP standby write is enabled.
+ * @return enabled True if the USB voltage regulator VLP standby write is enabled.
  */
 static inline bool sim_get_uvswe(void)
 {
@@ -646,10 +647,10 @@ static inline bool sim_get_uvswe(void)
 }
 
 /*!
- * @brief Set USB voltage regulator enable write enable setting 
+ * @brief Sets the USB voltage regulator enable write enable setting.
  *
- * This function will control whether USB voltage regulator enable write enable
- * featuer. Writing one to this bit allows the SOPT1[USBREGEN] bit to be written. 
+ * This function  controls whether the USB voltage regulator write enable
+ * feature is enabled. Writing one to this bit allows the SOPT1[USBREGEN] bit to be written. 
  * This register bit clears after a write to SOPT1[USBREGEN]. 
  *
  * @param enable   USB voltage regulator enable write enable setting
@@ -662,9 +663,9 @@ static inline void sim_set_urwe(bool enable)
 }
 
 /*!
- * @brief Get USB voltage regulator enable write enable setting 
+ * @brief Gets the USB voltage regulator enable write enable setting.
  *
- * This function will get USB voltage regulator enable write enable setting 
+ * This function  gets the USB voltage regulator enable write enable setting.
  *
  * @return enabled True if USB voltage regulator enable write is enabled.
  */
@@ -675,9 +676,9 @@ static inline bool sim_get_urwe(void)
 
 #if FSL_FEATURE_SIM_OPT_HAS_CMTUARTPAD
 /*!
- * @brief Set CMT/UART pad drive strength setting 
+ * @brief Sets the CMT/UART pad drive strength setting.
  *
- * This function will control the output drive strength of the CMT IRO signal or 
+ * This function  controls the output drive strength of the CMT IRO signal or 
  * UART0_TXD signal on PTD7 pin by selecting either one or two pads to drive it. 
  *
  * @param setting   CMT/UART pad drive strength setting
@@ -690,9 +691,9 @@ static inline void sim_set_cmtuartpad(sim_cmtuartpad_strengh_t setting)
 }
 
 /*!
- * @brief Get CMT/UART pad drive strength setting 
+ * @brief Gets the CMT/UART pad drive strength setting.
  *
- * This function will get CMT/UART pad drive strength setting 
+ * This function  gets the CMT/UART pad drive strength setting.
  *
  * @return setting CMT/UART pad drive strength setting
  */
@@ -704,9 +705,9 @@ static inline sim_cmtuartpad_strengh_t sim_get_cmtuartpad(void)
 
 #if FSL_FEATURE_SIM_OPT_HAS_PTD7PAD
 /*!
- * @brief Set PTD7 pad drive strength setting 
+ * @brief Sets the PTD7 pad drive strength setting.
  *
- * This function will control the output drive strength of the PTD7 pin by selecting
+ * This function  controls the output drive strength of the PTD7 pin by selecting
  * either one or two pads to drive it. 
  *
  * @param setting   PTD7 pad drive strength setting
@@ -719,9 +720,9 @@ static inline void sim_set_ptd7pad(sim_ptd7pad_strengh_t setting)
 }
 
 /*!
- * @brief Get PTD7 pad drive strength setting 
+ * @brief Gets the PTD7 pad drive strength setting.
  *
- * This function will get PTD7 pad drive strength setting 
+ * This function  gets the PTD7 pad drive strength setting.
  *
  * @return setting PTD7 pad drive strength setting
  */
@@ -733,13 +734,13 @@ static inline sim_ptd7pad_strengh_t sim_get_ptd7pad(void)
 
 #if FSL_FEATURE_SIM_OPT_HAS_FBSL
 /*!
- * @brief Set Flexbus security level setting 
+ * @brief Sets the FlexBus security level setting.
  *
- * This function will set the Flexbus security level setting. If security is enabled,
- * then this field affects what CPU operations can access off-chip via the FlexBus 
- * and DDR controller interfaces. This field has no effect if security is not enabled. 
+ * This function  sets the FlexBus security level setting. If the security is enabled,
+ * this field affects which CPU operations can access the off-chip via the FlexBus 
+ * and DDR controller interfaces. This field has no effect if the security is not enabled. 
  *
- * @param setting   Flexbus security level setting
+ * @param setting   FlexBus security level setting
  *                  - 00: All off-chip accesses (op code and data) via the FlexBus and 
  *                        DDR controller are disallowed.
  *                  - 10: Off-chip op code accesses are disallowed. Data accesses are
@@ -752,11 +753,11 @@ static inline void sim_set_fbsl(sim_flexbus_security_level_t setting)
 }
 
 /*!
- * @brief Get Flexbus security level setting 
+ * @brief Gets the FlexBus security level setting.
  *
- * This function will get Flexbus security level setting 
+ * This function  gets the FlexBus security level setting.
  *
- * @return setting Flexbus security level setting
+ * @return setting FlexBus security level setting
  */
 static inline sim_flexbus_security_level_t sim_get_fbsl(void)
 {
@@ -766,9 +767,9 @@ static inline sim_flexbus_security_level_t sim_get_fbsl(void)
 
 #if FSL_FEATURE_SIM_OPT_HAS_PCR
 /*!
- * @brief Set PCR setting 
+ * @brief Sets the PCR setting.
  *
- * This function will set the PCR setting. This is the FlexBus hold cycles before 
+ * This function  sets the PCR setting. This is the FlexBus hold cycles before 
  * FlexBus can release bus to NFC or to IDLE.
  *
  * @param setting   PCR setting
@@ -779,9 +780,9 @@ static inline void sim_set_pcr(uint32_t setting)
 }
 
 /*!
- * @brief Get PCR setting 
+ * @brief Gets the PCR setting.
  *
- * This function will get PCR setting 
+ * This function  gets the PCR setting.
  *
  * @return setting PCR setting
  */
@@ -793,10 +794,10 @@ static inline uint32_t sim_get_pcr(void)
 
 #if FSL_FEATURE_SIM_OPT_HAS_MCC
 /*!
- * @brief Set MCC setting 
+ * @brief Sets the MCC setting. 
  *
- * This function will set the MCC setting. This is the NFC hold cycle in case
- * FlexBus request while NFC is granted.
+ * This function  sets  the MCC setting. This is the NFC hold cycle in case the
+ * FlexBus request during NFC is granted.
  *
  * @param setting   MCC setting
  */
@@ -806,9 +807,9 @@ static inline void sim_set_mcc(uint32_t setting)
 }
 
 /*!
- * @brief Get MCC setting 
+ * @brief Gets the MCC setting.
  *
- * This function will get MCC setting 
+ * This function  gets the MCC setting.
  *
  * @return setting MCC setting
  */
@@ -819,9 +820,9 @@ static inline uint32_t sim_get_mcc(void)
 #endif /* FSL_FEATURE_SIM_OPT_HAS_MCC */
 
 /*!
- * @brief Set ADCx alternate trigger enable setting 
+ * @brief Sets the ADCx alternate trigger enable setting.
  *
- * This function will enable/disable alternative conversion triggers for ADCx.
+ * This function  enables/disables the alternative conversion triggers for ADCx.
  *
  * @param enable Enable alternative conversion triggers for ADCx
  *               - true: Select alternative conversion trigger.
@@ -830,19 +831,19 @@ static inline uint32_t sim_get_mcc(void)
 void sim_set_alttrgen(uint8_t instance, bool enable);
 
 /*!
- * @brief Get  ADCx alternate trigger enable setting 
+ * @brief Gets the  ADCx alternate trigger enable setting.
  *
- * This function will get  ADCx alternate trigger enable setting 
+ * This function  gets the  ADCx alternate trigger enable setting.
  *
  * @return enabled True if  ADCx alternate trigger is enabled
  */
 bool sim_get_alttrgen(uint8_t instance);
 
 /*!
- * @brief Set ADCx pre-trigger select setting 
+ * @brief Sets the ADCx pre-trigger select setting.
  *
- * This function will select the ADCx pre-trigger source when alternative triggers
- * are enabled through ADCxALTTRGEN
+ * This function  selects the ADCx pre-trigger source when the alternative triggers
+ * are enabled through ADCxALTTRGEN.
  *
  * @param select pre-trigger select setting for ADCx
  *               - 0: Pre-trigger A selected for ADCx.
@@ -851,19 +852,19 @@ bool sim_get_alttrgen(uint8_t instance);
 void sim_set_pretrgsel(uint8_t instance, sim_pretrgsel_t select);
 
 /*!
- * @brief Get ADCx pre-trigger select setting 
+ * @brief Gets the ADCx pre-trigger select setting.
  *
- * This function will get ADCx pre-trigger select setting 
+ * This function  gets the ADCx pre-trigger select setting.
  *
  * @return select ADCx pre-trigger select setting
  */
 sim_pretrgsel_t sim_get_pretrgsel(uint8_t instance);
 
 /*!
- * @brief Set ADCx trigger select setting 
+ * @brief Sets the ADCx trigger select setting.
  *
- * This function will select the ADCx trigger source when alternative triggers
- * are enabled through ADCxALTTRGEN
+ * This function  selects the ADCx trigger source when alternative triggers
+ * are enabled through ADCxALTTRGEN.
  *
  * @param select trigger select setting for ADCx
  *               - 0000: External trigger
@@ -886,18 +887,18 @@ sim_pretrgsel_t sim_get_pretrgsel(uint8_t instance);
 void sim_set_trgsel(uint8_t instance, sim_trgsel_t select);
 
 /*!
- * @brief Get ADCx trigger select setting 
+ * @brief Gets the ADCx trigger select setting.
  *
- * This function will get ADCx trigger select setting 
+ * This function  gets the ADCx trigger select setting.
  *
  * @return select ADCx trigger select setting
  */
-sim_pretrgsel_t sim_get_trgsel(uint8_t instance);
+sim_pretrgsel_t sims_get_trgsel(uint8_t instance);
 
 /*!
- * @brief Set UARTx receive data source select setting 
+ * @brief Sets the UARTx receive data source select setting.
  *
- * This function will select the source for the UARTx receive data.
+ * This function  selects the source for the UARTx receive data.
  *
  * @param select the source for the UARTx receive data
  *               - 00: UARTx_RX pin.
@@ -908,18 +909,18 @@ sim_pretrgsel_t sim_get_trgsel(uint8_t instance);
 void sim_set_uart_rxsrc(uint8_t instance, sim_uart_rxsrc_t select);
 
 /*!
- * @brief Get UARTx receive data source select setting 
+ * @brief Gets the UARTx receive data source select setting. 
  *
- * This function will get UARTx receive data source select setting 
+ * This function  gets the UARTx receive data source select setting.
  *
- * @return select UARTx receive data source selectsetting
+ * @return select UARTx receive data source select setting
  */
 sim_uart_rxsrc_t sim_get_uart_rxsrc(uint8_t instance);
 
 /*!
- * @brief Set UARTx transmit data source select setting 
+ * @brief Sets the UARTx transmit data source select setting.
  *
- * This function will select the source for the UARTx transmit data.
+ * This function  selects the source for the UARTx transmit data.
  *
  * @param select the source for the UARTx transmit data
  *               - 00: UARTx_TX pin.
@@ -930,19 +931,19 @@ sim_uart_rxsrc_t sim_get_uart_rxsrc(uint8_t instance);
 void sim_set_uart_txsrc(uint8_t instance, sim_uart_txsrc_t select);
 
 /*!
- * @brief Get UARTx transmit data source select setting 
+ * @brief Gets the UARTx transmit data source select setting.
  *
- * This function will get UARTx transmit data source select setting 
+ * This function  gets the UARTx transmit data source select setting.
  *
- * @return select UARTx transmit data source selectsetting
+ * @return select UARTx transmit data source select setting
  */
 sim_uart_txsrc_t sim_get_uart_txsrc(uint8_t instance);
 
 #if FSL_FEATURE_SIM_OPT_HAS_ODE
 /*!
- * @brief Set UARTx Open Drain Enable setting 
+ * @brief Sets the UARTx Open Drain Enable setting.
  *
- * This function will enable/disable the UARTx Open Drain.
+ * This function  enables/disables the UARTx Open Drain.
  *
  * @param enable Enable/disable UARTx Open Drain
  *               - True: Enable UARTx Open Drain
@@ -951,9 +952,9 @@ sim_uart_txsrc_t sim_get_uart_txsrc(uint8_t instance);
 void sim_set_uart_ode(uint8_t instance, bool enable);
 
 /*!
- * @brief Get UARTx Open Drain Enable setting 
+ * @brief Gets the UARTx Open Drain Enable setting.
  *
- * This function will get UARTx Open Drain Enable setting. 
+ * This function  gets the UARTx Open Drain Enable setting. 
  *
  * @return enabled True if UARTx Open Drain is enabled.
  */
@@ -962,9 +963,9 @@ bool sim_get_uart_ode(uint8_t instance);
 
 #if FSL_FEATURE_SIM_OPT_HAS_FTM
 /*!
- * @brief Set FlexTimer x hardware trigger y source select setting
+ * @brief Sets the FlexTimer x hardware trigger y source select setting.
  *
- * This function will select the source of FTMx hardware trigger y.
+ * This function  selects  the source of FTMx hardware trigger y.
  *
  * @param select FlexTimer x hardware trigger y
  *               - 0: Pre-trigger A selected for ADCx.
@@ -973,18 +974,18 @@ bool sim_get_uart_ode(uint8_t instance);
 void sim_set_ftm_trg_src(uint8_t instance, uint8_t trigger, sim_ftm_trg_src_t select);
 
 /*!
- * @brief Get FlexTimer x hardware trigger y source select setting
+ * @brief Gets the FlexTimer x hardware trigger y source select setting.
  *
- * This function will get FlexTimer x hardware trigger y source select setting. 
+ * This function  gets the FlexTimer x hardware trigger y source select setting. 
  *
  * @return select FlexTimer x hardware trigger y source select setting
  */
 sim_ftm_trg_src_t sim_get_ftm_trg_src(uint8_t instance, uint8_t trigger);
 
 /*!
- * @brief Set FlexTimer x external clock pin select setting
+ * @brief Sets the FlexTimer x external clock pin select setting.
  *
- * This function will select the source of FTMx external clock pin select.
+ * This function  selects the source of FTMx external clock pin select.
  *
  * @param select FTMx external clock pin select
  *               - 0: FTMx external clock driven by FTM CLKIN0 pin.
@@ -993,37 +994,37 @@ sim_ftm_trg_src_t sim_get_ftm_trg_src(uint8_t instance, uint8_t trigger);
 void sim_set_ftm_clk_sel(uint8_t instance, sim_ftm_clk_sel_t select);
 
 /*!
- * @brief Get FlexTimer x external clock pin select setting
+ * @brief Gets the FlexTimer x external clock pin select setting.
  *
- * This function will get FlexTimer x external clock pin select setting. 
+ * This function  gets the FlexTimer x external clock pin select setting. 
  *
  * @return select FlexTimer x external clock pin select setting
  */
 sim_ftm_clk_sel_t sim_get_ftm_clk_sel(uint8_t instance);
 
 /*!
- * @brief Set FlexTimer x channel y input capture source select setting
+ * @brief Sets the FlexTimer x channel y input capture source select setting.
  *
- * This function will select FlexTimer x channel y input capture source.
+ * This function  selects the FlexTimer x channel y input capture source.
  *
  * @param select FlexTimer x channel y input capture source 
- *               See RM for dedail definition for each channel and selection
+ *               See the reference manual for detailed definition for each channel and selection.
  */
 void sim_set_ftm_ch_src(uint8_t instance, uint8_t channel, sim_ftm_ch_src_t select);
 
 /*!
- * @brief Get FlexTimer x channel y input capture source select setting
+ * @brief Gets the FlexTimer x channel y input capture source select setting.
  *
- * This function will get FlexTimer x channel y input capture source select setting. 
+ * This function  gets the FlexTimer x channel y input capture source select setting. 
  *
  * @return select FlexTimer x channel y input capture source select setting
  */
 sim_ftm_ch_src_t sim_get_ftm_ch_src(uint8_t instance, uint8_t channel);
 
 /*!
- * @brief Set FlexTimer x fault y select setting
+ * @brief Sets the FlexTimer x fault y select setting.
  *
- * This function will set the FlexTimer x fault y select setting.
+ * This function  sets the FlexTimer x fault y select setting.
  *
  * @param select FlexTimer x fault y select setting
  *               - 0: FlexTimer x fault y select 0.
@@ -1032,9 +1033,9 @@ sim_ftm_ch_src_t sim_get_ftm_ch_src(uint8_t instance, uint8_t channel);
 void sim_set_ftm_flt_sel(uint8_t instance, uint8_t fault, sim_ftm_flt_sel_t select);
 
 /*!
- * @brief Get FlexTimer x fault y select setting
+ * @brief Gets the FlexTimer x fault y select setting.
  *
- * This function will get FlexTimer x fault y select setting. 
+ * This function  gets the FlexTimer x fault y select setting. 
  *
  * @return select FlexTimer x fault y select setting
  */
@@ -1043,29 +1044,29 @@ sim_ftm_flt_sel_t sim_get_ftm_flt_sel(uint8_t instance, uint8_t fault);
 
 #if FSL_FEATURE_SIM_OPT_HAS_TPM
 /*!
- * @brief Set Timer/PWM x external clock pin select setting
+ * @brief Sets the Timer/PWM x external clock pin select setting.
  *
- * This function will select the source of Timer/PWM x external clock pin select.
+ * This function  selects the source of the Timer/PWM x external clock pin select.
  *
  * @param select Timer/PWM x external clock pin select
- *               - 0: Timer/PWM x external clock driven by TPM_CLKIN0 pin.
- *               - 1: Timer/PWM x external clock driven by TPM_CLKIN1 pin.
+ *               - 0: Timer/PWM x external clock driven by the TPM_CLKIN0 pin.
+ *               - 1: Timer/PWM x external clock driven by the TPM_CLKIN1 pin.
  */
 void sim_set_tpm_clk_sel(uint8_t instance, sim_tpm_clk_sel_t select);
 
 /*!
- * @brief Get Timer/PWM x external clock pin select setting
+ * @brief Gets the Timer/PWM x external clock pin select setting.
  *
- * This function will get Timer/PWM x external clock pin select setting. 
+ * This function  gets the Timer/PWM x external clock pin select setting. 
  *
  * @return select Timer/PWM x external clock pin select setting
  */
 sim_tpm_clk_sel_t sim_get_tpm_clk_sel(uint8_t instance);
 
 /*!
- * @brief Set Timer/PWM x channel y input capture source select setting
+ * @brief Sets the Timer/PWM x channel y input capture source select setting.
  *
- * This function will select Timer/PWM x channel y input capture source.
+ * This function  selects the Timer/PWM x channel y input capture source.
  *
  * @param select Timer/PWM x channel y input capture source 
  *               - 0: TPMx_CH0 signal
@@ -1074,9 +1075,9 @@ sim_tpm_clk_sel_t sim_get_tpm_clk_sel(uint8_t instance);
 void sim_set_tpm_ch_src(uint8_t instance, uint8_t channel, sim_tpm_ch_src_t select);
 
 /*!
- * @brief Get Timer/PWM x channel y input capture source select setting
+ * @brief Gets the Timer/PWM x channel y input capture source select setting.
  *
- * This function will get Timer/PWM x channel y input capture source select setting. 
+ * This function  gets the Timer/PWM x channel y input capture source select setting. 
  *
  * @return select Timer/PWM x channel y input capture source select setting
  */
@@ -1085,9 +1086,9 @@ sim_tpm_ch_src_t sim_get_tpm_ch_src(uint8_t instance, uint8_t channel);
 
 #if FSL_FEATURE_SIM_SDID_HAS_FAMILYID
 /*!
- * @brief Get Kinetis Family ID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis Family ID in the System Device ID register (SIM_SDID).
  *
- * This function will get Kinetis Family ID in System Device ID register. 
+ * This function  gets the Kinetis Family ID in the System Device ID register. 
  *
  * @return id Kinetis Family ID
  */
@@ -1099,9 +1100,9 @@ static inline uint32_t sim_get_family_id(void)
 
 #if FSL_FEATURE_SIM_SDID_HAS_SUBFAMID
 /*!
- * @brief Get Kinetis Sub-Family ID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis Sub-Family ID in the System Device ID register (SIM_SDID). 
  *
- * This function will get Kinetis Sub-Family ID in System Device ID register. 
+ * This function  gets the Kinetis Sub-Family ID in System Device ID register. 
  *
  * @return id Kinetis Sub-Family ID
  */
@@ -1113,9 +1114,9 @@ static inline uint32_t sim_get_subfam_id(void)
 
 #if FSL_FEATURE_SIM_SDID_HAS_SERIESID
 /*!
- * @brief Get Kinetis SeriesID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis SeriesID in the System Device ID register (SIM_SDID).
  *
- * This function will get Kinetis Series ID in System Device ID register. 
+ * This function  gets the Kinetis Series ID in System Device ID register. 
  *
  * @return id Kinetis Series ID
  */
@@ -1126,9 +1127,9 @@ static inline uint32_t sim_get_series_id(void)
 #endif
 
 /*!
- * @brief Get Kinetis Fam ID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis Fam ID in System Device ID register (SIM_SDID).
  *
- * This function will get Kinetis Fam ID in System Device ID register. 
+ * This function  gets the Kinetis Fam ID in System Device ID register. 
  *
  * @return id Kinetis Fam ID
  */
@@ -1138,9 +1139,9 @@ static inline uint32_t sim_get_fam_id(void)
 }
 
 /*!
- * @brief Get Kinetis Pincount ID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis Pincount ID in System Device ID register (SIM_SDID).
  *
- * This function will get Kinetis Pincount ID in System Device ID register. 
+ * This function  gets the Kinetis Pincount ID in System Device ID register. 
  *
  * @return id Kinetis Pincount ID
  */
@@ -1150,9 +1151,9 @@ static inline uint32_t sim_get_pin_id(void)
 }
 
 /*!
- * @brief Get Kinetis Revision ID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis Revision ID in the System Device ID register (SIM_SDID). 
  *
- * This function will get Kinetis Revision ID in System Device ID register. 
+ * This function  gets the Kinetis Revision ID in System Device ID register. 
  *
  * @return id Kinetis Revision ID
  */
@@ -1163,9 +1164,9 @@ static inline uint32_t sim_get_rev_id(void)
 
 #if FSL_FEATURE_SIM_SDID_HAS_DIEID
 /*!
- * @brief Get Kinetis Die ID in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis Die ID in the System Device ID register (SIM_SDID).
  *
- * This function will get Kinetis Die ID in System Device ID register. 
+ * This function  gets the Kinetis Die ID in System Device ID register. 
  *
  * @return id Kinetis Die ID
  */
@@ -1177,11 +1178,11 @@ static inline uint32_t sim_get_die_id(void)
 
 #if FSL_FEATURE_SIM_SDID_HAS_SRAMSIZE
 /*!
- * @brief Get Kinetis Sram Size in System Device ID register (SIM_SDID) 
+ * @brief Gets the Kinetis SRAM size in the System Device ID register (SIM_SDID).
  *
- * This function will get Kinetis Sram Size in System Device ID register. 
+ * This function  gets the Kinetis SRAM Size in System Device ID register. 
  *
- * @return id Kinetis Sram Size
+ * @return id Kinetis SRAM Size
  */
 static inline uint32_t sim_get_sram_size(void)
 {
@@ -1191,9 +1192,9 @@ static inline uint32_t sim_get_sram_size(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_NVMSIZE
 /*!
- * @brief Get FlexNVM size in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the FlexNVM size in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get FlexNVM size in Flash Configuration Register 1  
+ * This function  gets the FlexNVM size in the Flash Configuration Register 1.
  *
  * @return size FlexNVM Size
  */
@@ -1204,9 +1205,9 @@ static inline uint32_t sim_get_nvm_size(void)
 #endif
 
 /*!
- * @brief Get Program flash size in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the program flash size in  the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get Program flash size in Flash Configuration Register 1  
+ * This function  gets the program flash size in the Flash Configuration Register 1.
  *
  * @return size Program flash Size
  */
@@ -1217,9 +1218,9 @@ static inline uint32_t sim_get_pf_size(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_EESIZE
 /*!
- * @brief Get EEProm size in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the EEProm size in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get EEProm size in Flash Configuration Register 1  
+ * This function  gets the EEProm size in the Flash Configuration Register 1.
  *
  * @return size EEProm Size
  */
@@ -1231,9 +1232,9 @@ static inline uint32_t sim_get_eeprom_size(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_DEPART
 /*!
- * @brief Get FlexNVM partition in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the FlexNVM partition in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get FlexNVM partition in Flash Configuration Register 1  
+ * This function  gets the FlexNVM partition in the Flash Configuration Register 1  
  *
  * @return setting FlexNVM partition setting
  */
@@ -1245,9 +1246,9 @@ static inline uint32_t sim_get_depart(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_FLASHDOZE
 /*!
- * @brief Set Flash Doze in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Sets the Flash Doze in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will set Flash Doze in Flash Configuration Register 1  
+ * This function  sets the Flash Doze in the Flash Configuration Register 1.
  * 
  * @param setting Flash Doze setting
  */
@@ -1257,9 +1258,9 @@ static inline void sim_set_flashdoze(uint32_t setting)
 }
 
 /*!
- * @brief Get Flash Doze in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the Flash Doze in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get Flash Doze in Flash Configuration Register 1  
+ * This function  gets the Flash Doze in the Flash Configuration Register 1.
  *
  * @return setting Flash Doze setting
  */
@@ -1271,9 +1272,9 @@ static inline uint32_t sim_get_flashdoze(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_FLASHDIS
 /*!
- * @brief Set Flash disable setting in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Sets the Flash disable setting in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will Set Flash disable setting in Flash Configuration Register 1  
+ * This function  sets the Flash disable setting in the Flash Configuration Register 1. 
  *
  * @param setting Flash disable setting
  */
@@ -1283,9 +1284,9 @@ static inline void sim_set_flashdis(uint32_t setting)
 }
 
 /*!
- * @brief Get Flash disable setting in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the Flash disable setting in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get Flash disable setting in Flash Configuration Register 1  
+ * This function  gets the Flash disable setting in the Flash Configuration Register 1.
  *
  * @return setting Flash disable setting
  */
@@ -1297,11 +1298,11 @@ static inline uint32_t sim_get_flashdis(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR0
 /*!
- * @brief Get Flash max address block 0 in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the Flash maximum address block 0 in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get Flash max block 0 in Flash Configuration Register 2  
+ * This function  gets the Flash maximum block 0 in Flash Configuration Register 2.
  *
- * @return address Flash max block 0 address
+ * @return address Flash maximum block 0 address
  */
 static inline uint32_t sim_get_maxaddr0(void)
 {
@@ -1311,11 +1312,11 @@ static inline uint32_t sim_get_maxaddr0(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR1
 /*!
- * @brief Get Flash max address block 1 in Flash Configuration Register 2  
+ * @brief Gets the Flash maximum address block 1 in Flash Configuration Register 2.
  *
- * This function will get Flash max block 1 in Flash Configuration Register 1  
+ * This function  gets the Flash maximum block 1 in Flash Configuration Register 1.
  *
- * @return address Flash max block 0 address
+ * @return address Flash maximum block 0 address
  */
 static inline uint32_t sim_get_maxaddr1(void)
 {
@@ -1325,11 +1326,11 @@ static inline uint32_t sim_get_maxaddr1(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR01
 /*!
- * @brief Get Flash max address block 0 in Flash Configuration Register 1  (SIM_FCFG) 
+ * @brief Gets the Flash maximum address block 0 in the Flash Configuration Register 1  (SIM_FCFG).
  *
- * This function will get Flash max block 0 in Flash Configuration Register 2  
+ * This function  gets the Flash maximum block 0 in Flash Configuration Register 2. 
  *
- * @return address Flash max block 0 address
+ * @return address Flash maximum block 0 address
  */
 static inline uint32_t sim_get_maxaddr01(void)
 {
@@ -1339,11 +1340,11 @@ static inline uint32_t sim_get_maxaddr01(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_MAXADDR23
 /*!
- * @brief Get Flash max address block 1 in Flash Configuration Register 2  
+ * @brief Gets the Flash maximum address block 1 in the Flash Configuration Register 2.
  *
- * This function will get Flash max block 1 in Flash Configuration Register 1  
+ * This function  gets the Flash maximum block 1 in Flash Configuration Register 1.
  *
- * @return address Flash max block 0 address
+ * @return address Flash maximum block 0 address
  */
 static inline uint32_t sim_get_maxaddr23(void)
 {
@@ -1353,9 +1354,9 @@ static inline uint32_t sim_get_maxaddr23(void)
 
 #if FSL_FEATURE_SIM_FCFG_HAS_PFLSH
 /*!
- * @brief Get program flash in Flash Configuration Register 2  
+ * @brief Gets the program flash in the Flash Configuration Register 2.
  *
- * This function will get program flash max block 0 in Flash Configuration Register 1  
+ * This function  gets the program flash maximum block 0 in Flash Configuration Register 1.
  *
  * @return status program flash status
  */

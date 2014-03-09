@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -158,7 +158,7 @@ typedef union _hw_i2c_f
     struct _hw_i2c_f_bitfields
     {
         uint8_t ICR : 6;               //!< [5:0] ClockRate
-        uint8_t MULT : 2;              //!< [7:6]
+        uint8_t MULT : 2;              //!< [7:6] Multiplier Factor
     } B;
 } hw_i2c_f_t;
 #endif
@@ -186,24 +186,25 @@ typedef union _hw_i2c_f
 /*!
  * @name Register I2C_F, field ICR[5:0] (RW)
  *
- * Prescales the bus clock for bit rate selection. This field and the MULT field
- * determine the I2C baud rate, the SDA hold time, the SCL start hold time, and
- * the SCL stop hold time. For a list of values corresponding to each ICR
- * setting, see I2C divider and hold values. The SCL divider multiplied by multiplier
- * factor (mul) determines the I2C baud rate. I2C baud rate = bus speed (Hz)/(mul *
- * SCL divider) The SDA hold time is the delay from the falling edge of SCL (I2C
- * clock) to the changing of SDA (I2C data). SDA hold time = bus period (s) *
- * mul * SDA hold value The SCL start hold time is the delay from the falling edge
- * of SDA (I2C data) while SCL is high (start condition) to the falling edge of
- * SCL (I2C clock). SCL start hold time = bus period (s) * mul * SCL start hold
- * value The SCL stop hold time is the delay from the rising edge of SCL (I2C
- * clock) to the rising edge of SDA (I2C data) while SCL is high (stop condition). SCL
- * stop hold time = bus period (s) * mul * SCL stop hold value For example, if
- * the bus speed is 8 MHz, the following table shows the possible hold time values
- * with different ICR and MULT selections to achieve an I2C baud rate of 100
- * kbit/s. MULT ICR Hold times (μs) SDA SCL Start SCL Stop 2h 00h 3.500 3.000 5.500
- * 1h 07h 2.500 4.000 5.250 1h 0Bh 2.250 4.000 5.250 0h 14h 2.125 4.250 5.125 0h
- * 18h 1.125 4.750 5.125
+ * Prescales the I2C module clock for bit rate selection. This field and the
+ * MULT field determine the I2C baud rate, the SDA hold time, the SCL start hold
+ * time, and the SCL stop hold time. For a list of values corresponding to each ICR
+ * setting, see I2C divider and hold values. The SCL divider multiplied by
+ * multiplier factor (mul) determines the I2C baud rate. I2C baud rate = I2C module
+ * clock speed (Hz)/(mul * SCL divider) The SDA hold time is the delay from the
+ * falling edge of SCL (I2C clock) to the changing of SDA (I2C data). SDA hold time =
+ * I2C module clock period (s) * mul * SDA hold value The SCL start hold time is
+ * the delay from the falling edge of SDA (I2C data) while SCL is high (start
+ * condition) to the falling edge of SCL (I2C clock). SCL start hold time = I2C
+ * module clock period (s) * mul * SCL start hold value The SCL stop hold time is
+ * the delay from the rising edge of SCL (I2C clock) to the rising edge of SDA (I2C
+ * data) while SCL is high (stop condition). SCL stop hold time = I2C module
+ * clock period (s) * mul * SCL stop hold value For example, if the I2C module clock
+ * speed is 8 MHz, the following table shows the possible hold time values with
+ * different ICR and MULT selections to achieve an I2C baud rate of 100 kbit/s.
+ * MULT ICR Hold times (μs) SDA SCL Start SCL Stop 2h 00h 3.500 3.000 5.500 1h
+ * 07h 2.500 4.000 5.250 1h 0Bh 2.250 4.000 5.250 0h 14h 2.125 4.250 5.125 0h 18h
+ * 1.125 4.750 5.125
  */
 //@{
 #define BP_I2C_F_ICR         (0U)          //!< Bit position for I2C_F_ICR.
@@ -227,8 +228,8 @@ typedef union _hw_i2c_f
 /*!
  * @name Register I2C_F, field MULT[7:6] (RW)
  *
- * The MULT bits define the multiplier factor mul. This factor is used along
- * with the SCL divider to generate the I2C baud rate.
+ * Defines the multiplier factor (mul). This factor is used along with the SCL
+ * divider to generate the I2C baud rate.
  *
  * Values:
  * - 00 - mul = 1
@@ -305,16 +306,16 @@ typedef union _hw_i2c_c1
 /*!
  * @name Register I2C_C1, field DMAEN[0] (RW)
  *
- * The DMAEN bit enables or disables the DMA function.
+ * Enables or disables the DMA function.
  *
  * Values:
  * - 0 - All DMA signalling disabled.
- * - 1 - DMA transfer is enabled and the following conditions trigger the DMA
- *     request: While FACK = 0, a data byte is received, either address or data is
- *     transmitted. (ACK/NACK automatic) While FACK = 0, the first byte received
- *     matches the A1 register or is general call address. If any address
- *     matching occurs, IAAS and TCF are set. If the direction of transfer is known from
- *     master to slave, then it is not required to check the SRW. With this
+ * - 1 - DMA transfer is enabled. While SMB[FACK] = 0, the following conditions
+ *     trigger the DMA request: a data byte is received, and either address or
+ *     data is transmitted. (ACK/NACK is automatic) the first byte received matches
+ *     the A1 register or is a general call address. If any address matching
+ *     occurs, S[IAAS] and S[TCF] are set. If the direction of transfer is known
+ *     from master to slave, then it is not required to check S[SRW]. With this
  *     assumption, DMA can also be used in this case. In other cases, if the master
  *     reads data from the slave, then it is required to rewrite the C1 register
  *     operation. With this assumption, DMA cannot be used. When FACK = 1, an
@@ -372,19 +373,14 @@ typedef union _hw_i2c_c1
 /*!
  * @name Register I2C_C1, field RSTA[2] (WORZ)
  *
- * Writing a one to this bit generates a repeated START condition provided it is
- * the current master. This bit will always be read as zero. Attempting a repeat
- * at the wrong time results in loss of arbitration.
+ * Writing 1 to this bit generates a repeated START condition provided it is the
+ * current master. This bit will always be read as 0. Attempting a repeat at the
+ * wrong time results in loss of arbitration.
  */
 //@{
 #define BP_I2C_C1_RSTA       (2U)          //!< Bit position for I2C_C1_RSTA.
 #define BM_I2C_C1_RSTA       (0x04U)       //!< Bit mask for I2C_C1_RSTA.
 #define BS_I2C_C1_RSTA       (1U)          //!< Bit field size in bits for I2C_C1_RSTA.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the I2C_C1_RSTA field.
-#define BR_I2C_C1_RSTA(x)    (BITBAND_ACCESS8(HW_I2C_C1_ADDR(x), BP_I2C_C1_RSTA))
-#endif
 
 //! @brief Format value for bitfield I2C_C1_RSTA.
 #define BF_I2C_C1_RSTA(v)    (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_I2C_C1_RSTA), uint8_t) & BM_I2C_C1_RSTA)
@@ -399,7 +395,7 @@ typedef union _hw_i2c_c1
  * @name Register I2C_C1, field TXAK[3] (RW)
  *
  * Specifies the value driven onto the SDA during data acknowledge cycles for
- * both master and slave receivers. The value of the FACK bit affects NACK/ACK
+ * both master and slave receivers. The value of SMB[FACK] affects NACK/ACK
  * generation. SCL is held low until TXAK is written.
  *
  * Values:
@@ -462,9 +458,9 @@ typedef union _hw_i2c_c1
 /*!
  * @name Register I2C_C1, field MST[5] (RW)
  *
- * When the MST bit is changed from a 0 to a 1, a START signal is generated on
- * the bus and master mode is selected. When this bit changes from a 1 to a 0, a
- * STOP signal is generated and the mode of operation changes from master to slave.
+ * When MST is changed from 0 to 1, a START signal is generated on the bus and
+ * master mode is selected. When this bit changes from 1 to 0, a STOP signal is
+ * generated and the mode of operation changes from master to slave.
  *
  * Values:
  * - 0 - Slave mode
@@ -615,18 +611,18 @@ typedef union _hw_i2c_s
  * @name Register I2C_S, field IICIF[1] (W1C)
  *
  * This bit sets when an interrupt is pending. This bit must be cleared by
- * software by writing a 1 to it, such as in the interrupt routine. One of the
- * following events can set this bit: One byte transfer, including ACK/NACK bit,
- * completes if FACK is 0. An ACK or NACK is sent on the bus by writing 0 or 1 to TXAK
- * after this bit is set in receive mode. One byte transfer, excluding ACK/NACK
- * bit, completes if FACK is 1. Match of slave address to calling address including
+ * software by writing 1 to it, such as in the interrupt routine. One of the following
+ * events can set this bit: One byte transfer, including ACK/NACK bit, completes
+ * if FACK is 0. An ACK or NACK is sent on the bus by writing 0 or 1 to TXAK
+ * after this bit is set in receive mode. One byte transfer, excluding ACK/NACK bit,
+ * completes if FACK is 1. Match of slave address to calling address including
  * primary slave address, range slave address , alert response address, second
  * slave address, or general call address. Arbitration lost In SMBus mode, any
  * timeouts except SCL and SDA high timeouts I2C bus stop or start detection if the
  * SSIE bit in the Input Glitch Filter register is 1 To clear the I2C bus stop or
  * start detection interrupt: In the interrupt service routine, first clear the
- * STOPF or STARTF bit in the Input Glitch Filter register by writing 1 to it,
- * and then clear the IICIF bit. If this sequence is reversed, the IICIF bit is
+ * STOPF or STARTF bit in the Input Glitch Filter register by writing 1 to it, and
+ * then clear the IICIF bit. If this sequence is reversed, the IICIF bit is
  * asserted again.
  *
  * Values:
@@ -676,11 +672,11 @@ typedef union _hw_i2c_s
 /*!
  * @name Register I2C_S, field RAM[3] (RW)
  *
- * This bit is set to 1 by any of the following conditions: Any nonzero calling
- * address is received that matches the address in the RA register. The RMEN bit
- * is set and the calling address is within the range of values of the A1 and RA
- * registers. For the RAM bit to be set to 1 correctly, C1[IICIE] must be set to
- * 1. Writing the C1 register with any value clears this bit to 0.
+ * This bit is set to 1 by any of the following conditions, if I2C_C2[RMEN] = 1:
+ * Any nonzero calling address is received that matches the address in the RA
+ * register. The calling address is within the range of values of the A1 and RA
+ * registers. For the RAM bit to be set to 1 correctly, C1[IICIE] must be set to 1.
+ * Writing the C1 register with any value clears this bit to 0.
  *
  * Values:
  * - 0 - Not addressed
@@ -709,7 +705,7 @@ typedef union _hw_i2c_s
  * @name Register I2C_S, field ARBL[4] (W1C)
  *
  * This bit is set by hardware when the arbitration procedure is lost. The ARBL
- * bit must be cleared by software, by writing a one to it.
+ * bit must be cleared by software, by writing 1 to it.
  *
  * Values:
  * - 0 - Standard bus operation.
@@ -760,14 +756,15 @@ typedef union _hw_i2c_s
  * @name Register I2C_S, field IAAS[6] (RW)
  *
  * This bit is set by one of the following conditions: The calling address
- * matches the programmed slave primary address in the A1 register or range address in
- * the RA register (which must be set to a nonzero value). GCAEN is set and a
- * general call is received. SIICAEN is set and the calling address matches the
- * second programmed slave address. ALERTEN is set and an SMBus alert response
- * address is received RMEN is set and an address is received that is within the range
- * between the values of the A1 and RA registers. This bit sets before the ACK
- * bit. The CPU must check the SRW bit and set TX/RX accordingly. Writing the C1
- * register with any value clears this bit.
+ * matches the programmed primary slave address in the A1 register, or matches the
+ * range address in the RA register (which must be set to a nonzero value and under
+ * the condition I2C_C2[RMEN] = 1). C2[GCAEN] is set and a general call is
+ * received. SMB[SIICAEN] is set and the calling address matches the second programmed
+ * slave address. ALERTEN is set and an SMBus alert response address is received
+ * RMEN is set and an address is received that is within the range between the
+ * values of the A1 and RA registers. IAAS sets before the ACK bit. The CPU must
+ * check the SRW bit and set TX/RX accordingly. Writing the C1 register with any
+ * value clears this bit.
  *
  * Values:
  * - 0 - Not addressed
@@ -795,10 +792,10 @@ typedef union _hw_i2c_s
 /*!
  * @name Register I2C_S, field TCF[7] (RO)
  *
- * This bit sets on the completion of a byte and acknowledge bit transfer. This
- * bit is valid only during or immediately following a transfer to or from the
- * I2C module. The TCF bit is cleared by reading the I2C data register in receive
- * mode or by writing to the I2C data register in transmit mode.
+ * Acknowledges a byte transfer; TCF sets on the completion of a byte transfer.
+ * This bit is valid only during or immediately following a transfer to or from
+ * the I2C module. TCF is cleared by reading the I2C data register in receive mode
+ * or by writing to the I2C data register in transmit mode.
  *
  * Values:
  * - 0 - Transfer in progress
@@ -864,18 +861,18 @@ typedef union _hw_i2c_d
  * making the transition out of master receive mode, switch the I2C mode before
  * reading the Data register to prevent an inadvertent initiation of a master
  * receive data transfer. In slave mode, the same functions are available after an
- * address match occurs. C1[TX] must correctly reflect the desired direction of
- * transfer in master and slave modes for the transmission to begin. For example, if
- * the I2C module is configured for master transmit but a master receive is
- * desired, reading the Data register does not initiate the receive. Reading the Data
- * register returns the last byte received while the I2C module is configured in
- * master receive or slave receive mode. The Data register does not reflect every
- * byte that is transmitted on the I2C bus, and neither can software verify that
- * a byte has been written to the Data register correctly by reading it back. In
- * master transmit mode, the first byte of data written to the Data register
- * following assertion of MST (start bit) or assertion of RSTA (repeated start bit)
- * is used for the address transfer and must consist of the calling address (in
- * bits 7-1) concatenated with the required R/W bit (in position bit 0).
+ * address match occurs. The C1[TX] bit must correctly reflect the desired direction
+ * of transfer in master and slave modes for the transmission to begin. For
+ * example, if the I2C module is configured for master transmit but a master receive
+ * is desired, reading the Data register does not initiate the receive. Reading
+ * the Data register returns the last byte received while the I2C module is
+ * configured in master receive or slave receive mode. The Data register does not
+ * reflect every byte that is transmitted on the I2C bus, and neither can software
+ * verify that a byte has been written to the Data register correctly by reading it
+ * back. In master transmit mode, the first byte of data written to the Data
+ * register following assertion of MST (start bit) or assertion of RSTA (repeated
+ * start bit) is used for the address transfer and must consist of the calling
+ * address (in bits 7-1) concatenated with the required R/W bit (in position bit 0).
  */
 //@{
 #define BP_I2C_D_DATA        (0U)          //!< Bit position for I2C_D_DATA.
@@ -884,7 +881,7 @@ typedef union _hw_i2c_d
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the I2C_D_DATA field.
-#define BR_I2C_D_DATA(x)     (HW_I2C_D(x).B.DATA)
+#define BR_I2C_D_DATA(x)     (HW_I2C_D(x).U)
 #endif
 
 //! @brief Format value for bitfield I2C_D_DATA.
@@ -892,7 +889,7 @@ typedef union _hw_i2c_d
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the DATA field to a new value.
-#define BW_I2C_D_DATA(x, v)  (HW_I2C_D_WR(x, (HW_I2C_D_RD(x) & ~BM_I2C_D_DATA) | BF_I2C_D_DATA(v)))
+#define BW_I2C_D_DATA(x, v)  (HW_I2C_D_WR(x, v))
 #endif
 //@}
 
@@ -969,14 +966,14 @@ typedef union _hw_i2c_c2
 /*!
  * @name Register I2C_C2, field RMEN[3] (RW)
  *
- * Controls slave address matching for addresses between the values of the A1
- * and RA registers. When this bit is set, a slave address match occurs for any
- * address greater than the value of the A1 register and less than or equal to the
- * value of the RA register.
+ * This bit controls the slave address matching for addresses between the values
+ * of the A1 and RA registers. When this bit is set, a slave address matching
+ * occurs for any address greater than the value of the A1 register and less than
+ * or equal to the value of the RA register.
  *
  * Values:
- * - 0 - Range mode disabled. No address match occurs for an address within the
- *     range of values of the A1 and RA registers.
+ * - 0 - Range mode disabled. No address matching occurs for an address within
+ *     the range of values of the A1 and RA registers.
  * - 1 - Range mode enabled. Address matching occurs when a slave receives an
  *     address within the range of values of the A1 and RA registers.
  */
@@ -1162,9 +1159,9 @@ typedef union _hw_i2c_flt
 /*!
  * @name Register I2C_FLT, field FLT[3:0] (RW)
  *
- * Controls the width of the glitch, in terms of bus clock cycles, that the
- * filter must absorb. For any glitch whose size is less than or equal to this width
- * setting, the filter does not allow the glitch to pass.
+ * Controls the width of the glitch, in terms of I2C module clock cycles, that
+ * the filter must absorb. For any glitch whose size is less than or equal to this
+ * width setting, the filter does not allow the glitch to pass.
  *
  * Values:
  * - 0 - No filter/bypass
@@ -1368,9 +1365,9 @@ typedef union _hw_i2c_ra
  * @name Register I2C_RA, field RAD[7:1] (RW)
  *
  * This field contains the slave address to be used by the I2C module. The field
- * is used in the 7-bit address scheme. Any nonzero write enables this register.
- * This register's use is similar to that of the A1 register, but in addition
- * this register can be considered a maximum boundary in range matching mode.
+ * is used in the 7-bit address scheme. If I2C_C2[RMEN] is set to 1, any nonzero
+ * value write enables this register. This register value can be considered as a
+ * maximum boundary in the range matching mode.
  */
 //@{
 #define BP_I2C_RA_RAD        (1U)          //!< Bit position for I2C_RA_RAD.
@@ -1478,7 +1475,7 @@ typedef union _hw_i2c_smb
  * @name Register I2C_SMB, field SHTF2[1] (W1C)
  *
  * This bit sets when SCL is held high and SDA is held low more than clock *
- * LoValue/512. Software clears this bit by writing a 1 to it.
+ * LoValue / 512. Software clears this bit by writing 1 to it.
  *
  * Values:
  * - 0 - No SCL high and SDA low timeout occurs
@@ -1530,7 +1527,7 @@ typedef union _hw_i2c_smb
  * This bit is set when the SLT register (consisting of the SLTH and SLTL
  * registers) is loaded with a non-zero value (LoValue) and an SCL low timeout occurs.
  * Software clears this bit by writing a logic 1 to it. The low timeout function
- * is disabled when the SLT register's value is zero.
+ * is disabled when the SLT register's value is 0.
  *
  * Values:
  * - 0 - No low timeout occurs
@@ -1561,8 +1558,8 @@ typedef union _hw_i2c_smb
  * Selects the clock source of the timeout counter.
  *
  * Values:
- * - 0 - Timeout counter counts at the frequency of the bus clock / 64
- * - 1 - Timeout counter counts at the frequency of the bus clock
+ * - 0 - Timeout counter counts at the frequency of the I2C module clock / 64
+ * - 1 - Timeout counter counts at the frequency of the I2C module clock
  */
 //@{
 #define BP_I2C_SMB_TCKSEL    (4U)          //!< Bit position for I2C_SMB_TCKSEL.
@@ -1791,7 +1788,7 @@ typedef union _hw_i2c_slth
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the I2C_SLTH_SSLT field.
-#define BR_I2C_SLTH_SSLT(x)  (HW_I2C_SLTH(x).B.SSLT)
+#define BR_I2C_SLTH_SSLT(x)  (HW_I2C_SLTH(x).U)
 #endif
 
 //! @brief Format value for bitfield I2C_SLTH_SSLT.
@@ -1799,7 +1796,7 @@ typedef union _hw_i2c_slth
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SSLT field to a new value.
-#define BW_I2C_SLTH_SSLT(x, v) (HW_I2C_SLTH_WR(x, (HW_I2C_SLTH_RD(x) & ~BM_I2C_SLTH_SSLT) | BF_I2C_SLTH_SSLT(v)))
+#define BW_I2C_SLTH_SSLT(x, v) (HW_I2C_SLTH_WR(x, v))
 #endif
 //@}
 
@@ -1856,7 +1853,7 @@ typedef union _hw_i2c_sltl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the I2C_SLTL_SSLT field.
-#define BR_I2C_SLTL_SSLT(x)  (HW_I2C_SLTL(x).B.SSLT)
+#define BR_I2C_SLTL_SSLT(x)  (HW_I2C_SLTL(x).U)
 #endif
 
 //! @brief Format value for bitfield I2C_SLTL_SSLT.
@@ -1864,7 +1861,7 @@ typedef union _hw_i2c_sltl
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the SSLT field to a new value.
-#define BW_I2C_SLTL_SSLT(x, v) (HW_I2C_SLTL_WR(x, (HW_I2C_SLTL_RD(x) & ~BM_I2C_SLTL_SSLT) | BF_I2C_SLTL_SSLT(v)))
+#define BW_I2C_SLTL_SSLT(x, v) (HW_I2C_SLTL_WR(x, v))
 #endif
 //@}
 

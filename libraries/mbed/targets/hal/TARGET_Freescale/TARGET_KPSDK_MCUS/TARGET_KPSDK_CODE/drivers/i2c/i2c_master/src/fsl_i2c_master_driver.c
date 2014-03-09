@@ -28,14 +28,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "fsl_i2c_master_driver.h"
-#include "fsl_i2c_shared_irqs.h"
-#include "fsl_i2c_hal.h"
-#include "fsl_device_registers.h"
-#include "fsl_clock_manager.h"
-#include "fsl_interrupt_manager.h"
 #include <assert.h>
 #include <string.h>
+#include "fsl_i2c_master_driver.h"
+#include "fsl_i2c_shared_irqs.h"
+#include "fsl_clock_manager.h"
+#include "fsl_interrupt_manager.h"
 
 /*******************************************************************************
  * Definitions
@@ -157,6 +155,7 @@ i2c_status_t i2c_master_configure_bus(i2c_master_t * master, const i2c_device_t 
 i2c_status_t i2c_master_transfer(i2c_master_t * master,
                       const i2c_device_t * device,
                       i2c_direction_t direction,
+                      bool stopAfterTransfer,
                       uint32_t subaddress,
                       size_t subaddressLength,
                       uint8_t * data,
@@ -223,7 +222,8 @@ i2c_status_t i2c_master_transfer(i2c_master_t * master,
     }
 
     /* Now perform the main transfer.*/
-    error = i2c_master_transfer_basic(master, kI2CNoStart, direction, data, dataLength,
+    error = i2c_master_transfer_basic(master, kI2CNoStart | (stopAfterTransfer ? 0u : kI2CNoStop),
+                                      direction, data, dataLength,
                                       actualLengthTransferred, timeout_ms);
 
     return error;
@@ -246,6 +246,9 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
                       uint32_t timeout_ms)
 {
     assert(master);
+
+    i2c_status_t error = kStatus_I2C_Success;
+    fsl_rtos_status syncStatus;
 
     /* Don't let another transfer start if one is already in progress.*/
     if (master->isTransferInProgress)
@@ -306,9 +309,6 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
     }
 
     /* Wait for the transfer to finish.*/
-    i2c_status_t error = kStatus_I2C_Success;
-    fsl_rtos_status syncStatus;
-    
     do
     {
         syncStatus = sync_wait(&master->irqSync, timeout_ms);
@@ -320,7 +320,7 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
         error = kStatus_I2C_Timeout;
     }
 
-    /* Disable the I2C interupt.*/
+    /* Disable the I2C interrupt.*/
     i2c_hal_disable_interrupt(master->instance);
 
     /* Set the error to indicate if we got a NAK.*/
@@ -329,7 +329,7 @@ i2c_status_t i2c_master_transfer_basic(i2c_master_t * master,
         error = kStatus_I2C_ReceivedNak;
     }
 
-    /* Return actual number of bytes tranferred to caller.*/
+    /* Return actual number of bytes transferred to caller.*/
     if (actualLengthTransferred)
     {
         *actualLengthTransferred = master->bytesTransferredCount;
@@ -352,6 +352,7 @@ void i2c_master_irq_handler(void * state)
 
     i2c_master_t * master = (i2c_master_t *)state;
     uint32_t instance = master->instance;
+    bool signalCompletion = false;
 
     /* Go ahead and clear the interrupt flag.*/
     i2c_hal_clear_interrupt(instance);
@@ -368,17 +369,15 @@ void i2c_master_irq_handler(void * state)
         return;
     }
 
-    bool signalCompletion = false;
-
     /* Update counters.*/
     --master->dataRemainingCount;
     ++master->bytesTransferredCount;
 
-    /* If last byte to read/write and the no-stop flag isn't set, send the STOP signal.*/
+    /* Make sure the last byte was successful.*/
     if (master->dataRemainingCount == 0)
     {
         /* Check whether we got an ACK or NAK from the last byte we sent.*/
-        if (!i2c_hal_get_receive_ack(instance))
+        if ((!i2c_hal_get_receive_ack(instance)) && (master->direction == kI2CWrite))
         {
             /* Record that we got a NAK.*/
             master->gotNak = true;
@@ -399,7 +398,7 @@ void i2c_master_irq_handler(void * state)
         /* Was the last byte just transferred?*/
         if (master->dataRemainingCount > 0)
         {
-            /* Check whether we got an ACK or NAK from the last byte we sent.*/
+            /* Check whether we got an ACK or NAK from the former byte we sent.*/
             if (!i2c_hal_get_receive_ack(instance))
             {
                 /* Record that we got a NAK.*/

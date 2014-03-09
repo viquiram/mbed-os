@@ -51,8 +51,8 @@ uint64_t pit_hal_read_lifetime_timer_count(void)
     uint32_t valueH = 0U, valueL = 0U;
     
     /* LTMR64H should be read before LTMR64L */
-    valueH = HW_PIT_LTMR64H_RD;
-    valueL = HW_PIT_LTMR64L_RD;
+    valueH = HW_PIT_LTMR64H_RD();
+    valueL = HW_PIT_LTMR64L_RD();
     return (((uint64_t)valueH << 32U) + (uint64_t)(valueL));
 }
 #endif /* FSL_FEATURE_PIT_HAS_LIFETIME_TIMER*/

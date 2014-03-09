@@ -48,12 +48,16 @@
  *
  * Define structure PitConfig and use pit_init_channel() to make necessary
  * initializations. You may also use remaining functions for PIT configuration.
+ *
+ * @note the timer chain feature is not valid in all devices, please check 
+ * fsl_pit_features.h for accurate setting. If it's not valid, the value set here
+ * will be bypassed inside function pit_init_channel(). 
  */
-typedef struct PitConfig {
+typedef struct PitUserConfig {
     bool isInterruptEnabled;  /*!< Timer interrupt 0-disable/1-enable*/
     bool isTimerChained;      /*!< Chained with previous timer, 0-not/1-chained*/
     uint32_t periodUs;        /*!< Timer period in unit of microseconds*/
-} pit_config_t;
+} pit_user_config_t;
 
 /*! @brief PIT ISR callback function typedef */
 typedef void (*pit_isr_callback_t)(void);
@@ -94,7 +98,7 @@ void pit_init_module(bool isRunInDebug);
  *
  * Here is an example demonstrating how to define a PIT channel config structure:
    @code
-   pit_config_t pitTestInit = {
+   pit_user_config_t pitTestInit = {
         .isInterruptEnabled = true,
         // Only takes effect when chain feature is available.
         // Otherwise, pass in arbitrary value(true/false).
@@ -107,7 +111,7 @@ void pit_init_module(bool isRunInDebug);
  * @param timer Timer channel number.
  * @param config PIT channel configuration structure.
  */
-void pit_init_channel(uint32_t timer, const pit_config_t * config);
+void pit_init_channel(uint32_t timer, const pit_user_config_t * config);
 
 /*!
  * @brief Disable PIT module and gate control.

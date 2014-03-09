@@ -28,12 +28,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string.h>
+#include <assert.h>
 #include "fsl_dspi_slave_driver.h"
 #include "fsl_dspi_shared_irqs.h"
 #include "fsl_clock_manager.h"
 #include "fsl_interrupt_manager.h"
-#include <string.h>
-#include <assert.h>
 
 /*******************************************************************************
  * Definitions
@@ -76,8 +76,9 @@ void dspi_slave_irq_handler(void * state)
     uint32_t sourceWord = kEmptyChar;
     uint8_t sourceWord1, sourceWord2, sourceWord3, sourceWord4;
 
-    /* catch tx fifo underflow conditions */
-    if (dspi_hal_get_status_flag(instance, kDspiTxFifoUnderflow))
+    /* catch tx fifo underflow conditions, service only if tx under flow interrupt enabled */
+    if ((dspi_hal_get_status_flag(instance, kDspiTxFifoUnderflow)) &&
+        (dspi_hal_get_interrupt_config(instance, kDspiTxFifoUnderflow)))
     {
         /* Report SPI slave  transmit underrun error */
         if (callbacks->onError)
@@ -86,12 +87,14 @@ void dspi_slave_irq_handler(void * state)
         }
     }
 
-    if (dspi_hal_get_status_flag(instance, kDspiRxFifoOverflow))
+    /* catch rx fifo overflow conditions, service only if rx over flow interrupt enabled */
+    if ((dspi_hal_get_status_flag(instance, kDspiRxFifoOverflow)) &&
+        (dspi_hal_get_interrupt_config(instance, kDspiRxFifoOverflow)))
     {
-        /* Report SPI slave  transmit underrun error */
+        /* Report SPI slave receive overflow error */
         if (callbacks->onError)
         {
-            callbacks->onError(kStatus_DSPI_SlaveTxUnderrun, instance);
+            callbacks->onError(kStatus_DSPI_SlaveRxOverrun, instance);
         }
     }
 
@@ -235,7 +238,6 @@ void dspi_slave_irq_handler(void * state)
                 }
             }
         }
-
     }
     /* Optimize for 3 bytes data */
     else if (dspiState->bitsPerFrame <= 24)
@@ -480,8 +482,9 @@ void dspi_slave_irq_handler(void * state)
  *   dspi_slave_init(slaveInstance, &slaveUserConfig, &dspiSlaveState);
  *
  *END**************************************************************************/
-dspi_status_t dspi_slave_init(uint32_t instance, const dspi_slave_user_config_t * slaveConfig,
-                     dspi_slave_state_t * dspiState)
+dspi_status_t dspi_slave_init(uint32_t instance,
+                              dspi_slave_state_t * dspiState,
+                              const dspi_slave_user_config_t * slaveConfig)
 {
     assert(slaveConfig);
     assert(instance < HW_SPI_INSTANCE_COUNT);
@@ -541,6 +544,8 @@ dspi_status_t dspi_slave_init(uint32_t instance, const dspi_slave_user_config_t 
     dspi_hal_configure_interrupt(instance, kDspiRxFifoDrainRequest, true);
     /* TX FIFO underflow request enable*/
     dspi_hal_configure_interrupt(instance, kDspiTxFifoUnderflow, true);
+    /* RX FIFO overflow request enable*/
+    dspi_hal_configure_interrupt(instance, kDspiRxFifoOverflow, true);
 
     /* Write 0 to tx shift register so a master will receive a known first word (0). */
     dspi_hal_write_data_slave_mode(instance, 0);

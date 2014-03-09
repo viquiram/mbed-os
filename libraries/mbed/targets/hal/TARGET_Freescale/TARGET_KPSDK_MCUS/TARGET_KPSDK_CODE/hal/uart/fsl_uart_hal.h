@@ -30,11 +30,11 @@
 #ifndef __FSL_UART_HAL_H__
 #define __FSL_UART_HAL_H__
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "fsl_uart_features.h"
 #include "fsl_device_registers.h"
-#include <assert.h>
 
 /*!
  * @addtogroup uart_hal
@@ -51,26 +51,26 @@
 typedef enum _uart_status
 {
     kStatus_UART_Success = 0,
-    kStatus_UART_BaudRateCalculationError,/*!< UART Baud Rate calculation error out of range. */
+    kStatus_UART_BaudRateCalculationError,/*!< UART Baud Rate calculation error out of range */
     kStatus_UART_BaudRatePercentDiffExceeded,   /*!< UART Baud Rate exceeds percentage difference */
-    kStatus_UART_BitCountNotSupported,  /*!< UART bit count config not supported. */
-    kStatus_UART_StopBitCountNotSupported,  /*!< UART stop bit count config not supported. */
-    kStatus_UART_RxStandbyModeError,  /*!< UART unable to place receiver in standby mode. */
-    kStatus_UART_ClearStatusFlagError,  /*!< UART clear status flag error. */
-    kStatus_UART_MSBFirstNotSupported,  /*!< UART MSB first feature not supported. */
-    kStatus_UART_ResyncNotSupported,  /*!< UART resync disable operation not supported. */
+    kStatus_UART_BitCountNotSupported,  /*!< UART bit count config not supported */
+    kStatus_UART_StopBitCountNotSupported,  /*!< UART stop bit count config not supported */
+    kStatus_UART_RxStandbyModeError,  /*!< UART unable to place receiver in standby mode */
+    kStatus_UART_ClearStatusFlagError,  /*!< UART clear status flag error */
+    kStatus_UART_MSBFirstNotSupported,  /*!< UART MSB first feature not supported */
+    kStatus_UART_ResyncNotSupported,  /*!< UART resync disable operation not supported */
     kStatus_UART_TxNotDisabled,  /*!< UART Transmitter not disabled before enabling feature */
     kStatus_UART_RxNotDisabled,  /*!< UART Receiver not disabled before enabling feature */
     kStatus_UART_TxOrRxNotDisabled,   /*!< UART Transmitter or Receiver not disabled */
-    kStatus_UART_TxBusy,  /*!< UART transmit still in progress. */
-    kStatus_UART_RxBusy,  /*!< UART receive still in progress. */
-    kStatus_UART_NoTransmitInProgress, /*!< UART no transmit in progress. */
-    kStatus_UART_NoReceiveInProgress, /*!< UART no receive in progress. */
-    kStatus_UART_InvalidInstanceNumber, /*!< Invalid UART instance number. */
-    kStatus_UART_InvalidBitSetting,  /*!< Invalid setting for desired UART register bit field. */
-    kStatus_UART_OverSamplingNotSupported,  /*!< UART oversampling not supported. */
-    kStatus_UART_BothEdgeNotSupported,  /*!< UART both edge sampling not supported. */
-    kStatus_UART_Timeout,  /*!< UART transfer timed out.*/
+    kStatus_UART_TxBusy,  /*!< UART transmit still in progress */
+    kStatus_UART_RxBusy,  /*!< UART receive still in progress */
+    kStatus_UART_NoTransmitInProgress, /*!< UART no transmit in progress */
+    kStatus_UART_NoReceiveInProgress, /*!< UART no receive in progress */
+    kStatus_UART_InvalidInstanceNumber, /*!< Invalid UART instance number */
+    kStatus_UART_InvalidBitSetting,  /*!< Invalid setting for desired UART register bit field */
+    kStatus_UART_OverSamplingNotSupported,  /*!< UART oversampling not supported */
+    kStatus_UART_BothEdgeNotSupported,  /*!< UART both edge sampling not supported */
+    kStatus_UART_Timeout,  /*!< UART transfer timed out*/
 } uart_status_t;
 
 /*!
@@ -111,11 +111,11 @@ typedef enum  _uart_bit_count_per_char {
  * @brief UART operation configuration constants.
  *
  * This provides constants for UART operational states: "operates normally"
- * or "stops/siezes to operation"
+ * or "stops/ceases operation"
  */
 typedef enum _uart_operation_config {
     kUartOperates = 0,  /*!< UART continues to operate normally */
-    kUartStops = 1,   /*!< UART siezes operation */
+    kUartStops = 1,   /*!< UART ceases operation */
 } uart_operation_config_t;
 
 /*!
@@ -125,11 +125,11 @@ typedef enum _uart_operation_config {
  */
 typedef enum _uart_wakeup_method {
     kUartIdleLineWake = 0,  /*!< The idle-line wakes UART receiver from standby */
-    kUartAddrMarkWake = 1,   /*!< The addr-mark wakes UART receiver from standby */
+    kUartAddrMarkWake = 1,   /*!< The address-mark wakes UART receiver from standby */
 } uart_wakeup_method_t;
 
 /*!
- * @brief UART idle line detect selection types.
+ * @brief UART idle-line detect selection types.
  *
  * This provides constants for the UART idle character bit-count start: either after start or
  * stop bit.
@@ -155,14 +155,14 @@ typedef enum _uart_break_char_length {
 } uart_break_char_length_t;
 
 /*!
- * @brief UART singlewire mode transmit direction.
+ * @brief UART single-wire mode transmit direction.
  *
  *  This provides constants for the UART transmit direction when configured for single-wire mode.
  *  The transmit line TXDIR is either an input or output.
  */
 typedef enum _uart_singlewire_txdir {
-    kUartSinglewireTxdirIn = 0,  /*!< UART Single Wire mode TXDIR input */
-    kUartSinglewireTxdirOut = 1, /*!< UART Single Wire mode TXDIR output */
+    kUartSinglewireTxdirIn = 0,  /*!< UART Single-Wire mode TXDIR input */
+    kUartSinglewireTxdirOut = 1, /*!< UART Single-Wire mode TXDIR output */
 } uart_singlewire_txdir_t;
 
 /*!
@@ -178,35 +178,35 @@ typedef enum _uart_status_flag {
     kUartReceiveDataRegisterFull, /*!< Receive data register full flag, sets when the receive data
                                        buffer is full */
     kUartIdleLineDetect,          /*!< Idle line detect flag, sets when idle line detected */
-    kUartReceiveOverrun,          /*!< Receiver Overrun sets when new data is received before data
+    kUartReceiveOverrun,          /*!< Receiver Overrun, sets when new data is received before data
                                        is read from receive register */
     kUartNoiseDetect,             /*!< Receiver takes 3 samples of each received bit. If any of
                                        these samples differ, noise flag sets */
-    kUartFrameError,              /*!< Frame error flag, sets if  logic 0 was detected where stop
+    kUartFrameError,              /*!< Frame error flag, sets if logic 0 was detected where stop
                                        bit expected */
-    kUartParityError,             /*!< If parity enabled, will set upon parity error detection */
+    kUartParityError,             /*!< If parity enabled, sets upon parity error detection */
     kUartLineBreakDetect,         /*!< LIN break detect interrupt flag, sets when
                                        LIN break char detected and LIN circuit enabled */
     kUartReceiveActiveEdgeDetect, /*!< Receive pin active edge interrupt flag, sets when active
                                        edge detected */
-    kUartReceiverActive,        /*!< Receiver Active Flag (RAF), sets a beginning of valid start
+    kUartReceiverActive,        /*!< Receiver Active Flag (RAF), sets at beginning of valid start
                                      bit */
 #if FSL_FEATURE_UART_HAS_EXTENDED_DATA_REGISTER_FLAGS
-    kUartNoiseInCurrentWord,     /*!< NOISY bit sets if noise detected in current data word */
-    kUartParityErrorInCurrentWord, /*!< PARITYE bit sets if noise detected in current data word */
+    kUartNoiseInCurrentWord,     /*!< NOISY bit, sets if noise detected in current data word */
+    kUartParityErrorInCurrentWord, /*!< PARITYE bit, sets if noise detected in current data word */
 #endif
 #if FSL_FEATURE_UART_HAS_FIFO
-    kUartTxBufferEmpty,          /*!< TXEMPT bit sets if transmit buffer is empty */
-    kUartRxBufferEmpty,          /*!< RXEMPT bit sets if transmit buffer is empty */
-    kUartTxBufferOverflow,       /*!< TXOF bit sets if transmit buffer overflowed occurred */
-    kUartRxBufferUnderflow,       /*!< RXUF bit sets if receive buffer underflowed occurred */
+    kUartTxBufferEmpty,          /*!< TXEMPT bit, sets if transmit buffer is empty */
+    kUartRxBufferEmpty,          /*!< RXEMPT bit, sets if transmit buffer is empty */
+    kUartTxBufferOverflow,       /*!< TXOF bit, sets if transmit buffer overflow occurred */
+    kUartRxBufferUnderflow,       /*!< RXUF bit, sets if receive buffer underflow occurred */
 #endif
 } uart_status_flag_t;
 
 /*!
  * @brief UART infrared transmitter pulse width options.
  *
- * This provides constants for the UART infrared (IR) pulsewidths. Options include 3/16, 1/16
+ * This provides constants for the UART infrared (IR) pulse widths. Options include 3/16, 1/16
  * 1/32, and 1/4 pulse widths.
  */
 typedef enum _uart_ir_tx_pulsewidth {
@@ -226,7 +226,7 @@ typedef struct UartIdleLineConfig {
     unsigned idleLineType : 1; /*!< ILT, Idle bit count start: 0 - after start bit (default),
                                     1 - after stop bit */
     unsigned rxWakeIdleDetect : 1; /*!< RWUID, Receiver Wake Up Idle Detect. IDLE status bit
-                                        operation during receive standbyControls whether idle
+                                        operation during receive standby. Controls whether idle
                                         character that wakes up receiver will also set
                                         IDLE status bit 0 - IDLE status bit doesn't
                                         get set (default), 1 - IDLE status bit gets set */
@@ -244,7 +244,7 @@ typedef struct UartStatusAll {
     unsigned receiveDataRegisterFull : 1; /*!< Receive data register full flag, sets when the
                                                receive data buffer is full */
     unsigned idleLineDetect : 1;         /*!< Idle line detect flag, sets when idle line detected */
-    unsigned receiveOverrun : 1;          /*!< Receiver Overrun sets when new data is received
+    unsigned receiveOverrun : 1;          /*!< Receiver Overrun, sets when new data is received
                                                before data is read from receive register */
     unsigned noiseDetect : 1;             /*!< Receiver takes 3 samples of each received bit.
                                                If any of these samples differ, noise flag sets */
@@ -256,18 +256,18 @@ typedef struct UartStatusAll {
                                                LIN break char detected and LIN circuit enabled */
     unsigned receiveActiveEdgeDetect : 1; /*!< Receive pin active edge interrupt flag, sets
                                                when active edge detected */
-    unsigned receiverActive : 1;          /*!< Receiver Active Flag (RAF), sets a beginning of
+    unsigned receiverActive : 1;          /*!< Receiver Active Flag (RAF), sets at beginning of
                                                valid start bit */
 #if FSL_FEATURE_UART_HAS_EXTENDED_DATA_REGISTER_FLAGS
-    unsigned noiseInCurrentWord  : 1;  /*!< NOISY bit sets if noise detected in current data word */
-    unsigned parityErrorInCurrentWord  : 1; /*!< PARITYE bit sets if noise detected in
+    unsigned noiseInCurrentWord  : 1;  /*!< NOISY bit, sets if noise detected in current data word */
+    unsigned parityErrorInCurrentWord  : 1; /*!< PARITYE bit, sets if noise detected in
                                                  current data word */
 #endif
 #if FSL_FEATURE_UART_HAS_FIFO
-    unsigned txBufferEmpty  : 1;         /*!< TXEMPT bit sets if transmit buffer is empty */
-    unsigned rxBufferEmpty  : 1;         /*!< RXEMPT bit sets if transmit buffer is empty */
-    unsigned txBufferOverflow  : 1;     /*!< TXOF bit sets if transmit buffer overflowed occurred */
-    unsigned rxBufferUnderflow  : 1;    /*!< RXUF bit sets if receive buffer underflowed occurred */
+    unsigned txBufferEmpty  : 1;         /*!< TXEMPT bit, sets if transmit buffer is empty */
+    unsigned rxBufferEmpty  : 1;         /*!< RXEMPT bit, sets if transmit buffer is empty */
+    unsigned txBufferOverflow  : 1;     /*!< TXOF bit, sets if transmit buffer overflow occurred */
+    unsigned rxBufferUnderflow  : 1;    /*!< RXUF bit, sets if receive buffer underflow occurred */
 #endif
 } uart_status_flag_all_t;
 
@@ -309,7 +309,7 @@ typedef struct UartInterruptConfig {
  *
  * This structure contains the settings for the most common UART configurations including
  * the UART module source clock, baud rate, parity mode, stop bit count, data bit count per
- * character, and tx/rx inversion options (which is the least common of the configuration).
+ * character, and tx/rx inversion options (which is the least common of the configurations).
  */
 typedef struct UartConfig {
     uint32_t uartSourceClockInHz; /*!< UART module source clock in Hz */
@@ -342,7 +342,7 @@ extern "C" {
 /*!
  * @brief Initialize the UART controller.
  *
- * This function will initialize the module to user defined settings and default settings.
+ * This function initializes the module to user defined settings and default settings.
  * Here is an example demonstrating how to define the uart_config_t structure and call
  * the uart_hal_init function:
    @code
@@ -369,9 +369,9 @@ uart_status_t uart_hal_init(uint32_t uartInstance, const uart_config_t *config);
  * This function programs the UART baud rate to the desired value passed in by the user. The user
  * must also pass in the module source clock so that the function can calculate the baud
  * rate divisors to their appropriate values.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this is be applied to all UARTs to ensure safe operation.
+ * Generally this is applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
  * @param   sourceClockInHz UART source input clock in Hz.
@@ -386,7 +386,7 @@ uart_status_t uart_hal_set_baud_rate(uint32_t uartInstance, uint32_t sourceClock
  *
  * This function allows the user to program the baud rate divisor directly in situations
  * where the divisor value is known. In this case, the user may not want to call the
- * uart_hal_set_baud_rate() function as the divisor is already known to them.
+ * uart_hal_set_baud_rate() function, as the divisor is already known.
  *
  * @param   uartInstance UART module instance number.
  * @param   baudRateDivisor The baud rate modulo division "SBR" value.
@@ -399,14 +399,14 @@ uart_status_t uart_hal_set_baud_rate_divisor(uint32_t uartInstance, uint32_t bau
  * @brief Set the UART baud rate fine adjust. (Note: Feature available on select
  *        UART instances used in conjunction with baud rate programming)
  *
- * This function, which programs the baud rate fine adjust, is used in conjuction with
- * programming the baud rate modulo divisor in situations where these divisors value are known
- * In this case, the user may not want to call the uart_hal_set_baud_rate() function as the
- * divisors are already known to them.
+ * This function, which programs the baud rate fine adjust, is used in conjunction with
+ * programming the baud rate modulo divisor in situations where these divisors value are known.
+ * In this case, the user may not want to call the uart_hal_set_baud_rate() function, as the
+ * divisors are already known.
  *
  *
  * @param   uartInstance UART module instance number.
- * @param   baudFineAdjust Value of 5-bit field use to add more timing resolution to average
+ * @param   baudFineAdjust Value of 5-bit field used to add more timing resolution to average
  *                          baud rate frequency is 1/32 increments.
  * @return  An error code or kStatus_UART_Success.
  */
@@ -423,7 +423,7 @@ uart_status_t uart_hal_set_baud_rate_fine_adjust(uint32_t uartInstance, uint8_t 
  * knows the necessary dividers and wishes to directly program them, they also have the option to
  * directly program the OSR.
  * The oversampling ratio should be set between 4x (00011) and 32x (11111), writing
- * an invalid oversampling ratio with result in an error and will be set to a default
+ * an invalid oversampling ratio results in an error and is set to a default
  * 16x (01111) oversampling ratio.
  * It is required that the transmitter/receiver be disabled before calling
  * this function.
@@ -458,9 +458,9 @@ uart_status_t uart_hal_configure_both_edge_sampling(uint32_t uartInstance,
  *
  * This function allows the user to configure the number of bits per character according to the
  * typedef uart_bit_count_per_char_t.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
  * @param   bitCountPerChar Number of bits per char (8, 9, or 10, depending on the UART instance).
@@ -474,9 +474,9 @@ uart_status_t uart_hal_configure_bit_count_per_char(uint32_t uartInstance,
  *
  * This function allows the user to configure the parity mode of the UART controller to disable
  * it or enable it for even parity or for odd parity.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
  * @param   parityModeType Parity mode setting (enabled, disable, odd, even - see
@@ -489,13 +489,13 @@ void uart_hal_configure_parity_mode(uint32_t uartInstance, uart_parity_mode_t pa
  *
  * This function allows the user to configure the number of stop bits in the UART controller
  * to be one or two stop bits.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
  * @param   stopBitCount Number of stop bits setting (1 or 2 - see uart_stop_bit_count_t struct).
- * @return  An error code (an unsupported setting in some uarts) or kStatus_UART_Success.
+ * @return  An error code (an unsupported setting in some UARTs) or kStatus_UART_Success.
  */
 uart_status_t uart_hal_configure_stop_bit_count(uint32_t uartInstance,
                                            uart_stop_bit_count_t stopBitCount);
@@ -629,7 +629,7 @@ void uart_hal_disable_rx_active_edge_interrupt(uint32_t uartInstance);
  * @brief Get the configuration of the rx_active_edge_interrupt enable setting.
  *
  * @param   uartInstance  UART instance number.
- * @return Bit setting of the interrupt enable bit
+ * @return Bit setting of the interrupt enable bit.
  */
 bool uart_hal_is_rx_active_edge_interrupt_enabled(uint32_t uartInstance);
 
@@ -648,7 +648,7 @@ void uart_hal_enable_tx_data_register_empty_interrupt(uint32_t uartInstance);
 void uart_hal_disable_tx_data_register_empty_interrupt(uint32_t uartInstance);
 
 /*!
- * @brief Get the configuration of the tx_data_register_empty_interrupt enable stting.
+ * @brief Get the configuration of the tx_data_register_empty_interrupt enable setting.
  *
  * @param   uartInstance UART module instance number.
  * @return Bit setting of the interrupt enable bit.
@@ -761,7 +761,7 @@ void uart_hal_disable_noise_error_interrupt(uint32_t uartInstance);
  * @brief Get the configuration of the noise_error_interrupt enable setting.
  *
  * @param   uartInstance UART module instance number.
- * @return Bit setting of the interrupt enable bit
+ * @return Bit setting of the interrupt enable bit.
  */
 bool uart_hal_is_noise_error_interrupt_enabled(uint32_t uartInstance);
 
@@ -783,7 +783,7 @@ void uart_hal_disable_framing_error_interrupt(uint32_t uartInstance);
  * @brief Get the configuration of the framing_error_interrupt enable setting.
  *
  * @param   uartInstance UART module instance number.
- * @return Bit setting of the interrupt enable bit
+ * @return Bit setting of the interrupt enable bit.
  */
 bool uart_hal_is_framing_error_interrupt_enabled(uint32_t uartInstance);
 
@@ -805,7 +805,7 @@ void uart_hal_disable_parity_error_interrupt(uint32_t uartInstance);
  * @brief Get the configuration of the parity_error_interrupt enable setting.
  *
  * @param   uartInstance UART module instance number.
- * @return Bit setting of the interrupt enable bit
+ * @return Bit setting of the interrupt enable bit.
  */
 bool uart_hal_is_parity_error_interrupt_enabled(uint32_t uartInstance);
 
@@ -814,7 +814,7 @@ bool uart_hal_is_parity_error_interrupt_enabled(uint32_t uartInstance);
  *
  * This function allows the user to configure the transmit data register empty flag to
  * generate an interrupt request (default) or a DMA request.  Similarly, this function
- * allows the user to conigure the receive data register full flag to generate an interrupt
+ * allows the user to configure the receive data register full flag to generate an interrupt
  * request (default) or a DMA request.
  *
  * @param   uartInstance UART module instance number.
@@ -826,7 +826,7 @@ void uart_hal_configure_dma(uint32_t uartInstance, bool txDmaConfig, bool rxDmaC
 /*!
  * @brief  Get the UART Transmit DMA request configuration setting.
  *
- * This function returns to the user the configuration setting of the Transmit DMA request.
+ * This function returns the configuration setting of the Transmit DMA request.
  *
  * @param   uartInstance UART module instance number.
  * @return   Transmit DMA request configuration setting (enable: true /disable: false).
@@ -836,7 +836,7 @@ bool uart_hal_is_txdma_enabled(uint32_t uartInstance);
 /*!
  * @brief  Get the UART Receive DMA request configuration setting.
  *
- * This function returns to the user the configuration setting of the Receive DMA request.
+ * This function returns the configuration setting of the Receive DMA request.
  *
  * @param   uartInstance UART module instance number.
  * @return   Receive DMA request configuration setting (enable: true /disable: false).
@@ -919,7 +919,7 @@ void uart_hal_configure_bit10_as_paritybit_operation(uint32_t uartInstance, bool
 
 /*!
  * @brief  Get the configuration of the UART bit 10 (if enabled) or bit 9 (if disabled) as the
- *         parity bit in the serial transmission
+ *         parity bit in the serial transmission.
  *
  * This function returns true if bit 10 is configured as the parity bit, otherwise it returns
  * false if bit 9 is configured as the parity bit.
@@ -933,8 +933,8 @@ bool uart_hal_is_bit10_set_as_paritybit(uint32_t uartInstance);
 /*!
  * @brief  Determine if the UART received data word was received with noise.
  *
- * This function will return true if the received data word was received with noise. Otherwise,
- * it will return false indicating no noise was detected.
+ * This function returns true if the received data word was received with noise. Otherwise,
+ * it returns false indicating no noise was detected.
  *
  * @param   uartInstance UART module instance number.
  * @return  The status of the NOISY bit in the UART extended data register.
@@ -944,8 +944,8 @@ bool uart_hal_is_current_dataword_received_with_noise(uint32_t uartInstance);
 /*!
  * @brief  Determine if the UART received data word was received with a parity error.
  *
- * This function will return true if the received data word was received with a parity error.
- * Otherwise, it will return false indicating no parity error was detected.
+ * This function returns true if the received data word was received with a parity error.
+ * Otherwise, it returns false indicating no parity error was detected.
  *
  * @param   uartInstance UART module instance number.
  * @return  The status of the PARITYE (parity error) bit in the UART extended data register.
@@ -961,24 +961,24 @@ bool uart_hal_is_current_dataword_received_with_parityerror(uint32_t uartInstanc
  */
 
 /*!
- * @brief Configure the UART to either operate or sieze to operate in WAIT mode.
+ * @brief Configure the UART to either operate or cease to operate in WAIT mode.
  *
- * The function configures the UART to either operate or seize to operate when WAIT mode is
+ * The function configures the UART to either operate or cease to operate when WAIT mode is
  * entered.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
- * @param   mode The UART WAIT mode operation - operates or siezes to operate in WAIT mode.
+ * @param   mode The UART WAIT mode operation - operates or ceases to operate in WAIT mode.
  */
 void  uart_hal_configure_wait_mode_operation(uint32_t uartInstance, uart_operation_config_t mode);
 
 /*!
- * @brief Determine if the UART operates or siezes to operate in WAIT mode.
+ * @brief Determine if the UART operates or ceases to operate in WAIT mode.
  *
  * This function returns kUartOperates if the UART has been configured to operate in WAIT mode.
- * Else it returns KUartStops if the UART has been configured to seize-to-operate in WAIT mode.
+ * Else it returns KUartStops if the UART has been configured to cease-to-operate in WAIT mode.
  *
  * @param   uartInstance UART module instance number.
  * @return The UART WAIT mode operation configuration, returns either kUartOperates or KUartStops.
@@ -989,9 +989,9 @@ uart_operation_config_t uart_hal_get_wait_mode_operation_config(uint32_t uartIns
  * @brief Configure the UART loopback operation.
  *
  * This function enables or disables the UART loopback operation.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param uartInstance UART module instance number.
  * @param enable The UART loopback mode configuration, either disabled (false) or enabled (true).
@@ -1002,9 +1002,9 @@ void uart_hal_configure_loopback_mode(uint32_t uartInstance, bool enable);
  * @brief Configure the UART single-wire operation.
  *
  * This function enables or disables the UART single-wire operation.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param uartInstance UART module instance number.
  * @param enable The UART single-wire mode configuration, either disabled (false) or enabled (true).
@@ -1028,15 +1028,15 @@ void uart_hal_configure_txdir_in_singlewire_mode(uint32_t uartInstance,
 /*!
  * @brief  Place the UART receiver in standby mode.
  *
- * This function, when called, will place the UART receiver into standby mode.
- * In some UART instances, there is a condition that must be met before placing rx in standby mode.
- * Before placing UART in standby, you need to first determine if receiver is set to
- * wake on idle and if receiver is already in idle state. Per ref manual:
+ * This function, when called, places the UART receiver into standby mode.
+ * In some UART instances, there are conditions that must be met before placing rx in standby mode.
+ * Before placing UART in standby, determine if receiver is set to
+ * wake on idle, and if receiver is already in idle state. 
  * NOTE: RWU should only be set with C1[WAKE] = 0 (wakeup on idle) if the channel is currently
  * not idle.
  * This can be determined by the S2[RAF] flag. If set to wake up FROM an IDLE event and the channel
- * is already idle, it is possible that the UART will discard data since data must be received
- * (or a LIN break detect) after an IDLE is detected before IDLE is allowed to reasserted.
+ * is already idle, it is possible that the UART will discard data because data must be received
+ * (or a LIN break detect) after an IDLE is detected before IDLE is allowed to be reasserted.
  *
  * @param uartInstance UART module instance number.
  * @return Error code or kStatus_UART_Success.
@@ -1046,7 +1046,7 @@ uart_status_t uart_hal_put_receiver_in_standby_mode(uint32_t uartInstance);
 /*!
  * @brief  Place the UART receiver in normal mode (disable standby mode operation).
  *
- * This function, when called, will place the UART receiver into normal mode and out of
+ * This function, when called, places the UART receiver into normal mode and out of
  * standby mode.
  *
  * @param   uartInstance UART module instance number.
@@ -1057,7 +1057,7 @@ void uart_hal_put_receiver_in_normal_mode(uint32_t uartInstance);
  * @brief  Determine if the UART receiver is currently in standby mode.
  *
  * This function determines the state of the UART receiver. If it returns true, this means
- * that the UART receiver is in standby mode, otherwise if it returns false, the UART receiver
+ * that the UART receiver is in standby mode; if it returns false, the UART receiver
  * is in normal mode.
  *
  * @param   uartInstance UART module instance number.
@@ -1066,9 +1066,9 @@ void uart_hal_put_receiver_in_normal_mode(uint32_t uartInstance);
 bool uart_hal_is_receiver_in_standby(uint32_t uartInstance);
 
 /*!
- * @brief  Select the UART receiver wakeup method (idle line or addr-mark) from standby mode.
+ * @brief  Select the UART receiver wakeup method (idle-line or address-mark) from standby mode.
  *
- * This function configured the wakeup method of the UART receiver from standby mode.  The options
+ * This function configures the wakeup method of the UART receiver from standby mode.  The options
  * are idle-line wake or address-mark wake.
  *
  * @param   uartInstance UART module instance number.
@@ -1078,13 +1078,13 @@ bool uart_hal_is_receiver_in_standby(uint32_t uartInstance);
 void uart_hal_select_receiver_wakeup_method(uint32_t uartInstance, uart_wakeup_method_t method);
 
 /*!
- * @brief  Get the UART receiver wakeup method (idle line or addr-mark) from standby mode.
+ * @brief  Get the UART receiver wakeup method (idle-line or address-mark) from standby mode.
  *
- * This function returns how the UART recevier is configured to wake from standby mode. The
+ * This function returns how the UART receiver is configured to wake from standby mode. The
  * wake method options that can be returned are kUartIdleLineWake or kUartAddrMarkWake.
  *
  * @param   uartInstance UART module instance number.
- * @return  The UART receiver wakeup from standby method, false: kUartIdleLineWake (Idle-line wake)
+ * @return  The UART receiver wakeup from standby method, false: kUartIdleLineWake (idle-line wake)
  *          or true: kUartAddrMarkWake (address-mark wake).
  */
 uart_wakeup_method_t uart_hal_get_receiver_wakeup_method(uint32_t uartInstance);
@@ -1094,14 +1094,14 @@ uart_wakeup_method_t uart_hal_get_receiver_wakeup_method(uint32_t uartInstance);
  *
  * This function allows the user to configure the UART idle-line detect operation. There are two
  * separate operations for the user to configure, the idle line bit-count start and the receive
- * wake up affect on IDLE status bit. The user will pass in a stucture of type
+ * wake up affect on IDLE status bit. The user will pass in a structure of type
  * uart_idle_line_config_t.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
- * @param   config  The UART configuration pointer to the structure for idle line detect operation
+ * @param   config  The UART configuration pointer to the structure for idle-line detect operation
  *                  of type uart_idle_line_config_t.
  */
 void uart_hal_configure_idle_line_detect(uint32_t uartInstance,
@@ -1112,8 +1112,8 @@ void uart_hal_configure_idle_line_detect(uint32_t uartInstance,
  *
  * This function allows the user to configure the UART break character transmit length. Refer to
  * the typedef uart_break_char_length_t for setting options.
- * In some UART instances it is required that the transmitter should be disabled before calling
- * this function. Generally this may be applied to all UARTs to ensure safe operation.
+ * In some UART instances it is required that the transmitter be disabled before calling
+ * this function. This may be applied to all UARTs to ensure safe operation.
  *
  * @param uartInstance UART module instance number.
  * @param length The UART break character length setting of type uart_break_char_length_t, either a
@@ -1139,14 +1139,14 @@ void uart_hal_set_break_char_detect_length(uint32_t uartInstance,
  * @brief  Configure the UART transmit send break character operation.
  *
  * This function allows the user to queue a UART break character to send.  If true is passed into
- * the function, then a break character will be queued for transmission.  A break character will
- * continuously be queued until this function is called again with a false is passed into this
+ * the function, then a break character is queued for transmission.  A break character will
+ * continuously be queued until this function is called again when a false is passed into this
  * function.
  *
  * @param   uartInstance UART module instance number.
- * @param   enable If false, the UART normal/queue break character setting will be disabled which
- *                 configures the UART for normal transmitter operation. Else if true, a break
- *                 character will be queued for transmission.
+ * @param   enable If false, the UART normal/queue break character setting is disabled, which
+ *                 configures the UART for normal transmitter operation. If true, a break
+ *                 character is queued for transmission.
  */
 void uart_hal_queue_break_char_to_send(uint32_t uartInstance, bool enable);
 
@@ -1156,7 +1156,7 @@ void uart_hal_queue_break_char_to_send(uint32_t uartInstance, bool enable);
  *
  * The function allows the user to configure the UART match address control operation. The user
  * has the option to enable the match address mode and to program the match address value. There
- * are two match address modes, each with it's own enable and programmable match address value.
+ * are two match address modes, each with its own enable and programmable match address value.
  *
  * @param  uartInstance UART module instance number.
  * @param  matchAddrMode1 If true, this enables match address mode 1 (MAEN1), where false disables.
@@ -1173,17 +1173,17 @@ uart_status_t uart_hal_configure_match_address_operation(
     uint8_t matchAddrValue2);
 
 /*!
- * @brief Configre the UART to send data MSB first
+ * @brief Configure the UART to send data MSB first
  * (Note: Feature available on select UART instances)
  *
  * The function allows the user to configure the UART to send data MSB first or LSB first.
- * In some UART instances it is required that the transmitter/receiver should be disabled
+ * In some UART instances it is required that the transmitter/receiver be disabled
  * before calling this function.
- * Generally this may be applied to all UARTs to ensure safe operation.
+ * This may be applied to all UARTs to ensure safe operation.
  *
  * @param   uartInstance UART module instance number.
  * @param   enable This configures send MSB first mode configuration. If true, the data is sent MSB
- *                 first, otherwise if false, it is sent LSB first.
+ *                 first; if false, it is sent LSB first.
  * @return  An error code or kStatus_UART_Success.
  */
 uart_status_t uart_hal_configure_send_msb_first_operation(uint32_t uartInstance, bool enable);
@@ -1193,12 +1193,12 @@ uart_status_t uart_hal_configure_send_msb_first_operation(uint32_t uartInstance,
  *         (Note: Feature available on select UART instances)
  *
  * This function allows the user to disable the UART resync of received data. The default setting
- * of this is false meaning that resynchronization during the received data word is supported.
+ * is false, meaning that resynchronization during the received data word is supported.
  * If the user passes in true, this disables resynchronization during the received data word.
  *
  * @param   uartInstance UART module instance number.
  * @param   enable If false, then resynchronization during the received data word is supported.
- *                 Otherwise if true, resynchronization during the received data word is disabled.
+ *                 If true, resynchronization during the received data word is disabled.
  * @return  An error code or kStatus_UART_Success.
  */
 uart_status_t uart_hal_configure_receive_resync_disable_operation(uint32_t uartInstance,
@@ -1233,7 +1233,7 @@ void uart_hal_disable_receiver_rts(uint32_t uartInstance);
  *
  * This function allows the user to enable the UART transmitter request-to-send (RTS) functionality.
  * When enabled, it allows the UART to control the RTS assertion before and after a transmission
- * such that when a character is placed into an empty transmitter data buffer , RTS
+ * such that when a character is placed into an empty transmitter data buffer, RTS
  * asserts one bit time before the start bit is transmitted. RTS deasserts one bit time after all
  * characters in the transmitter data buffer and shift register are completely sent, including
  * the last stop bit.
@@ -1268,7 +1268,7 @@ void uart_hal_configure_transmitter_rts_polarity(uint32_t uartInstance, bool pol
  * @brief  Enable the UART transmitter clear-to-send functionality.
  *
  * This function allows the user to enable the UART transmitter clear-to-send (CTS) functionality.
- * When enabled, he transmitter checks the state of CTS each time it is ready to send a character.
+ * When enabled, the transmitter checks the state of CTS each time it is ready to send a character.
  * If CTS is asserted, the character is sent. If CTS is deasserted, the signal TXD remains in
  * the mark state and transmission is delayed until CTS is asserted. Changes in CTS as a
  * character is being sent do not affect its transmission.
@@ -1327,7 +1327,7 @@ void uart_hal_get_all_status_flag(uint32_t uartInstance, uart_status_flag_all_t 
  * This function returns the state of the UART Transmit data register empty flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Transmit data register empty flag which is set when transmit buffer
+ * @return The status of Transmit data register empty flag, which is set when transmit buffer
  *          is empty.
  */
 bool uart_hal_is_transmit_data_register_empty(uint32_t uartInstance);
@@ -1338,7 +1338,7 @@ bool uart_hal_is_transmit_data_register_empty(uint32_t uartInstance);
  * This function returns the state of the UART Transmission complete flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Transmission complete flag which is set when the transmitter is idle
+ * @return The status of Transmission complete flag, which is set when the transmitter is idle
  *         (transmission activity complete).
  */
 bool uart_hal_is_transmission_complete(uint32_t uartInstance);
@@ -1349,18 +1349,18 @@ bool uart_hal_is_transmission_complete(uint32_t uartInstance);
  * This function returns the state of the UART Receive data register full flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Receive data register full flag which is set when the receive data buffer
+ * @return The status of Receive data register full flag, which is set when the receive data buffer
  *         is full.
  */
 bool uart_hal_is_receive_data_register_full(uint32_t uartInstance);
 
 /*!
- * @brief  Get the UART Idle line detect flag.
+ * @brief  Get the UART Idle-line detect flag.
  *
- * This function returns the state of the UART Idle line detect flag.
+ * This function returns the state of the UART Idle-line detect flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Idle line detect flag which is set when an idle line detected.
+ * @return The status of Idle-line detect flag which is set when an idle-line detected.
  */
 bool uart_hal_is_idle_line_detected(uint32_t uartInstance);
 
@@ -1370,7 +1370,7 @@ bool uart_hal_is_idle_line_detected(uint32_t uartInstance);
  * This function returns the state of the the UART Receiver Overrun status flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Receiver Overrun which is set when new data is received before data is
+ * @return The status of Receiver Overrun, which is set when new data is received before data is
  *         read from receive register.
  */
 bool uart_hal_is_receive_overrun_detected(uint32_t uartInstance);
@@ -1381,7 +1381,7 @@ bool uart_hal_is_receive_overrun_detected(uint32_t uartInstance);
  * This function returns the state of the UART noise status flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of the noise flag which is set if any of the 3 samples taken on
+ * @return The status of the noise flag, which is set if any of the 3 samples taken on
  *         receive differ.
  */
 bool uart_hal_is_noise_detected(uint32_t uartInstance);
@@ -1392,7 +1392,7 @@ bool uart_hal_is_noise_detected(uint32_t uartInstance);
  * This function returns the state of the UART Frame error status flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Frame error flag which is set if a logic 0 was detected where a stop bit
+ * @return The status of Frame error flag, which is set if a logic 0 was detected where a stop bit
  *         was expected.
  */
 bool uart_hal_is_frame_error_detected(uint32_t uartInstance);
@@ -1403,7 +1403,7 @@ bool uart_hal_is_frame_error_detected(uint32_t uartInstance);
  * This function returns the state of the UART parity error status flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of parity error detection flag which is set if parity mode enabled and the
+ * @return The status of parity error detection flag, which is set if parity mode enabled and the
  *         parity bit received does not match what was expected.
  */
 bool uart_hal_is_parity_error_detected(uint32_t uartInstance);
@@ -1414,7 +1414,7 @@ bool uart_hal_is_parity_error_detected(uint32_t uartInstance);
  * This function returns the state of the UART LIN break detect interrupt status flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of LIN break detect interrupt flag which is set when the LIN break char
+ * @return The status of LIN break detect interrupt flag, which is set when the LIN break char
  *         is detected assuming the LIN circuit is enabled.
  */
 bool uart_hal_is_line_break_detected(uint32_t uartInstance);
@@ -1425,7 +1425,7 @@ bool uart_hal_is_line_break_detected(uint32_t uartInstance);
  * This function returns the state of the UART Receive pin active edge interrupt status flag.
  *
  * @param uartInstance UART module instance number.
- * @return The status of Receive pin active edge interrupt flag which is set when active edge
+ * @return The status of Receive pin active edge interrupt flag, which is set when active edge
  *         detected on the receive pin.
  */
 bool uart_hal_is_receive_active_edge_detected(uint32_t uartInstance);
@@ -1436,7 +1436,7 @@ bool uart_hal_is_receive_active_edge_detected(uint32_t uartInstance);
  * This function returns the state of the UART Receiver Active Flag (RAF).
  *
  * @param uartInstance UART module instance number.
- * @return The status of the Receiver Active Flag (RAF) which is set a the beginning of a
+ * @return The status of the Receiver Active Flag (RAF), which is set at the beginning of a
  *         received valid start bit.
  */
 bool uart_hal_is_receiver_active(uint32_t uartInstance);
@@ -1457,7 +1457,7 @@ uart_status_t uart_hal_clear_status_flag(uint32_t uartInstance, uart_status_flag
  * @brief  Clear ALL of the UART status flags.
  *
  * This function tries to clear all of the UART status flags.  In some cases, some of the status
- * flags may not get cleared because of the condition that set the flag may still exist.
+ * flags may not get cleared because the condition that set the flag may still exist.
  *
  * @param   uartInstance UART module instance number.
  */
@@ -1475,8 +1475,8 @@ void uart_hal_clear_all_non_autoclear_status_flags(uint32_t uartInstance);
  * @brief  Enable the UART transmit FIFO.
  *
  * This function allows the user to enable the UART transmit FIFO.
- * It is required that the transmitter/receiver should be disabled before calling this function
- * and when the FIFO is empty.
+ * It is required that the transmitter/receiver be disabled before calling this function
+ * when the FIFO is empty.
  * Additionally, TXFLUSH and RXFLUSH commands should be issued after calling this function.
  *
  * @param uartInstance UART module instance number.
@@ -1489,8 +1489,8 @@ uart_status_t uart_hal_enable_tx_fifo(uint32_t uartInstance);
  * @brief  Disable the UART transmit FIFO.
  *
  * This function allows the user to disable the UART transmit FIFO.
- * It is required that the transmitter/receiver should be disabled before calling this function
- * and when the FIFO is empty.
+ * It is required that the transmitter/receiver be disabled before calling this function
+ * when the FIFO is empty.
  * Additionally, TXFLUSH and RXFLUSH commands should be issued after calling this function.
  *
  * @param uartInstance UART module instance number.
@@ -1503,8 +1503,8 @@ uart_status_t uart_hal_disable_tx_fifo(uint32_t uartInstance);
  * @brief  Enable the UART receive FIFO.
  *
  * This function allows the user to enable the UART receive FIFO.
- * It is required that the transmitter/receiver should be disabled before calling this function
- * and when the FIFO is empty.
+ * It is required that the transmitter/receiver be disabled before calling this function
+ * when the FIFO is empty.
  * Additionally, TXFLUSH and RXFLUSH commands should be issued after calling this function.
  *
  * @param uartInstance UART module instance number.
@@ -1517,8 +1517,8 @@ uart_status_t uart_hal_enable_rx_fifo(uint32_t uartInstance);
  * @brief  Disable the UART receive FIFO.
  *
  * This function allows the user to disable the UART receive FIFO.
- * It is required that the transmitter/receiver should be disabled before calling this function
- * and when the FIFO is empty.
+ * It is required that the transmitter/receiver be disabled before calling this function
+ * when the FIFO is empty.
  * Additionally, TXFLUSH and RXFLUSH commands should be issued after calling this function.
  *
  * @param uartInstance UART module instance number.
@@ -1556,9 +1556,9 @@ uint8_t uart_hal_get_rx_fifo_size(uint32_t uartInstance);
 /*!
  * @brief  Flush the UART transmit FIFO.
  *
- * This function allows you to flush the UART transmit FIFO for a particular module instance.
+ * This function allows the user to flush the UART transmit FIFO for a particular module instance.
  * Flushing the FIFO may result in data loss.
- * It is recommended that the transmitter should be disabled before calling this function.
+ * It is recommended that the transmitter be disabled before calling this function.
  *
  * @param uartInstance UART module instance number.
  * @return Error code if it is detected that the transmitter or receiver is enabled or
@@ -1569,9 +1569,9 @@ uart_status_t uart_hal_flush_tx_fifo(uint32_t uartInstance);
 /*!
  * @brief  Flush the UART receive FIFO.
  *
- * This function allows you to flush the UART receive FIFO for a particular module instance.
+ * This function allows the user to flush the UART receive FIFO for a particular module instance.
  * Flushing the FIFO may result in data loss.
- * It is recommended that the receiver should be disabled before calling this function.
+ * It is recommended that the receiver be disabled before calling this function.
  *
  * @param uartInstance UART module instance number.
  * @return Error code if it is detected that the transmitter or receiver is enabled or
@@ -1631,7 +1631,7 @@ bool uart_hal_is_rx_fifo_underflow_interrupt_enabled(uint32_t uartInstance);
 /*!
  * @brief  Get the UART transmit FIFO empty status state.
  *
- * The function returns the state of the transmit FIFO empty status state but does not take into
+ * The function returns the state of the transmit FIFO empty status state, but does not take into
  * account data in the shift register.
  *
  * @param   uartInstance UART module instance number.
@@ -1642,7 +1642,7 @@ bool uart_hal_is_tx_fifo_empty(uint32_t uartInstance);
 /*!
  * @brief  Get the UART receive FIFO empty status state.
  *
- * The function returns the state of the receive FIFO empty status state but does not take into
+ * The function returns the state of the receive FIFO empty status state, but does not take into
  * account data in the shift register.
  *
  * @param   uartInstance UART module instance number.

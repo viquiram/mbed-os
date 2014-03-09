@@ -178,7 +178,7 @@ void uart_hal_getchar(uint32_t uartInstance, uint8_t *readData)
 #if FSL_FEATURE_UART_HAS_LOW_POWER_UART_SUPPORT
     if (uartInstance == 0)
     {
-        *readData = HW_UART0_D_RD;  /* read 8-bit data from data register*/
+        *readData = HW_UART0_D_RD();  /* read 8-bit data from data register*/
     }
     else
 #endif
@@ -224,7 +224,7 @@ void  uart_hal_getchar9(uint32_t uartInstance, uint16_t *readData)
          * receive status bits once completed
          * need to OR these 8-bits with the ninth bit value above
          */
-        *readData |= HW_UART0_D_RD;  /* read 8-bit data from data register*/
+        *readData |= HW_UART0_D_RD();  /* read 8-bit data from data register*/
     }
     else
 #endif
@@ -282,7 +282,7 @@ uart_status_t uart_hal_getchar10(uint32_t uartInstance, uint16_t *readData)
          * status bits once completed
          * need to OR these 8-bits with the ninth bit value above
          */
-        *readData |= HW_UART0_D_RD;  /* read 8-bit data from data register*/
+        *readData |= HW_UART0_D_RD();  /* read 8-bit data from data register*/
 
         return kStatus_UART_Success;
     }

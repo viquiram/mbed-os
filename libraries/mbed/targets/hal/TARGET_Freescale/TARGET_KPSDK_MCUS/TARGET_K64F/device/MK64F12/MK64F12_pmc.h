@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -59,12 +59,12 @@
  * program to set the desired controls even if the desired settings are the same
  * as the reset settings. While the device is in the very low power or low
  * leakage modes, the LVD system is disabled regardless of LVDSC1 settings. To protect
- * systems that must have LVD always on, configure the SMC's power mode
- * protection register (PMPROT) to disallow any very low power or low leakage modes from
- * being enabled. See the device's data sheet for the exact LVD trip voltages. The
- * LVDV bits are reset solely on a POR Only event. The register's other bits are
- * reset on Chip Reset Not VLLS. For more information about these reset types,
- * refer to the Reset section details.
+ * systems that must have LVD always on, configure the Power Mode Protection
+ * (PMPROT) register of the SMC module (SMC_PMPROT) to disallow any very low power or
+ * low leakage modes from being enabled. See the device's data sheet for the
+ * exact LVD trip voltages. The LVDV bits are reset solely on a POR Only event. The
+ * register's other bits are reset on Chip Reset Not VLLS. For more information
+ * about these reset types, refer to the Reset section details.
  */
 typedef union _hw_pmc_lvdsc1
 {
@@ -89,11 +89,11 @@ typedef union _hw_pmc_lvdsc1
 
 #ifndef __LANGUAGE_ASM__
 #define HW_PMC_LVDSC1            (*(__IO hw_pmc_lvdsc1_t *) HW_PMC_LVDSC1_ADDR)
-#define HW_PMC_LVDSC1_RD         (HW_PMC_LVDSC1.U)
+#define HW_PMC_LVDSC1_RD()       (HW_PMC_LVDSC1.U)
 #define HW_PMC_LVDSC1_WR(v)      (HW_PMC_LVDSC1.U = (v))
-#define HW_PMC_LVDSC1_SET(v)     (HW_PMC_LVDSC1_WR(HW_PMC_LVDSC1_RD |  (v)))
-#define HW_PMC_LVDSC1_CLR(v)     (HW_PMC_LVDSC1_WR(HW_PMC_LVDSC1_RD & ~(v)))
-#define HW_PMC_LVDSC1_TOG(v)     (HW_PMC_LVDSC1_WR(HW_PMC_LVDSC1_RD ^  (v)))
+#define HW_PMC_LVDSC1_SET(v)     (HW_PMC_LVDSC1_WR(HW_PMC_LVDSC1_RD() |  (v)))
+#define HW_PMC_LVDSC1_CLR(v)     (HW_PMC_LVDSC1_WR(HW_PMC_LVDSC1_RD() & ~(v)))
+#define HW_PMC_LVDSC1_TOG(v)     (HW_PMC_LVDSC1_WR(HW_PMC_LVDSC1_RD() ^  (v)))
 #endif
 //@}
 
@@ -127,7 +127,7 @@ typedef union _hw_pmc_lvdsc1
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the LVDV field to a new value.
-#define BW_PMC_LVDSC1_LVDV(v) (HW_PMC_LVDSC1_WR((HW_PMC_LVDSC1_RD & ~BM_PMC_LVDSC1_LVDV) | BF_PMC_LVDSC1_LVDV(v)))
+#define BW_PMC_LVDSC1_LVDV(v) (HW_PMC_LVDSC1_WR((HW_PMC_LVDSC1_RD() & ~BM_PMC_LVDSC1_LVDV) | BF_PMC_LVDSC1_LVDV(v)))
 #endif
 //@}
 
@@ -191,18 +191,13 @@ typedef union _hw_pmc_lvdsc1
 /*!
  * @name Register PMC_LVDSC1, field LVDACK[6] (WORZ)
  *
- * This write-only bit is used to acknowledge low voltage detection errors.
+ * This write-only field is used to acknowledge low voltage detection errors.
  * Write 1 to clear LVDF. Reads always return 0.
  */
 //@{
 #define BP_PMC_LVDSC1_LVDACK (6U)          //!< Bit position for PMC_LVDSC1_LVDACK.
 #define BM_PMC_LVDSC1_LVDACK (0x40U)       //!< Bit mask for PMC_LVDSC1_LVDACK.
 #define BS_PMC_LVDSC1_LVDACK (1U)          //!< Bit field size in bits for PMC_LVDSC1_LVDACK.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the PMC_LVDSC1_LVDACK field.
-#define BR_PMC_LVDSC1_LVDACK (BITBAND_ACCESS8(HW_PMC_LVDSC1_ADDR, BP_PMC_LVDSC1_LVDACK))
-#endif
 
 //! @brief Format value for bitfield PMC_LVDSC1_LVDACK.
 #define BF_PMC_LVDSC1_LVDACK(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_PMC_LVDSC1_LVDACK), uint8_t) & BM_PMC_LVDSC1_LVDACK)
@@ -216,7 +211,7 @@ typedef union _hw_pmc_lvdsc1
 /*!
  * @name Register PMC_LVDSC1, field LVDF[7] (RO)
  *
- * This read-only status bit indicates a low-voltage detect event.
+ * This read-only status field indicates a low-voltage detect event.
  *
  * Values:
  * - 0 - Low-voltage event not detected
@@ -247,9 +242,9 @@ typedef union _hw_pmc_lvdsc1
  * warning function. While the device is in the very low power or low leakage modes,
  * the LVD system is disabled regardless of LVDSC2 settings. See the device's
  * data sheet for the exact LVD trip voltages. The LVW trip voltages depend on LVWV
- * and LVDV bits. The LVWV bits are reset solely on a POR Only event. The
- * register's other bits are reset on Chip Reset Not VLLS. For more information about
- * these reset types, refer to the Reset section details.
+ * and LVDV. LVWV is reset solely on a POR Only event. The other fields of the
+ * register are reset on Chip Reset Not VLLS. For more information about these
+ * reset types, refer to the Reset section details.
  */
 typedef union _hw_pmc_lvdsc2
 {
@@ -273,11 +268,11 @@ typedef union _hw_pmc_lvdsc2
 
 #ifndef __LANGUAGE_ASM__
 #define HW_PMC_LVDSC2            (*(__IO hw_pmc_lvdsc2_t *) HW_PMC_LVDSC2_ADDR)
-#define HW_PMC_LVDSC2_RD         (HW_PMC_LVDSC2.U)
+#define HW_PMC_LVDSC2_RD()       (HW_PMC_LVDSC2.U)
 #define HW_PMC_LVDSC2_WR(v)      (HW_PMC_LVDSC2.U = (v))
-#define HW_PMC_LVDSC2_SET(v)     (HW_PMC_LVDSC2_WR(HW_PMC_LVDSC2_RD |  (v)))
-#define HW_PMC_LVDSC2_CLR(v)     (HW_PMC_LVDSC2_WR(HW_PMC_LVDSC2_RD & ~(v)))
-#define HW_PMC_LVDSC2_TOG(v)     (HW_PMC_LVDSC2_WR(HW_PMC_LVDSC2_RD ^  (v)))
+#define HW_PMC_LVDSC2_SET(v)     (HW_PMC_LVDSC2_WR(HW_PMC_LVDSC2_RD() |  (v)))
+#define HW_PMC_LVDSC2_CLR(v)     (HW_PMC_LVDSC2_WR(HW_PMC_LVDSC2_RD() & ~(v)))
+#define HW_PMC_LVDSC2_TOG(v)     (HW_PMC_LVDSC2_WR(HW_PMC_LVDSC2_RD() ^  (v)))
 #endif
 //@}
 
@@ -312,7 +307,7 @@ typedef union _hw_pmc_lvdsc2
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the LVWV field to a new value.
-#define BW_PMC_LVDSC2_LVWV(v) (HW_PMC_LVDSC2_WR((HW_PMC_LVDSC2_RD & ~BM_PMC_LVDSC2_LVWV) | BF_PMC_LVDSC2_LVWV(v)))
+#define BW_PMC_LVDSC2_LVWV(v) (HW_PMC_LVDSC2_WR((HW_PMC_LVDSC2_RD() & ~BM_PMC_LVDSC2_LVWV) | BF_PMC_LVDSC2_LVWV(v)))
 #endif
 //@}
 
@@ -347,18 +342,13 @@ typedef union _hw_pmc_lvdsc2
 /*!
  * @name Register PMC_LVDSC2, field LVWACK[6] (WORZ)
  *
- * This write-only bit is used to acknowledge low voltage warning errors. Write
- * 1 to clear LVWF. Reads always return 0.
+ * This write-only field is used to acknowledge low voltage warning errors.
+ * Write 1 to clear LVWF. Reads always return 0.
  */
 //@{
 #define BP_PMC_LVDSC2_LVWACK (6U)          //!< Bit position for PMC_LVDSC2_LVWACK.
 #define BM_PMC_LVDSC2_LVWACK (0x40U)       //!< Bit mask for PMC_LVDSC2_LVWACK.
 #define BS_PMC_LVDSC2_LVWACK (1U)          //!< Bit field size in bits for PMC_LVDSC2_LVWACK.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the PMC_LVDSC2_LVWACK field.
-#define BR_PMC_LVDSC2_LVWACK (BITBAND_ACCESS8(HW_PMC_LVDSC2_ADDR, BP_PMC_LVDSC2_LVWACK))
-#endif
 
 //! @brief Format value for bitfield PMC_LVDSC2_LVWACK.
 #define BF_PMC_LVDSC2_LVWACK(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint8_t) << BP_PMC_LVDSC2_LVWACK), uint8_t) & BM_PMC_LVDSC2_LVWACK)
@@ -372,10 +362,10 @@ typedef union _hw_pmc_lvdsc2
 /*!
  * @name Register PMC_LVDSC2, field LVWF[7] (RO)
  *
- * This read-only status bit indicates a low-voltage warning event. LVWF is set
- * when VSupply transitions below the trip point, or after reset and VSupply is
- * already below VLVW. LVWF bit may be 1 after power on reset, therefore, to use
- * LVW interrupt function, before enabling LVWIE, LVWF must be cleared by writing
+ * This read-only status field indicates a low-voltage warning event. LVWF is
+ * set when VSupply transitions below the trip point, or after reset and VSupply is
+ * already below VLVW. LVWF may be 1 after power-on reset, therefore, to use LVW
+ * interrupt function, before enabling LVWIE, LVWF must be cleared by writing
  * LVWACK first.
  *
  * Values:
@@ -433,11 +423,11 @@ typedef union _hw_pmc_regsc
 
 #ifndef __LANGUAGE_ASM__
 #define HW_PMC_REGSC             (*(__IO hw_pmc_regsc_t *) HW_PMC_REGSC_ADDR)
-#define HW_PMC_REGSC_RD          (HW_PMC_REGSC.U)
+#define HW_PMC_REGSC_RD()        (HW_PMC_REGSC.U)
 #define HW_PMC_REGSC_WR(v)       (HW_PMC_REGSC.U = (v))
-#define HW_PMC_REGSC_SET(v)      (HW_PMC_REGSC_WR(HW_PMC_REGSC_RD |  (v)))
-#define HW_PMC_REGSC_CLR(v)      (HW_PMC_REGSC_WR(HW_PMC_REGSC_RD & ~(v)))
-#define HW_PMC_REGSC_TOG(v)      (HW_PMC_REGSC_WR(HW_PMC_REGSC_RD ^  (v)))
+#define HW_PMC_REGSC_SET(v)      (HW_PMC_REGSC_WR(HW_PMC_REGSC_RD() |  (v)))
+#define HW_PMC_REGSC_CLR(v)      (HW_PMC_REGSC_WR(HW_PMC_REGSC_RD() & ~(v)))
+#define HW_PMC_REGSC_TOG(v)      (HW_PMC_REGSC_WR(HW_PMC_REGSC_RD() ^  (v)))
 #endif
 //@}
 
@@ -476,7 +466,7 @@ typedef union _hw_pmc_regsc
 /*!
  * @name Register PMC_REGSC, field REGONS[2] (RO)
  *
- * This read-only bit provides the current status of the internal voltage
+ * This read-only field provides the current status of the internal voltage
  * regulator.
  *
  * Values:
@@ -497,17 +487,17 @@ typedef union _hw_pmc_regsc
 /*!
  * @name Register PMC_REGSC, field ACKISO[3] (W1C)
  *
- * Reading this bit indicates whether certain peripherals and the I/O pads are
- * in a latched state as a result of having been in a VLLS mode. Writing one to
- * this bit when it is set releases the I/O pads and certain peripherals to their
+ * Reading this field indicates whether certain peripherals and the I/O pads are
+ * in a latched state as a result of having been in a VLLS mode. Writing 1 to
+ * this field when it is set releases the I/O pads and certain peripherals to their
  * normal run mode state. After recovering from a VLLS mode, user should restore
- * chip configuration before clearing ACKISO. In particular, pin configuration for
- * enabled LLWU wakeup pins should be restored to avoid any LLWU flag from being
- * falsely set when ACKISO is cleared.
+ * chip configuration before clearing ACKISO. In particular, pin configuration
+ * for enabled LLWU wakeup pins should be restored to avoid any LLWU flag from
+ * being falsely set when ACKISO is cleared.
  *
  * Values:
- * - 0 - Peripherals and I/O pads are in normal run state
- * - 1 - Certain peripherals and I/O pads are in an isolated and latched state
+ * - 0 - Peripherals and I/O pads are in normal run state.
+ * - 1 - Certain peripherals and I/O pads are in an isolated and latched state.
  */
 //@{
 #define BP_PMC_REGSC_ACKISO  (3U)          //!< Bit position for PMC_REGSC_ACKISO.
@@ -538,8 +528,8 @@ typedef union _hw_pmc_regsc
  * power modes, clear BGEN to avoid excess power consumption.
  *
  * Values:
- * - 0 - Bandgap voltage reference is disabled in VLPx , LLS , and VLLSx modes
- * - 1 - Bandgap voltage reference is enabled in VLPx , LLS , and VLLSx modes
+ * - 0 - Bandgap voltage reference is disabled in VLPx , LLS , and VLLSx modes.
+ * - 1 - Bandgap voltage reference is enabled in VLPx , LLS , and VLLSx modes.
  */
 //@{
 #define BP_PMC_REGSC_BGEN    (4U)          //!< Bit position for PMC_REGSC_BGEN.

@@ -30,14 +30,10 @@
 #ifndef __FSL_WDOG_DRIVER_H__
 #define __FSL_WDOG_DRIVER_H__
 
-#include "fsl_wdog_hal.h"
-#include "fsl_device_registers.h"
-#include "fsl_interrupt_manager.h"
-#include <stdbool.h>
-#include <string.h>
+#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <assert.h>
+#include "fsl_wdog_hal.h"
 
 /*! 
  * @addtogroup wdog_driver
@@ -54,7 +50,7 @@
  * This structure is used when initialize the WDOG while wdog_init function is
  * called. It contains all configure of the WDOG.
  */
-typedef struct wdogInit {
+typedef struct WdogUserConfig {
     wdog_clock_source_t clockSource; /*!< Clock source select*/
     bool updateRegisterEnable; /*!< Update write-once register enable*/
     bool cpuDebugModeEnable; /*!< Enable watchdog ini cpu debug mode*/
@@ -64,7 +60,7 @@ typedef struct wdogInit {
     uint32_t timeOutValue; /*!< Timeout value*/
     wdog_clock_prescaler_t clockPrescaler; /*!< Clock prescaler*/
     wdog_isr_callback_t wdogCallbackFunc; /*!< Isr callback function. must in 256 bus cycles.*/
-} wdog_init_t;
+} wdog_user_config_t;
 
 /*******************************************************************************
  * API
@@ -83,18 +79,18 @@ extern "C" {
 /*!
  * @brief Initialize watchdog.
  *
- * This function is used to initialize the WDOG, after called, the WDOG 
- * will run immediately according to the configure.
+ * This function is used to initialize the WDOG. When called, the WDOG 
+ * runs immediately according to the configuration.
  *
  * @param init_ptr Watchdog Initialize data structure.
  *
  */
-void wdog_init(wdog_init_t* init_ptr);
+void wdog_init(const wdog_user_config_t* init_ptr);
 
 /*!
  * @brief Shutdown watchdog.
  *
- * This function is used to shotdown the WDOG.
+ * This function is used to shut down the WDOG.
  *
  */
 void wdog_shutdown(void);
@@ -102,8 +98,8 @@ void wdog_shutdown(void);
 /*!
  * @brief Refresh watchdog.
  *
- *  This function is used to feed the WDOG, it will set the WDOG timer count to zero and 
- *  should be called before watchdog timer is timeout, otherwise a RESET will assert.
+ *  This function is used to feed the WDOG. It sets the WDOG timer count to zero and 
+ *  should be called before watchdog timer times out, otherwise a RESET will assert.
  *
  */
 void wdog_refresh(void);
@@ -111,7 +107,7 @@ void wdog_refresh(void);
 /*!
  * @brief Clear watchdog reset count.
  *
- * This function is used to set the WDOG reset count to zero, the WDOG_RSTCNT
+ * This function sets the WDOG reset count to zero. The WDOG_RSTCNT
  * register will only clear on Power On Reset or clear by this function.
  *
  */
@@ -120,7 +116,7 @@ void wdog_clear_reset_count(void);
 /*!
  * @brief Get watchdog running status.
  *
- * This function is used to get the WDOG running status.
+ * This function gets the WDOG running status.
  *
  * @return watchdog running status, 0 means not running, 1 means running
  */
@@ -137,7 +133,7 @@ void wdog_reset_chip(void);
 /*!
  * @brief Get chip reset count that reset by watchdog.
  *
- * This function is used to get the WDOG_RSTCNT value.
+ * This function gets the WDOG_RSTCNT value.
  *
  * @return Chip reset count that reset by watchdog.
  */

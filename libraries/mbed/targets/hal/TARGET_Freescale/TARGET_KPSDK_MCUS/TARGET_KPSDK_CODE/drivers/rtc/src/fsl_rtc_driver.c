@@ -48,6 +48,16 @@ static void convert_datetime_to_seconds(const rtc_datetime_t * datetime,
 
 static bool has_datetime_correct_format(const rtc_datetime_t * datetime);
 
+#define SECONDS_IN_A_DAY     (86400U)
+
+#define SECONDS_IN_A_HOUR    (3600U)
+
+#define SECONDS_IN_A_MIN     (60U)
+
+#define DAYS_IN_A_YEAR       (365U)
+
+#define DAYS_IN_A_LEAP_YEAR  (366U)
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -60,7 +70,7 @@ static const uint8_t ULY[] = {0U, 31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U,
 static const uint8_t  LY[] = {0U, 31U, 29U, 31U, 30U, 31U, 30U, 31U, 31U, 30U,
     31U,30U,31U};
 
-/* Number of days from begin of the Leap-year*/
+/* Number of days from begin of the non Leap-year*/
 static const uint16_t MONTH_DAYS[] = {0U, 0U, 31U, 59U, 90U, 120U, 151U, 181U,
     212U,243U,273U,304U,334U};
 
@@ -78,7 +88,7 @@ extern IRQn_Type rtc_irq_ids[FSL_FEATURE_RTC_INTERRUPT_COUNT];
  * general interrupt and seconds interrupt as needed.
  *
  *END**************************************************************************/
-bool rtc_init(const rtc_init_config_t * config)
+bool rtc_init(const rtc_user_config_t * config)
 {
     bool result = false;
 
@@ -158,7 +168,7 @@ void rtc_get_int_status(hw_rtc_sr_t * int_status_flags)
         return;
     }
 
-    int_status_flags->U = HW_RTC_SR_RD;
+    int_status_flags->U = HW_RTC_SR_RD();
 }
 
 /*FUNCTION**********************************************************************
@@ -394,56 +404,64 @@ static void convert_seconds_to_datetime(const uint32_t * seconds,
   rtc_datetime_t * datetime)
 {
     uint32_t x;
-    uint32_t Seconds, Days;
+    uint32_t Seconds, Days, Days_in_year;
+    const uint8_t *Days_in_month;
 
     /* Start from 1970-01-01*/
     Seconds = *seconds;
     /* days*/
-    Days = Seconds / 86400U;
+    Days = Seconds / SECONDS_IN_A_DAY;
     /* seconds left*/
-    Seconds = Seconds % 86400U;
+    Seconds = Seconds % SECONDS_IN_A_DAY;
     /* hours*/
-    datetime->hour = Seconds / 3600U;
+    datetime->hour = Seconds / SECONDS_IN_A_HOUR;
     /* seconds left*/
-    Seconds = Seconds % 3600u;
+    Seconds = Seconds % SECONDS_IN_A_HOUR;
     /* minutes*/
-    datetime->minute = Seconds / 60U;
+    datetime->minute = Seconds / SECONDS_IN_A_MIN;
     /* seconds*/
-    datetime->second = Seconds % 60U;
+    datetime->second = Seconds % SECONDS_IN_A_MIN;
     /* year*/
-    datetime->year = (4U * (Days / ((4U * 365U) + 1U))) + 1970;
-    /* Days left*/
-    Days = Days % ((4U * 365U) + 1U);
-    /* 59*/
-    if (Days == ((0U * 365U) + 59U))
-    {
-        datetime->day = 29U;
-        datetime->month = 2U;
-        return;
-    }
-    else if (Days > ((0U * 365U) + 59U))
-    {
-        Days--;
-    }
-    else { }
+    datetime->year = 1970;
+    Days_in_year = DAYS_IN_A_YEAR;
 
-    x =  Days / 365U;
-    datetime->year += x;
-    Days -= x * 365U;
+    while (Days > Days_in_year)
+    {
+        Days -= Days_in_year;
+        datetime->year++;
+        if  (datetime->year & 3U)
+        {
+            Days_in_year = DAYS_IN_A_YEAR;
+        }
+        else
+        {
+            Days_in_year = DAYS_IN_A_LEAP_YEAR;    
+        }
+    }
+
+    if  (datetime->year & 3U)
+    {
+        Days_in_month = ULY;
+    }
+    else
+    {
+        Days_in_month = LY;    
+    }
+
     for (x=1U; x <= 12U; x++)
     {
-        if (Days < ULY[x])
+        if (Days <= (*(Days_in_month + x)))
         {
             datetime->month = x;
             break;
         }
         else
         {
-            Days -= ULY[x];
+            Days -= (*(Days_in_month + x));
         }
     }
 
-    datetime->day = Days + 1U;
+    datetime->day = Days;
 }
 
 /*FUNCTION**********************************************************************
@@ -458,7 +476,7 @@ static bool has_datetime_correct_format(const rtc_datetime_t * datetime)
     bool result = false;
 
     /* Test correctness of given parameters*/
-    if ((datetime->year < 1970U) || (datetime->year > 2038U) || (datetime->month > 12U) ||
+    if ((datetime->year < 1970U) || (datetime->year > 2099U) || (datetime->month > 12U) ||
       (datetime->month == 0U) || (datetime->day > 31U) || (datetime->day == 0U))
     {
         /* If not correct then error*/
@@ -503,19 +521,21 @@ static void convert_datetime_to_seconds(const rtc_datetime_t * datetime,
   uint32_t * seconds)
 {
     /* Compute number of days from 1970 till given year*/
-    *seconds = ((datetime->year - 1970U) * 365U) + (((datetime->year - 1970U) + 3U) / 4U);
+    *seconds = (datetime->year - 1970U) * DAYS_IN_A_YEAR;
+    /* Add leap year days */
+    *seconds += ((datetime->year / 4) - (1970U / 4));
     /* Add number of days till given month*/
     *seconds += MONTH_DAYS[datetime->month];
     /* Add days in given month*/
     *seconds += datetime->day;
-    /* For un-leap year or month <= 2, decrement day counter*/
-    if ((datetime->year & 3U) || (datetime->month <= 2U))
+    /* For leap year if month less than or equal to Febraury, decrement day counter*/
+    if ((!(datetime->year & 3U)) && (datetime->month <= 2U))
     {
         (*seconds)--;
     }
 
-    *seconds = ((*seconds) * 86400U) + (datetime->hour * 3600U) + (datetime->minute * 60U) +
-               datetime->second;
+    *seconds = ((*seconds) * SECONDS_IN_A_DAY) + (datetime->hour * SECONDS_IN_A_HOUR) + 
+               (datetime->minute * SECONDS_IN_A_MIN) + datetime->second;
     (*seconds)++;
 }
 

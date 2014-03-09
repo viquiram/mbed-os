@@ -30,10 +30,9 @@
 #if !defined(__FSL_UART_IRQ_H__)
 #define __FSL_UART_IRQ_H__
 
-//
+#include <stdbool.h>
 #include "fsl_uart_features.h"
 #include "fsl_uart_driver.h"
-#include <stdbool.h>
 
 /*******************************************************************************
  * Definitions

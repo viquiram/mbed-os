@@ -116,13 +116,13 @@ extern "C" {
 /* RTC Access Control Register Reset Functions*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      resets RTC Write Access Register (RTC_WAR).*/
+/*! @brief      Resets the RTC Write Access Register (RTC_WAR).*/
 static inline void rtc_hal_reset_reg_WAR(void)
 {
   HW_RTC_WAR_WR((uint32_t)0x0000FFFFU);
 }
 
-/*! @brief      resets RTC Read Access Register (RTC_RAR).*/
+/*! @brief      Resets the RTC Read Access Register (RTC_RAR).*/
 static inline void rtc_hal_reset_reg_RAR(void)
 {
   HW_RTC_RAR_WR((uint32_t)0x0000FFFFU);
@@ -132,9 +132,9 @@ static inline void rtc_hal_reset_reg_RAR(void)
 /* RTC Access Control Configuration*/
 /*-------------------------------------------------------------------------------------------*/
 
-/*! @brief      configure read and write access controls to other module fields
+/*! @brief      Configures the read and write access controls to other module fields
  *  @param      flags [in] pointer to structure where configuration flags are
- *              found. See related structure for details.
+ *              found. See the related structure for details.
  */
 static inline void rtc_hal_access_control_configuration(const rtc_hal_access_control_config_t * flags)
 {
@@ -218,11 +218,11 @@ static inline void rtc_hal_access_control_configuration(const rtc_hal_access_con
 
 
 #if FSL_FEATURE_RTC_HAS_MONOTONIC
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Counter High Write (MCHW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the monotonic counter high register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or by the software reset.
+ *  @return     true: Writes to the monotonic counter high register complete  normally.
  *              false: Writes to the monotonic counter high register are ignored.
  */
 static inline bool rtc_hal_get_monotonic_hcount_wreg(void)
@@ -230,11 +230,11 @@ static inline bool rtc_hal_get_monotonic_hcount_wreg(void)
   return (bool)BR_RTC_WAR_MCHW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Counter High Write (MCHW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @param      enable true: Writes to the monotonic counter high register complete as normal.
+ *  @param      enable true: Writes to the monotonic counter high register complete  normally.
  *              false: Writes to the monotonic counter high register are ignored.
  */
 static inline void rtc_hal_set_monotonic_hcount_wreg(bool enable)
@@ -242,11 +242,11 @@ static inline void rtc_hal_set_monotonic_hcount_wreg(bool enable)
   BW_RTC_WAR_MCHW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Counter Low Write (MCLW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @return     true: Writes to the monotonic counter low register complete as normal.
+ *  @return     true: Writes to the monotonic counter low register complete  normally.
  *              false: Writes to the monotonic counter low register are ignored.
  */
 static inline bool rtc_hal_get_monotonic_lcount_wreg(void)
@@ -254,11 +254,11 @@ static inline bool rtc_hal_get_monotonic_lcount_wreg(void)
   return (bool)BR_RTC_WAR_MCLW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Counter Low Write (MCLW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the monotonic counter low register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the monotonic counter low register complete  normally.
  *              false: Writes to the monotonic counter low register are ignored.
  */
 static inline void rtc_hal_set_monotonic_lcount_wreg(bool enable)
@@ -266,11 +266,11 @@ static inline void rtc_hal_set_monotonic_lcount_wreg(bool enable)
   BW_RTC_WAR_MCLW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Enable Register Write (MERW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the monotonic enable register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Writes to the monotonic enable register complete  normally.
  *              false: Writes to the monotonic enable register are ignored.
  */
 static inline bool rtc_hal_get_monotonic_enable_wreg(void)
@@ -278,11 +278,11 @@ static inline bool rtc_hal_get_monotonic_enable_wreg(void)
   return (bool)BR_RTC_WAR_MERW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Monotonic Enable Register Write (MERW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the monotonic enable register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the monotonic enable register complete  normally.
  *              false: Writes to the monotonic enable register are ignored.
  */
 static inline void rtc_hal_set_monotonic_enable_wreg(bool enable)
@@ -291,33 +291,33 @@ static inline void rtc_hal_set_monotonic_enable_wreg(bool enable)
 }
 #endif
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Interrupt Enable Register Write (IERW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the interrupt enable register complete as normal.
- *              false: Writes to the interupt enable register are ignored.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Writes to the interrupt enable register complete  normally.
+ *              false: Writes to the interrupt enable register are ignored.
  */
 static inline bool rtc_hal_get_interrupt_enable_wreg(void)
 {
   return (bool)BR_RTC_WAR_IERW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Interrupt Enable Register Write (IERW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the interrupt enable register complete as normal.
- *              false: Writes to the interupt enable register are ignored.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the interrupt enable register complete  normally.
+ *              false: Writes to the interrupt enable register are ignored.
  */
 static inline void rtc_hal_set_interrupt_enable_wreg(bool enable)
 {
   BW_RTC_WAR_IERW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Lock Register Write (LRW).
- *  @return     true: Writes to the lock register complete as normal.
+ *  @return     true: Writes to the lock register complete  normally.
  *              false: Writes to the lock register are ignored.
  */
 static inline bool rtc_hal_get_lock_wreg(void)
@@ -325,11 +325,11 @@ static inline bool rtc_hal_get_lock_wreg(void)
   return (bool)BR_RTC_WAR_LRW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Lock Register Write (LRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the lock register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the lock register complete  normally.
  *              false: Writes to the lock register are ignored.
  */
 static inline void rtc_hal_set_lock_wreg(bool enable)
@@ -337,11 +337,11 @@ static inline void rtc_hal_set_lock_wreg(bool enable)
   BW_RTC_WAR_LRW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Status Register Write (SRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the status register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Writes to the status register complete  normally.
  *              false: Writes to the status register are ignored.
  */
 static inline bool rtc_hal_get_status_wreg(void)
@@ -349,11 +349,11 @@ static inline bool rtc_hal_get_status_wreg(void)
   return (bool)BR_RTC_WAR_SRW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Status Register Write (SRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the status register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the status register complete  normally.
  *              false: Writes to the status register are ignored.
  */
 static inline void rtc_hal_set_status_wreg(bool enable)
@@ -361,11 +361,11 @@ static inline void rtc_hal_set_status_wreg(bool enable)
   BW_RTC_WAR_SRW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Control Register Write (CRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the control register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Writes to the control register complete  normally.
  *              false: Writes to the control register are ignored.
  */
 static inline bool rtc_hal_get_control_wreg(void)
@@ -373,11 +373,11 @@ static inline bool rtc_hal_get_control_wreg(void)
   return (bool)BR_RTC_WAR_CRW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Control Register Write (CRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the control register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the control register complete  normally.
  *              false: Writes to the control register are ignored.
  */
 static inline void rtc_hal_set_control_wreg(bool enable)
@@ -385,9 +385,9 @@ static inline void rtc_hal_set_control_wreg(bool enable)
   BW_RTC_WAR_CRW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Time Compensation Register Write (TCRW).
- *  @return     true: Writes to the time compensation register complete as normal.
+ *  @return     true: Writes to the time compensation register complete  normally.
  *              false: Writes to the time compensation register are ignored.
  */
 static inline bool rtc_hal_get_compensation_wreg(void)
@@ -395,11 +395,11 @@ static inline bool rtc_hal_get_compensation_wreg(void)
   return (bool)BR_RTC_WAR_TCRW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Time Compensation Register Write (TCRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the time compensation register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the time compensation register complete  normally.
  *              false: Writes to the time compensation register are ignored.
  */
 static inline void rtc_hal_set_compensation_wreg(bool enable)
@@ -407,11 +407,11 @@ static inline void rtc_hal_set_compensation_wreg(bool enable)
   BW_RTC_WAR_TCRW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Time Alarm Register Write (TARW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the time alarm register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Writes to the time alarm register complete  normally.
  *              false: Writes to the time alarm register are ignored.
  */
 static inline bool rtc_hal_get_alarm_wreg(void)
@@ -419,11 +419,11 @@ static inline bool rtc_hal_get_alarm_wreg(void)
   return (bool)BR_RTC_WAR_TARW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Time Alarm Register Write (TARW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the time alarm register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the time alarm register complete  normally.
  *              false: Writes to the time alarm register are ignored.
  */
 static inline void rtc_hal_set_alarm_wreg(bool enable)
@@ -431,9 +431,9 @@ static inline void rtc_hal_set_alarm_wreg(bool enable)
   BW_RTC_WAR_TARW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Time Prescaler Register Write (TPRW).
- *  @return     true: Writes to the time prescaler register complete as normal.
+ *  @return     true: Writes to the time prescaler register complete  normally.
  *              false: Writes to the time prescaler register are ignored.
  */
 static inline bool rtc_hal_get_prescaler_wreg(void)
@@ -441,11 +441,11 @@ static inline bool rtc_hal_get_prescaler_wreg(void)
   return (bool)BR_RTC_WAR_TPRW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Time Prescaler Register Write (TPRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the time prescaler register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the time prescaler register complete  normally.
  *              false: Writes to the time prescaler register are ignored.
  */
 static inline void rtc_hal_set_prescaler_wreg(bool enable)
@@ -453,11 +453,11 @@ static inline void rtc_hal_set_prescaler_wreg(bool enable)
   BW_RTC_WAR_TPRW((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Write Access Register (RTC_WAR),
+/*! @brief      Reads the value of the RTC Write Access Register (RTC_WAR),
  *              field Time Seconds Register Write (TSRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Writes to the time seconds register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Writes to the time seconds register complete  normally.
  *              false: Writes to the time seconds register are ignored.
  */
 static inline bool rtc_hal_get_seconds_wreg(void)
@@ -465,11 +465,11 @@ static inline bool rtc_hal_get_seconds_wreg(void)
   return (bool)BR_RTC_WAR_TSRW;
 }
 
-/*! @brief      writes to the RTC Write Access Register (RTC_WAR),
+/*! @brief      Writes to the RTC Write Access Register (RTC_WAR),
  *              field Time Seconds Register Write (TSRW). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Writes to the time seconds register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Writes to the time seconds register complete  normally.
  *              false: Writes to the time seconds register are ignored.
  */
 static inline void rtc_hal_set_seconds_wreg(bool enable)
@@ -478,11 +478,11 @@ static inline void rtc_hal_set_seconds_wreg(bool enable)
 }
 
 #if (FSL_FEATURE_RTC_HAS_MONOTONIC == 1)
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Monotonic Counter High Read (MCHR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Reads to the monotonic counter high register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Reads to the monotonic counter high register complete  normally.
  *              false: Reads to the monotonic counter high register are ignored.
  */
 static inline bool rtc_hal_get_monotonic_hcount_rreg(void)
@@ -490,11 +490,11 @@ static inline bool rtc_hal_get_monotonic_hcount_rreg(void)
   return (bool)BR_RTC_RAR_MCHR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Monotonic Counter High Read (MCHR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the monotonic counter high register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the monotonic counter high register complete  normally.
  *              false: Reads to the monotonic counter high register are ignored.
  */
 static inline void rtc_hal_set_monotonic_hcount_rreg(bool enable)
@@ -502,11 +502,11 @@ static inline void rtc_hal_set_monotonic_hcount_rreg(bool enable)
   BW_RTC_RAR_MCHR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Monotonic Counter Low Read (MCLR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Reads to the monotonic counter low register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Reads to the monotonic counter low register complete  normally.
  *              false: Reads to the monotonic counter low register are ignored.
  */
 static inline bool rtc_hal_get_monotonic_lcount_rreg(void)
@@ -514,11 +514,11 @@ static inline bool rtc_hal_get_monotonic_lcount_rreg(void)
   return (bool)BR_RTC_RAR_MCLR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Monotonic Counter Low Read (MCLR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the monotonic counter low register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the monotonic counter low register complete  normally.
  *              false: Reads to the monotonic counter low register are ignored.
  */
 static inline void rtc_hal_set_monotonic_lcount_rreg(bool enable)
@@ -526,11 +526,11 @@ static inline void rtc_hal_set_monotonic_lcount_rreg(bool enable)
   BW_RTC_RAR_MCLR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Monotonic Enable Register Read (MERR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Reads to the monotonic enable register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Reads to the monotonic enable register complete  normally.
  *              false: Reads to the monotonic enable register are ignored.
  */
 static inline bool rtc_hal_get_monotonic_enable_rreg(void)
@@ -538,11 +538,11 @@ static inline bool rtc_hal_get_monotonic_enable_rreg(void)
   return (bool)BR_RTC_RAR_MERR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Monotonic Enable Register Read (MERR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the monotonic enable register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the monotonic enable register complete  normally.
  *              false: Reads to the monotonic enable register are ignored.
  */
 static inline void rtc_hal_set_monotonic_enable_rreg(bool enable)
@@ -551,11 +551,11 @@ static inline void rtc_hal_set_monotonic_enable_rreg(bool enable)
 }
 #endif
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Interrupt Enable Register Read (IERR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Reads to the interrupt enable register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Reads to the interrupt enable register complete  normally.
  *              false: Reads to the interrupt enable register are ignored.
  */
 static inline bool rtc_hal_get_interrupt_enable_rreg(void)
@@ -563,11 +563,11 @@ static inline bool rtc_hal_get_interrupt_enable_rreg(void)
   return (bool)BR_RTC_RAR_IERR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Interrupt Enable Register Read (IERR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the interrupt enable register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the interrupt enable register complete  normally.
  *              false: Reads to the interrupt enable register are ignored.
  */
 static inline void rtc_hal_set_interrupt_enable_rreg(bool enable)
@@ -587,11 +587,11 @@ static inline bool rtc_hal_get_lock_rreg(void)
   return (bool)BR_RTC_RAR_LRR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Lock Register Read (LRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the lock register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the lock register complete  normally.
  *              false: Reads to the lock register are ignored.
  */
 static inline void rtc_hal_set_lock_rreg(bool enable)
@@ -599,11 +599,11 @@ static inline void rtc_hal_set_lock_rreg(bool enable)
   BW_RTC_RAR_LRR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Status Register Read (SRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Reads to the status register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Reads to the status register complete  normally.
  *              false: Reads to the status register are ignored.
  */
 static inline bool rtc_hal_get_status_rreg(void)
@@ -611,11 +611,11 @@ static inline bool rtc_hal_get_status_rreg(void)
   return (bool)BR_RTC_RAR_SRR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Status Register Read (SRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @param      enable true: Reads to the status register complete as normal.
+ *  @param      enable true: Reads to the status register complete  normally.
  *              false: Reads to the status register are ignored.
  */
 static inline void rtc_hal_set_status_rreg(bool enable)
@@ -623,11 +623,11 @@ static inline void rtc_hal_set_status_rreg(bool enable)
   BW_RTC_RAR_SRR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Control Register Read (CRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @return     true: Reads to the control register complete as normal.
+ *  @return     true: Reads to the control register complete  normally.
  *              false: Reads to the control register are ignored.
  */
 static inline bool rtc_hal_get_control_rreg(void)
@@ -635,11 +635,11 @@ static inline bool rtc_hal_get_control_rreg(void)
   return (bool)BR_RTC_RAR_CRR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Control Register Read (CRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @param      enable true: Reads to the control register complete as normal.
+ *  @param      enable true: Reads to the control register complete  normally.
  *              false: Reads to the control register are ignored.
  */
 static inline void rtc_hal_set_control_rreg(bool enable)
@@ -647,11 +647,11 @@ static inline void rtc_hal_set_control_rreg(bool enable)
   BW_RTC_RAR_CRR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Time Compensation Register Read (TCRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @return     true: Reads to the time compensation register complete as normal.
+ *  @return     true: Reads to the time compensation register complete  normally.
  *              false: Reads to the time compensation register are ignored.
  */
 static inline bool rtc_hal_get_compensation_rreg(void)
@@ -659,11 +659,11 @@ static inline bool rtc_hal_get_compensation_rreg(void)
   return (bool)BR_RTC_RAR_TCRR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Time Compensation Register Read (TCRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @param      enable true: Reads to the time compensation register complete as normal.
+ *  @param      enable true: Reads to the time compensation register complete  normally.
  *              false: Reads to the time compensation register are ignored.
  */
 static inline void rtc_hal_set_compensation_rreg(bool enable)
@@ -671,11 +671,11 @@ static inline void rtc_hal_set_compensation_rreg(bool enable)
   BW_RTC_RAR_TCRR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Time Alarm Register Read (TARR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by the
  *              VBAT POR or software reset.
- *  @return     true: Reads to the time alarm register complete as normal.
+ *  @return     true: Reads to the time alarm register complete  normally.
  *              false: Reads to the time alarm register are ignored.
  */
 static inline bool rtc_hal_get_alarm_rreg(void)
@@ -683,11 +683,11 @@ static inline bool rtc_hal_get_alarm_rreg(void)
   return (bool)BR_RTC_RAR_TARR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Time Alarm Register Read (TARR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the time alarm register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the time alarm register complete  normally.
  *              false: Reads to the time alarm register are ignored.
  */
 static inline void rtc_hal_set_alarm_rreg(bool enable)
@@ -695,11 +695,11 @@ static inline void rtc_hal_set_alarm_rreg(bool enable)
   BW_RTC_RAR_TARR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Time Prescaler Register Read (TPRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
+ *              this bit is only set by the system reset. It is not affected by
  *              VBAT POR or software reset.
- *  @return     true: Reads to the time prescaler register complete as normal.
+ *  @return     true: Reads to the time prescaler register complete  normally.
  *              false: Reads to the time prescaler register are ignored.
  */
 static inline bool rtc_hal_get_prescaler_rreg(void)
@@ -707,11 +707,11 @@ static inline bool rtc_hal_get_prescaler_rreg(void)
   return (bool)BR_RTC_RAR_TPRR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Time Prescaler Register Read (TPRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the time prescaler register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the time prescaler register complete  normally.
  *              false: Reads to the time prescaler register are ignored.
  */
 static inline void rtc_hal_set_prescaler_rreg(bool enable)
@@ -720,11 +720,11 @@ static inline void rtc_hal_set_prescaler_rreg(bool enable)
   BW_RTC_RAR_TPRR((uint32_t) enable);
 }
 
-/*! @brief      reads the value of the RTC Read Access Register (RTC_RAR),
+/*! @brief      Reads the value of the RTC Read Access Register (RTC_RAR),
  *              field Time Seconds Register Read (TSRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @return     true: Reads to the time seconds register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @return     true: Reads to the time seconds register complete  normally.
  *              false: Reads to the time seconds register are ignored.
  */
 static inline bool rtc_hal_get_seconds_rreg(void)
@@ -732,11 +732,11 @@ static inline bool rtc_hal_get_seconds_rreg(void)
   return (bool)BR_RTC_RAR_TSRR;
 }
 
-/*! @brief      writes to the RTC Read Access Register (RTC_RAR),
+/*! @brief      Writes to the RTC Read Access Register (RTC_RAR),
  *              field Time Seconds Register Read (TSRR). Once cleared,
- *              this bit is only set by system reset. It is not affected by
- *              VBAT POR or software reset.
- *  @param      enable true: Reads to the time seconds register complete as normal.
+ *              this bit is only set by the system reset. It is not affected by the
+ *              VBAT POR or the software reset.
+ *  @param      enable true: Reads to the time seconds register complete  normally.
  *              false: Reads to the time seconds register are ignored.
  */
 static inline void rtc_hal_set_seconds_rreg(bool enable)

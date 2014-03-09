@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -83,7 +83,7 @@ typedef union _hw_cmp_cr0
     struct _hw_cmp_cr0_bitfields
     {
         uint8_t HYSTCTR : 2;           //!< [1:0] Comparator hard block hysteresis
-                                       //!< control
+                                       //! control
         uint8_t RESERVED0 : 2;         //!< [3:2]
         uint8_t FILTER_CNT : 3;        //!< [6:4] Filter Sample Count
         uint8_t RESERVED1 : 1;         //!< [7]
@@ -148,7 +148,8 @@ typedef union _hw_cmp_cr0
  *
  * Represents the number of consecutive samples that must agree prior to the
  * comparator ouput filter accepting a new output state. For information regarding
- * filter programming and latency, see the Functional description.
+ * filter programming and latency, see the Functional descriptionThe CMP module
+ * can be used to compare two analog input voltages applied to INP and INM. .
  *
  * Values:
  * - 000 - Filter is disabled. If SE = 1, then COUT is a logic 0. This is not a
@@ -481,9 +482,10 @@ typedef union _hw_cmp_fpr
  *
  * Specifies the sampling period, in bus clock cycles, of the comparator output
  * filter, when CR1[SE]=0. Setting FILT_PER to 0x0 disables the filter. Filter
- * programming and latency details appear in the Functional description. This field
- * has no effect when CR1[SE]=1. In that case, the external SAMPLE signal is
- * used to determine the sampling period.
+ * programming and latency details appear in the Functional descriptionThe CMP
+ * module can be used to compare two analog input voltages applied to INP and INM. .
+ * This field has no effect when CR1[SE]=1. In that case, the external SAMPLE
+ * signal is used to determine the sampling period.
  */
 //@{
 #define BP_CMP_FPR_FILT_PER  (0U)          //!< Bit position for CMP_FPR_FILT_PER.
@@ -492,7 +494,7 @@ typedef union _hw_cmp_fpr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the CMP_FPR_FILT_PER field.
-#define BR_CMP_FPR_FILT_PER(x) (HW_CMP_FPR(x).B.FILT_PER)
+#define BR_CMP_FPR_FILT_PER(x) (HW_CMP_FPR(x).U)
 #endif
 
 //! @brief Format value for bitfield CMP_FPR_FILT_PER.
@@ -500,7 +502,7 @@ typedef union _hw_cmp_fpr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the FILT_PER field to a new value.
-#define BW_CMP_FPR_FILT_PER(x, v) (HW_CMP_FPR_WR(x, (HW_CMP_FPR_RD(x) & ~BM_CMP_FPR_FILT_PER) | BF_CMP_FPR_FILT_PER(v)))
+#define BW_CMP_FPR_FILT_PER(x, v) (HW_CMP_FPR_WR(x, v))
 #endif
 //@}
 
@@ -573,7 +575,8 @@ typedef union _hw_cmp_scr
  * @name Register CMP_SCR, field CFF[1] (W1C)
  *
  * Detects a falling-edge on COUT, when set, during normal operation. CFF is
- * cleared by writing 1 to it. During Stop modes, CFF is level sensitive .
+ * cleared by writing 1 to it. During Stop modes, CFF is level sensitive is edge
+ * sensitive .
  *
  * Values:
  * - 0 - Falling-edge on COUT has not been detected.
@@ -602,7 +605,8 @@ typedef union _hw_cmp_scr
  * @name Register CMP_SCR, field CFR[2] (W1C)
  *
  * Detects a rising-edge on COUT, when set, during normal operation. CFR is
- * cleared by writing 1 to it. During Stop modes, CFR is level sensitive .
+ * cleared by writing 1 to it. During Stop modes, CFR is level sensitive is edge
+ * sensitive .
  *
  * Values:
  * - 0 - Rising-edge on COUT has not been detected.
@@ -888,14 +892,14 @@ typedef union _hw_cmp_muxcr
  * shuts down to prevent itself from becoming a noise generator.
  *
  * Values:
- * - 000 - CMPx_IN0 pin
- * - 001 - CMPx_IN1 pin
- * - 010 - CMPx_IN2 pin
- * - 011 - CMPx_IN3 pin
- * - 100 - Internally connected to 12-bit DAC
- * - 101 - CMP_REF pin
- * - 110 - Reserved
- * - 111 - Internally connected to 6-bit DAC
+ * - 000 - IN0
+ * - 001 - IN1
+ * - 010 - IN2
+ * - 011 - IN3
+ * - 100 - IN4
+ * - 101 - IN5
+ * - 110 - IN6
+ * - 111 - IN7
  */
 //@{
 #define BP_CMP_MUXCR_MSEL    (0U)          //!< Bit position for CMP_MUXCR_MSEL.
@@ -925,14 +929,14 @@ typedef union _hw_cmp_muxcr
  * shuts down to prevent itself from becoming a noise generator.
  *
  * Values:
- * - 000 - CMPx_IN0 pin
- * - 001 - CMPx_IN1
- * - 010 - CMPx_IN2
- * - 011 - CMPx_IN3
- * - 100 - Internally connected to 12-bit DAC
- * - 101 - Connected to CMP_REF pin
- * - 110 - Reserved
- * - 111 - Internally connected to 6-bit DAC
+ * - 000 - IN0
+ * - 001 - IN1
+ * - 010 - IN2
+ * - 011 - IN3
+ * - 100 - IN4
+ * - 101 - IN5
+ * - 110 - IN6
+ * - 111 - IN7
  */
 //@{
 #define BP_CMP_MUXCR_PSEL    (3U)          //!< Bit position for CMP_MUXCR_PSEL.

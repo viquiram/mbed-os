@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -102,7 +102,7 @@ typedef union _hw_spi_mcr
         uint32_t MDIS : 1;             //!< [14] Module Disable
         uint32_t DOZE : 1;             //!< [15] Doze Enable
         uint32_t PCSIS : 6;            //!< [21:16] Peripheral Chip Select x Inactive
-                                       //!< State
+                                       //! State
         uint32_t RESERVED1 : 2;        //!< [23:22]
         uint32_t ROOE : 1;             //!< [24] Receive FIFO Overflow Overwrite Enable
         uint32_t PCSSE : 1;            //!< [25] Peripheral Chip Select Strobe Enable
@@ -138,7 +138,7 @@ typedef union _hw_spi_mcr
 /*!
  * @name Register SPI_MCR, field HALT[0] (RW)
  *
- * The HALT bit starts and stops SPI transfers. See Start and Stop of Module
+ * The HALT bit starts and stops frame transfers. See Start and Stop of Module
  * transfers
  *
  * Values:
@@ -171,9 +171,9 @@ typedef union _hw_spi_mcr
  * field is valid only when CPHA bit in CTARn[CPHA] is 0.
  *
  * Values:
- * - 00 - 0 system clocks between SCK edge and SIN sample
- * - 01 - 1 system clock between SCK edge and SIN sample
- * - 10 - 2 system clocks between SCK edge and SIN sample
+ * - 00 - 0 protocol clock cycles between SCK edge and SIN sample
+ * - 01 - 1 protocol clock cycle between SCK edge and SIN sample
+ * - 10 - 2 protocol clock cycles between SCK edge and SIN sample
  * - 11 - Reserved
  */
 //@{
@@ -210,11 +210,6 @@ typedef union _hw_spi_mcr
 #define BM_SPI_MCR_CLR_RXF   (0x00000400U) //!< Bit mask for SPI_MCR_CLR_RXF.
 #define BS_SPI_MCR_CLR_RXF   (1U)          //!< Bit field size in bits for SPI_MCR_CLR_RXF.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the SPI_MCR_CLR_RXF field.
-#define BR_SPI_MCR_CLR_RXF(x) (BITBAND_ACCESS32(HW_SPI_MCR_ADDR(x), BP_SPI_MCR_CLR_RXF))
-#endif
-
 //! @brief Format value for bitfield SPI_MCR_CLR_RXF.
 #define BF_SPI_MCR_CLR_RXF(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_SPI_MCR_CLR_RXF), uint32_t) & BM_SPI_MCR_CLR_RXF)
 
@@ -238,11 +233,6 @@ typedef union _hw_spi_mcr
 #define BP_SPI_MCR_CLR_TXF   (11U)         //!< Bit position for SPI_MCR_CLR_TXF.
 #define BM_SPI_MCR_CLR_TXF   (0x00000800U) //!< Bit mask for SPI_MCR_CLR_TXF.
 #define BS_SPI_MCR_CLR_TXF   (1U)          //!< Bit field size in bits for SPI_MCR_CLR_TXF.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the SPI_MCR_CLR_TXF field.
-#define BR_SPI_MCR_CLR_TXF(x) (BITBAND_ACCESS32(HW_SPI_MCR_ADDR(x), BP_SPI_MCR_CLR_TXF))
-#endif
 
 //! @brief Format value for bitfield SPI_MCR_CLR_TXF.
 #define BF_SPI_MCR_CLR_TXF(v) (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_SPI_MCR_CLR_TXF), uint32_t) & BM_SPI_MCR_CLR_TXF)
@@ -319,8 +309,8 @@ typedef union _hw_spi_mcr
  * Allows the clock to be stopped to the non-memory mapped logic in the module
  * effectively putting it in a software-controlled power-saving state. The reset
  * value of the MDIS bit is parameterized, with a default reset value of 0. When
- * SPI is used in Slave Mode, it is recommended to leave this bit set to '0',
- * since a slave doesn't have control over master transactions.
+ * the module is used in Slave Mode, we recommend leaving this bit 0, because a
+ * slave doesn't have control over master transactions.
  *
  * Values:
  * - 0 - Enables the module clocks.
@@ -492,8 +482,8 @@ typedef union _hw_spi_mcr
 /*!
  * @name Register SPI_MCR, field FRZ[27] (RW)
  *
- * Enables the SPI transfers to be stopped on the next frame boundary when the
- * device enters Debug mode.
+ * Enables transfers to be stopped on the next frame boundary when the device
+ * enters Debug mode.
  *
  * Values:
  * - 0 - Do not halt serial transfers in Debug mode.
@@ -571,11 +561,12 @@ typedef union _hw_spi_mcr
 /*!
  * @name Register SPI_MCR, field MSTR[31] (RW)
  *
- * Configures the module for either Master mode or Slave mode.
+ * Enables either Master mode (if supported) or Slave mode (if supported)
+ * operation.
  *
  * Values:
- * - 0 - The module is in Slave mode.
- * - 1 - The module is in Master mode.
+ * - 0 - Enables Slave mode
+ * - 1 - Enables Master mode
  */
 //@{
 #define BP_SPI_MCR_MSTR      (31U)         //!< Bit position for SPI_MCR_MSTR.
@@ -687,8 +678,8 @@ typedef union _hw_spi_tcr
  * delays. In slave mode, a subset of the bitfields in CTAR0 are used to set the
  * slave transfer attributes. When the module is configured as an SPI master, the
  * CTAS field in the command portion of the TX FIFO entry selects which of the CTAR
- * registers is used. When the module is configured as an SPI bus slave, the
- * CTAR0 register is used.
+ * registers is used. When the module is configured as an SPI bus slave, it uses
+ * the CTAR0 register.
  */
 typedef union _hw_spi_ctarn
 {
@@ -738,9 +729,9 @@ typedef union _hw_spi_ctarn
  * @name Register SPI_CTARn, field BR[3:0] (RW)
  *
  * Selects the scaler value for the baud rate. This field is used only in master
- * mode. The prescaled system clock is divided by the Baud Rate Scaler to
+ * mode. The prescaled protocol clock is divided by the Baud Rate Scaler to
  * generate the frequency of the SCK. The baud rate is computed according to the
- * following equation: SCK baud rate = ( fSYS /PBR) x [(1+DBR)/BR] The following table
+ * following equation: SCK baud rate = (fP /PBR) x [(1+DBR)/BR] The following table
  * lists the baud rate scaler values. Baud Rate Scaler CTARn[BR] Baud Rate Scaler
  * Value 0000 2 0001 4 0010 6 0011 8 0100 16 0101 32 0110 64 0111 128 1000 256
  * 1001 512 1010 1024 1011 2048 1100 4096 1101 8192 1110 16384 1111 32768
@@ -772,8 +763,8 @@ typedef union _hw_spi_ctarn
  * signal at the end of a frame and the assertion of PCS at the beginning of the next
  * frame. In the Continuous Serial Communications Clock operation, the DT value
  * is fixed to one SCK clock period, The Delay after Transfer is a multiple of the
- * system clock period, and it is computed according to the following equation:
- * tDT = (1/fSYS ) x PDT x DT See Delay Scaler Encoding table in CTARn[CSSCK] bit
+ * protocol clock period, and it is computed according to the following
+ * equation: tDT = (1/fP ) x PDT x DT See Delay Scaler Encoding table in CTARn[CSSCK] bit
  * field description for scaler values.
  */
 //@{
@@ -800,10 +791,10 @@ typedef union _hw_spi_ctarn
  *
  * Selects the scaler value for the After SCK Delay. This field is used only in
  * master mode. The After SCK Delay is the delay between the last edge of SCK and
- * the negation of PCS. The delay is a multiple of the system clock period, and
- * it is computed according to the following equation: t ASC = (1/f SYS ) x PASC
- * x ASC See Delay Scaler Encoding table in CTARn[CSSCK] bit field description
- * for scaler values. Refer After SCK Delay (tASC ) for more details.
+ * the negation of PCS. The delay is a multiple of the protocol clock period,
+ * and it is computed according to the following equation: t ASC = (1/fP) x PASC x
+ * ASC See Delay Scaler Encoding table in CTARn[CSSCK] bit field description for
+ * scaler values. Refer After SCK Delay (tASC ) for more details.
  */
 //@{
 #define BP_SPI_CTARn_ASC     (8U)          //!< Bit position for SPI_CTARn_ASC.
@@ -829,8 +820,8 @@ typedef union _hw_spi_ctarn
  *
  * Selects the scaler value for the PCS to SCK delay. This field is used only in
  * master mode. The PCS to SCK Delay is the delay between the assertion of PCS
- * and the first edge of the SCK. The delay is a multiple of the system clock
- * period, and it is computed according to the following equation: t CSC = (1/fSYS )
+ * and the first edge of the SCK. The delay is a multiple of the protocol clock
+ * period, and it is computed according to the following equation: t CSC = (1/fP )
  * x PCSSCK x CSSCK. The following table lists the delay scaler values. Delay
  * Scaler Encoding Field Value Delay Scaler Value 0000 2 0001 4 0010 8 0011 16 0100
  * 32 0101 64 0110 128 0111 256 1000 512 1001 1024 1010 2048 1011 4096 1100 8192
@@ -860,9 +851,9 @@ typedef union _hw_spi_ctarn
  * @name Register SPI_CTARn, field PBR[17:16] (RW)
  *
  * Selects the prescaler value for the baud rate. This field is used only in
- * master mode. The baud rate is the frequency of the SCK. The system clock is
- * divided by the prescaler value before the baud rate selection takes place. See the
- * BR field description for details on how to compute the baud rate.
+ * master mode. The baud rate is the frequency of the SCK. The protocol clock is
+ * divided by the prescaler value before the baud rate selection takes place. See
+ * the BR field description for details on how to compute the baud rate.
  *
  * Values:
  * - 00 - Baud Rate Prescaler value is 2.
@@ -1021,7 +1012,7 @@ typedef union _hw_spi_ctarn
  * Selects which edge of SCK causes data to change and which edge causes data to
  * be captured. This bit is used in both master and slave mode. For successful
  * communication between serial devices, the devices must have identical clock
- * phase settings. In Continuous SCK mode , the bit value is ignored and the
+ * phase settings. In Continuous SCK mode, the bit value is ignored and the
  * transfers are done as if the CPHA bit is set to 1.
  *
  * Values:
@@ -1057,7 +1048,9 @@ typedef union _hw_spi_ctarn
  * serial devices, the devices must have identical clock polarities. When the
  * Continuous Selection Format is selected, switching between clock polarities
  * without stopping the module can cause errors in the transfer due to the peripheral
- * device interpreting the switch of clock polarity as a valid clock edge.
+ * device interpreting the switch of clock polarity as a valid clock edge. In case
+ * of continous sck mode, when the module goes in low power mode(disabled),
+ * inactive state of sck is not guaranted.
  *
  * Values:
  * - 0 - The inactive state value of SCK is low.
@@ -1085,9 +1078,8 @@ typedef union _hw_spi_ctarn
 /*!
  * @name Register SPI_CTARn, field FMSZ[30:27] (RW)
  *
- * The number of bits transferred per frame is equal to the FMSZ field value
- * plus 1. Regardless of the transmission mode, the minimum valid frame size value
- * is 4.
+ * The number of bits transferred per frame is equal to the FMSZ value plus 1.
+ * Regardless of the transmission mode, the minimum valid frame size value is 4.
  */
 //@{
 #define BP_SPI_CTARn_FMSZ    (27U)         //!< Bit position for SPI_CTARn_FMSZ.
@@ -1197,8 +1189,8 @@ typedef union _hw_spi_ctarn_slave
  * Selects which edge of SCK causes data to change and which edge causes data to
  * be captured. This bit is used in both master and slave mode. For successful
  * communication between serial devices, the devices must have identical clock
- * phase settings. In Continuous SCK mode , the bit value is ignored and the
- * transfers are done as the CPHA bit is set to 1.
+ * phase settings. In Continuous SCK mode, the bit value is ignored and the
+ * transfers are done as if the CPHA bit is set to 1.
  *
  * Values:
  * - 0 - Data is captured on the leading edge of SCK and changed on the
@@ -1228,7 +1220,9 @@ typedef union _hw_spi_ctarn_slave
 /*!
  * @name Register SPI_CTARn_SLAVE, field CPOL[26] (RW)
  *
- * Selects the inactive state of the Serial Communications Clock (SCK).
+ * Selects the inactive state of the Serial Communications Clock (SCK). In case
+ * of continous sck mode, when the module goes in low power mode(disabled),
+ * inactive state of sck is not guaranted.
  *
  * Values:
  * - 0 - The inactive state value of SCK is low.
@@ -1645,13 +1639,13 @@ typedef union _hw_spi_rser
     {
         uint32_t RESERVED0 : 16;       //!< [15:0]
         uint32_t RFDF_DIRS : 1;        //!< [16] Receive FIFO Drain DMA or Interrupt
-                                       //!< Request Select
+                                       //! Request Select
         uint32_t RFDF_RE : 1;          //!< [17] Receive FIFO Drain Request Enable
         uint32_t RESERVED1 : 1;        //!< [18]
         uint32_t RFOF_RE : 1;          //!< [19] Receive FIFO Overflow Request Enable
         uint32_t RESERVED2 : 4;        //!< [23:20]
         uint32_t TFFF_DIRS : 1;        //!< [24] Transmit FIFO Fill DMA or Interrupt
-                                       //!< Request Select
+                                       //! Request Select
         uint32_t TFFF_RE : 1;          //!< [25] Transmit FIFO Fill Request Enable
         uint32_t RESERVED3 : 1;        //!< [26]
         uint32_t TFUF_RE : 1;          //!< [27] Transmit FIFO Underflow Request Enable
@@ -1922,15 +1916,14 @@ typedef union _hw_spi_rser
  *
  * Reset value: 0x00000000U
  *
- * PUSHR provides the means to write to the TX FIFO . Data written to this
- * register is transferred to the TX FIFO 8- or 16-bit write accesses to the PUSHR
- * transfer all 32 register bits to the TXFIFO. The register structure is different
- * in Master and Slave modes. In Master mode, the register provides 16-bit
- * command and data to the TX FIFO. In Slave mode, all 32 register bits can be used as
- * data, supporting up to 32-bit SPI Frame operation. A PUSHR Read Operation
- * returns the topmost TX FIFO entry. When the module is disabled, any writes to this
- * register will not update the FIFO. Hence any reads performed during Module
- * disable mode will return the last PUSHR write performed when Module was enabled.
+ * Specifies data to be transferred to the TX FIFO. An 8- or 16-bit write access
+ * transfers all 32 bits to the TX FIFO. In Master mode, the register transfers
+ * 16 bits of data and 16 bits of command information. In Slave mode, all 32 bits
+ * can be used as data, supporting up to 32-bit frame operation. A read access
+ * of PUSHR returns the topmost TX FIFO entry. When the module is disabled,
+ * writing to this register does not update the FIFO. Therefore, any reads performed
+ * while the module is disabled return the last PUSHR write performed while the
+ * module was still enabled.
  */
 typedef union _hw_spi_pushr
 {
@@ -1996,7 +1989,7 @@ typedef union _hw_spi_pushr
  * @name Register SPI_PUSHR, field PCS[21:16] (RW)
  *
  * Select which PCS signals are to be asserted for the transfer. Refer to the
- * chip configuration chapter for the number of PCS signals used in this MCU.
+ * chip configuration details for the number of PCS signals used in this MCU.
  *
  * Values:
  * - 0 - Negate the PCS[x] signal.
@@ -2084,8 +2077,8 @@ typedef union _hw_spi_pushr
  * @name Register SPI_PUSHR, field CTAS[30:28] (RW)
  *
  * Selects which CTAR to use in master mode to specify the transfer attributes
- * for the associated SPI frame. In SPI Slave mode, CTAR0 is used. See the chapter
- * on chip configuration to determine how many CTARs this device has. You should
+ * for the associated SPI frame. In SPI Slave mode, CTAR0 is used. See the chip
+ * configuration details to determine how many CTARs this device has. You should
  * not program a value in this field for a register that is not present.
  *
  * Values:
@@ -2155,12 +2148,11 @@ typedef union _hw_spi_pushr
  *
  * Reset value: 0x00000000U
  *
- * PUSHR provides the means to write to the TX FIFO. Data written to this
- * register is transferred to the TX FIFO. 8- or 16-bit write accesses to the PUSHR
- * transfer all 32 register bits to the TXFIFO. The register structure is different
- * in master and slave modes. In master mode the register provides 16-bit command
- * and data to the TX FIFO. In slave mode, all 32 register bits can be used as
- * data, supporting up to 32-bit SPI Frame operation.
+ * Specifies data to be transferred to the TX FIFO. An 8- or 16-bit write access
+ * to PUSHR transfers all 32 bits to the TX FIFO. In master mode, the register
+ * transfers 16 bits of data and 16 bits of command information to the TX FIFO. In
+ * slave mode, all 32 register bits can be used as data, supporting up to 32-bit
+ * SPI Frame operation.
  */
 typedef union _hw_spi_pushr_slave
 {
@@ -2204,7 +2196,7 @@ typedef union _hw_spi_pushr_slave
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SPI_PUSHR_SLAVE_TXDATA field.
-#define BR_SPI_PUSHR_SLAVE_TXDATA(x) (HW_SPI_PUSHR_SLAVE(x).B.TXDATA)
+#define BR_SPI_PUSHR_SLAVE_TXDATA(x) (HW_SPI_PUSHR_SLAVE(x).U)
 #endif
 
 //! @brief Format value for bitfield SPI_PUSHR_SLAVE_TXDATA.
@@ -2212,7 +2204,7 @@ typedef union _hw_spi_pushr_slave
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TXDATA field to a new value.
-#define BW_SPI_PUSHR_SLAVE_TXDATA(x, v) (HW_SPI_PUSHR_SLAVE_WR(x, (HW_SPI_PUSHR_SLAVE_RD(x) & ~BM_SPI_PUSHR_SLAVE_TXDATA) | BF_SPI_PUSHR_SLAVE_TXDATA(v)))
+#define BW_SPI_PUSHR_SLAVE_TXDATA(x, v) (HW_SPI_PUSHR_SLAVE_WR(x, v))
 #endif
 //@}
 
@@ -2269,7 +2261,7 @@ typedef union _hw_spi_popr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SPI_POPR_RXDATA field.
-#define BR_SPI_POPR_RXDATA(x) (HW_SPI_POPR(x).B.RXDATA)
+#define BR_SPI_POPR_RXDATA(x) (HW_SPI_POPR(x).U)
 #endif
 //@}
 
@@ -2295,7 +2287,7 @@ typedef union _hw_spi_txfrn
     {
         uint32_t TXDATA : 16;          //!< [15:0] Transmit Data
         uint32_t TXCMD_TXDATA : 16;    //!< [31:16] Transmit Command or Transmit
-                                       //!< Data
+                                       //! Data
     } B;
 } hw_spi_txfrn_t;
 #endif
@@ -2406,7 +2398,7 @@ typedef union _hw_spi_rxfrn
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the SPI_RXFRn_RXDATA field.
-#define BR_SPI_RXFRn_RXDATA(x, n) (HW_SPI_RXFRn(x, n).B.RXDATA)
+#define BR_SPI_RXFRn_RXDATA(x, n) (HW_SPI_RXFRn(x, n).U)
 #endif
 //@}
 

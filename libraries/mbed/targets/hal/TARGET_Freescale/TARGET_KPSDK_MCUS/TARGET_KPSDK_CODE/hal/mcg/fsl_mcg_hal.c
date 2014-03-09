@@ -52,13 +52,13 @@ uint32_t get_mcgffclk(void)
     uint32_t mcgffclk;
     uint8_t  divider;
     
-    if ((MCG->C1 & MCG_C1_IREFS_MASK) == 0x0u) 
+    if (clock_get_irefs() == kMcgIrefClockSourceExt) 
     {
         /* External reference clock is selected */
 #if FSL_FEATURE_MCG_USE_OSCSEL          /* case 1: use oscsel for ffclk      */
 
-        int32_t oscsel = (MCG->C7 & MCG_C7_OSCSEL_MASK) >> MCG_C7_OSCSEL_SHIFT;
-        if (oscsel == 0x0u) 
+        int32_t oscsel = clock_get_oscsel();
+        if (oscsel == kMcgOscselOsc) 
         {
 #if FSL_FEATURE_MCG_HAS_OSC1          
             /* System oscillator 0 drives MCG clock */
@@ -68,22 +68,22 @@ uint32_t get_mcgffclk(void)
             mcgffclk = CPU_XTAL_CLK_HZ;
 #endif            
         } 
-        else if (oscsel == 0x01u)
+        else if (oscsel == kMcgOscselRtc)
         { 
             /* RTC 32 kHz oscillator drives MCG clock */
             mcgffclk = CPU_XTAL32k_CLK_HZ;
         }
 #if FSL_FEATURE_MCG_HAS_IRC_48M         /* case 1.1: if IRC 48M exists*/
-        else if (oscsel == 0x02u)
+        else if (oscsel == kMcgOscselIrc)
         { 
             /* IRC 48Mhz oscillator drives MCG clock */
             mcgffclk = CPU_INT_IRC_CLK_HZ;
         }
+#endif
         else
         {
             mcgffclk = 0;
         }
-#endif
 
 #else                                   /* case 2: use default osc0*/
 
@@ -92,12 +92,12 @@ uint32_t get_mcgffclk(void)
 
 #endif        
         
-        divider = (uint8_t)(1u << ((MCG->C1 & MCG_C1_FRDIV_MASK) >> MCG_C1_FRDIV_SHIFT));
+        divider = (uint8_t)(1u << clock_get_frdiv());
         
         /* Calculate the divided FLL reference clock*/
         mcgffclk = (mcgffclk / divider);
         
-        if ((MCG->C2 & MCG_C2_RANGE0_MASK) != 0x0u)
+        if (clock_get_range0() != kMcgFreqRangeSelectLow)
         {
             /* If high range is enabled, additional 32 divider is active*/
             mcgffclk = (mcgffclk >> kMcgConstant5);
@@ -123,39 +123,73 @@ uint32_t get_mcgffclk(void)
 uint32_t clock_hal_get_fllclk(void)
 {
     uint32_t mcgfllclk;
+    mcg_dmx32_select_t dmx32;
+    mcg_dco_range_select_t drstDrs;
 
     mcgfllclk = get_mcgffclk();
     
     /* Select correct multiplier to calculate the MCG output clock  */
-    switch (MCG->C4 & (MCG_C4_DMX32_MASK | MCG_C4_DRST_DRS_MASK)) 
+    dmx32 = clock_get_dmx32();
+    drstDrs = clock_get_drst_drs();
+
+    switch (drstDrs)
     {
-        case 0x0u:
+    case kMcgDcoRangeSelectLow:         /* Low frequency range */
+        switch (dmx32)
+        {
+        case kMcgDmx32Default:          /* DCO has a default range of 25% */
             mcgfllclk *= kMcgConstant640;
             break;
-        case kMcgConstantHex20:
-            mcgfllclk *= kMcgConstant1280;
-            break;
-        case kMcgConstantHex40:
-            mcgfllclk *= kMcgConstant1920;
-            break;
-        case kMcgConstantHex60:
-            mcgfllclk *= kMcgConstant2560;
-            break;
-        case kMcgConstantHex80:
+        case kMcgDmx32Fine:             /* DCO is fine-tuned for max freq 32.768 kHz */
             mcgfllclk *= kMcgConstant732;
             break;
-        case kMcgConstantHexA0:
+        default:
+            break;
+        }
+        break;
+    case kMcgDcoRangeSelectMid:         /* Mid frequency range*/
+        switch (dmx32)
+        {
+        case kMcgDmx32Default:          /* DCO has a default range of 25% */
+            mcgfllclk *= kMcgConstant1280;
+            break;
+        case kMcgDmx32Fine:             /* DCO is fine-tuned for max freq 32.768 kHz */
             mcgfllclk *= kMcgConstant1464;
             break;
-        case kMcgConstantHexC0:
+        default:
+            break;
+        }
+        break;
+    case kMcgDcoRangeSelectMidHigh:      /* Mid-High frequency range */
+        switch (dmx32)
+        {
+        case kMcgDmx32Default:          /* DCO has a default range of 25% */
+            mcgfllclk *= kMcgConstant1920;
+            break;
+        case kMcgDmx32Fine:             /* DCO is fine-tuned for max freq 32.768 kHz */
             mcgfllclk *= kMcgConstant2197;
             break;
-        case kMcgConstantHexE0:
+        default:
+            break;
+        }
+        break;
+    case kMcgDcoRangeSelectHigh:        /* High frequency range */
+        switch (dmx32)
+        {
+        case kMcgDmx32Default:          /* DCO has a default range of 25% */
+            mcgfllclk *= kMcgConstant2560;
+            break;
+        case kMcgDmx32Fine:             /* DCO is fine-tuned for max freq 32.768 kHz */
             mcgfllclk *= kMcgConstant2929;
             break;
         default:
             break;
+        }
+        break;
+    default:
+        break;
     }
+
     return mcgfllclk;
 }
 
@@ -176,7 +210,7 @@ uint32_t clock_hal_get_pll0clk(void)
     /* PLL(0) output is selected*/
 #if FSL_FEATURE_MCG_USE_PLLREFSEL /* case 1 use pllrefsel to select pll*/
 
-    if ((MCG->C5 & MCG_C5_PLLREFSEL0_MASK) != 0x0u)
+    if (clock_get_pllrefsel0() != kMcgPllErefClockSelectOsc0)
     {
         /* OSC1 clock source used as an external reference clock */
         mcgpll0clk = CPU_XTAL1_CLK_HZ;
@@ -186,16 +220,41 @@ uint32_t clock_hal_get_pll0clk(void)
         /* OSC0 clock source used as an external reference clock*/
         mcgpll0clk = CPU_XTAL0_CLK_HZ;
     }
-#else                   /* case 3 use default osc0*/
-    /* OSC0 clock source used as an external reference clock*/
+#else 
+#if FSL_FEATURE_MCG_USE_OSCSEL              /* case 2: use oscsel for pll      */
+    uint32_t oscsel = clock_get_oscsel();
+    if (oscsel == kMcgOscselOsc)        /* case 2.1: OSC0 */
+    {
+        /* System oscillator drives MCG clock*/
+        mcgpll0clk = CPU_XTAL_CLK_HZ;
+    }
+    else if (oscsel == kMcgOscselRtc)   /* case 2.2: RTC */
+    {
+        /* RTC 32 kHz oscillator drives MCG clock*/
+        mcgpll0clk = CPU_XTAL32k_CLK_HZ;
+    }
+#if FSL_FEATURE_MCG_HAS_IRC_48M             
+    else if (oscsel == kMcgOscselIrc)   /* case 2.3: IRC 48M */
+    {
+        /* IRC 48Mhz oscillator drives MCG clock*/
+        mcgpll0clk = CPU_INT_IRC_CLK_HZ;
+    }
+    else
+    {
+        mcgpll0clk = 0;
+    }
+#endif
+#else                                       /* case 3: use default osc0*/
+    /* System oscillator drives MCG clock*/
     mcgpll0clk = CPU_XTAL_CLK_HZ;
 #endif
+#endif
     
-    divider = (kMcgConstant1 + (MCG->C5 & MCG_C5_PRDIV0_MASK));
+    divider = (kMcgConstant1 + clock_get_prdiv0());
     
     /* Calculate the PLL reference clock*/
     mcgpll0clk /= divider;
-    divider = ((MCG->C6 & MCG_C6_VDIV0_MASK) + FSL_FEATURE_MCG_PLL_VDIV_BASE);
+    divider = (clock_get_vdiv0() + FSL_FEATURE_MCG_PLL_VDIV_BASE);
     
     /* Calculate the MCG output clock*/
     mcgpll0clk = (mcgpll0clk * divider); 
@@ -222,7 +281,7 @@ uint32_t clock_hal_get_pll1clk(void)
     uint32_t mcgpll1clk;
     uint8_t  divider;
     
-    if ((MCG->C11 & MCG_C11_PLLREFSEL1_MASK) != 0x0u)
+    if (clock_get_pllrefsel1() != kMcgPllErefClockSelectOsc0)
     {
         /* OSC1 clock source used as an external reference clock*/
         mcgpll1clk = CPU_XTAL1_CLK_HZ;
@@ -233,11 +292,11 @@ uint32_t clock_hal_get_pll1clk(void)
         mcgpll1clk = CPU_XTAL0_CLK_HZ;
     } 
     
-    divider = (kMcgConstant1 + (MCG->C11 & MCG_C11_PRDIV1_MASK));
+    divider = (kMcgConstant1 + clock_get_prdiv1());
     
     /* Calculate the PLL reference clock*/
     mcgpll1clk /= divider;
-    divider = ((MCG->C12 & MCG_C12_VDIV1_MASK) + FSL_FEATURE_MCG_PLL_VDIV_BASE);
+    divider = (clock_get_vdiv1() + FSL_FEATURE_MCG_PLL_VDIV_BASE);
     
     /* Calculate the MCG output clock*/
     mcgpll1clk = ((mcgpll1clk * divider) >> kMcgConstant1); /* divided by 2*/
@@ -257,14 +316,14 @@ uint32_t clock_hal_get_pll1clk(void)
 uint32_t clock_hal_get_irclk(void)
 {
     int32_t mcgirclk;
-    if ((MCG->C2 & MCG_C2_IRCS_MASK) == 0x0u)
+    if (clock_get_ircs() == kMcgIrefClockSelectSlow)
     {
         /* Slow internal reference clock selected*/
         mcgirclk = CPU_INT_SLOW_CLK_HZ;
     }
     else
     {
-        mcgirclk = CPU_INT_FAST_CLK_HZ/(1<<((MCG->SC & MCG_SC_FCRDIV_MASK)>>MCG_SC_FCRDIV_SHIFT));
+        mcgirclk = CPU_INT_FAST_CLK_HZ / (1 << clock_get_fcrdiv());
     }
     return mcgirclk;
 }
@@ -283,10 +342,10 @@ uint32_t clock_hal_get_outclk(void)
     /* Variable to store output clock frequency of the MCG module*/
     uint32_t mcgoutclk = 0;
 
-    if ((MCG->C1 & MCG_C1_CLKS_MASK) == 0x0u)
+    if (clock_get_clks() == kMcgClockSelectOut)
     {
         /* Output of FLL or PLL is selected*/
-        if ((MCG->C6 & MCG_C6_PLLS_MASK) == 0x0u)
+        if (clock_get_plls() == kMcgPllSelectFll)
         {
             /* FLL is selected*/
             mcgoutclk = clock_hal_get_fllclk();
@@ -295,7 +354,7 @@ uint32_t clock_hal_get_outclk(void)
         { 
             /* PLL is selected*/
 #if FSL_FEATURE_MCG_HAS_PLL1          
-            if ((MCG->C11 & MCG_C11_PLLCS_MASK) != 0x0u)
+            if (clock_get_pllcs() != kMcgPllcsSelectPll0)
             {
                 /* PLL1 output is selected*/
                 mcgoutclk = clock_hal_get_pll1clk();
@@ -309,19 +368,19 @@ uint32_t clock_hal_get_outclk(void)
 #endif            
         }
     }
-    else if ((MCG->C1 & MCG_C1_CLKS_MASK) == 0x40u)
+    else if (clock_get_clks() == kMcgClockSelectIn)
     {
         /* Internal reference clock is selected*/
         mcgoutclk = clock_hal_get_irclk();
     } 
-    else if ((MCG->C1 & MCG_C1_CLKS_MASK) == 0x80u)
+    else if (clock_get_clks() == kMcgClockSelectExt)
     {
         /* External reference clock is selected*/
 
 #if FSL_FEATURE_MCG_USE_OSCSEL              /* case 1: use oscsel for outclock      */
 
-        uint32_t oscsel = (MCG->C7 & MCG_C7_OSCSEL_MASK) >> MCG_C7_OSCSEL_SHIFT;
-        if (oscsel == 0x0u)
+        uint32_t oscsel = clock_get_oscsel();
+        if (oscsel == kMcgOscselOsc)
         {
 #if FSL_FEATURE_MCG_HAS_OSC1          
             /* System oscillator drives MCG clock*/
@@ -331,13 +390,13 @@ uint32_t clock_hal_get_outclk(void)
             mcgoutclk = CPU_XTAL_CLK_HZ;
 #endif            
         }
-        else if (oscsel == 0x01u)
+        else if (oscsel == kMcgOscselRtc)
         {
             /* RTC 32 kHz oscillator drives MCG clock*/
             mcgoutclk = CPU_XTAL32k_CLK_HZ;
         }
 #if FSL_FEATURE_MCG_HAS_IRC_48M             /* case 1.1: IRC 48M exists*/
-        else if (oscsel == 0x02u)
+        else if (oscsel == kMcgOscselIrc)
         {
             /* IRC 48Mhz oscillator drives MCG clock*/
             mcgoutclk = CPU_INT_IRC_CLK_HZ;

@@ -44,17 +44,17 @@
 /*! @brief Type for an synchronization object */
 typedef struct
 {
-    bool    isWaiting; /*!< Is any task waiting for a timeout on this object */
-    uint8_t semCount;  /*!< The count value of the object                    */
-    uint8_t timerId;   /*!< The software timer channal this object bind to   */
+    volatile bool    isWaiting; /*!< Is any task waiting for a timeout on this object */
+    volatile uint8_t semCount;  /*!< The count value of the object                    */
+    uint8_t timerId;            /*!< The software timer channel this object bind to   */
 }sync_object_t;
 
 /*! @brief Type for a resource locking object */
 typedef struct
 {
-    bool    isWaiting;  /*!< Is any task waiting for a timeout on this lock  */
-    bool    isLocked;   /*!< Is the object locked or not                     */
-    uint8_t timerId;    /*!< The software timer channal this lock bind to    */
+    volatile bool    isWaiting;  /*!< Is any task waiting for a timeout on this lock  */
+    volatile bool    isLocked;   /*!< Is the object locked or not                     */
+    uint8_t timerId;             /*!< The software timer channel this lock bind to    */
 }lock_object_t;
 
 /*! @brief Type for an event flags group, bit 32 is reserved */
@@ -63,10 +63,10 @@ typedef uint32_t event_group_t;
 /*! @brief Type for an event group object */
 typedef struct
 {
-    bool             isWaiting;   /*!< Is any task waiting for a timeout on this event  */
-    uint8_t          timerId;     /*!< The software timer channal this event bind to    */
-    event_group_t    flags;       /*!< The flags status                                 */
-    event_clear_type clearType;   /*!< Auto clear or manual clear                       */
+    volatile bool             isWaiting;   /*!< Is any task waiting for a timeout on this event  */
+    uint8_t                   timerId;     /*!< The software timer channel this event bind to    */
+    volatile event_group_t    flags;       /*!< The flags status                                 */
+    event_clear_type          clearType;   /*!< Auto clear or manual clear                       */
 }event_object_t;
 
 /*! @brief Type for a task pointer */
@@ -82,16 +82,16 @@ typedef uint32_t task_stack_t;
 typedef struct
 {
 #if (__FSL_RTOS_MSGQ_COPY_MSG__)
-    uint32_t     *queueMem;      /*!< Points to the queue memory */
+    uint32_t              *queueMem;      /*!< Points to the queue memory */
 #else
-    void        **queueMem;      /*!< Points to the queue memory */
+    void                 **queueMem;      /*!< Points to the queue memory */
 #endif
-    uint16_t      number;        /*!< Stores the elements in the queue         */
-    uint16_t      size;          /*!< Stores the size in words of each element */
-    uint16_t      head;          /*!< Index of the next element to be read     */
-    uint16_t      tail;          /*!< Index of the next place to write to      */
-    sync_object_t queueSync;     /*!< Sync object wakeup tasks waiting for msg */
-    bool          isEmpty;       /*!< Whether queue is empty */
+    uint16_t               number;        /*!< Stores the elements in the queue         */
+    uint16_t               size;          /*!< Stores the size in words of each element */
+    uint16_t               head;          /*!< Index of the next element to be read     */
+    uint16_t               tail;          /*!< Index of the next place to write to      */
+    sync_object_t          queueSync;     /*!< Sync object wakeup tasks waiting for msg */
+    volatile bool          isEmpty;       /*!< Whether queue is empty */
 }msg_queue_t;
 
 /*! @brief Type for a message queue declaration and creation */
@@ -151,7 +151,7 @@ extern "C" {
 /*!
  * @brief Define a task
  *
- * This macro is used to define resouces for a task statically, then task_create will
+ * This macro is used to define resources for a task statically, then task_create will
  * create task based-on these resources.
  *
  * @param task The task function.
@@ -265,7 +265,7 @@ typedef struct {
    @code
    int main(void)
    {
-       // System initialize fucntions.
+       // System initialize functions.
        POLL_init();
        
        for(;;)

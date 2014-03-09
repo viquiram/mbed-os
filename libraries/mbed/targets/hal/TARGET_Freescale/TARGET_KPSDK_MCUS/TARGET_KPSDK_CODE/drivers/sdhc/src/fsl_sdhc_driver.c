@@ -31,12 +31,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "fsl_device_registers.h"
 #include "fsl_clock_manager.h"
-#include "fsl_os_abstraction.h"
-#include "fsl_sdhc_hal.h"
 #include "fsl_sdhc_driver.h"
-#include "fsl_sdhc_features.h"
 #include "sdhc.h"
 #include "sdmmc.h"
 
@@ -333,7 +329,7 @@ static void sdhc_get_host_version(sdhc_host_t *host)
  * Description: Initialize host controller by specific instance index.
  *
  *END*********************************************************************/
-sdhc_status_t sdhc_init(uint8_t instance, sdhc_host_t * host, sdhc_init_config_t *config)
+sdhc_status_t sdhc_init(uint8_t instance, sdhc_host_t * host, const sdhc_user_config_t *config)
 {
     uint32_t irqEnabled;
 

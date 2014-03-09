@@ -32,9 +32,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "fsl_dmamux_features.h"
 #include "fsl_device_registers.h"
-#include <assert.h>
 
 /*!
  * @addtogroup dmamux_hal
@@ -45,11 +45,11 @@
  * Definitions
  ******************************************************************************/
 /*!
- * @brief Constant for length of DMA hardware source. This structure is used inside
- * DMA driver.
+ * @brief A constant for the length of the DMA hardware source. This structure is used inside
+ * the DMA driver.
  */
 typedef enum _dmamux_source {
-    kDmamuxDmaRequestSource = 64U    /*!< Max number of dma request allowed for a dma mux. */
+    kDmamuxDmaRequestSource = 64U    /*!< Maximum number of the DMA requests allowed for the DMA mux. */
 } dmamux_dma_request_source;
 
 /*******************************************************************************
@@ -61,27 +61,27 @@ extern "C" {
 #endif
 
 /*!
- * @name dmamux hal function
+ * @name DMAMUX HAL function
  * @{
  */
 
 /*!
- * @brief Initialize the dmamux module to the reset state.
+ * @brief Initializes the DMAMUX module to the reset state.
  *
- * Initialize the dmamux module to the reset statue.
+ * Initializes the DMAMUX module to the reset state.
  *
- * @param module DMAMUX module index.
+ * @param module DMAMUX module index
  */
 void dmamux_hal_init(uint8_t module);
 
 /*!
- * @brief Enable dma mux channel.
+ * @brief Enables the DMAMUX channel.
  *
- * Enable hardware request. If enabled, the hardware request would be sent into
- * the corresponding dma channel.
+ * Enables the hardware request. If enabled, the hardware request is  sent to
+ * the corresponding DMA channel.
  *
- * @param module DMA mux module.
- * @param channel DMA mux channel.
+ * @param module DMAMUX module.
+ * @param channel DMAMUX channel.
  */
 static inline void dmamux_hal_enable_channel(uint8_t module, uint8_t channel)
 {
@@ -91,13 +91,13 @@ static inline void dmamux_hal_enable_channel(uint8_t module, uint8_t channel)
 }
 
 /*!
- * @brief Disable dma mux channel.
+ * @brief Disables the DMAMUX channel.
  *
- * Disable hardware request. If disabled, the hardware request would not be sent into
- * the corresponding dma channel.
+ * Disable hardware request. If disabled, the hardware request  is not  sent to
+ * the corresponding DMA channel.
  *
- * @param module DMA mux module.
- * @param channel DMA mux channel.
+ * @param module DMAMUX module.
+ * @param channel DMAMUX channel.
  */
 static inline void dmamux_hal_disable_channel(uint8_t module, uint8_t channel)
 {
@@ -107,10 +107,10 @@ static inline void dmamux_hal_disable_channel(uint8_t module, uint8_t channel)
 }
 
 /*!
- * @brief Enable period trigger.
+ * @brief Enables the period trigger.
  *
- * @param module DMA mux module.
- * @param channel DMA mux channel.
+ * @param module DMAMUX module.
+ * @param channel DMAMUX channel.
  */
 static inline void dmamux_hal_enable_period_trigger(uint8_t module, uint8_t channel)
 {
@@ -120,10 +120,10 @@ static inline void dmamux_hal_enable_period_trigger(uint8_t module, uint8_t chan
 }
 
 /*!
- * @brief Disable period trigger.
+ * @brief Disables the period trigger.
  *
- * @param module DMA mux module.
- * @param channel DMA mux channel.
+ * @param module DMAMUX module.
+ * @param channel DMAMUX channel.
  */
 static inline void dmamux_hal_disable_period_trigger(uint8_t module, uint8_t channel)
 {
@@ -133,14 +133,14 @@ static inline void dmamux_hal_disable_period_trigger(uint8_t module, uint8_t cha
 }
 
 /*!
- * @brief Configure dma request for dma mux channel.
+ * @brief Configures the DMA request for the DMAMUX channel.
  *
- * Set the trigger source for dma channel. The trigger source can be found in the file
+ * Sets the trigger source for the DMA channel. The trigger source is in the file
  * fsl_dma_request.h.
  *
- * @param module DMA mux module.
- * @param channel DMA mux channel.
- * @param source Dma request source.
+ * @param module DMAMUX module.
+ * @param channel DMAMUX channel.
+ * @param source DMA request source.
  */
 static inline void dmamux_hal_set_trigger_source(uint8_t module, uint8_t channel, uint8_t source)
 {

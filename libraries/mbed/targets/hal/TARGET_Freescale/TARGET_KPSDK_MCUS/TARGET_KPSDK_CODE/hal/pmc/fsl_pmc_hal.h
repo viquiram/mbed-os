@@ -67,16 +67,16 @@ typedef enum _pmc_lvdv_select {
 extern "C" {
 #endif /* __cplusplus*/
 
-/*! @name Power Management Controller Ccontrol APIs*/
+/*! @name Power Management Controller Control APIs*/
 /*@{*/
 
 
 /*!
  * @brief Low-Voltage Detect Interrupt Enable
  *
- * This function will enable the the interrupt for low voltage detection. When
+ * This function  enables  the interrupt for the low voltage detection. When
  * enabled, if the LVDF (Low Voltage Detect Flag) is set, a hardware interrupt
- * will happen to the system.
+ *  occurs.
  *
  */
 static inline void pmc_hal_enable_low_voltage_detect_interrupt(void)
@@ -87,8 +87,8 @@ static inline void pmc_hal_enable_low_voltage_detect_interrupt(void)
 /*!
  * @brief Low-Voltage Detect Interrupt Disable (use polling)
  *
- * This function will disable the the interrupt for low voltage detection. When
- * disabled, application can only check the low voltage through polling the LVDF
+ * This function  disables the the interrupt for low voltage detection. When
+ * disabled, an application can only check the low voltage through polling the LVDF
  * (Low Voltage Detect Flag).
  *
  */
@@ -100,9 +100,9 @@ static inline void pmc_hal_disable_low_voltage_detect_interrupt(void)
 /*!
  * @brief Low-Voltage Detect Hardware Reset Enable (write once)
  *
- * This function will enable the the hardware reset for low voltage detection. 
+ * This function  enables the  hardware reset for the low voltage detection. 
  * When enabled, if the LVDF (Low Voltage Detect Flag) is set, a hardware reset
- * will happen. This setting is a write once only and additional writes are 
+ * occurs. This setting is a write-once-only; Additional writes are 
  * ignored.
  *
  */
@@ -114,9 +114,9 @@ static inline void pmc_hal_enable_low_voltage_detect_reset(void)
 /*!
  * @brief Low-Voltage Detect Hardware Reset Disable
  *
- * This function will disable the the hardware reset for low voltage detection. 
+ * This function  disables the the hardware reset for low voltage detection. 
  * When disabled, if the LVDF (Low Voltage Detect Flag) is set, a hardware reset
- * will not happen. This setting is a write once only and additional writes are 
+ * does not occur. This setting is a write-once-only; Additional writes are 
  * ignored.
  *
  */
@@ -128,8 +128,8 @@ static inline void pmc_hal_disable_low_voltage_detect_reset(void)
 /*!
  * @brief Low-Voltage Detect Acknowledge
  *
- * This function is used to acknowledge low voltage detection errors (write 1 to
- * clear LVDF)
+ * This function acknowledges the low voltage detection errors (write 1 to
+ * clear LVDF).
  *
  */
 static inline void pmc_hal_low_voltage_detect_ack(void)
@@ -140,7 +140,7 @@ static inline void pmc_hal_low_voltage_detect_ack(void)
 /*!
  * @brief Low-Voltage Detect Flag Read
  *
- * This function will read the current LVDF status. If returns 1, it means low
+ * This function  reads the current LVDF status. If it returns 1,  low
  * voltage event is detected.
  *
  * @return status Current low voltage detect flag
@@ -153,11 +153,11 @@ static inline bool pmc_hal_get_low_voltage_detect_flag(void)
 }
 
 /*!
- * @brief Set Low-Voltage Detect Voltage Select
+ * @brief Sets the Low-Voltage Detect Voltage Select
  *
- * This function will set the low voltage detect voltage select. It will set
- * the low voltage detect trip point voltage (Vlvd). Application can select
- * either low trip or high trip point. Refer to reference manual for details.
+ * This function  sets the low voltage detect voltage select. It  sets
+ * the low voltage detect trip point voltage (Vlvd). An application can select
+ * either a low-trip or a high-trip point. See a chip reference manual for details.
  *
  * @param select Voltage select setting defined in pmc_lvdv_select_t
  */
@@ -167,11 +167,11 @@ static inline void pmc_hal_set_low_voltage_detect_voltage_select(pmc_lvdv_select
 }
 
 /*!
- * @brief Get Low-Voltage Detect Voltage Select
+ * @brief Gets the Low-Voltage Detect Voltage Select
  *
- * This function will get the low voltage detect voltage select. It will get
- * the low voltage detect trip point voltage (Vlvd). Application can select
- * either low trip or high trip point. Refer to reference manual for details.
+ * This function  gets the low voltage detect voltage select. It  gets 
+ * the low voltage detect trip point voltage (Vlvd). An application can select
+ * either a low-trip or a high-trip point. See a chip reference manual for details.
  *
  * @return select Current voltage select setting
  */
@@ -184,9 +184,9 @@ static inline pmc_lvdv_select_t pmc_hal_get_low_voltage_detect_voltage_select(vo
 /*!
  * @brief Low-Voltage Warning Interrupt Enable
  *
- * This function will enable the the interrupt for low voltage warning 
+ * This function  enables the  interrupt for the low voltage warning 
  * detection. When enabled, if the LVWF (Low Voltage Warning Flag) is set, 
- * a hardware interrupt will happen to the system.
+ * a hardware interrupt  occurs.
  *
  */
 static inline void pmc_hal_enable_low_voltage_warning_interrupt(void)
@@ -197,9 +197,9 @@ static inline void pmc_hal_enable_low_voltage_warning_interrupt(void)
 /*!
  * @brief Low-Voltage Warning Interrupt Disable (use polling)
  *
- * This function will disable the the interrupt for low voltage warning 
+ * This function  disables  the interrupt for the low voltage warning 
  * detection. When disabled, if the LVWF (Low Voltage Warning Flag) is set, 
- * a hardware interrupt will not happen to the system.
+ * a hardware interrupt does not occur.
  *
  */
 static inline void pmc_hal_disable_low_voltage_warning_interrupt(void)
@@ -210,7 +210,7 @@ static inline void pmc_hal_disable_low_voltage_warning_interrupt(void)
 /*!
  * @brief Low-Voltage Warning Acknowledge
  * 
- * This function is used to acknowledge low voltage warning errors (write 1 to
+ * This function acknowledges the low voltage warning errors (write 1 to
  * clear LVWF).
  *
  */
@@ -222,13 +222,13 @@ static inline void pmc_hal_low_voltage_warning_ack(void)
 /*!
  * @brief Low-Voltage Warning Flag Read
  *
- * This function is used to poll the current LVWF status. When returns 1, it 
+ * This function polls the current LVWF status. When 1 is returned, it 
  * indicates a low-voltage warning event. LVWF is set when V Supply transitions
- * below the trip point or after reset and V Supply is already below V LVW.
+ * below the trip point or after reset and V Supply is already below the V LVW.
  *
  * @return status Current LVWF status
-                  - true: Low-Voltage Warning Flag is set
-                  - falase: no Low-Voltage Warning happen
+                  - true: Low-Voltage Warning Flag is set.
+                  - false: the  Low-Voltage Warning does not happen.
  */
 static inline bool pmc_hal_get_low_voltage_warning_flag(void)
 {
@@ -236,12 +236,12 @@ static inline bool pmc_hal_get_low_voltage_warning_flag(void)
 }
 
 /*!
- * @brief Set Low-Voltage Warning Voltage Select
+ * @brief Sets the Low-Voltage Warning Voltage Select.
  *
- * This function will set the low voltage warning voltage select. It will set
- * the low voltage warning trip point voltage (Vlvw). Application can select
- * either low, mid1, mid2 and high trip point. Refer to reference manual for 
- * details. Also refer to pmc_lvwv_select_t for supported settings
+ * This function  sets the low voltage warning voltage select. It  sets
+ * the low voltage warning trip point voltage (Vlvw). An application can select
+ * either a low, mid1, mid2 and a high-trip point. See a chip reference manual for 
+ * details and the  pmc_lvwv_select_t for supported settings.
  * 
  * @param select Low voltage warning select setting
  */
@@ -251,11 +251,11 @@ static inline void pmc_hal_set_low_voltage_warning_voltage_select(pmc_lvwv_selec
 }
 
 /*!
- * @brief Get Low-Voltage Warning Voltage Select
+ * @brief Gets the Low-Voltage Warning Voltage Select.
  *
- * This function will get the low voltage warning voltage select. It will get
- * the low voltage warning trip point voltage (Vlvw). Refer to pmc_lvwv_select_t
- * for detail supported settings.
+ * This function  gets the low voltage warning voltage select. It  gets
+ * the low voltage warning trip point voltage (Vlvw). See the pmc_lvwv_select_t
+ * for  supported settings.
  *
  * @return select Current low voltage warning select setting
  */
@@ -266,12 +266,12 @@ static inline pmc_lvwv_select_t pmc_hal_get_low_voltage_warning_voltage_select(v
 
 #if FSL_FEATURE_SMC_HAS_BGEN
 /*!
- * @brief Enable Bandgap in VLPx Operation
+ * @brief Enables the Bandgap in VLPx Operation.
  *
- * This function will enable bandgap in lower power modes of operation (VLPx, 
+ * This function  enables the bandgap in lower power modes of operation (VLPx, 
  * LLS, and VLLSx). When on-chip peripherals require the bandgap voltage 
  * reference in low power modes of operation, set BGEN to continue to enable
- * the bandgap operation
+ * the bandgap operation.
  *
  */
 static inline void pmc_hal_enable_bandgap_in_low_power_mode(void)
@@ -280,9 +280,9 @@ static inline void pmc_hal_enable_bandgap_in_low_power_mode(void)
 }
 
 /*!
- * @brief Disable Bandgap in VLPx Operation
+ * @brief Disables the Bandgap in the VLPx Operation.
  *
- * This function will disable bandgap in lower power modes of operation (VLPx, 
+ * This function  disables the bandgap in lower power modes of operation (VLPx, 
  * LLS, and VLLSx). When the bandgap voltage reference is not needed in low 
  * power modes, disable BGEN to avoid excess power consumption.
  *
@@ -294,9 +294,9 @@ static inline void pmc_hal_disable_bandgap_in_low_power_mode(void)
 #endif
 
 /*!
- * @brief Enable Bandgap Buffer
+ * @brief Enables the Bandgap Buffer.
  *
- * This function will enable the Bandgap buffer.
+ * This function  enables the Bandgap buffer.
  *
  */
 static inline void pmc_hal_enable_bandgap_buffer(void)
@@ -305,9 +305,9 @@ static inline void pmc_hal_enable_bandgap_buffer(void)
 }
 
 /*!
- * @brief Disable Bandgap Buffer
+ * @brief Disables the Bandgap Buffer.
  *
- * This function will disable the Bandgap buffer.
+ * This function  disables the Bandgap buffer.
  *
  */
 static inline void pmc_hal_disable_bandgap_buffer(void)
@@ -316,16 +316,16 @@ static inline void pmc_hal_disable_bandgap_buffer(void)
 }
 
 /*!
- * @brief Get Acknowledge Isolation
+ * @brief Gets the Acknowledge Isolation.
  *
- * This function will read the Acknowledge Isolation setting that indicates 
+ * This function  reads the Acknowledge Isolation setting that indicates 
  * whether certain peripherals and the I/O pads are in a latched state as 
- * a result of having been in a VLLS mode. 
+ * a result of having been in the VLLS mode. 
  *
- * @return value Ack isolation. 
- *               0 - Peripherals and I/O pads are in normal run state
+ * @return value ACK isolation
+ *               0 - Peripherals and I/O pads are in a normal run state.
  *               1 - Certain peripherals and I/O pads are in an isolated and
- *                   latched state
+ *                   latched state.
  */
 static inline uint8_t pmc_hal_get_ack_isolation(void)
 {
@@ -333,9 +333,9 @@ static inline uint8_t pmc_hal_get_ack_isolation(void)
 }
 
 /*!
- * @brief Clear Acknowledge Isolation
+ * @brief Clears an Acknowledge Isolation.
  *
- * This function will clear the Ack Isolation flag. Writing one to this setting
+ * This function  clears the ACK Isolation flag. Writing one to this setting
  * when it is set releases the I/O pads and certain peripherals to their normal
  * run mode state.
  *
@@ -346,14 +346,14 @@ static inline void pmc_hal_clear_ack_isolation(void)
 }
 
 /*!
- * @brief Get Regulator regulation status
+ * @brief Gets the Regulator regulation status.
  *
- * This function will return the regulator in run regulation status. It provides
+ * This function  returns the regulator to a run regulation status. It provides
  * the current status of the internal voltage regulator.
  *
- * @return value Regulation status. 
- *               0 - Regulator is in stop regulation or in transition to/from it
- *               1 - Regulator is in run regulation
+ * @return value Regulation status
+ *               0 - Regulator is in a stop regulation or in transition to/from it.
+ *               1 - Regulator is in a run regulation.
  *
  */
 static inline uint8_t pmc_hal_get_regulator_status(void)

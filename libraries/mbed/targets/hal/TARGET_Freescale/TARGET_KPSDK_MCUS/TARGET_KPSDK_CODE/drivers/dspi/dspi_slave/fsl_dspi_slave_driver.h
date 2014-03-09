@@ -42,32 +42,32 @@
  ******************************************************************************/
 
 /*!
- * @brief The set of callbacks used for the DSPI slave mode.
+ * @brief The set of callbacks for the DSPI slave mode.
  *
- * The user will need to create the function implementations.
+ * The user creates the function implementations.
  */
 typedef struct DSPISlaveCallbacks {
-    /*! Callback used to get word to transmit */
+    /*! Callback to get word to transmit. */
     dspi_status_t (*dataSource)(uint8_t * sourceWord, uint32_t instance);
 
-    /*! Callback used to put received word */
+    /*! Callback to put received word. */
     dspi_status_t (*dataSink)(uint8_t sinkWord, uint32_t instance);
 
-    /*! Callback used to report a DSPI error, such as an under-run or over-run error */
+    /*! Callback to report a DSPI error, such as an under-run or over-run error. */
     void (*onError)(dspi_status_t error, uint32_t instance);
 } dspi_slave_callbacks_t;
 
 /*!
  * @brief Runtime state of the DSPI slave driver.
  *
- * This struct holds data that are used by the DSPI slave peripheral driver to
- * communicate between the transfer function and the interrupt handler. The user just
- * needs to pass in the memory for this structure, the driver will take care of filling out
+ * This struct holds data that is used by the DSPI slave peripheral driver to
+ * communicate between the transfer function and the interrupt handler. The user 
+ * needs to pass in the memory for this structure and the driver  fills out
  * the members.
  */
 typedef struct DSPISlaveState {
     uint32_t instance;                  /*!< DSPI module instance number */
-    dspi_slave_callbacks_t callbacks;   /*!< Application/user callbacks. */
+    dspi_slave_callbacks_t callbacks;   /*!< Application/user callbacks */
     uint32_t bitsPerFrame;              /*!< Desired number of bits per frame */
 } dspi_slave_state_t;
 
@@ -93,14 +93,14 @@ extern "C" {
  */
 
 /*!
- * @brief Initialize a DSPI instance for slave mode operation.
+ * @brief Initializes a DSPI instance for a slave mode operation.
  *
- * This function saves the callbacks to the run-time state structure for later use in the
+ * This function saves the callbacks to the run-time state structure for a later use in the
  * interrupt handler. It also ungates the clock to the DSPI module, initializes the DSPI
- * for slave mode, enables the module and corresponding interrupts. Once initialized, the
- * DSPI module is configured in slave mode and ready to receive data from a SPI master. The
- * following is an example of how to set up the dspi_slave_state_t and the dspi_slave_user_config_t
- * parameters and how to call the dspi_slave_init function by passing in these parameters:
+ * for slave mode, and enables the module and corresponding interrupts. Once initialized, the
+ * DSPI module is configured in slave mode and ready to receive data from the SPI master. This
+ * is an example to set up the dspi_slave_state_t and the dspi_slave_user_config_t
+ * parameters and to call the dspi_slave_init function by passing in these parameters:
  * @code
     dspi_slave_state_t dspiSlaveState; <- the user simply allocates memory for this struct
     dspi_slave_user_config_t slaveUserConfig;
@@ -115,16 +115,17 @@ extern "C" {
  *
  * @param instance The instance number of the DSPI peripheral.
  * @param dspiState The pointer to the DSPI slave driver state structure.
- * @param user The configuration structure of type dspi_slave_user_config_t, including
+ * @param user The configuration structure dspi_slave_user_config_t, including
  *  the callbacks.
  *
  * @return An error code or kStatus_DSPI_Success.
  */
-dspi_status_t dspi_slave_init(uint32_t instance, const dspi_slave_user_config_t * slaveConfig,
-                     dspi_slave_state_t * dspiState);
+dspi_status_t dspi_slave_init(uint32_t instance,
+                              dspi_slave_state_t * dspiState,
+                              const dspi_slave_user_config_t * slaveConfig);
 
 /*!
- * @brief Shutdown a DSPI instance.
+ * @brief Shut down a DSPI instance.
  * Resets the DSPI peripheral, disables the interrupt to the core, and gates its clock.
  *
  * @param dspiState The pointer to the DSPI slave driver state structure.

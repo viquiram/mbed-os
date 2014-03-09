@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014, Freescale Semiconductor, Inc.
+ * Copyright (c) 2014, Freescale Semiconductor, Inc.
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -504,11 +504,6 @@ typedef union _hw_i2s_tcsr
 #define BP_I2S_TCSR_FR       (25U)         //!< Bit position for I2S_TCSR_FR.
 #define BM_I2S_TCSR_FR       (0x02000000U) //!< Bit mask for I2S_TCSR_FR.
 #define BS_I2S_TCSR_FR       (1U)          //!< Bit field size in bits for I2S_TCSR_FR.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the I2S_TCSR_FR field.
-#define BR_I2S_TCSR_FR(x)    (BITBAND_ACCESS32(HW_I2S_TCSR_ADDR(x), BP_I2S_TCSR_FR))
-#endif
 
 //! @brief Format value for bitfield I2S_TCSR_FR.
 #define BF_I2S_TCSR_FR(v)    (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_I2S_TCSR_FR), uint32_t) & BM_I2S_TCSR_FR)
@@ -1428,7 +1423,7 @@ typedef union _hw_i2s_tcr5
 
 #ifndef __LANGUAGE_ASM__
 /*!
- * @brief HW_I2S_TDRn - SAI Transmit Data Register (WO)
+ * @brief HW_I2S_TDRn - SAI Transmit Data Register (WORZ)
  *
  * Reset value: 0x00000000U
  */
@@ -1452,6 +1447,7 @@ typedef union _hw_i2s_tdrn
 
 #ifndef __LANGUAGE_ASM__
 #define HW_I2S_TDRn(x, n)        (*(__O hw_i2s_tdrn_t *) HW_I2S_TDRn_ADDR(x, n))
+#define HW_I2S_TDRn_RD(x, n)     (HW_I2S_TDRn(x, n).U)
 #define HW_I2S_TDRn_WR(x, n, v)  (HW_I2S_TDRn(x, n).U = (v))
 #endif
 //@}
@@ -1473,17 +1469,12 @@ typedef union _hw_i2s_tdrn
 #define BM_I2S_TDRn_TDR      (0xFFFFFFFFU) //!< Bit mask for I2S_TDRn_TDR.
 #define BS_I2S_TDRn_TDR      (32U)         //!< Bit field size in bits for I2S_TDRn_TDR.
 
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the I2S_TDRn_TDR field.
-#define BR_I2S_TDRn_TDR(x, n) (HW_I2S_TDRn(x, n).B.TDR)
-#endif
-
 //! @brief Format value for bitfield I2S_TDRn_TDR.
 #define BF_I2S_TDRn_TDR(v)   (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_I2S_TDRn_TDR), uint32_t) & BM_I2S_TDRn_TDR)
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TDR field to a new value.
-#define BW_I2S_TDRn_TDR(x, n, v) (HW_I2S_TDRn_WR(x, n, (HW_I2S_TDRn_RD(x, n) & ~BM_I2S_TDRn_TDR) | BF_I2S_TDRn_TDR(v)))
+#define BW_I2S_TDRn_TDR(x, n, v) (HW_I2S_TDRn_WR(x, n, v))
 #endif
 //@}
 
@@ -1626,7 +1617,7 @@ typedef union _hw_i2s_tmr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the I2S_TMR_TWM field.
-#define BR_I2S_TMR_TWM(x)    (HW_I2S_TMR(x).B.TWM)
+#define BR_I2S_TMR_TWM(x)    (HW_I2S_TMR(x).U)
 #endif
 
 //! @brief Format value for bitfield I2S_TMR_TWM.
@@ -1634,7 +1625,7 @@ typedef union _hw_i2s_tmr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the TWM field to a new value.
-#define BW_I2S_TMR_TWM(x, v) (HW_I2S_TMR_WR(x, (HW_I2S_TMR_RD(x) & ~BM_I2S_TMR_TWM) | BF_I2S_TMR_TWM(v)))
+#define BW_I2S_TMR_TWM(x, v) (HW_I2S_TMR_WR(x, v))
 #endif
 //@}
 
@@ -2067,11 +2058,6 @@ typedef union _hw_i2s_rcsr
 #define BP_I2S_RCSR_FR       (25U)         //!< Bit position for I2S_RCSR_FR.
 #define BM_I2S_RCSR_FR       (0x02000000U) //!< Bit mask for I2S_RCSR_FR.
 #define BS_I2S_RCSR_FR       (1U)          //!< Bit field size in bits for I2S_RCSR_FR.
-
-#ifndef __LANGUAGE_ASM__
-//! @brief Read current value of the I2S_RCSR_FR field.
-#define BR_I2S_RCSR_FR(x)    (BITBAND_ACCESS32(HW_I2S_RCSR_ADDR(x), BP_I2S_RCSR_FR))
-#endif
 
 //! @brief Format value for bitfield I2S_RCSR_FR.
 #define BF_I2S_RCSR_FR(v)    (__REG_VALUE_TYPE((__REG_VALUE_TYPE((v), uint32_t) << BP_I2S_RCSR_FR), uint32_t) & BM_I2S_RCSR_FR)
@@ -3038,7 +3024,7 @@ typedef union _hw_i2s_rdrn
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the I2S_RDRn_RDR field.
-#define BR_I2S_RDRn_RDR(x, n) (HW_I2S_RDRn(x, n).B.RDR)
+#define BR_I2S_RDRn_RDR(x, n) (HW_I2S_RDRn(x, n).U)
 #endif
 //@}
 
@@ -3181,7 +3167,7 @@ typedef union _hw_i2s_rmr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Read current value of the I2S_RMR_RWM field.
-#define BR_I2S_RMR_RWM(x)    (HW_I2S_RMR(x).B.RWM)
+#define BR_I2S_RMR_RWM(x)    (HW_I2S_RMR(x).U)
 #endif
 
 //! @brief Format value for bitfield I2S_RMR_RWM.
@@ -3189,7 +3175,7 @@ typedef union _hw_i2s_rmr
 
 #ifndef __LANGUAGE_ASM__
 //! @brief Set the RWM field to a new value.
-#define BW_I2S_RMR_RWM(x, v) (HW_I2S_RMR_WR(x, (HW_I2S_RMR_RD(x) & ~BM_I2S_RMR_RWM) | BF_I2S_RMR_RWM(v)))
+#define BW_I2S_RMR_RWM(x, v) (HW_I2S_RMR_WR(x, v))
 #endif
 //@}
 

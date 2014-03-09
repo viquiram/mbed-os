@@ -330,6 +330,11 @@ int _read(int handle, char *buffer, int size)
 
     for (; size > 0; --size)
     {
+        if (!uart_hal_is_receive_data_register_full(s_debugUart.instance))
+        {
+            break;
+        }
+
         uart_hal_getchar(s_debugUart.instance, buffer++);
 
         ++nChars;
