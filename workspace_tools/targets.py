@@ -156,6 +156,7 @@ class K20D5M(Target):
         
         self.is_disk_virtual = True
 
+
 class K64F(Target):
     def __init__(self):
         Target.__init__(self)
@@ -169,6 +170,8 @@ class K64F(Target):
         self.supported_toolchains = ["ARM"]
 
         self.is_disk_virtual = True
+
+
 class LPC812(Target):
     ONLINE_TOOLCHAIN = "uARM"
 
