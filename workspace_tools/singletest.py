@@ -206,10 +206,7 @@ def reset(mcu_name, serial, verbose=False, sleep_before_reset=0, sleep_after_res
     if verbose:
         verbose_msg = "Reset::cmd(sendBreak)"
     # Reset type decision
-    if mcu_name.startswith('NRF51822'): # Nordic
-        call(["nrfjprog", "-r"])
-        verbose_msg = "Reset::cmd(nrfjprog)"
-    elif mcu_name.startswith('NUCLEO'): # ST NUCLEO
+    if mcu_name.startswith('NUCLEO'): # ST NUCLEO
         call(["ST-LINK_CLI.exe", "-Rst"])
         verbose_msg = "Reset::cmd(ST-LINK_CLI.exe)"
     else:
@@ -241,7 +238,7 @@ def is_peripherals_available(target_mcu_name, peripherals=None):
 
 def print_test_result(test_result, target_name, toolchain_name,
                       test_id, test_description, elapsed_time, duration):
-    """ Use specific convention to pront test result and related data."""
+    """ Use specific convention to print test result and related data."""
     tokens = []
     tokens.append("TargetTest")
     tokens.append(target_name)

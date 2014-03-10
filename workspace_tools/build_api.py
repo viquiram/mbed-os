@@ -175,13 +175,14 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
     # Target specific sources
     HAL_SRC = join(MBED_TARGETS_PATH, "hal")
     hal_implementation = toolchain.scan_resources(HAL_SRC)
-    toolchain.copy_files(hal_implementation.headers + hal_implementation.hex_files, BUILD_TARGET)
-    objects  = toolchain.compile_sources(hal_implementation, TMP_PATH, [MBED_LIBRARIES, BUILD_TARGET])
-    
+    toolchain.copy_files(hal_implementation.headers + hal_implementation.hex_files, BUILD_TARGET, HAL_SRC)
+    incdirs = toolchain.scan_resources(BUILD_TARGET).inc_dirs
+    objects = toolchain.compile_sources(hal_implementation, TMP_PATH, [MBED_LIBRARIES] + incdirs)
+
     # Common Sources
     mbed_resources = toolchain.scan_resources(MBED_COMMON)
-    objects += toolchain.compile_sources(mbed_resources, TMP_PATH, [MBED_LIBRARIES, BUILD_TARGET])
-    
+    objects += toolchain.compile_sources(mbed_resources, TMP_PATH, [MBED_LIBRARIES] + incdirs)
+
     # Keep retargeting as a standalone object to be sure the
     # C standard library symbols get overridden
     retargeting = None
