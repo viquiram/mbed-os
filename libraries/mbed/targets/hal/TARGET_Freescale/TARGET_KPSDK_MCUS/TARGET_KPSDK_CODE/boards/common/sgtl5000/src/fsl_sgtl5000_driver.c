@@ -32,6 +32,7 @@
 /*******************************************************************************
  *Code
  ******************************************************************************/
+ static volatile uint32_t i2c_state = 0;
 
 /*FUNCTION**********************************************************************
  *
@@ -41,7 +42,11 @@
  *END**************************************************************************/
 sgtl_status_t sgtl_init(sgtl_handler_t *handler, void *codec_config)
 {
-    sgtl_i2c_init(handler);
+    if(i2c_state == 0)
+    {
+        sgtl_i2c_init(handler);
+    }
+    i2c_state ++;
     /*
     * Power Supply Configuration
     * NOTE: This next 2 Write calls is needed ONLY if VDDD is internally driven by the chip.
@@ -185,7 +190,11 @@ sgtl_status_t sgtl_i2c_init(sgtl_handler_t *handler)
  *END**************************************************************************/
 sgtl_status_t sgtl_deinit(sgtl_handler_t *handler)
 {
-    i2c_master_shutdown(&handler->master);
+    i2c_state --;
+    if(i2c_state == 0)
+    {
+        i2c_master_shutdown(&handler->master);
+    }
     return kStatus_SGTL_Success;
 }
 
@@ -304,7 +313,7 @@ sgtl_status_t sgtl_write_reg(sgtl_handler_t *handler, uint16_t reg, uint16_t val
     buff[2] = (val & 0xFF00U) >> 8U;
     buff[3] = val & 0xFF;
     
-    i2c_master_transfer(master, device , kI2CWrite, 0, 0, buff, 4, &transferred, kSyncWaitForever);
+    i2c_master_transfer(master, device , kI2CWrite, true, 0, 0, buff, 4, &transferred, kSyncWaitForever);
     return kStatus_SGTL_Success;
 }
 
@@ -324,12 +333,12 @@ sgtl_status_t sgtl_read_reg(sgtl_handler_t *handler, uint16_t reg, uint16_t *val
     uint8_t retval = 0;
     buff[0] = (reg & 0xFF00U) >> 8U;
     buff[1] = reg & 0xFF;
-    retval = i2c_master_transfer(master, device , kI2CWrite, 0, 0, buff, 2, &transferred, kSyncWaitForever);
+    retval = i2c_master_transfer(master, device , kI2CWrite, true, 0, 0, buff, 2, &transferred, kSyncWaitForever);
     if(retval != kStatus_SGTL_Success)
     {
         return kStatus_SGTL_Fail;
     }
-    retval = i2c_master_transfer(master, device , kI2CRead, 0, 0, data, 2, &transferred, kSyncWaitForever);
+    retval = i2c_master_transfer(master, device , kI2CRead, true, 0, 0, data, 2, &transferred, kSyncWaitForever);
     *val = (uint16_t)(((uint32_t)data[0] << 8U) | (uint32_t)data[1]); 
     return kStatus_SGTL_Success;
 }

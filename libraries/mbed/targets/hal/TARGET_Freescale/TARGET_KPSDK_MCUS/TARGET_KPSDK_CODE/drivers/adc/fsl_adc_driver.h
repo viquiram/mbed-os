@@ -37,7 +37,7 @@
 #include "fsl_port_hal.h"
 #include "fsl_adc_hal.h"
 
-/*! 
+/*!
  * @addtogroup adc_driver
  * @{
  */
@@ -50,21 +50,21 @@
 
 /*!
  * @brief Defines the calibration parameter structure.
- * 
- * This structure keeps the calibration parameter after executing the 
+ *
+ * This structure keeps the calibration parameter after executing the
  * auto-calibration or filled by indicated ones.
  */
 typedef struct adcCalibrationParam
 {
     uint32_t PG; /*!< The value for PG register */
     uint32_t MG; /*!< The value for MG register */
-} adc_calibration_param_t;   
+} adc_calibration_param_t;
 
-/*! 
+/*!
  * @brief Defines the ADC basic configuration structure.
- * 
- * This structure is used when initializing the ADC device associated with 
- * adc_init(). It contains the basic feature configuration which are 
+ *
+ * This structure is used when initializing the ADC device associated with
+ * adc_init(). It contains the basic feature configuration which are
  * necessary.
  */
 typedef struct AdcUserConfig
@@ -76,11 +76,11 @@ typedef struct AdcUserConfig
     bool isContinuousEnabled;   /*!< Switcher to enable continuous conversion */
 } adc_user_config_t;
 
-/*! 
+/*!
  * @brief Defines the ADC extended configuration structure.
- * 
- * This structure is used when initializing the ADC device associated with 
- * adc_init_extend(). It contains the advanced feature configuration when 
+ *
+ * This structure is used when initializing the ADC device associated with
+ * adc_init_extend(). It contains the advanced feature configuration when
  * necessary.
  */
 typedef struct adcExtendConfig
@@ -101,9 +101,9 @@ typedef struct adcExtendConfig
     bool isDmaEnabled;  /*! < Switcher to enable DMA support*/
 } adc_extend_config_t;
 
-/*! 
+/*!
  * @brief Defines the channel configuration structure.
- * 
+ *
  * This structure is used when setting the conversion channel associated with
  * adc_start_conversion(), adc_stop_conversion(), adc_is_conversion_completed()
  * and adc_get_conversion_value(). It contains all the information that can
@@ -111,10 +111,10 @@ typedef struct adcExtendConfig
  */
 typedef struct adcChannelConfig
 {
-    /* 
-     * Corresponding to the ADCH bits of a 5-bit field , channel ID  selects 
-     * one of the input channels. The ADC  is turned off when the channel 
-     * select bits are all set as ADCH = 11111(kAdcChannelDisable). See  the 
+    /*
+     * Corresponding to the ADCH bits of a 5-bit field , channel ID  selects
+     * one of the input channels. The ADC  is turned off when the channel
+     * select bits are all set as ADCH = 11111(kAdcChannelDisable). See  the
      * type definition of adc_channel_mode_t.
      */
     adc_channel_mode_t channelId; /*!< Channel number*/
@@ -127,10 +127,10 @@ typedef struct adcChannelConfig
 extern "C" {
 #endif
   
-/*! 
+/*!
  * @brief Defines the ADC ISR callback function.
  *
- * This type defines the prototype of ADC ISR callback function that can be 
+ * This type defines the prototype of ADC ISR callback function that can be
  * registered inside the ISR.
  */
 typedef void (*adc_isr_callback_t)(void);
@@ -141,7 +141,7 @@ typedef void (*adc_isr_callback_t)(void);
  * This function is used to get the calibration parameters in auto-calibrate mode.
  * Execute this function to obtain the parameter for the
  * calibration during the initialization. This process may be time consuming.
- * 
+ *
  * @param instance ADC instance ID.
  * @param paramPtr The pointer to a empty calibration parameter structure.
  * @return The execution status.
@@ -150,11 +150,11 @@ adc_status_t adc_get_calibration_param(uint32_t instance, adc_calibration_param_
 
 /*!
  * @brief Sets the parameters for calibration.
- * 
- * This function is used to set the calibration parameters. The 
+ *
+ * This function is used to set the calibration parameters. The
  * parameters can be generated from the auto-calibration by the
  * adc_get_calibration_param() or created by manually indicated parameters.
- * 
+ *
  * @param instance ADC instance ID.
  * @param paramPtr The pointer to a filled calibration parameter structure.
  * @return The execution status.
@@ -170,7 +170,7 @@ adc_status_t adc_set_calibration_param(uint32_t instance, adc_calibration_param_
  * for further use. After the auto calibration process, the initialization function
  * should be called explicitly to update the configuration according to the
  * application.
- * 
+ *
  * @param instance ADC instance ID.
  * @param paramPtr The pointer to an empty calibration parameter structure.
  * It is  filled with the calibration offset value after the function is called.
@@ -183,8 +183,8 @@ adc_status_t adc_auto_calibration(uint32_t instance, adc_calibration_param_t *pa
  *
  * This function ensures that the basic operations of ADC  function correctly.
  * This function should be called when an application does not  require complex features.
- * 
- * 
+ *
+ *
  * @param instance ADC instance ID.
  * @param cfgPtr The pointer to basic configuration structure.
  * @return The execution status.
@@ -219,7 +219,7 @@ void adc_shutdown(uint32_t instance);
  *
  * Triggers the indicated channel conversion in a single conversion mode. This
  * function should be called when each time the conversion is triggered. In a
- * continuous conversion mode, this function can be called only once at the 
+ * continuous conversion mode, this function can be called only once at the
  * beginning of conversion. The ADC  executes the conversion periodically
  * and automatically.
  *
@@ -232,7 +232,7 @@ adc_status_t adc_start_conversion(uint32_t instance, adc_channel_config_t *chann
 /*!
  * @brief Stops the conversion.
  *
- * Stops the ADC conversion. This function  sets  ADC to a "NULL"  
+ * Stops the ADC conversion. This function  sets  ADC to a "NULL"
  * channel, which stops ADC conversion from any channel. It is a different function
  * than the adc_shutdown().
  *
@@ -245,8 +245,8 @@ adc_status_t adc_stop_conversion(uint32_t instance, adc_channel_config_t *channe
 /*!
  * @brief Checks whether the conversion is completed.
  *
- * Checks whether the current conversion is completed. Because there are multiple 
- * channels sharing the same converter, the status is used to indicate the 
+ * Checks whether the current conversion is completed. Because there are multiple
+ * channels sharing the same converter, the status is used to indicate the
  * converter status.
  *
  * @param instance ADC instance ID.
@@ -258,14 +258,14 @@ bool adc_is_conversion_completed(uint32_t instance, adc_channel_config_t *channe
 /*!
  * @brief Gets the value after the conversion.
  *
- * The value  comes from the value register that may be eventually processed 
+ * The value  comes from the value register that may be eventually processed
  * according to the application. When using polling mode, the value is obtained
- * after the conversion is completed. When using the interrupt mode, the value  
+ * after the conversion is completed. When using the interrupt mode, the value
  * comes from the buffer that is updated by the ADC ISR.
  *
  * @param instance ADC instance ID.
  * @param channelCfgPtr The pointer to channel configuration structure.
- * @return the value of conversion. 
+ * @return the value of conversion.
  */
 uint32_t adc_get_conversion_value(uint32_t instance, adc_channel_config_t *channelCfgPtr);
 
@@ -274,7 +274,7 @@ uint32_t adc_get_conversion_value(uint32_t instance, adc_channel_config_t *chann
  *
  * Callback provides a friendly API for application to program the ISR. A special
  * function  needs to be executed at the moment conversion is completed and can
- * be inserted to the ISR by calling the function registered  by the user. 
+ * be inserted to the ISR by calling the function registered  by the user.
  *
  * @param instance ADC instance ID.
  * @param func The pointer to user indicating callback function.
@@ -282,7 +282,7 @@ uint32_t adc_get_conversion_value(uint32_t instance, adc_channel_config_t *chann
 void adc_register_user_callback_isr(uint32_t instance, adc_isr_callback_t func);
 
 #if defined(__cplusplus)
-extern }
+}
 #endif
 
 /*! @}*/

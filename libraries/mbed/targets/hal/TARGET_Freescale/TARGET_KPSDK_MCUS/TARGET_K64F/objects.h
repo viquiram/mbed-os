@@ -58,6 +58,10 @@ struct spi_s {
     uint32_t instance;
 };
 
+struct dac_s {
+    DACName dac;
+};
+
 #include "gpio_object.h"
 
 #ifdef __cplusplus

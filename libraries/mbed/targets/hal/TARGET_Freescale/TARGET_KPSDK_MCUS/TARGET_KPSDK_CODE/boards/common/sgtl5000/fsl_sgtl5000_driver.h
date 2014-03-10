@@ -123,7 +123,7 @@ extern "C" {
 /*!
  * @brief sgtl5000 initialize function.
  *
- * This function would call sgtl_i2c_init(), and in this fuction, some configurations
+ * This function would call sgtl_i2c_init(), and in this function, some configurations
  * are fixed. The second parameter is NULL to sgtl5000 in this version. If users want
  * to change the settings, they have to use sgtl_write_reg() or sgtl_modify_reg()
  * to set the register value of sgtl5000.
@@ -147,7 +147,7 @@ sgtl_status_t sgtl_i2c_init(sgtl_handler_t *handler);
 sgtl_status_t sgtl_deinit(sgtl_handler_t *handler);
 
 /*!
- * @brief Configure the data foramt of audio data.
+ * @brief Configure the data format of audio data.
  *
  * This function would configure the registers about the sample rate, bit depths.
  * @param handler Sgtl5000 handler structure pointer.
