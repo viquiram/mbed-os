@@ -227,6 +227,8 @@ typedef enum {
     A4 = PTB1,
     A5 = PTB0,
 
+    DAC0_OUT = 0xFEFE, /* DAC does not have Pin Name in RM */
+
     // Not connected
     NC = (int)0xFFFFFFFF
 } PinName;
