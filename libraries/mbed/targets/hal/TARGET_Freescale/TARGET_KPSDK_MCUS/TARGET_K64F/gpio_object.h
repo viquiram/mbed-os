@@ -16,7 +16,7 @@
 #ifndef MBED_GPIO_OBJECT_H
 #define MBED_GPIO_OBJECT_H
 
-#include "fsl_gpio_driver.h"
+#include "fsl_gpio_hal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,11 +27,17 @@ typedef struct {
 } gpio_t;
 
 static inline void gpio_write(gpio_t *obj, int value) {
-    sdk_gpio_write_pin_output(obj->pinName, (uint32_t)value);
+    uint32_t port = obj->pinName >> GPIO_PORT_SHIFT;
+    uint32_t pin = obj->pinName & 0xFF;
+
+    gpio_hal_write_pin_output(port, pin, value);
 }
 
 static inline int gpio_read(gpio_t *obj) {
-    return (int)sdk_gpio_read_pin_input(obj->pinName);
+    uint32_t port = obj->pinName >> GPIO_PORT_SHIFT;
+    uint32_t pin = obj->pinName & 0xFF;
+
+    return (int)gpio_hal_read_pin_input(port, pin);
 }
 
 #ifdef __cplusplus

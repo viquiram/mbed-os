@@ -17,7 +17,6 @@
 #include "cmsis.h"
 
 #include "gpio_irq_api.h"
-#include "fsl_gpio_driver.h"
 #include "fsl_gpio_hal.h"
 #include "fsl_port_hal.h"
 #include "error.h"

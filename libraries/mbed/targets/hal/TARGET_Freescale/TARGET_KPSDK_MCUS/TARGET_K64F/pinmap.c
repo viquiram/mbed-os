@@ -16,6 +16,7 @@
 #include "pinmap.h"
 #include "error.h"
 #include "fsl_clock_manager.h"
+#include "fsl_port_hal.h"
 
 void pin_function(PinName pin, int function) {
     if (pin == (PinName)NC) {

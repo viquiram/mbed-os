@@ -17,7 +17,6 @@
 #define MBED_PINNAMES_H
 
 #include "cmsis.h"
-#include "fsl_gpio_driver.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,6 +26,8 @@ typedef enum {
     PIN_INPUT,
     PIN_OUTPUT
 } PinDirection;
+
+#define GPIO_PORT_SHIFT 12
 
 typedef enum {
     /* PTA0 - PTA3 reserved for JTAG pins */

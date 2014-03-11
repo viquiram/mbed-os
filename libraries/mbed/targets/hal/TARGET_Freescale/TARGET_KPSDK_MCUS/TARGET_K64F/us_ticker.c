@@ -16,7 +16,7 @@
 #include <stddef.h>
 #include "us_ticker_api.h"
 #include "PeripheralNames.h"
-#include "fsl_pit_driver.h"
+#include "fsl_pit_hal.h"
 #include "fsl_sim_hal.h"
 #include "fsl_clock_manager.h"
 #include "fsl_clock_configs.h"

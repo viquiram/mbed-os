@@ -18,7 +18,6 @@
 #include "cmsis.h"
 #include "pinmap.h"
 #include "error.h"
-#include "fsl_gpio_driver.h"
 
 #define RANGE_12BIT     0xFFF
 

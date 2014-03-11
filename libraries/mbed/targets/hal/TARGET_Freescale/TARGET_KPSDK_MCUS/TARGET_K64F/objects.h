@@ -20,7 +20,6 @@
 #include "PortNames.h"
 #include "PeripheralNames.h"
 #include "PinNames.h"
-#include "fsl_adc_driver.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +46,6 @@ struct serial_s {
 
 struct analogin_s {
     ADCName adc;
-    adc_channel_config_t channel_cfg;
 };
 
 struct i2c_s {

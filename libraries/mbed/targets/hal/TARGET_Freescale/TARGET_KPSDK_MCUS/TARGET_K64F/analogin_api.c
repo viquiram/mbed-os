@@ -18,9 +18,12 @@
 #include "cmsis.h"
 #include "pinmap.h"
 #include "error.h"
-#include "fsl_adc_driver.h"
 #include "PeripheralNames.h"
- 
+#include "fsl_adc_hal.h"
+#include "fsl_clock_manager.h"
+
+#define MAX_FADC 6000000
+
 static const PinMap PinMap_ADC[] = {
     {PTC0, ADC0_SE14, 0},
     {NC,   NC,        0}
@@ -28,28 +31,44 @@ static const PinMap PinMap_ADC[] = {
 
 void analogin_init(analogin_t *obj, PinName pin) {
     obj->adc = (ADCName)pinmap_peripheral(pin, PinMap_ADC);
-    adc_user_config_t module_config;
-    uint32_t instance = obj->adc >> ADC_SHIFT;
+    if (obj->adc == (ADCName)NC) {
+        error("ADC pin mapping failed");
+    }
+    uint32_t instance = obj->adc >> ADC_INSTANCE_SHIFT;
 
-    module_config.clockSourceMode = kAdcClockSourceBusClk;
-    module_config.clockSourceDividerMode = kAdcClockDivider8;
-    module_config.resolutionMode = kAdcSingleDiff16;
-    module_config.referenceVoltageMode = kAdcVoltageVref;
-    module_config.isContinuousEnabled = false;
+    clock_manager_set_gate(kClockModuleADC, instance, true);
 
-    adc_init(instance, &module_config);
+    uint32_t bus_clock;
+    clock_manager_get_frequency(kBusClock, &bus_clock);
+    uint32_t clkdiv;
+    for (clkdiv = 0; clkdiv < 4; clkdiv++) {
+        if ((bus_clock >> clkdiv) <= MAX_FADC)
+            break;
+    }
+    if (clkdiv == 4) {//Set max div
+        clkdiv = 0x7;
+    }
 
-    obj->channel_cfg.channelId =(adc_channel_mode_t)(obj->adc & 0xF);
-    obj->channel_cfg.isDifferentialEnabled = false;
-    obj->channel_cfg.isInterruptEnabled = false;
-    obj->channel_cfg.muxSelect =  kAdcChannelMuxB;
-    adc_start_conversion(instance, &obj->channel_cfg);
+    adc_hal_set_clock_source_mode(instance, (adc_clock_source_mode_t)(clkdiv >> 2));
+    adc_hal_set_clock_divider_mode(instance, (adc_clock_divider_mode_t)(clkdiv & 0x3));
+    adc_hal_set_reference_voltage_mode(instance, kAdcVoltageVref);
+    adc_hal_set_resolution_mode(instance, kAdcSingleDiff16);
+    adc_hal_configure_continuous_conversion(instance, false);
 
+    adc_group_mux_mode_t mode  = (obj->adc & (1 << ADC_B_CHANNEL_SHIFT)) ?
+                                 kAdcChannelMuxB : kAdcChannelMuxA;
+    adc_hal_disable(instance, mode);
+    adc_hal_set_group_mux(instance, mode);
+    adc_hal_enable(instance, mode, (adc_channel_mode_t)(obj->adc & 0xF), false);
 }
 
 uint16_t analogin_read_u16(analogin_t *obj) {
-    adc_start_conversion(obj->adc >> ADC_SHIFT, &obj->channel_cfg);
-    return (uint16_t)adc_get_conversion_value(obj->adc >> ADC_SHIFT, &obj->channel_cfg);
+    uint32_t instance = obj->adc >> ADC_INSTANCE_SHIFT;
+    adc_group_mux_mode_t mode  = (obj->adc & (1 << ADC_B_CHANNEL_SHIFT)) ?
+                                 kAdcChannelMuxB : kAdcChannelMuxA;
+    adc_hal_enable(instance, mode, (adc_channel_mode_t)(obj->adc & 0xF), false);
+    while (!adc_hal_is_conversion_completed(instance, mode));
+    return adc_hal_get_conversion_value(instance, mode);
 }
 
 float analogin_read(analogin_t *obj) {
