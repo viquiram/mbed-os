@@ -24,24 +24,38 @@
 #include "fsl_dspi_hal.h"
 
 static const PinMap PinMap_SPI_SCLK[] = {
-
+    {PTD1, SPI_0, 2},
     {NC  , NC   , 0}
 };
 
 static const PinMap PinMap_SPI_MOSI[] = {
-
+    {PTD2, SPI_0, 2},
     {NC  , NC   , 0}
 };
 
 static const PinMap PinMap_SPI_MISO[] = {
-
+    {PTD3, SPI_0, 2},
     {NC  , NC   , 0}
 };
 
 static const PinMap PinMap_SPI_SSEL[] = {
-
+    {PTD0, SPI_0, 2},
     {NC  , NC   , 0}
 };
+
+static void spi_set_delays(uint32_t instance) {
+    dspi_delay_settings_config_t delay_config;
+    delay_config.pcsToSck = 1;            /*!< PCS to SCK delay (CSSCK): initialize the scalar
+                                          *   value to '1' to provide the master with a little
+                                          *   more data-in read setup time.
+                                          */
+    delay_config.pcsToSckPre = 0;         /*!< PCS to SCK delay prescalar (PCSSCK) */
+    delay_config.afterSckPre = 0;         /*!< After SCK delay prescalar (PASC)*/
+    delay_config.afterSck = 0;            /*!< After SCK delay scalar (ASC)*/
+    delay_config.afterTransferPre = 0;    /*!< Delay after transfer prescalar (PDT)*/
+    delay_config.afterTransfer = 0;
+    dspi_hal_configure_delays(instance, kDspiCtar0, &delay_config);
+}
 
 void spi_init(spi_t *obj, PinName mosi, PinName miso, PinName sclk, PinName ssel) {
     // determine the SPI to use
@@ -67,9 +81,11 @@ void spi_init(spi_t *obj, PinName mosi, PinName miso, PinName sclk, PinName ssel
     } else {
         spi_format(obj, 8, 0, 1);  // 8 bits, mode 0, slave
     }
+    spi_set_delays(obj->instance);
     spi_frequency(obj, 1000000);
 
     dspi_hal_enable(obj->instance);
+    dspi_hal_start_transfer(obj->instance);
 
     // pin out the spi pins
     pinmap_pinout(mosi, PinMap_SPI_MOSI);
@@ -104,7 +120,7 @@ void spi_format(spi_t *obj, int bits, int mode, int slave) {
 void spi_frequency(spi_t *obj, int hz) {
     uint32_t busClock;
     clock_manager_get_frequency(kBusClock, &busClock);
-    dspi_hal_set_baud(obj->instance, kDspiCtar0, hz, busClock);
+    dspi_hal_set_baud(obj->instance, kDspiCtar0, (uint32_t)hz, busClock);
 }
 
 static inline int spi_writeable(spi_t * obj) {
@@ -120,10 +136,13 @@ int spi_master_write(spi_t *obj, int value) {
     while(!spi_writeable(obj));
     dspi_command_config_t command = {0};
     command.isEndOfQueue = true;
+    command.isChipSelectContinuous = 0;
     dspi_hal_write_data_master_mode(obj->instance, &command, (uint16_t)value);
+    dspi_hal_clear_status_flag(obj->instance, kDspiTxFifoFillRequest);
 
     // wait rx buffer full
     while (!spi_readable(obj));
+    dspi_hal_clear_status_flag(obj->instance, kDspiRxFifoDrainRequest);
     return dspi_hal_read_data(obj->instance) & 0xff;
 }
 
