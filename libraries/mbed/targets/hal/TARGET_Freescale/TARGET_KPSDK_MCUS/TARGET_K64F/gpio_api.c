@@ -35,16 +35,17 @@ void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
     uint32_t port = pin >> GPIO_PORT_SHIFT;
     uint32_t pin_num = pin & 0xFF;
     clock_hal_set_gate(kSimClockModulePORT, port, true);
-
-    if (direction) {
-        gpio_hal_set_pin_direction(port, pin_num, kGpioDigitalOutput);
-        gpio_hal_write_pin_output(port, pin_num, 1);
-    } else {
-        gpio_hal_set_pin_direction(port, pin_num, kGpioDigitalInput);
-        port_hal_configure_pull(port, pin_num, true);
-        port_hal_pull_select(port, pin_num, kPortPullUp);
-    }
     port_hal_mux_control(port, pin_num, kPortMuxAsGpio);
+
+    gpio_dir(obj, direction);
+    switch (direction) {
+        case PIN_OUTPUT:
+            pin_mode(pin, PullNone);
+            break;
+        case PIN_INPUT:
+            pin_mode(pin, PullUp);
+            break;
+    }
 }
 
 void gpio_mode(gpio_t *obj, PinMode mode) {

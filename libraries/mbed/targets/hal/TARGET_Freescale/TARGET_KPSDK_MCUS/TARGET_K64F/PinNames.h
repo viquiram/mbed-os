@@ -193,9 +193,9 @@ typedef enum {
     LED_BLUE  = PTB21,
 
     // mbed original LED naming
-    LED1 = LED_BLUE,
+    LED1 = LED_RED,
     LED2 = LED_GREEN,
-    LED3 = LED_RED,
+    LED3 = LED_BLUE,
     LED4 = LED_RED,
 
     // USB Pins
@@ -236,8 +236,8 @@ typedef enum {
 
 typedef enum {
     PullNone = 0,
-    PullDown = 2,
-    PullUp   = 3,
+    PullDown = 1,
+    PullUp   = 2,
 } PinMode;
 
 #ifdef __cplusplus
