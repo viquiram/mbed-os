@@ -30,6 +30,9 @@ class GccArm(Exporter):
         'K20D5M',
         'LPC4088',
         'LPC11U24',
+        'LPC1114',
+        'LPC11U35_401',
+        'LPC11U35_501',
     ]
     
     DOT_IN_RELATIVE_PATH = True

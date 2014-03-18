@@ -16,26 +16,55 @@ limitations under the License.
 
 Author: Przemyslaw Wirkus <Przemyslaw.wirkus@arm.com>
 
-Usage:
-1.  Update your private_settings.py with all MUTs you can possibly connect.
-    Make sure mcu / port / serial names are concretely inputed.
-2.  Update test_spec dictionary in __main__ section.
+-------------------------------------------------------------------------------
 
-    Example 1:
-    In below example only LPC11U24 will be tested
-    and test will be prepared using only uARM toolchain. Note that other
-    targets are just commented.
-    Uncomment or add your own targets at will.
+Usage: singletest.py [options]
 
-    test_spec = {
-        "targets": {
-            # "KL25Z": ["ARM", "GCC_ARM"],
-            # "LPC1768": ["ARM", "GCC_ARM", "GCC_CR", "GCC_CS", "IAR"],
-            "LPC11U24": ["uARM"]
-            # "NRF51822": ["ARM"]
-            # "NUCLEO_F103RB": ["ARM"]
-        }
+This script allows you to run mbed defined test cases for particular MCU(s)
+and corresponding toolchain(s).
+
+Options:
+  -h, --help            show this help message and exit
+  -i FILE, --tests=FILE
+                        Points to file with test specification
+  -M FILE, --MUTS=FILE  Points to file with MUTs specification (overwrites
+                        settings.py and private_settings.py)
+  -g, --goanna-for-tests
+                        Run Goanna static analyse tool for tests
+  -G, --goanna-for-sdk  Run Goanna static analyse tool for mbed SDK
+  -s, --suppress-summary
+                        Suppresses display of wellformatted table with test
+                        results
+  -v, --verbose         Verbose mode (pronts some extra information)
+
+Example: singletest.py -i test_spec.json -M muts_all.json
+
+-------------------------------------------------------------------------------
+
+File format example: test_spec.json
+
+{
+    "targets": {
+        "KL46Z": ["ARM", "GCC_ARM"],
+        "LPC1768": ["ARM", "GCC_ARM", "GCC_CR", "GCC_CS", "IAR"],
+        "LPC11U24": ["uARM"],
+        "NRF51822": ["ARM"]
     }
+}
+
+File format example: muts_all.json
+
+{
+    "1" : {"mcu": "LPC1768",
+        "port":"COM4", "disk":"J:\\",
+        "peripherals": ["TMP102", "digital_loop", "port_loop", "analog_loop", "SD"]
+    },
+
+    "2" : {"mcu": "KL25Z",
+        "port":"COM7", "disk":"G:\\",
+        "peripherals": ["digital_loop", "port_loop", "analog_loop"]
+    }
+}
 
 """
 
@@ -52,11 +81,16 @@ from shutil import copy
 from subprocess import call
 from time import sleep, time
 
+from subprocess import Popen, PIPE
+from threading import Thread
+from Queue import Queue, Empty
+
 ROOT = abspath(join(dirname(__file__), ".."))
 sys.path.insert(0, ROOT)
 # Imports related to mbed build pi
 from workspace_tools.build_api import build_project, build_mbed_libs
 from workspace_tools.paths import BUILD_DIR
+from workspace_tools.paths import HOST_TESTS
 from workspace_tools.targets import TARGET_MAP
 from workspace_tools.tests import TEST_MAP
 
@@ -69,24 +103,49 @@ from workspace_tools.utils import delete_dir_files
 from workspace_tools.settings import MUTs
 
 
+class ProcessObserver(Thread):
+    def __init__(self, proc):
+        Thread.__init__(self)
+        self.proc = proc
+        self.queue = Queue()
+        self.daemon = True
+        self.active = True
+        self.start()
+
+    def run(self):
+        while self.active:
+            c = self.proc.stdout.read(1)
+            self.queue.put(c)
+
+    def stop(self):
+        self.active = False
+        try:
+            self.proc.terminate()
+        except Exception, _:
+            pass
+
+
 class SingleTestRunner(object):
     """ Object wrapper for single test run which may involve multiple MUTs."""
 
     re_detect_testcase_result = None
+    TEST_RESULT_OK    = "OK"
+    TEST_RESULT_FAIL  = "FAIL"
+    TEST_RESULT_ERROR = "ERROR"
     TEST_RESULT_UNDEF = "UNDEF"
 
     # mbed test suite -> SingleTestRunner
-    TEST_RESULT_MAPPING = {"success" : "OK",
-                           "failure" : "FAIL",
-                           "error"   : "ERROR",
+    TEST_RESULT_MAPPING = {"success" : TEST_RESULT_OK,
+                           "failure" : TEST_RESULT_FAIL,
+                           "error"   : TEST_RESULT_ERROR,
                            "end"     : TEST_RESULT_UNDEF}
 
     def __init__(self):
         pattern = "\\{(" + "|".join(self.TEST_RESULT_MAPPING.keys()) + ")\\}"
         self.re_detect_testcase_result = re.compile(pattern)
 
-    def run_host_test(self, target_name, port,
-                      duration, verbose=False):
+    def run_simple_test(self, target_name, port,
+                        duration, verbose=False):
         """
         Functions resets target and grabs by timeouted pooling test log
         via serial port.
@@ -182,12 +241,54 @@ class SingleTestRunner(object):
 
         # Host test execution
         start_host_exec_time = time()
-        test_result = self.run_host_test(target_name, port, duration)
+        #test_result = self.run_simple_test(target_name, port, duration, verbose=opts.verbose)
+        test_result = self.run_host_test(test.host_test, disk, port, duration, opts.verbose)
         elapsed_time = time() - start_host_exec_time
         print print_test_result(test_result, target_name, toolchain_name,
                                 test_id, test_description, elapsed_time, duration)
         return (test_result, target_name, toolchain_name,
                 test_id, test_description, round(elapsed_time, 2), duration)
+
+    def run_host_test(self, name, disk, port, duration, verbose=False, extra_serial=""):
+        # print "{%s} port:%s disk:%s"  % (name, port, disk),
+        cmd = ["python", "%s.py" % name, '-p', port, '-d', disk, '-t', str(duration), "-e", extra_serial]
+        proc = Popen(cmd, stdout=PIPE, cwd=HOST_TESTS)
+        obs = ProcessObserver(proc)
+        start = time()
+        line = ''
+        output = []
+        while (time() - start) < duration:
+            try:
+                c = obs.queue.get(block=True, timeout=1)
+            except Empty, _:
+                c = None
+
+            if c:
+                output.append(c)
+                # Give the mbed under test a way to communicate the end of the test
+                if c in ['\n', '\r']:
+                    if '{end}' in line: break
+                    line = ''
+                else:
+                    line += c
+
+        # Stop test process
+        obs.stop()
+
+        # Handle verbose mode
+        if verbose:
+            print "Test::Output::Start"
+            print "".join(output)
+            print "Test::Output::Finish"
+
+        # Parse test 'output' data
+        result = self.TEST_RESULT_UNDEF
+        for line in "".join(output).splitlines():
+            search_result = self.re_detect_testcase_result.search(line)
+            if search_result and len(search_result.groups()):
+                result = self.TEST_RESULT_MAPPING[search_result.groups(0)[0]]
+                break
+        return result
 
 
 def flush_serial(serial):
@@ -293,6 +394,18 @@ if __name__ == '__main__':
                       metavar="FILE",
                       help='Points to file with MUTs specification (overwrites settings.py and private_settings.py)')
 
+    parser.add_option('-g', '--goanna-for-tests',
+                      dest='goanna_for_tests',
+                      metavar=False,
+                      action="store_true",
+                      help='Run Goanna static analyse tool for tests')
+
+    parser.add_option('-G', '--goanna-for-sdk',
+                      dest='goanna_for_mbed_sdk',
+                      metavar=False,
+                      action="store_true",
+                      help='Run Goanna static analyse tool for mbed SDK')
+
     parser.add_option('-s', '--suppress-summary',
                       dest='suppress_summary',
                       default=False,
@@ -341,7 +454,8 @@ if __name__ == '__main__':
             # print '=== %s::%s ===' % (target, toolchain)
             # Let's build our test
             T = TARGET_MAP[target]
-            build_mbed_libs(T, toolchain)
+            build_mbed_libs_options = ["analyze"] if opts.goanna_for_mbed_sdk else None
+            build_mbed_libs(T, toolchain, options=build_mbed_libs_options)
             build_dir = join(BUILD_DIR, "test", target, toolchain)
 
             for test_id, test in TEST_MAP.iteritems():
@@ -360,8 +474,9 @@ if __name__ == '__main__':
                         'test_id': test_id,
                     }
 
+                    build_project_options = ["analyze"] if opts.goanna_for_tests else None
                     path = build_project(test.source_dir, join(build_dir, test_id),
-                                         T, toolchain, test.dependencies,
+                                         T, toolchain, test.dependencies, options=build_project_options,
                                          clean=clean, verbose=opts.verbose)
 
                     test_result_cache = join(dirname(path), "test_result.json")
@@ -377,6 +492,11 @@ if __name__ == '__main__':
 
     # Human readable summary
     if not opts.suppress_summary:
+        result_dict = { single_test.TEST_RESULT_OK    : 0,
+                        single_test.TEST_RESULT_FAIL  : 0,
+                        single_test.TEST_RESULT_ERROR : 0,
+                        single_test.TEST_RESULT_UNDEF : 0 }
+
         print
         print "Test summary:"
         # Pretty table package is used to print results
@@ -390,6 +510,12 @@ if __name__ == '__main__':
         pt.padding_width = 1 # One space between column edges and contents (default)
 
         for test in test_summary:
+            if test[0] in result_dict:
+                result_dict[test[0]] += 1
             pt.add_row(test)
         print pt
+
+        # Print result count
+        print "Result: " + ' / '.join(['%s %s' % (value, key) for (key, value) in {k: v for k, v in result_dict.items() if v != 0}.iteritems()])
+        #print result_dict
     print "Completed in %d sec" % (time() - start)

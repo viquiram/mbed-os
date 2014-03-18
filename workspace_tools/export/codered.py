@@ -25,6 +25,9 @@ class CodeRed(Exporter):
     TARGETS = [
         'LPC1768',
         'LPC4088',
+        'LPC1114',
+        'LPC11U35_401',
+        'LPC11U35_501',
     ]
     
     def generate(self):
