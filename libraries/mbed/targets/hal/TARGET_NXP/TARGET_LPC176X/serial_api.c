@@ -100,7 +100,7 @@ void serial_init(serial_t *obj, PinName tx, PinName rx) {
         case UART_2: LPC_SC->PCONP |= 1 << 24; break;
         case UART_3: LPC_SC->PCONP |= 1 << 25; break;
     }
-    
+
     // enable fifos and default rx trigger level
     obj->uart->FCR = 1 << 0  // FIFO Enable - 0 = Disables, 1 = Enabled
                    | 0 << 1  // Rx Fifo Reset
@@ -357,7 +357,7 @@ int serial_getc(serial_t *obj) {
 void serial_putc(serial_t *obj, int c) {
     while (!serial_writable(obj));
     obj->uart->THR = c;
-    uart_data[obj->index].count++;    
+    uart_data[obj->index].count++;
 }
 
 int serial_readable(serial_t *obj) {
@@ -367,7 +367,7 @@ int serial_readable(serial_t *obj) {
 int serial_writable(serial_t *obj) {
     int isWritable = 1;
     if (NC != uart_data[obj->index].sw_cts.pin)
-        isWritable = (gpio_read(&uart_data[obj->index].sw_cts) == 0) && (obj->uart->LSR & 0x40);
+        isWritable = (gpio_read(&uart_data[obj->index].sw_cts) == 0) && (obj->uart->LSR & 0x40);  //If flow control: writable if CTS low + UART done
     else {
         if (obj->uart->LSR & 0x20)
             uart_data[obj->index].count = 0;
@@ -419,7 +419,7 @@ void serial_set_flow_control(serial_t *obj, FlowControl type, PinName rxflow, Pi
             pinmap_pinout(txflow, PinMap_UART_CTS);
         } else {
             // Can't enable in hardware, use software emulation
-            gpio_init(&uart_data[index].sw_cts, txflow, PIN_INPUT);
+            gpio_init_in(&uart_data[index].sw_cts, txflow);
         }
     }
     if (((FlowControlRTS == type) || (FlowControlRTSCTS == type)) && (NC != rxflow)) {
@@ -434,8 +434,7 @@ void serial_set_flow_control(serial_t *obj, FlowControl type, PinName rxflow, Pi
             uart1->MCR |= UART_MCR_RTSEN_MASK;
             pinmap_pinout(rxflow, PinMap_UART_RTS);
         } else { // can't enable in hardware, use software emulation
-            gpio_init(&uart_data[index].sw_rts, rxflow, PIN_OUTPUT);
-            gpio_write(&uart_data[index].sw_rts, 0);
+            gpio_init_out_ex(&uart_data[index].sw_rts, rxflow, 0);
             // Enable RX interrupt
             serial_flow_irq_set(obj, 1);
         }
