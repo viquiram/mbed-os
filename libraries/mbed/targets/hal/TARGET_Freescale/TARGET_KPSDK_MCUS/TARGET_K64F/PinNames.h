@@ -30,7 +30,10 @@ typedef enum {
 #define GPIO_PORT_SHIFT 12
 
 typedef enum {
-    /* PTA0 - PTA3 reserved for JTAG pins */
+    PTA0 = (0 << GPIO_PORT_SHIFT | 0),
+    PTA1 = (0 << GPIO_PORT_SHIFT | 1),
+    PTA2 = (0 << GPIO_PORT_SHIFT | 2),
+    PTA3 = (0 << GPIO_PORT_SHIFT | 3),
     PTA4 = (0 << GPIO_PORT_SHIFT | 4),
     PTA5 = (0 << GPIO_PORT_SHIFT | 5),
     PTA6 = (0 << GPIO_PORT_SHIFT | 6),
@@ -203,29 +206,29 @@ typedef enum {
     USBRX = PTB16,
 
     // Arduino Headers
-    D0 = PTE1,
-    D1 = PTE0,
-    D2 = PTA5,
-    D3 = PTD4,
-    D4 = PTC8,
-    D5 = PTE1,
-    D6 = PTC3,
-    D7 = PTC4,
-    D8 = PTA12,
-    D9 = PTE1,
-    D10 = PTC2,
+    D0 = PTC16,
+    D1 = PTC17,
+    D2 = PTB9,
+    D3 = PTA1,
+    D4 = PTB23,
+    D5 = PTA2,
+    D6 = PTC2,
+    D7 = PTC3,
+    D8 = PTA0,
+    D9 = PTC4,
+    D10 = PTD0,
     D11 = PTD2,
     D12 = PTD3,
     D13 = PTD1,
-    D14 = PTB3,
-    D15 = PTB2,
+    D14 = PTE24,
+    D15 = PTE25,
 
-    A0 = PTC0,
-    A1 = PTC1,
-    A2 = PTD6,
-    A3 = PTD5,
-    A4 = PTB1,
-    A5 = PTB0,
+    A0 = PTB2,
+    A1 = PTB3,
+    A2 = PTB10,
+    A3 = PTB11,
+    A4 = PTC10,
+    A5 = PTC11,
 
     DAC0_OUT = 0xFEFE, /* DAC does not have Pin Name in RM */
 
