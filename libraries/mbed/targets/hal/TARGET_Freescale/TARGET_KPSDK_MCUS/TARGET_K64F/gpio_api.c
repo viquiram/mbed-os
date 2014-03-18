@@ -15,7 +15,9 @@
  */
 #include "gpio_api.h"
 #include "pinmap.h"
-#include "fsl_gpio_driver.h"
+#include "fsl_port_hal.h"
+#include "fsl_gpio_hal.h"
+#include "fsl_sim_hal.h"
 
 uint32_t gpio_set(PinName pin) {
     uint32_t pin_num = pin & 0xFF;
@@ -29,24 +31,20 @@ void gpio_init(gpio_t *obj, PinName pin, PinDirection direction) {
         return;
     }
 
-    if (direction) {
-        gpio_output_pin_t output = {0};
+    obj->pinName = pin;
+    uint32_t port = pin >> GPIO_PORT_SHIFT;
+    uint32_t pin_num = pin & 0xFF;
+    clock_hal_set_gate(kSimClockModulePORT, port, true);
+    port_hal_mux_control(port, pin_num, kPortMuxAsGpio);
 
-        obj->pinName = pin;
-        output.pinName = pin;
-        output.config.outputLogic = 0;
-        output.config.slewRate = kPortSlowSlewRate;
-        output.config.driveStrength = kPortLowDriveStrength,
-        sdk_gpio_output_pin_init((const gpio_output_pin_t *)&output);
-    } else {
-        gpio_input_pin_t input = {0};
-        obj->pinName = pin;
-        input.pinName = pin;
-        input.config.isPullEnable = true;
-        input.config.pullSelect = kPortPullUp;
-        input.config.isPassiveFilterEnabled = false;
-        input.config.interrupt = kPortIntDisabled;
-        sdk_gpio_input_pin_init((const gpio_input_pin_t *)&input);
+    gpio_dir(obj, direction);
+    switch (direction) {
+        case PIN_OUTPUT:
+            pin_mode(pin, PullNone);
+            break;
+        case PIN_INPUT:
+            pin_mode(pin, PullUp);
+            break;
     }
 }
 
@@ -55,12 +53,15 @@ void gpio_mode(gpio_t *obj, PinMode mode) {
 }
 
 void gpio_dir(gpio_t *obj, PinDirection direction) {
+    uint32_t port = obj->pinName >> GPIO_PORT_SHIFT;
+    uint32_t pin_num = obj->pinName & 0xFF;
+
     switch (direction) {
         case PIN_INPUT:
-            sdk_gpio_set_pin_direction(obj->pinName, kGpioDigitalInput);
+            gpio_hal_set_pin_direction(port, pin_num, kGpioDigitalInput);
             break;
         case PIN_OUTPUT:
-            sdk_gpio_set_pin_direction(obj->pinName, kGpioDigitalOutput);
+            gpio_hal_set_pin_direction(port, pin_num, kGpioDigitalOutput);
             break;
     }
 }

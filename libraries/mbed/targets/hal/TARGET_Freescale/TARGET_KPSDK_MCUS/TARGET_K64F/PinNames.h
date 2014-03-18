@@ -17,7 +17,6 @@
 #define MBED_PINNAMES_H
 
 #include "cmsis.h"
-#include "fsl_gpio_driver.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,6 +26,8 @@ typedef enum {
     PIN_INPUT,
     PIN_OUTPUT
 } PinDirection;
+
+#define GPIO_PORT_SHIFT 12
 
 typedef enum {
     /* PTA0 - PTA3 reserved for JTAG pins */
@@ -192,9 +193,9 @@ typedef enum {
     LED_BLUE  = PTB21,
 
     // mbed original LED naming
-    LED1 = LED_BLUE,
+    LED1 = LED_RED,
     LED2 = LED_GREEN,
-    LED3 = LED_RED,
+    LED3 = LED_BLUE,
     LED4 = LED_RED,
 
     // USB Pins
@@ -226,6 +227,8 @@ typedef enum {
     A4 = PTB1,
     A5 = PTB0,
 
+    DAC0_OUT = 0xFEFE, /* DAC does not have Pin Name in RM */
+
     // Not connected
     NC = (int)0xFFFFFFFF
 } PinName;
@@ -233,8 +236,8 @@ typedef enum {
 
 typedef enum {
     PullNone = 0,
-    PullDown = 2,
-    PullUp   = 3,
+    PullDown = 1,
+    PullUp   = 2,
 } PinMode;
 
 #ifdef __cplusplus

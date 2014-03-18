@@ -16,6 +16,7 @@
 #include "pinmap.h"
 #include "error.h"
 #include "fsl_clock_manager.h"
+#include "fsl_port_hal.h"
 
 void pin_function(PinName pin, int function) {
     if (pin == (PinName)NC) {
@@ -36,15 +37,15 @@ void pin_mode(PinName pin, PinMode mode) {
 
     switch (mode) {
         case PullNone:
-            port_hal_configure_pull(instance, pinName, 0);
+            port_hal_configure_pull(instance, pinName, false);
             port_hal_pull_select(instance, pinName, kPortPullDown);
             break;
         case PullDown:
-            port_hal_configure_pull(instance, pinName, 1);
+            port_hal_configure_pull(instance, pinName, true);
             port_hal_pull_select(instance, pinName, kPortPullDown);
             break;
         case PullUp:
-            port_hal_configure_pull(instance, pinName, 1);
+            port_hal_configure_pull(instance, pinName, true);
             port_hal_pull_select(instance, pinName, kPortPullUp);
             break;
         default:
