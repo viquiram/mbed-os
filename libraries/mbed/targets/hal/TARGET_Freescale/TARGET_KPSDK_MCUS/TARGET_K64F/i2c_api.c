@@ -47,12 +47,10 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl) {
 
     pinmap_pinout(sda, PinMap_I2C_SDA);
     pinmap_pinout(scl, PinMap_I2C_SCL);
-
     first_read = 1;
 }
 
 int i2c_start(i2c_t *obj) {
-    volatile uint32_t n = 0;
     i2c_hal_send_start(obj->instance);
     first_read = 1;
     return 0;
@@ -92,7 +90,7 @@ static int i2c_wait_end_tx_transfer(i2c_t *obj) {
     }
 
     // check if we received the ACK or not
-    return i2c_hal_get_receive_ack(obj->instance) ? 1 : 0;
+    return i2c_hal_get_receive_ack(obj->instance) ? 0 : 1;
 }
 
 // this function waits the end of a rx transfer and return the status of the transaction:
@@ -243,6 +241,7 @@ void i2c_slave_mode(i2c_t *obj, int enable_slave) {
     if (enable_slave) {
         // set slave mode
         BW_I2C_C1_MST(obj->instance, 0);
+        i2c_hal_enable_interrupt(obj->instance);
     } else {
         // set master mode
         BW_I2C_C1_MST(obj->instance, 1);
