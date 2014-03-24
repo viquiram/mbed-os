@@ -183,7 +183,8 @@ TESTS = [
         "id": "MBED_A18", "description": "Interrupt vector relocation",
         "source_dir": join(TEST_DIR, "mbed", "vtor_reloc"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB,],
-        "mcu": ["LPC1768"]
+        "mcu": ["LPC1768"],
+        "automated": True,
     },
     {
         "id": "MBED_A19", "description": "I2C EEPROM read/write test",
@@ -267,6 +268,7 @@ TESTS = [
         "id": "MBED_2", "description": "stdio",
         "source_dir": join(TEST_DIR, "mbed", "stdio"),
         "dependencies": [MBED_LIBRARIES],
+        "duration": 20,
         "automated": True,
         "host_test": "stdio_auto"
     },
@@ -315,14 +317,18 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES],
     },
     {
-        "id": "MBED_11", "description": "Ticker",
+        "id": "MBED_11", "description": "Ticker Int",
         "source_dir": join(TEST_DIR, "mbed", "ticker"),
         "dependencies": [MBED_LIBRARIES],
+        "automated": True,
+        "host_test": "wait_us_auto",
+        "duration": 20
     },
     {
         "id": "MBED_12", "description": "C++",
         "source_dir": join(TEST_DIR, "mbed", "cpp"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True
     },
     {
         "id": "MBED_13", "description": "Heap & Stack",
@@ -344,6 +350,9 @@ TESTS = [
         "id": "MBED_16", "description": "RTC",
         "source_dir": join(TEST_DIR, "mbed", "rtc"),
         "dependencies": [MBED_LIBRARIES],
+        "automated": True,
+        "host_test": "rtc_auto",
+        "duration": 15
     },
     {
         "id": "MBED_17", "description": "Serial Interrupt 2",
@@ -377,19 +386,28 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
     },
     {
-        "id": "MBED_23", "description": "Ticker 2",
+        "id": "MBED_23", "description": "Ticker Int us",
         "source_dir": join(TEST_DIR, "mbed", "ticker_2"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
-        "id": "MBED_24", "description": "Timeout",
+        "id": "MBED_24", "description": "Timeout Int us",
         "source_dir": join(TEST_DIR, "mbed", "timeout"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
         "id": "MBED_25", "description": "Time us",
         "source_dir": join(TEST_DIR, "mbed", "time_us"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
         "id": "MBED_26", "description": "Integer constant division",
