@@ -57,7 +57,14 @@ int i2c_start(i2c_t *obj) {
 }
 
 int i2c_stop(i2c_t *obj) {
+    volatile uint32_t n = 0;
     i2c_hal_send_stop(obj->instance);
+    
+    // It seems that there are timing problems
+    // when there is no waiting time after a STOP.
+    // This wait is also included on the samples
+    // code provided with the freedom board
+    for (n = 0; n < 100; n++) __NOP();
     first_read = 1;
     return 0;
 }
