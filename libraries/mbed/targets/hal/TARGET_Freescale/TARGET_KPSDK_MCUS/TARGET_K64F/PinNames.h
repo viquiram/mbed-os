@@ -222,6 +222,9 @@ typedef enum {
     D13 = PTD1,
     D14 = PTE24,
     D15 = PTE25,
+    
+    I2C_SCL = D14,
+    I2C_SDA = D15,
 
     A0 = PTB2,
     A1 = PTB3,
