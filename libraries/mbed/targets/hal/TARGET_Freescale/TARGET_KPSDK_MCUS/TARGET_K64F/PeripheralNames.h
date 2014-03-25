@@ -30,6 +30,8 @@ typedef enum {
     UART_0 = 0,
     UART_1 = 1,
     UART_2 = 2,
+    UART_3 = 3,
+    UART_4 = 4,
 } UARTName;
 
 #define STDIO_UART_TX     USBTX
@@ -38,6 +40,8 @@ typedef enum {
 
 typedef enum {
     I2C_0 = 0,
+    I2C_1 = 1,
+    I2C_2 = 2,
 } I2CName;
 
 #define TPM_SHIFT   8
@@ -81,6 +85,9 @@ typedef enum {
     ADC0_SE13 = (0 << ADC_INSTANCE_SHIFT) | 13,
     ADC0_SE14 = (0 << ADC_INSTANCE_SHIFT) | 14,
     ADC0_SE15 = (0 << ADC_INSTANCE_SHIFT) | 15,
+    ADC0_SE16 = (0 << ADC_INSTANCE_SHIFT) | 16,
+    ADC0_SE17 = (0 << ADC_INSTANCE_SHIFT) | 17,
+    ADC0_SE18 = (0 << ADC_INSTANCE_SHIFT) | 18,
     ADC1_SE4b = (1 << ADC_INSTANCE_SHIFT) | 4,
     ADC1_SE5b = (1 << ADC_INSTANCE_SHIFT) | 5,
     ADC1_SE6b = (1 << ADC_INSTANCE_SHIFT) | 6,
@@ -90,7 +97,10 @@ typedef enum {
     ADC1_SE12 = (1 << ADC_INSTANCE_SHIFT) | 12,
     ADC1_SE13 = (1 << ADC_INSTANCE_SHIFT) | 13,
     ADC1_SE14 = (1 << ADC_INSTANCE_SHIFT) | 14,
-    ADC1_SE15 = (1 << ADC_INSTANCE_SHIFT) | 15
+    ADC1_SE15 = (1 << ADC_INSTANCE_SHIFT) | 15,
+    ADC1_SE16 = (1 << ADC_INSTANCE_SHIFT) | 16,
+    ADC1_SE17 = (1 << ADC_INSTANCE_SHIFT) | 17,
+    ADC1_SE18 = (1 << ADC_INSTANCE_SHIFT) | 18,
 } ADCName;
 
 typedef enum {
@@ -100,6 +110,8 @@ typedef enum {
 
 typedef enum {
     SPI_0 = 0,
+    SPI_1 = 1,
+    SPI_2 = 2,
 } SPIName;
 
 #ifdef __cplusplus
