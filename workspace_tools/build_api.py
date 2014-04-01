@@ -186,7 +186,6 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
     # Keep retargeting as a standalone object to be sure the
     # C standard library symbols get overridden
     retargeting = None
-=======
     objects += toolchain.compile_sources(mbed_resources, TMP_PATH, [MBED_LIBRARIES, BUILD_TARGET])
 
     # A number of compiled files need to be copied as objects as opposed to
