@@ -23,11 +23,24 @@
 
 static const PinMap PinMap_I2C_SDA[] = {
     {PTE25, I2C_0, 5},
+    {PTB1 , I2C_0, 2},
+    {PTB3 , I2C_0, 2},
+    {PTC11, I2C_1, 2},
+    {PTA13, I2C_2, 5},
+    {PTD3 , I2C_0, 7},
+    {PTE0 , I2C_1, 6},
     {NC   , NC   , 0}
 };
 
 static const PinMap PinMap_I2C_SCL[] = {
     {PTE24, I2C_0, 5},
+    {PTB0 , I2C_0, 2},
+    {PTB2 , I2C_0, 2},
+    {PTC10, I2C_1, 2},
+    {PTA12, I2C_2, 5},
+    {PTA14, I2C_2, 5},
+    {PTD2 , I2C_0, 7},
+    {PTE1 , I2C_1, 6},
     {NC   , NC   , 0}
 };
 
@@ -36,30 +49,35 @@ static uint8_t first_read;
 void i2c_init(i2c_t *obj, PinName sda, PinName scl) {
     uint32_t i2c_sda = pinmap_peripheral(sda, PinMap_I2C_SDA);
     uint32_t i2c_scl = pinmap_peripheral(scl, PinMap_I2C_SCL);
-    uint32_t i2c_instance = pinmap_merge(i2c_sda, i2c_scl);
-    if ((int)i2c_instance == NC) {
+    obj->instance = pinmap_merge(i2c_sda, i2c_scl);
+    if ((int)obj->instance == NC) {
         error("I2C pin mapping failed");
     }
 
-    clock_manager_set_gate(kClockModuleI2C, i2c_instance, true);
-    i2c_hal_enable(i2c_instance);
+    clock_manager_set_gate(kClockModuleI2C, obj->instance, true);
+    i2c_hal_enable(obj->instance);
     i2c_frequency(obj, 100000);
 
     pinmap_pinout(sda, PinMap_I2C_SDA);
     pinmap_pinout(scl, PinMap_I2C_SCL);
-
     first_read = 1;
 }
 
 int i2c_start(i2c_t *obj) {
-    volatile uint32_t n = 0;
     i2c_hal_send_start(obj->instance);
     first_read = 1;
     return 0;
 }
 
 int i2c_stop(i2c_t *obj) {
+    volatile uint32_t n = 0;
     i2c_hal_send_stop(obj->instance);
+    
+    // It seems that there are timing problems
+    // when there is no waiting time after a STOP.
+    // This wait is also included on the samples
+    // code provided with the freedom board
+    for (n = 0; n < 100; n++) __NOP();
     first_read = 1;
     return 0;
 }
@@ -92,7 +110,7 @@ static int i2c_wait_end_tx_transfer(i2c_t *obj) {
     }
 
     // check if we received the ACK or not
-    return i2c_hal_get_receive_ack(obj->instance) ? 1 : 0;
+    return i2c_hal_get_receive_ack(obj->instance) ? 0 : 1;
 }
 
 // this function waits the end of a rx transfer and return the status of the transaction:
@@ -243,6 +261,7 @@ void i2c_slave_mode(i2c_t *obj, int enable_slave) {
     if (enable_slave) {
         // set slave mode
         BW_I2C_C1_MST(obj->instance, 0);
+        i2c_hal_enable_interrupt(obj->instance);
     } else {
         // set master mode
         BW_I2C_C1_MST(obj->instance, 1);

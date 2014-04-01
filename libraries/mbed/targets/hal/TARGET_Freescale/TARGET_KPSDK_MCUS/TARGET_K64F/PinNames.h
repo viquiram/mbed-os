@@ -201,6 +201,10 @@ typedef enum {
     LED3 = LED_BLUE,
     LED4 = LED_RED,
 
+    //Push buttons
+    SW2 = PTC6,
+    SW3 = PTA4,
+
     // USB Pins
     USBTX = PTB17,
     USBRX = PTB16,
@@ -222,6 +226,9 @@ typedef enum {
     D13 = PTD1,
     D14 = PTE24,
     D15 = PTE25,
+    
+    I2C_SCL = D14,
+    I2C_SDA = D15,
 
     A0 = PTB2,
     A1 = PTB3,

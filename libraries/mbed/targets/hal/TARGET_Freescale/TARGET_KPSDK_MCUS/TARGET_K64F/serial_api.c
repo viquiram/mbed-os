@@ -29,20 +29,39 @@
 
 /* TODO:
     putchar/getchar 9 and 10 bits support
-    5 UARTS implementation
 */
 
 static const PinMap PinMap_UART_TX[] = {
     {PTB17, UART_0, 3},
+    {PTC17, UART_3, 3},
+    {PTD7 , UART_0, 3},
+    {PTD3 , UART_2, 3},
+    {PTC4 , UART_1, 3},
+    {PTC15, UART_4, 3},
+    {PTB11, UART_3, 3},
+    {PTA14, UART_0, 3},
+    {PTE24, UART_4, 3},
+    {PTE4 , UART_3, 3},
+    {PTE0,  UART_1, 3},
     {NC  ,  NC    , 0}
 };
 
 static const PinMap PinMap_UART_RX[] = {
     {PTB16, UART_0, 3},
+    {PTE1 , UART_1, 3},
+    {PTE5 , UART_3, 3},
+    {PTE25, UART_4, 3},
+    {PTA15, UART_0, 3},
+    {PTC16, UART_3, 3},
+    {PTB10, UART_3, 3},
+    {PTC3 , UART_1, 3},
+    {PTC14, UART_4, 3},
+    {PTD2 , UART_2, 3},
+    {PTC6 , UART_0, 3},
     {NC  ,  NC    , 0}
 };
 
-#define UART_NUM    3
+#define UART_NUM    4
 
 static uint32_t serial_irq_ids[UART_NUM] = {0};
 static uart_irq_handler irq_handler;
@@ -65,15 +84,9 @@ static uint32_t serial_get_clock(uint32_t uart_instance)
 void serial_init(serial_t *obj, PinName tx, PinName rx) {
     uint32_t uart_tx = pinmap_peripheral(tx, PinMap_UART_TX);
     uint32_t uart_rx = pinmap_peripheral(rx, PinMap_UART_RX);
-    uint32_t uart_instance = (UARTName)pinmap_merge(uart_tx, uart_rx);
-    if ((int)uart_instance == NC) {
+    obj->index = (UARTName)pinmap_merge(uart_tx, uart_rx);
+    if ((int)obj->index == NC) {
         error("Serial pinout mapping failed");
-    }
-
-    switch (uart_instance) {
-        case UART_0: obj->index = 0; break;
-        case UART_1: obj->index = 1; break;
-        case UART_2: obj->index = 2; break;
     }
 
     uart_config_t uart_config;
@@ -95,7 +108,7 @@ void serial_init(serial_t *obj, PinName tx, PinName rx) {
     pin_mode(tx, PullUp);
     pin_mode(rx, PullUp);
 
-    if (uart_instance == STDIO_UART) {
+    if (obj->index == STDIO_UART) {
         stdio_uart_inited = 1;
         memcpy(&stdio_uart, obj, sizeof(serial_t));
     }
@@ -141,6 +154,14 @@ void uart2_irq() {
     uart_irq(uart_hal_is_transmit_data_register_empty(2), uart_hal_is_receive_data_register_full(2), 2);
 }
 
+void uart3_irq() {
+    uart_irq(uart_hal_is_transmit_data_register_empty(3), uart_hal_is_receive_data_register_full(3), 3);
+}
+
+void uart4_irq() {
+    uart_irq(uart_hal_is_transmit_data_register_empty(4), uart_hal_is_receive_data_register_full(4), 4);
+}
+
 void serial_irq_handler(serial_t *obj, uart_irq_handler handler, uint32_t id) {
     irq_handler = handler;
     serial_irq_ids[obj->index] = id;
@@ -154,6 +175,8 @@ void serial_irq_set(serial_t *obj, SerialIrq irq, uint32_t enable) {
         case 0: irq_n=UART0_RX_TX_IRQn; vector = (uint32_t)&uart0_irq; break;
         case 1: irq_n=UART1_RX_TX_IRQn; vector = (uint32_t)&uart1_irq; break;
         case 2: irq_n=UART2_RX_TX_IRQn; vector = (uint32_t)&uart2_irq; break;
+        case 3: irq_n=UART3_RX_TX_IRQn; vector = (uint32_t)&uart3_irq; break;
+        case 4: irq_n=UART4_RX_TX_IRQn; vector = (uint32_t)&uart4_irq; break;
     }
 
     if (enable) {
