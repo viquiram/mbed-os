@@ -30,6 +30,9 @@
 #include "sleep_api.h"
 #include "cmsis.h"
 
+// This function is in the system_stm32f10x.c file
+extern void SetSysClock(void);
+
 void sleep(void)
 {
     // Disable us_ticker update interrupt
@@ -53,6 +56,9 @@ void deepsleep(void)
     // Request to enter STOP mode with regulator in low power mode
     PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
 
+    // After wake-up from STOP reconfigure the PLL
+    SetSysClock();
+  
     // Re-enable us_ticker update interrupt
     TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);  
 }

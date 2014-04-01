@@ -199,7 +199,7 @@ extern int main (void);
 osThreadDef_t os_thread_def_main = {(os_pthread)main, osPriorityNormal, 0, NULL};
 
 // This define should be probably moved to the CMSIS layer
-#ifdef TARGET_LPC1768
+#if   defined(TARGET_LPC1768)
 #define INITIAL_SP            (0x10008000UL)
 
 #elif defined(TARGET_LPC11U24)
@@ -217,11 +217,23 @@ osThreadDef_t os_thread_def_main = {(os_pthread)main, osPriorityNormal, 0, NULL}
 #elif TARGET_KL25Z || TARGET_K64F
 #define INITIAL_SP            (0x20003000UL)
 
+#elif defined(TARGET_KL46Z)
+#define INITIAL_SP            (0x20006000UL)
+
 #elif defined(TARGET_LPC4088)
 #define INITIAL_SP            (0x10010000UL)
 
 #elif defined(TARGET_LPC1347)
 #define INITIAL_SP            (0x10002000UL)
+
+#elif defined(TARGET_STM32F100RB) || defined(TARGET_STM32F051R8)
+#define INITIAL_SP            (0x20002000UL)
+
+#elif defined(TARGET_STM32F407) || defined(TARGET_F407VG)
+#define INITIAL_SP            (0x20020000UL)
+
+#else
+#error "no target defined"
 
 #endif
 

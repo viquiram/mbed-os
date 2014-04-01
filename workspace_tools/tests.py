@@ -22,7 +22,11 @@ TEST_MBED_LIB = join(TEST_DIR, "mbed", "env")
 
 PERIPHERALS = join(TEST_DIR, "peripherals")
 BENCHMARKS_DIR = join(TEST_DIR, "benchmarks")
+
 SD = join(TEST_DIR, "sd")
+TMP102 = join(PERIPHERALS, 'TMP102')
+BLE_API = join(LIB_DIR, "ble", "ble-api")
+BLE_NRF51822 = join(LIB_DIR, "ble", "nRF51822")
 
 """
 Wiring:
@@ -90,7 +94,7 @@ TESTS = [
     {
         "id": "MBED_A4", "description": "I2C TMP102",
         "source_dir": join(TEST_DIR, "mbed", "i2c_TMP102"),
-        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, join(PERIPHERALS, 'TMP102')],
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, TMP102],
         "automated": True,
         "peripherals": ["TMP102"]
     },
@@ -183,7 +187,8 @@ TESTS = [
         "id": "MBED_A18", "description": "Interrupt vector relocation",
         "source_dir": join(TEST_DIR, "mbed", "vtor_reloc"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB,],
-        "mcu": ["LPC1768"]
+        "mcu": ["LPC1768"],
+        "automated": True,
     },
     {
         "id": "MBED_A19", "description": "I2C EEPROM read/write test",
@@ -267,6 +272,7 @@ TESTS = [
         "id": "MBED_2", "description": "stdio",
         "source_dir": join(TEST_DIR, "mbed", "stdio"),
         "dependencies": [MBED_LIBRARIES],
+        "duration": 20,
         "automated": True,
         "host_test": "stdio_auto"
     },
@@ -315,14 +321,18 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES],
     },
     {
-        "id": "MBED_11", "description": "Ticker",
+        "id": "MBED_11", "description": "Ticker Int",
         "source_dir": join(TEST_DIR, "mbed", "ticker"),
         "dependencies": [MBED_LIBRARIES],
+        "automated": True,
+        "host_test": "wait_us_auto",
+        "duration": 20
     },
     {
         "id": "MBED_12", "description": "C++",
         "source_dir": join(TEST_DIR, "mbed", "cpp"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True
     },
     {
         "id": "MBED_13", "description": "Heap & Stack",
@@ -337,13 +347,16 @@ TESTS = [
     {
         "id": "MBED_15", "description": "RPC",
         "source_dir": join(TEST_DIR, "mbed", "rpc"),
-        "dependencies": [MBED_LIBRARIES, join(LIB_DIR, "rpc")],
-        "host_test": "rpc",
+        "dependencies": [MBED_LIBRARIES, join(LIB_DIR, "rpc"), TEST_MBED_LIB],
+        "automated": True,
     },
     {
         "id": "MBED_16", "description": "RTC",
         "source_dir": join(TEST_DIR, "mbed", "rtc"),
         "dependencies": [MBED_LIBRARIES],
+        "automated": True,
+        "host_test": "rtc_auto",
+        "duration": 15
     },
     {
         "id": "MBED_17", "description": "Serial Interrupt 2",
@@ -377,19 +390,28 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
     },
     {
-        "id": "MBED_23", "description": "Ticker 2",
+        "id": "MBED_23", "description": "Ticker Int us",
         "source_dir": join(TEST_DIR, "mbed", "ticker_2"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
-        "id": "MBED_24", "description": "Timeout",
+        "id": "MBED_24", "description": "Timeout Int us",
         "source_dir": join(TEST_DIR, "mbed", "timeout"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
         "id": "MBED_25", "description": "Time us",
         "source_dir": join(TEST_DIR, "mbed", "time_us"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
         "id": "MBED_26", "description": "Integer constant division",
@@ -478,50 +500,65 @@ TESTS = [
 
     # mbed RTOS tests
     {
-        "id": "RTOS_1", "description": "Basic",
+        "id": "RTOS_1", "description": "Basic thread",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "basic"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
-        "id": "RTOS_2", "description": "Mutex",
+        "id": "RTOS_2", "description": "Mutex resource lock",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "mutex"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
-        "duration": 20
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB],
+        "duration": 20,
+        "automated": True,
     },
     {
-        "id": "RTOS_3", "description": "Semaphore",
+        "id": "RTOS_3", "description": "Semaphore resource lock",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "semaphore"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB],
+        "duration": 20,
+        "automated": True,
     },
     {
-        "id": "RTOS_4", "description": "Signals",
+        "id": "RTOS_4", "description": "Signals messaging",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "signals"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
     },
     {
-        "id": "RTOS_5", "description": "Queue",
+        "id": "RTOS_5", "description": "Queue messaging",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "queue"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
     },
     {
-        "id": "RTOS_6", "description": "Mail",
+        "id": "RTOS_6", "description": "Mail messaging",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "mail"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
     },
     {
         "id": "RTOS_7", "description": "Timer",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "timer"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "duration": 15,
+        "automated": True,
+        "host_test": "wait_us_auto"
     },
     {
-        "id": "RTOS_8", "description": "ISR",
+        "id": "RTOS_8", "description": "ISR (Queue)",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "isr"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
     },
     {
-        "id": "RTOS_9", "description": "File",
+        "id": "RTOS_9", "description": "SD File write-read",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "file"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
+        "automated": True,
+        "peripherals": ["SD"]
     },
 
     # Networking Tests
@@ -565,17 +602,22 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
         "automated": True,
         "host_test" : "udpecho_client_auto",
-        "peripherals": ["ethernet"]
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_7", "description": "HTTP client",
         "source_dir": join(TEST_DIR, "net", "protocols", "HTTPClient_HelloWorld"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
+        "automated": True,
+        "duration": 15,
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_8", "description": "NTP client",
         "source_dir": join(TEST_DIR, "net", "protocols", "NTPClient_HelloWorld"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
+        "automated": True,
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_9", "description": "Multicast Send",
@@ -715,9 +757,19 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
     },
     {
-        "id": "NORDIC_1", "description": "BLE Health Thermometer full",
-        "source_dir": join(TEST_DIR, "nordic", "BLE_Health_Thermometer_full"),
-        "dependencies": [MBED_LIBRARIES, join(PERIPHERALS, 'TMP102')],
+        "id": "NORDIC_1", "description": "BLE Health Thermometer",
+        "source_dir": join(TEST_DIR, "ble", "Health_Thermometer"),
+        "dependencies": [MBED_LIBRARIES, TMP102, BLE_API, BLE_NRF51822],
+    },
+    {
+        "id": "NORDIC_2", "description": "BLE Heart Rate Monitor",
+        "source_dir": join(TEST_DIR, "ble", "HeartRate"),
+        "dependencies": [MBED_LIBRARIES, BLE_API, BLE_NRF51822],
+    },
+    {
+        "id": "NORDIC_3", "description": "BLE iBeacon",
+        "source_dir": join(TEST_DIR, "ble", "iBeacon"),
+        "dependencies": [MBED_LIBRARIES, BLE_API, BLE_NRF51822],
     },
 ]
 
