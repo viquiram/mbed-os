@@ -277,7 +277,7 @@ clock_manager_error_code_t static clock_manager_get_frequency_by_name(sim_clock_
     case kSimFlexBusClock:
     case kSimFlashClock:
         return clock_manager_get_system_clock(clockName, frequency);
-        break;
+
 
         /* reserved value*/
     case kSimReserved:

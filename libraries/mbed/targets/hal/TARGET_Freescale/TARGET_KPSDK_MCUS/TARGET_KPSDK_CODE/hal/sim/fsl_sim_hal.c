@@ -649,23 +649,18 @@ bool sim_get_alttrgen(uint8_t instance)
     {
     case 0:
         return BR_SIM_SOPT7_ADC0ALTTRGEN;
-        break;
 #if (HW_ADC_INSTANCE_COUNT > 1)
     case 1:
         return BR_SIM_SOPT7_ADC1ALTTRGEN;
-        break;
 #if (HW_ADC_INSTANCE_COUNT > 2)
     case 2:
         return BR_SIM_SOPT7_ADC2ALTTRGEN;
-        break;
     case 3:
         return BR_SIM_SOPT7_ADC3ALTTRGEN;
-        break;
 #endif
 #endif
     default:
         return false;
-        break;
     }
 }
 
@@ -719,23 +714,18 @@ sim_pretrgsel_t sim_get_pretrgsel(uint8_t instance)
     {
     case 0:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC0PRETRGSEL;
-        break;
 #if (HW_ADC_INSTANCE_COUNT > 1)
     case 1:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC1PRETRGSEL;
-        break;
 #if (HW_ADC_INSTANCE_COUNT > 2)
     case 2:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC2PRETRGSEL;
-        break;
     case 3:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC3PRETRGSEL;
-        break;
 #endif
 #endif
     default:
-        return false;
-        break;
+        return (sim_pretrgsel_t)false;
     }
 }
 
@@ -789,23 +779,18 @@ sim_pretrgsel_t sim_get_trgsel(uint8_t instance)
     {
     case 0:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC0TRGSEL;
-        break;
 #if (HW_ADC_INSTANCE_COUNT > 1)
     case 1:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC1TRGSEL;
-        break;
 #if (HW_ADC_INSTANCE_COUNT > 2)
     case 2:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC2TRGSEL;
-        break;
     case 3:
         return (sim_pretrgsel_t)BR_SIM_SOPT7_ADC3TRGSEL;
-        break;
 #endif
 #endif
     default:
-        return false;
-        break;
+        return (sim_pretrgsel_t)false;
     }
 }
 
@@ -848,13 +833,10 @@ sim_uart_rxsrc_t sim_get_uart_rxsrc(uint8_t instance)
     {
     case 0:
         return (sim_uart_rxsrc_t)BR_SIM_SOPT5_UART0RXSRC;
-        break;
     case 1:
         return (sim_uart_rxsrc_t)BR_SIM_SOPT5_UART1RXSRC;
-        break;
     default:
         return (sim_uart_rxsrc_t)0;
-        break;
     }
 }
 
@@ -897,13 +879,10 @@ sim_uart_txsrc_t sim_get_uart_txsrc(uint8_t instance)
     {
     case 0:
         return (sim_uart_txsrc_t)BR_SIM_SOPT5_UART0TXSRC;
-        break;
     case 1:
         return (sim_uart_txsrc_t)BR_SIM_SOPT5_UART1TXSRC;
-        break;
     default:
         return (sim_uart_txsrc_t)0;
-        break;
     }
 }
 
@@ -950,16 +929,12 @@ bool sim_get_uart_ode(uint8_t instance)
     {
     case 0:
         return BR_SIM_SOPT5_UART0ODE;
-        break;
     case 1:
         return BR_SIM_SOPT5_UART1ODE;
-        break;
     case 2:
         return BR_SIM_SOPT5_UART2ODE;
-        break;
     default:
         return (sim_uart_txsrc_t)0;
-        break;
     }
 }
 #endif
@@ -1034,10 +1009,8 @@ sim_ftm_trg_src_t sim_get_ftm_trg_src(uint8_t instance, uint8_t trigger)
         {
         case 0:
             return (sim_ftm_trg_src_t)BR_SIM_SOPT4_FTM0TRG0SRC;
-            break;
         case 1:
             return (sim_ftm_trg_src_t)BR_SIM_SOPT4_FTM0TRG1SRC;
-            break;
         default:
             break;
         }
@@ -1049,10 +1022,8 @@ sim_ftm_trg_src_t sim_get_ftm_trg_src(uint8_t instance, uint8_t trigger)
         {
         case 0:
             return (sim_ftm_trg_src_t)BR_SIM_SOPT4_FTM3TRG0SRC;
-            break;
         case 1:
             return (sim_ftm_trg_src_t)BR_SIM_SOPT4_FTM3TRG1SRC;
-            break;
         default:
             break;
         }
@@ -1110,16 +1081,12 @@ sim_ftm_clk_sel_t sim_get_ftm_clk_sel(uint8_t instance)
     {
     case 0:
         return (sim_ftm_clk_sel_t)BR_SIM_SOPT4_FTM0CLKSEL;
-        break;
     case 1:
         return (sim_ftm_clk_sel_t)BR_SIM_SOPT4_FTM1CLKSEL;
-        break;
     case 2:
         return (sim_ftm_clk_sel_t)BR_SIM_SOPT4_FTM2CLKSEL;
-        break;
     case 3:
         return (sim_ftm_clk_sel_t)BR_SIM_SOPT4_FTM3CLKSEL;
-        break;
     default:
         break;
     }
@@ -1206,7 +1173,6 @@ sim_ftm_ch_src_t sim_get_ftm_ch_src(uint8_t instance, uint8_t channel)
         {
         case 0:
             return (sim_ftm_ch_src_t)BR_SIM_SOPT4_FTM1CH0SRC;
-            break;
         default:
             break;
         }
@@ -1218,11 +1184,9 @@ sim_ftm_ch_src_t sim_get_ftm_ch_src(uint8_t instance, uint8_t channel)
         {
         case 0:
             return (sim_ftm_ch_src_t)BR_SIM_SOPT4_FTM2CH0SRC;
-            break;
 #if FSL_FEATURE_SIM_OPT_HAS_FTM2_CHANNEL1
         case 1:
             return (sim_ftm_ch_src_t)BR_SIM_SOPT4_FTM2CH1SRC;
-            break;
 #endif
         default:
             break;
@@ -1235,7 +1199,6 @@ sim_ftm_ch_src_t sim_get_ftm_ch_src(uint8_t instance, uint8_t channel)
         {
         case 0:
             return (sim_ftm_ch_src_t)BR_SIM_SOPT4_FTM3CH0SRC;
-            break;
         default:
             break;
         }
@@ -1316,18 +1279,14 @@ sim_ftm_flt_sel_t sim_get_ftm_flt_sel(uint8_t instance, uint8_t fault)
         {
         case 0:
             return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM0FLT0;
-            break;
         case 1:
             return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM0FLT1;
-            break;
 #if (FSL_FEATURE_SIM_OPT_FTM0_FAULT_COUNT > 2)
         case 2:
             return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM0FLT2;
-            break;
 #if (FSL_FEATURE_SIM_OPT_FTM0_FAULT_COUNT > 3)
         case 3:
             return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM0FLT3;
-            break;
 #endif
 #endif
         default:
@@ -1336,13 +1295,10 @@ sim_ftm_flt_sel_t sim_get_ftm_flt_sel(uint8_t instance, uint8_t fault)
         break;
     case 1:
         return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM1FLT0;
-        break;
     case 2:
         return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM2FLT0;
-        break;
     case 3:
         return (sim_ftm_flt_sel_t)BR_SIM_SOPT4_FTM3FLT0;
-        break;
     default:
         break;
     }
@@ -1394,13 +1350,10 @@ sim_tpm_clk_sel_t sim_get_tpm_clk_sel(uint8_t instance)
     {
     case 0:
         return (sim_tpm_clk_sel_t)BR_SIM_SOPT4_TPM0CLKSEL;
-        break;
     case 1:
         return (sim_tpm_clk_sel_t)BR_SIM_SOPT4_TPM1CLKSEL;
-        break;
     case 2:
         return (sim_tpm_clk_sel_t)BR_SIM_SOPT4_TPM2CLKSEL;
-        break;
     default:
         break;
     }
@@ -1465,7 +1418,6 @@ sim_tpm_ch_src_t sim_get_tpm_ch_src(uint8_t instance, uint8_t channel)
         {
         case 0:
             return (sim_tpm_ch_src_t)BR_SIM_SOPT4_TPM1CH0SRC;
-            break;
         default:
             break;
         }
@@ -1475,7 +1427,6 @@ sim_tpm_ch_src_t sim_get_tpm_ch_src(uint8_t instance, uint8_t channel)
         {
         case 0:
             return (sim_tpm_ch_src_t)BR_SIM_SOPT4_TPM2CH0SRC;
-            break;
         default:
             break;
         }
