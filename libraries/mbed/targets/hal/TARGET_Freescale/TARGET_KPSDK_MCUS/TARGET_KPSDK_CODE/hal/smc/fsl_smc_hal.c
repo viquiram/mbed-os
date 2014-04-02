@@ -148,13 +148,10 @@ bool smc_hal_get_power_mode_protection(power_modes_protect_t protect)
     {
     case kAllowVlp:
         return BR_SMC_PMPROT_AVLP;
-        break;
     case kAllowLls:
         return BR_SMC_PMPROT_ALLS;
-        break;
     case kAllowVlls:
         return BR_SMC_PMPROT_AVLLS;
-        break;
     default:
         break;
     }

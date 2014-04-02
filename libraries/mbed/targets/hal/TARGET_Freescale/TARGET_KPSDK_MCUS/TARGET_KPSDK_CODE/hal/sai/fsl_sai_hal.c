@@ -319,10 +319,8 @@ uint8_t sai_hal_get_fifo_read_pointer(uint8_t instance, sai_io_mode_t io_mode, u
     {
         case kSaiIOModeTransmit:
             return (uint8_t)BR_I2S_TFRn_RFP(instance,fifo_channel);
-            break;
         case kSaiIOModeReceive:
             return (uint8_t)BR_I2S_RFRn_RFP(instance,fifo_channel);
-            break;
         default:
             break;
     }
@@ -342,10 +340,8 @@ uint8_t sai_hal_get_fifo_write_pointer(uint8_t instance, sai_io_mode_t io_mode, 
     {
         case kSaiIOModeTransmit:
             return (uint8_t)BR_I2S_TFRn_WFP(instance,fifo_channel);
-            break;
         case kSaiIOModeReceive:
             return (uint8_t)BR_I2S_RFRn_WFP(instance,fifo_channel);
-            break;
         default:
             break;
     }
@@ -365,10 +361,8 @@ uint32_t* sai_hal_get_fifo_address(uint8_t instance, sai_io_mode_t io_mode, uint
     {
         case kSaiIOModeTransmit:
             return (uint32_t *)HW_I2S_TDRn_ADDR(instance, fifo_channel);
-            break;
         case kSaiIOModeReceive:
             return (uint32_t *)HW_I2S_RDRn_ADDR(instance,fifo_channel);
-            break;
         default:
             break;
     }
@@ -800,10 +794,8 @@ bool sai_hal_word_start_is_detected(uint8_t instance, sai_io_mode_t io_mode)
     {
         case kSaiIOModeTransmit:
             return BR_I2S_TCSR_WSF(instance);
-            break;
         case kSaiIOModeReceive:
             return BR_I2S_RCSR_WSF(instance);
-            break;
         default:
             break;
     }
@@ -823,10 +815,8 @@ bool sai_hal_sync_error_is_detected(uint8_t instance, sai_io_mode_t io_mode)
     {
         case kSaiIOModeTransmit:
             return BR_I2S_TCSR_SEF(instance);
-            break;
         case kSaiIOModeReceive:
             return BR_I2S_RCSR_SEF(instance);
-            break;
         default:
             break;
     }
@@ -846,10 +836,8 @@ bool sai_hal_fifo_warning_is_detected(uint8_t instance, sai_io_mode_t io_mode)
     {
         case kSaiIOModeTransmit:
             return BR_I2S_TCSR_FWF(instance);
-            break;
         case kSaiIOModeReceive:
             return BR_I2S_RCSR_FWF(instance);
-            break;
         default:
             break;
     }
@@ -869,10 +857,8 @@ bool sai_hal_fifo_error_is_detected(uint8_t instance, sai_io_mode_t io_mode)
     {
         case kSaiIOModeTransmit:
             return BR_I2S_TCSR_FEF(instance);
-            break;
         case kSaiIOModeReceive:
             return BR_I2S_RCSR_FEF(instance);
-            break;
         default:
             break;
     }
@@ -892,10 +878,8 @@ bool sai_hal_fifo_request_is_detected(uint8_t instance, sai_io_mode_t io_mode)
     {
         case kSaiIOModeTransmit:
             return BR_I2S_TCSR_FRF(instance);
-            break;
         case kSaiIOModeReceive:
             return BR_I2S_RCSR_FRF(instance);
-            break;
         default:
             break;
     }

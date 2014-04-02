@@ -319,7 +319,7 @@ typedef enum _enet_interrupt_request
     kEnetWakeupInterrupt = 0x0020000,  /*!< WAKEUP interrupt source*/
     kEnetTsAvailInterrupt = 0x0010000, /*!< TS AVAIL interrupt source*/
     kEnetTsTimerInterrupt = 0x0008000, /*!< TS WRAP interrupt source*/
-    kEnetAllInterrupt = 0xFFFFFFFF     /*!< All interrupt*/
+    kEnetAllInterrupt = 0x7FFFFFFF     /*!< All interrupt*/
 } enet_interrupt_request_t;
 
 /*! @brief Defines the six-byte Mac address type.*/
