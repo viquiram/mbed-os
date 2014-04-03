@@ -6,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -302,7 +302,7 @@ class NUCLEO_F103RB(Target):
         
         self.extra_labels = ['STM', 'STM32F1', 'STM32F103RB']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 
 class NUCLEO_L152RE(Target):
@@ -316,7 +316,7 @@ class NUCLEO_L152RE(Target):
         
         self.extra_labels = ['STM', 'STM32L1', 'STM32L152RE']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 
 class NUCLEO_F401RE(Target):
@@ -344,7 +344,7 @@ class NUCLEO_F030R8(Target):
         
         self.extra_labels = ['STM', 'STM32F0', 'STM32F030R8']
         
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM"]
 
 class DISCO_F100RB(Target):
     ONLINE_TOOLCHAIN = "uARM"
@@ -515,7 +515,7 @@ class NRF51822(Target):
 
 class LPC1549(Target):
     ONLINE_TOOLCHAIN = "uARM"
-
+    
     def __init__(self):
         Target.__init__(self)
         

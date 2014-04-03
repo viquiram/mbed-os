@@ -183,11 +183,6 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
     mbed_resources = toolchain.scan_resources(MBED_COMMON)
     objects += toolchain.compile_sources(mbed_resources, TMP_PATH, [MBED_LIBRARIES] + incdirs)
 
-    # Keep retargeting as a standalone object to be sure the
-    # C standard library symbols get overridden
-    retargeting = None
-    objects += toolchain.compile_sources(mbed_resources, TMP_PATH, [MBED_LIBRARIES, BUILD_TARGET])
-
     # A number of compiled files need to be copied as objects as opposed to
     # being part of the mbed library, for reasons that have to do with the way
     # the linker search for symbols in archives. These are:
@@ -195,7 +190,6 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
     #   - board.o: mbed_die is weak
     #   - mbed_overrides.o: this contains platform overrides of various weak SDK functions
     separate_names, separate_objects = ['retarget.o', 'board.o', 'mbed_overrides.o'], []
-
     for o in objects:
         for name in separate_names:
             if o.endswith(name):
