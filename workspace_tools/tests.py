@@ -92,7 +92,7 @@ TESTS = [
         "id": "MBED_A3", "description": "C++ STL",
         "source_dir": join(TEST_DIR, "mbed", "stl"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
-        "automated": True,
+        "automated": False,
     },
     {
         "id": "MBED_A4", "description": "I2C TMP102",
@@ -158,6 +158,7 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "sd"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
         "automated": True,
+        "duration": 15,
         "peripherals": ["SD"]
     },
     {
@@ -235,6 +236,13 @@ TESTS = [
         "host_test": "echo_flow_control",
         "mcu": ["LPC1768"],
         "peripherals": ["extra_serial"]
+    },
+    {
+        "id": "MBED_A25", "description": "I2C EEPROM line read/write test",
+        "source_dir": join(TEST_DIR, "mbed", "i2c_eeprom_line"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "peripherals": ["24LC256"],
+        "automated": True,
     },
 
     # Size benchmarks
@@ -321,7 +329,9 @@ TESTS = [
     {
         "id": "MBED_10", "description": "Hello World",
         "source_dir": join(TEST_DIR, "mbed", "hello"),
-        "dependencies": [MBED_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
+        "host_test": "hello_auto",
     },
     {
         "id": "MBED_11", "description": "Ticker Int",
@@ -329,7 +339,7 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES],
         "automated": True,
         "host_test": "wait_us_auto",
-        "duration": 20
+        "duration": 20,
     },
     {
         "id": "MBED_12", "description": "C++",
@@ -351,6 +361,7 @@ TESTS = [
         "id": "MBED_15", "description": "RPC",
         "source_dir": join(TEST_DIR, "mbed", "rpc"),
         "dependencies": [MBED_LIBRARIES, join(LIB_DIR, "rpc"), TEST_MBED_LIB],
+        "mcu": ["LPC1768"],
         "automated": True,
     },
     {
@@ -391,6 +402,7 @@ TESTS = [
         "id": "MBED_22", "description": "Semihost",
         "source_dir": join(TEST_DIR, "mbed", "semihost"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
     },
     {
         "id": "MBED_23", "description": "Ticker Int us",
@@ -420,6 +432,7 @@ TESTS = [
         "id": "MBED_26", "description": "Integer constant division",
         "source_dir": join(TEST_DIR, "mbed", "div"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
     },
     {
         "id": "MBED_27", "description": "SPI ADXL345",
@@ -568,12 +581,18 @@ TESTS = [
     {
         "id": "NET_1", "description": "TCP client hello world",
         "source_dir": join(TEST_DIR, "net", "helloworld", "tcpclient"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_2", "description": "UDP client hello world",
         "source_dir": join(TEST_DIR, "net", "helloworld", "udpclient"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
+        "duration": 15,
+        "automated": True,
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_3", "description": "TCP echo server",
@@ -581,7 +600,7 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
         "automated": True,
         "host_test" : "tcpecho_server_auto",
-        "peripherals": ["ethernet"]
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_4", "description": "TCP echo client",
@@ -626,26 +645,34 @@ TESTS = [
         "id": "NET_9", "description": "Multicast Send",
         "source_dir": join(TEST_DIR, "net", "helloworld", "multicast_send"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_10", "description": "Multicast Receive",
         "source_dir": join(TEST_DIR, "net", "helloworld", "multicast_receive"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_11", "description": "Broadcast Send",
         "source_dir": join(TEST_DIR, "net", "helloworld", "broadcast_send"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_12", "description": "Broadcast Receive",
         "source_dir": join(TEST_DIR, "net", "helloworld", "broadcast_receive"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "peripherals": ["ethernet"],
     },
     {
         "id": "NET_13", "description": "TCP client echo loop",
         "source_dir": join(TEST_DIR, "net", "echo", "tcp_client_loop"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "automated": True,
+        "duration": 15,
+        "host_test": "tcpecho_client_auto",
+        "peripherals": ["ethernet"],
     },
 
     # u-blox tests
@@ -746,13 +773,17 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "i2c_MMA8451Q"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, join(PERIPHERALS, 'MMA8451Q')],
         "mcu": ["KL25Z", "KL05Z", "KL46Z"],
-    },
+        "automated": True,
+        "duration": 15,
+        },
 
     # Examples
     {
         "id": "EXAMPLE_1", "description": "/dev/null",
         "source_dir": join(TEST_DIR, "mbed", "dev_null"),
-        "dependencies": [MBED_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
+        "host_test" : "dev_null_auto",
     },
     {
         "id": "EXAMPLE_2", "description": "FS + RTOS",

@@ -1,5 +1,6 @@
 #include "test_env.h"
 
+<<<<<<< HEAD
 #if defined(TARGET_K64F)
 DigitalInOut d1(D0);
 DigitalInOut d2(D7);
@@ -11,6 +12,11 @@ DigitalInOut d2(PTC6);
 #elif defined(TARGET_KL05Z)
 DigitalInOut d1(PTB11);
 DigitalInOut d2(PTB1);
+=======
+#if defined(TARGET_FF_ARDUINO)
+DigitalInOut d1(D0);
+DigitalInOut d2(D7);
+>>>>>>> 5bf985ebc651a2c31cefabd9d62c51dc465ef60a
 
 #elif defined(TARGET_LPC1114)
 DigitalInOut d1(dp1);

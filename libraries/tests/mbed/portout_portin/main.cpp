@@ -1,12 +1,21 @@
 #include "test_env.h"
 
 #if defined(TARGET_K64F)
+<<<<<<< HEAD
 #define P1_1    D0
 #define P1_2    D1
 #define PORT_1  PortC
 
 #define P2_1    D7
 #define P2_2    D6
+=======
+#define P1_1    (1 << 16)
+#define P1_2    (1 << 17)
+#define PORT_1  PortC
+
+#define P2_1    (1 << 2)
+#define P2_2    (1 << 3)
+>>>>>>> 5bf985ebc651a2c31cefabd9d62c51dc465ef60a
 #define PORT_2  PortC
 
 #elif defined(TARGET_LPC11U24)
@@ -18,7 +27,7 @@
 #define P2_2    (1 << 25) // p1.25
 #define PORT_2  Port1
 
-#elif defined(TARGET_LPC1768) || defined(TARGET_LPC2368) 
+#elif defined(TARGET_LPC1768) || defined(TARGET_LPC2368)
 #define P1_1    (1 << 9)  // p0.9  -> p5
 #define P1_2    (1 << 8)  // p0.8  -> p6
 #define PORT_1  Port0
