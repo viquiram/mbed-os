@@ -18,20 +18,16 @@
 static inline void _gpio_init_in(gpio_t* gpio, PinName pin, PinMode mode)
 {
     gpio_init(gpio, pin);    
-    if (pin != NC) {    
-        gpio_dir(gpio, PIN_INPUT);
-        gpio_mode(gpio, mode);
-    }
+    gpio_dir(gpio, PIN_INPUT);
+    gpio_mode(gpio, mode);
 }
     
 static inline void _gpio_init_out(gpio_t* gpio, PinName pin, PinMode mode, int value)
 {
     gpio_init(gpio, pin);
-    if (pin != NC) {
-        gpio_write(gpio, value);
-        gpio_dir(gpio, PIN_OUTPUT);
-        gpio_mode(gpio, mode);
-    }
+    gpio_write(gpio, value);
+    gpio_dir(gpio, PIN_OUTPUT);
+    gpio_mode(gpio, mode);
 }
 
 void gpio_init_in(gpio_t* gpio, PinName pin) {
@@ -53,8 +49,7 @@ void gpio_init_out_ex(gpio_t* gpio, PinName pin, int value) {
 void gpio_init_inout(gpio_t* gpio, PinName pin, PinDirection direction, PinMode mode, int value) {
     if (direction == PIN_INPUT) {
         _gpio_init_in(gpio, pin, mode);
-        if (pin != NC)
-            gpio_write(gpio, value); // we prepare the value in case it is switched later
+        gpio_write(gpio, value); // we prepare the value in case it is switched later
     } else {
         _gpio_init_out(gpio, pin, mode, value);
     }

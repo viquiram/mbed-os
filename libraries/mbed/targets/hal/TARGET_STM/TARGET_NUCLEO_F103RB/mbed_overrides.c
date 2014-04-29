@@ -25,7 +25,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "cmsis.h"
+
+extern void SystemCoreClockUpdate(void); 
 
 // This function is called after RAM initialization and before main.
 void mbed_sdk_init() {

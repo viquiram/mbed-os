@@ -29,8 +29,6 @@
  */
 #include "pwmout_api.h"
 
-#if DEVICE_PWMOUT
-
 #include "cmsis.h"
 #include "pinmap.h"
 #include "error.h"
@@ -277,5 +275,3 @@ void pwmout_pulsewidth_us(pwmout_t* obj, int us) {
     float value = (float)us / (float)obj->period;
     pwmout_write(obj, value);
 }
-
-#endif

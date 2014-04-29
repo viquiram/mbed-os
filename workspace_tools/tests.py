@@ -92,7 +92,7 @@ TESTS = [
         "id": "MBED_A3", "description": "C++ STL",
         "source_dir": join(TEST_DIR, "mbed", "stl"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
-        "automated": False,
+        "automated": True,
     },
     {
         "id": "MBED_A4", "description": "I2C TMP102",
@@ -158,7 +158,6 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "sd"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
         "automated": True,
-        "duration": 15,
         "peripherals": ["SD"]
     },
     {
@@ -236,13 +235,6 @@ TESTS = [
         "host_test": "echo_flow_control",
         "mcu": ["LPC1768"],
         "peripherals": ["extra_serial"]
-    },
-    {
-        "id": "MBED_A25", "description": "I2C EEPROM line read/write test",
-        "source_dir": join(TEST_DIR, "mbed", "i2c_eeprom_line"),
-        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
-        "peripherals": ["24LC256"],
-        "automated": True,
     },
 
     # Size benchmarks
@@ -329,7 +321,7 @@ TESTS = [
     {
         "id": "MBED_10", "description": "Hello World",
         "source_dir": join(TEST_DIR, "mbed", "hello"),
-        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "dependencies": [MBED_LIBRARIES],
         "automated": True,
         "host_test": "hello_auto",
     },
@@ -339,7 +331,7 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES],
         "automated": True,
         "host_test": "wait_us_auto",
-        "duration": 20,
+        "duration": 20
     },
     {
         "id": "MBED_12", "description": "C++",
@@ -361,7 +353,6 @@ TESTS = [
         "id": "MBED_15", "description": "RPC",
         "source_dir": join(TEST_DIR, "mbed", "rpc"),
         "dependencies": [MBED_LIBRARIES, join(LIB_DIR, "rpc"), TEST_MBED_LIB],
-        "mcu": ["LPC1768"],
         "automated": True,
     },
     {
@@ -669,9 +660,6 @@ TESTS = [
         "id": "NET_13", "description": "TCP client echo loop",
         "source_dir": join(TEST_DIR, "net", "echo", "tcp_client_loop"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
-        "automated": True,
-        "duration": 15,
-        "host_test": "tcpecho_client_auto",
         "peripherals": ["ethernet"],
     },
 
@@ -773,9 +761,7 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "i2c_MMA8451Q"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, join(PERIPHERALS, 'MMA8451Q')],
         "mcu": ["KL25Z", "KL05Z", "KL46Z"],
-        "automated": True,
-        "duration": 15,
-        },
+    },
 
     # Examples
     {

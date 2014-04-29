@@ -22,13 +22,14 @@
 #include "lwip/netif.h"
 #include "netif/etharp.h"
 #include "lwip/dhcp.h"
-#include "eth_arch.h"
+#include "arch/lpc17_emac.h"
+#include "lpc_phy.h"
 #include "lwip/tcpip.h"
 
 #include "mbed.h"
 
 /* TCP/IP and Network Interface Initialisation */
-static struct netif netif;
+static struct netif lpcNetif;
 
 static char mac_addr[19];
 static char ip_addr[17] = "\0";
@@ -63,12 +64,12 @@ static void init_netif(ip_addr_t *ipaddr, ip_addr_t *netmask, ip_addr_t *gw) {
     tcpip_init(tcpip_init_done, NULL);
     tcpip_inited.wait();
     
-    memset((void*) &netif, 0, sizeof(netif));
-    netif_add(&netif, ipaddr, netmask, gw, NULL, eth_arch_enetif_init, tcpip_input);
-    netif_set_default(&netif);
+    memset((void*) &lpcNetif, 0, sizeof(lpcNetif));
+    netif_add(&lpcNetif, ipaddr, netmask, gw, NULL, lpc_enetif_init, tcpip_input);
+    netif_set_default(&lpcNetif);
     
-    netif_set_link_callback  (&netif, netif_link_callback);
-    netif_set_status_callback(&netif, netif_status_callback);
+    netif_set_link_callback  (&lpcNetif, netif_link_callback);
+    netif_set_status_callback(&lpcNetif, netif_status_callback);
 }
 
 static void set_mac_address(void) {
@@ -105,17 +106,18 @@ int EthernetInterface::init(const char* ip, const char* mask, const char* gatewa
 }
 
 int EthernetInterface::connect(unsigned int timeout_ms) {
-    eth_arch_enable_interrupts();
-
+    NVIC_SetPriority(ENET_IRQn, ((0x01 << 3) | 0x01));
+    NVIC_EnableIRQ(ENET_IRQn);
+    
     int inited;
     if (use_dhcp) {
-        dhcp_start(&netif);
+        dhcp_start(&lpcNetif);
         
         // Wait for an IP Address
         // -1: error, 0: timeout
         inited = netif_up.wait(timeout_ms);
     } else {
-        netif_set_up(&netif);
+        netif_set_up(&lpcNetif);
         
         // Wait for the link up
         inited = netif_linked.wait(timeout_ms);
@@ -126,13 +128,13 @@ int EthernetInterface::connect(unsigned int timeout_ms) {
 
 int EthernetInterface::disconnect() {
     if (use_dhcp) {
-        dhcp_release(&netif);
-        dhcp_stop(&netif);
+        dhcp_release(&lpcNetif);
+        dhcp_stop(&lpcNetif);
     } else {
-        netif_set_down(&netif);
+        netif_set_down(&lpcNetif);
     }
     
-    eth_arch_disable_interrupts();
+    NVIC_DisableIRQ(ENET_IRQn);
     
     return 0;
 }

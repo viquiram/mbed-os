@@ -115,7 +115,6 @@ void  mem_free(void *mem);
 #define LWIP_MEM_ALIGN(addr) ((void *)(((mem_ptr_t)(addr) + MEM_ALIGNMENT - 1) & ~(mem_ptr_t)(MEM_ALIGNMENT-1)))
 #endif
 
-
 #ifdef __cplusplus
 }
 #endif

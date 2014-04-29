@@ -1,11 +1,7 @@
 #include "mbed.h"
 
 #if defined(TARGET_K64F)
-<<<<<<< HEAD
-#define TEST_LED D5
-=======
 #define TEST_LED D9
->>>>>>> 5bf985ebc651a2c31cefabd9d62c51dc465ef60a
 
 #elif defined(TARGET_NUCLEO_F103RB)
 #define TEST_LED D3

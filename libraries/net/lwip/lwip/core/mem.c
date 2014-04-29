@@ -186,10 +186,8 @@ struct mem {
 #  else
 #     define ETHMEM_SECTION __attribute__((section("AHBSRAM1"),aligned))
 #  endif
-#elif defined(TARGET_LPC1768)
-#   define ETHMEM_SECTION __attribute((section("AHBSRAM0")))
 #else
-#		define ETHMEM_SECTION
+#   define ETHMEM_SECTION __attribute((section("AHBSRAM0")))
 #endif
 
 /** the heap. we need one struct mem at the end and some room for alignment */
@@ -611,10 +609,10 @@ mem_malloc(mem_size_t size)
         sys_mutex_unlock(&mem_mutex);
         LWIP_ASSERT("mem_malloc: allocated memory not above ram_end.",
          (mem_ptr_t)mem + SIZEOF_STRUCT_MEM + size <= (mem_ptr_t)ram_end);
-				LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
-						((mem_ptr_t)mem + SIZEOF_STRUCT_MEM) % MEM_ALIGNMENT == 0);
+        LWIP_ASSERT("mem_malloc: allocated memory properly aligned.",
+         ((mem_ptr_t)mem + SIZEOF_STRUCT_MEM) % MEM_ALIGNMENT == 0);
         LWIP_ASSERT("mem_malloc: sanity check alignment",
-						(((mem_ptr_t)mem) & (MEM_ALIGNMENT-1)) == 0);
+          (((mem_ptr_t)mem) & (MEM_ALIGNMENT-1)) == 0);
 
         return (u8_t *)mem + SIZEOF_STRUCT_MEM;
       }

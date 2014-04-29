@@ -1,7 +1,11 @@
-#include "test_env.h"
+#include "mbed.h"
 
-int main()
-{
+DigitalOut myled(LED1);
+
+int main() {
     printf("Hello World\n");
-    notify_completion(true);
+    while (true) {
+        wait(0.5);
+        myled = !myled;
+    }
 }

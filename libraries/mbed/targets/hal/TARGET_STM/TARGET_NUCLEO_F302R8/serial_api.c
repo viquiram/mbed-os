@@ -28,9 +28,6 @@
  *******************************************************************************
  */
 #include "serial_api.h"
-
-#if DEVICE_SERIAL
-
 #include "cmsis.h"
 #include "pinmap.h"
 #include "error.h"
@@ -312,5 +309,3 @@ void serial_break_clear(serial_t *obj) {
     USART_RequestCmd(usart, USART_Request_SBKRQ, DISABLE);
     USART_ClearFlag(usart, USART_FLAG_SBK);
 }
-
-#endif

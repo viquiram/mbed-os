@@ -2,11 +2,7 @@
 
 #if defined(TARGET_K64F)
 AnalogIn in(A0);
-<<<<<<< HEAD
-AnalogOut out(A5);
-=======
 AnalogOut out(DAC0_OUT);
->>>>>>> 5bf985ebc651a2c31cefabd9d62c51dc465ef60a
 
 #elif defined(TARGET_KL25Z)
 AnalogIn in(PTC2);

@@ -28,10 +28,10 @@
  *******************************************************************************
  */
 #include "sleep_api.h"
-
-#if DEVICE_SLEEP
-
 #include "cmsis.h"
+
+// This function is in the system_stm32f30x.c file
+extern void SetSysClock(void);
 
 // MCU SLEEP mode
 void sleep(void) {
@@ -53,5 +53,3 @@ void deepsleep(void) {
     // After wake-up from STOP reconfigure the PLL
     SetSysClock();
 }
-
-#endif
