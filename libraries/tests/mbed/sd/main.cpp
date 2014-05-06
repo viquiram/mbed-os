@@ -10,6 +10,13 @@ SDFileSystem sd(p12, p13, p15, p14, "sd");
 SDFileSystem sd(D11, D12, D13, D10, "sd");
 #elif defined(TARGET_DISCO_F051R8)
 SDFileSystem sd(SPI_MOSI, SPI_MISO, SPI_SCK, SPI_CS, "sd");
+<<<<<<< HEAD
+=======
+
+#elif defined(TARGET_LPC2368)
+SDFileSystem sd(p11, p12, p13, p14, "sd");
+
+>>>>>>> 044b5131cb991c01dfd9dc1359233300e9d275fa
 #else
 SDFileSystem sd(p11, p12, p13, p14, "sd");
 #endif

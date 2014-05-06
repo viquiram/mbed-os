@@ -65,6 +65,7 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl) {
     // Enable I2C clock
     if (obj->i2c == I2C_1) {    
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+        RCC_I2CCLKConfig(RCC_I2C1CLK_SYSCLK);
     }
     //if (obj->i2c == I2C_2) {
     //    RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
@@ -88,17 +89,49 @@ void i2c_frequency(i2c_t *obj, int hz) {
     I2C_InitTypeDef I2C_InitStructure;
     uint32_t tim;
   
+<<<<<<< HEAD
     // Values calculated with I2C_Timing_Configuration_V1.0.1.xls file (see AN4235)
     // with Rise time = 100ns and Fall time = 10ns
+=======
+    /*
+       Values calculated with I2C_Timing_Configuration_V1.0.1.xls file (see AN4235)
+       * Standard mode (up to 100 kHz)
+       * Fast Mode (up to 400 kHz)
+       * Fast Mode Plus (up to 1 MHz)
+       Below values obtained with:
+       - I2C clock source = 48 MHz (System Clock)
+       - Analog filter delay = ON
+       - Digital filter coefficient = 0
+       - Rise time = 100 ns
+       - Fall time = 10ns
+    */
+>>>>>>> 044b5131cb991c01dfd9dc1359233300e9d275fa
     switch (hz) {
       case 100000:
-          tim = 0x00201D2B; // Standard mode
+          tim = 0x10805E89; // Standard mode
           break;
       case 200000:
+<<<<<<< HEAD
           tim = 0x0010021E; // Fast mode
           break;
       case 400000:
           tim = 0x0010020A; // Fast mode
+=======
+          tim = 0x00905E82; // Fast Mode
+          break;
+      case 400000:
+          tim = 0x00901850; // Fast Mode
+          break;
+      case 1000000:
+          tim = 0x00700818; // Fast Mode Plus
+          // Enable the Fast Mode Plus capability
+          if (obj->i2c == I2C_1) {
+              SYSCFG_I2CFastModePlusConfig(SYSCFG_I2CFastModePlus_I2C1, ENABLE);
+          }
+          if (obj->i2c == I2C_2) {
+              SYSCFG_I2CFastModePlusConfig(SYSCFG_I2CFastModePlus_I2C2, ENABLE);
+          }
+>>>>>>> 044b5131cb991c01dfd9dc1359233300e9d275fa
           break;
       default:
           error("Only 100kHz, 200kHz and 400kHz I2C frequencies are supported.");
@@ -281,8 +314,26 @@ void i2c_slave_mode(i2c_t *obj, int enable_slave) {
 #define WriteAddressed 3 // the master is writing to this slave (slave = receiver)
 
 int i2c_slave_receive(i2c_t *obj) {
+<<<<<<< HEAD
     // TO BE DONE
     return(0);
+=======
+    I2C_TypeDef *i2c = (I2C_TypeDef *)(obj->i2c);
+    int event = NoData;
+  
+    if(I2C_GetFlagStatus(i2c, I2C_ISR_BUSY) == SET) {
+        if(I2C_GetFlagStatus(i2c, I2C_ISR_ADDR) == SET) {
+        // Check direction
+            if (I2C_GetFlagStatus(i2c, I2C_ISR_DIR) == SET) {
+            event = ReadAddressed;
+        }
+        else event = WriteAddressed;
+        // Clear adress match flag to generate an acknowledge
+        i2c->ICR |= I2C_ICR_ADDRCF;
+        }
+    }
+    return event;
+>>>>>>> 044b5131cb991c01dfd9dc1359233300e9d275fa
 }
 
 int i2c_slave_read(i2c_t *obj, char *data, int length) {

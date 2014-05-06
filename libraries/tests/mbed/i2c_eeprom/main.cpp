@@ -28,9 +28,17 @@ static const int i2c_delay_us = 0;
 #define I2C_EEPROM_VERBOSE
 // End of test configuration block
 
+<<<<<<< HEAD
 #if defined(TARGET_KL25Z)
 I2C i2c(PTE0, PTE1);
 #elif defined(TARGET_NUCLEO_F103RB)
+=======
+#elif defined(TARGET_NUCLEO_F103RB) || \
+    defined(TARGET_NUCLEO_L152RE) || \
+    defined(TARGET_NUCLEO_F302R8) || \
+    defined(TARGET_NUCLEO_F030R8) || \
+    defined(TARGET_NUCLEO_F401RE)
+>>>>>>> 044b5131cb991c01dfd9dc1359233300e9d275fa
 I2C i2c(I2C_SDA, I2C_SCL);
 #elif defined(TARGET_K64F)
 I2C i2c(PTE25, PTE24);
