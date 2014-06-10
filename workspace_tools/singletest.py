@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 mbed SDK
 Copyright (c) 2011-2013 ARM Limited
@@ -87,13 +89,16 @@ from Queue import Queue, Empty
 
 ROOT = abspath(join(dirname(__file__), ".."))
 sys.path.insert(0, ROOT)
+
 # Imports related to mbed build pi
-from workspace_tools.build_api import build_project, build_mbed_libs
+from workspace_tools.build_api import build_project, build_mbed_libs, build_lib
+from workspace_tools.build_api import mcu_toolchain_matrix
 from workspace_tools.paths import BUILD_DIR
 from workspace_tools.paths import HOST_TESTS
 from workspace_tools.targets import TARGET_MAP
 from workspace_tools.tests import TEST_MAP
 from workspace_tools.tests import TESTS
+from workspace_tools.libraries import LIBRARIES
 
 # Be sure that the tools directory is in the search path
 ROOT = abspath(join(dirname(__file__), ".."))
@@ -231,6 +236,9 @@ class SingleTestRunner(object):
         #    delete_dir_files(disk)
 
         # Program MUT with proper image file
+        if not disk.endswith('/') and not disk.endswith('\\'):
+            disk += '/'
+
         cmd = ["cp", image_path.encode('ascii','ignore'), disk.encode('ascii','ignore') +  basename(image_path).encode('ascii','ignore')]
         # print cmd
         call(cmd)
@@ -516,6 +524,12 @@ if __name__ == '__main__':
                       dest='test_by_names',
                       help='Runs only test enumerated it this switch')
 
+    parser.add_option("-S", "--supported-toolchains",
+                      action="store_true",
+                      dest="supported_toolchains",
+                      default=False,
+                      help="Displays supported matrix of MCUs and toolchains")
+
     parser.add_option('-v', '--verbose',
                       dest='verbose',
                       default=False,
@@ -530,6 +544,11 @@ if __name__ == '__main__':
     # Print summary / information about automation test status
     if opts.test_automation_report:
         get_result_summary_table()
+        exit(0)
+
+    # Only prints matrix of supported toolchains
+    if opts.supported_toolchains:
+        mcu_toolchain_matrix()
         exit(0)
 
     # Open file with test specification
@@ -592,6 +611,18 @@ if __name__ == '__main__':
                     }
 
                     build_project_options = ["analyze"] if opts.goanna_for_tests else None
+
+                    # Detect which lib should be added to test
+                    # Some libs have to compiled like RTOS or ETH
+                    libraries = []
+                    for lib in LIBRARIES:
+                        if lib['build_dir'] in test.dependencies:
+                            libraries.append(lib['id'])
+                    # Build libs for test
+                    for lib_id in libraries:
+                        build_lib(lib_id, T, toolchain, options=build_project_options,
+                                  verbose=opts.verbose, clean=clean)
+
                     path = build_project(test.source_dir, join(build_dir, test_id),
                                          T, toolchain, test.dependencies, options=build_project_options,
                                          clean=clean, verbose=opts.verbose)
