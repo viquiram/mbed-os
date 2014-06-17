@@ -89,6 +89,8 @@ if __name__ == '__main__':
             ('lpcxpresso', 'LPC1768'), ('lpcxpresso', 'LPC4088'),('lpcxpresso', 'LPC1114'),
             ('lpcxpresso', 'LPC11U35_401'),
             ('lpcxpresso', 'LPC11U35_501'),
+			('lpcxpresso', 'LPC1549'),
+			('lpcxpresso', 'LPC11U68'),
             # Linux path: /home/emimon01/bin/gcc-cs/bin/
             # Windows path: "C:/Program Files (x86)/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/"
             ('codesourcery', 'LPC1768'),
@@ -99,20 +101,21 @@ if __name__ == '__main__':
             ('gcc_arm', 'LPC1114'),
             ('gcc_arm', 'LPC11U35_401'),
             ('gcc_arm', 'LPC11U35_501'),
+            ('gcc_arm', 'LPC2368'),
 
             ('gcc_arm', 'STM32F407'),
             ('gcc_arm', 'DISCO_F100RB'),
             ('gcc_arm', 'DISCO_F051R8'),
             ('gcc_arm', 'DISCO_F407VG'),
             ('gcc_arm', 'DISCO_F303VC'),
+            ('gcc_arm', 'NRF51822'),
 
 
             ('ds5_5', 'LPC1768'), ('ds5_5', 'LPC11U24'),
 
             ('iar', 'LPC1768'),
 
-
-            (None, None)
+            (None, None),
         ]:
         print '\n=== Exporting to "%s::%s" ===' % (toolchain, target)
         test_export(toolchain, target)
