@@ -303,7 +303,6 @@ class STM32F407(Target):
 
 class NUCLEO_F030R8(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -319,7 +318,6 @@ class NUCLEO_F030R8(Target):
 
 class NUCLEO_F072RB(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -335,7 +333,6 @@ class NUCLEO_F072RB(Target):
 
 class NUCLEO_F103RB(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -351,7 +348,6 @@ class NUCLEO_F103RB(Target):
 
 class NUCLEO_F302R8(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -365,9 +361,23 @@ class NUCLEO_F302R8(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
 
 
+class NUCLEO_F334R8(Target):
+    ONLINE_TOOLCHAIN = "uARM"
+
+    def __init__(self):
+        Target.__init__(self)
+
+        self.core = "Cortex-M4F"
+
+        self.extra_labels = ['STM', 'STM32F3', 'STM32F334R8']
+
+        self.supported_toolchains = ["ARM", "uARM"]
+
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+
+
 class NUCLEO_F401RE(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -381,9 +391,23 @@ class NUCLEO_F401RE(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
 
 
+class NUCLEO_F411RE(Target):
+    ONLINE_TOOLCHAIN = "uARM"
+
+    def __init__(self):
+        Target.__init__(self)
+
+        self.core = "Cortex-M4"
+
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F411RE']
+
+        self.supported_toolchains = ["ARM", "uARM"]
+
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+
+
 class NUCLEO_L053R8(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -399,7 +423,6 @@ class NUCLEO_L053R8(Target):
 
 class NUCLEO_L152RE(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -415,7 +438,6 @@ class NUCLEO_L152RE(Target):
 
 class STM32F3XX(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -581,7 +603,6 @@ class LPC11U68(Target):
 
 class DISCO_F100RB(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -595,7 +616,6 @@ class DISCO_F100RB(Target):
 
 class DISCO_F051R8(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -609,7 +629,6 @@ class DISCO_F051R8(Target):
 
 class DISCO_F407VG(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -623,7 +642,6 @@ class DISCO_F407VG(Target):
 
 class DISCO_F303VC(Target):
     ONLINE_TOOLCHAIN = "uARM"
-    OUTPUT_NAMING = "8.3"
 
     def __init__(self):
         Target.__init__(self)
@@ -638,9 +656,17 @@ class XADOW_M0(LPC11U35_501):
     def __init__(self):
         LPC11U35_501.__init__(self)
 
+        self.extra_labels.append('LPC11U35_501')
+
+        self.macros = ['TARGET_LPC11U35_501']
+
 class ARCH_BLE(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
+
+        self.extra_labels.append('NRF51822')
+
+        self.macros = ['TARGET_NRF51822']
 
 class ARCH_PRO(Target):
     def __init__(self):
@@ -677,7 +703,9 @@ TARGETS = [
     NUCLEO_F072RB(),
     NUCLEO_F103RB(),
     NUCLEO_F302R8(),
+    NUCLEO_F334R8(),
     NUCLEO_F401RE(),
+    NUCLEO_F411RE(),
     NUCLEO_L053R8(),
     NUCLEO_L152RE(),
     LPC1347(),
