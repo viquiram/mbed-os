@@ -511,6 +511,19 @@ class LPC11U35_501(Target):
         self.supported_toolchains = ["ARM", "uARM","GCC_ARM","GCC_CR"]
 
 
+class LPC11U37_501(Target):
+    ONLINE_TOOLCHAIN = "uARM"
+
+    def __init__(self):
+        Target.__init__(self)
+
+        self.core = "Cortex-M0"
+
+        self.extra_labels = ['NXP', 'LPC11UXX']
+
+        self.supported_toolchains = ["GCC_ARM","GCC_CR"]
+
+
 class UBLOX_C027(Target):
     def __init__(self):
         Target.__init__(self)
@@ -537,7 +550,7 @@ class NRF51822(Target):
 
         self.core = "Cortex-M0"
 
-        self.extra_labels = ["NORDIC"]
+        self.extra_labels = ["NORDIC", "NRF51822_MKIT"]
  
         self.supported_toolchains = ["ARM", "GCC_ARM"]
  
@@ -664,7 +677,7 @@ class ARCH_BLE(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
 
-        self.extra_labels.append('NRF51822')
+        self.extra_labels = ['NORDIC', 'NRF51822']
 
         self.macros = ['TARGET_NRF51822']
 
@@ -681,6 +694,18 @@ class ARCH_PRO(Target):
         self.macros = ['TARGET_LPC1768']
 
         self.supported_form_factors = ["ARDUINO"]
+
+class LPCCAPPUCCINO(LPC11U37_501):
+    def __init__(self):
+        LPC11U37_501.__init__(self)
+
+class HRM1017(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+
+        self.extra_labels = ['NORDIC', 'NRF51822']
+
+        self.macros = ['TARGET_NRF51822']
 
 # Get a single instance for each target
 TARGETS = [
@@ -724,6 +749,8 @@ TARGETS = [
     XADOW_M0(),
     ARCH_BLE(),
     ARCH_PRO(),
+    LPCCAPPUCCINO(),
+    HRM1017(),
 ]
 
 # Map each target name to its unique instance
