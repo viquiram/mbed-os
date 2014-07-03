@@ -809,6 +809,21 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "fs"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
     },
+
+    # Unit testing with cpputest library
+    {
+        "id": "UT_1", "description": "Basic",
+        "source_dir": join(TEST_DIR, "utest", "basic"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, CPPUTEST_LIBRARY],
+        "automated": False,
+    },
+    {
+        "id": "UT_2", "description": "Semihost file system",
+        "source_dir": join(TEST_DIR, "utest", "file"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, CPPUTEST_LIBRARY],
+        "automated": False,
+        "mcu": ["LPC1768", "LPC2368", "LPC11U24"]
+    },
 ]
 
 # Group tests with the same goals into categories
@@ -832,11 +847,15 @@ GROUPS.update(TEST_GROUPS)
 
 class Test:
     DEFAULTS = {
+        #'mcu': None,
+        'description': None,
         'dependencies': None,
         'duration': 10,
         'host_test': 'host_test',
         'automated': False,
         'peripherals': None,
+        #'supported': None,
+        'source_dir': None,
         'extra_files': None
     }
     def __init__(self, n):
@@ -852,7 +871,7 @@ class Test:
         return (target in self.supported) and (toolchain in self.supported[target])
 
     def get_description(self):
-        if hasattr(self, 'description'):
+        if self.description:
             return self.description
         else:
             return self.id
@@ -863,5 +882,19 @@ class Test:
     def __str__(self):
         return "[%3d] %s: %s" % (self.n, self.id, self.get_description())
 
+    def __getitem__(self, key):
+        if key == "id": return self.id
+        elif key == "mcu": return self.mcu
+        elif key == "dependencies": return self.dependencies
+        elif key == "description": return self.description
+        elif key == "duration": return self.duration
+        elif key == "host_test": return self.host_test
+        elif key == "automated": return self.automated
+        elif key == "peripherals": return self.peripherals
+        elif key == "supported": return self.supported
+        elif key == "source_dir": return self.source_dir
+        elif key == "extra_files": return self.extra_files
+        else:
+            return None
 
 TEST_MAP = dict([(test['id'], Test(i)) for i, test in enumerate(TESTS)])

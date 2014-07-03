@@ -75,6 +75,7 @@ import json
 import optparse
 import pprint
 import re
+from types import ListType
 from prettytable import PrettyTable
 from serial import Serial
 
@@ -98,7 +99,7 @@ from workspace_tools.paths import HOST_TESTS
 from workspace_tools.targets import TARGET_MAP
 from workspace_tools.tests import TEST_MAP
 from workspace_tools.tests import TESTS
-from workspace_tools.libraries import LIBRARIES
+from workspace_tools.libraries import LIBRARIES, LIBRARY_MAP
 
 # Be sure that the tools directory is in the search path
 ROOT = abspath(join(dirname(__file__), ".."))
@@ -195,6 +196,23 @@ class SingleTestRunner(object):
 
     def file_copy_method_selector(self, image_path, disk, copy_method):
         """ Copy file depending on method you want to use """
+        # TODO: Add exception handling for copy procedures (disk can be full). See below.
+        """
+        Traceback (most recent call last):
+          File "mbed\workspace_tools\singletest.py", line 738, in <module>
+            single_test_result = single_test.handle(test_spec, target, toolchain)
+          File "mbed\workspace_tools\singletest.py", line 252, in handle
+            self.file_copy_method_selector(image_path, disk, opts.copy_method)
+          File "mbed\workspace_tools\singletest.py", line 203, in file_copy_method_selector
+            copy(image_path, disk)
+          File "C:\Python27\lib\shutil.py", line 119, in copy
+            copyfile(src, dst)
+          File "C:\Python27\lib\shutil.py", line 84, in copyfile
+            copyfileobj(fsrc, fdst)
+          File "C:\Python27\lib\shutil.py", line 52, in copyfileobj
+            fdst.write(buf)
+        IOError: [Errno 28] No space left on device
+        """
         if copy_method == "cp" or  copy_method == "copy" or copy_method == "xcopy":
             cmd = [copy_method, image_path.encode('ascii', 'ignore'), disk.encode('ascii', 'ignore') +  basename(image_path).encode('ascii', 'ignore')]
             call(cmd, shell=True)
@@ -377,7 +395,7 @@ def get_json_data_from_file(json_spec_filename, verbose=False):
     return result
 
 
-def get_result_summary_table():
+def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','):
     # get all unique test ID prefixes
     unique_test_id = []
     for test in TESTS:
@@ -389,7 +407,7 @@ def get_result_summary_table():
     counter_dict_test_id_types = dict((t, 0) for t in unique_test_id)
     counter_dict_test_id_types_all = dict((t, 0) for t in unique_test_id)
 
-    test_properties = ['id', 'automated', 'description', 'peripherals', 'host_test', 'duration']
+    test_properties = ['id', 'automated', 'description', 'peripherals', 'host_test', 'duration'] if cols is None else cols
 
     # All tests status table print
     pt = PrettyTable(test_properties)
@@ -399,16 +417,23 @@ def get_result_summary_table():
 
     counter_all = 0
     counter_automated = 0
-
     pt.padding_width = 1 # One space between column edges and contents (default)
-    for test in TESTS:
+
+    for test_id in TEST_MAP:
         row = []
-        split = test['id'].split('_')[:-1]
+        test = TEST_MAP[test_id]
+        split = test_id.split('_')[:-1]
         test_id_prefix = '_'.join(split)
 
         for col in test_properties:
-            row.append(test[col] if col in test else "")
-        if 'automated' in test and test['automated'] == True:
+            col_value = test[col]
+            if type(test[col]) == ListType:
+                col_value = join_delim.join(test[col])
+            elif test[col] == None:
+                col_value = "-"
+
+            row.append(col_value)
+        if test['automated'] == True:
             counter_dict_test_id_types[test_id_prefix] += 1
             counter_automated += 1
         pt.add_row(row)
@@ -418,40 +443,41 @@ def get_result_summary_table():
     print pt
     print
 
-    # Automation result summary
-    test_id_cols = ['automated', 'all', 'percent [%]', 'progress']
-    pt = PrettyTable(test_id_cols)
-    pt.align['automated'] = "r"
-    pt.align['all'] = "r"
-    pt.align['percent [%]'] = "r"
+    if result_summary:
+        # Automation result summary
+        test_id_cols = ['automated', 'all', 'percent [%]', 'progress']
+        pt = PrettyTable(test_id_cols)
+        pt.align['automated'] = "r"
+        pt.align['all'] = "r"
+        pt.align['percent [%]'] = "r"
 
-    percent_progress = round(100.0 * counter_automated / float(counter_all), 1)
-    str_progress = progress_bar(percent_progress, 75)
-    pt.add_row([counter_automated, counter_all, percent_progress, str_progress])
-    print "Automation coverage:"
-    print pt
-    print
-
-    # Test automation coverage table print
-    test_id_cols = ['id', 'automated', 'all', 'percent [%]', 'progress']
-    pt = PrettyTable(test_id_cols)
-    pt.align['id'] = "l"
-    pt.align['automated'] = "r"
-    pt.align['all'] = "r"
-    pt.align['percent [%]'] = "r"
-    for unique_id in unique_test_id:
-        # print "\t\t%s: %d / %d" % (unique_id, counter_dict_test_id_types[unique_id], counter_dict_test_id_types_all[unique_id])
-        percent_progress = round(100.0 * counter_dict_test_id_types[unique_id] / float(counter_dict_test_id_types_all[unique_id]), 1)
+        percent_progress = round(100.0 * counter_automated / float(counter_all), 1)
         str_progress = progress_bar(percent_progress, 75)
-        row = [unique_id,
-               counter_dict_test_id_types[unique_id],
-               counter_dict_test_id_types_all[unique_id],
-               percent_progress,
-               "[" + str_progress + "]"]
-        pt.add_row(row)
-    print "Test automation coverage:"
-    print pt
-    print
+        pt.add_row([counter_automated, counter_all, percent_progress, str_progress])
+        print "Automation coverage:"
+        print pt
+        print
+
+        # Test automation coverage table print
+        test_id_cols = ['id', 'automated', 'all', 'percent [%]', 'progress']
+        pt = PrettyTable(test_id_cols)
+        pt.align['id'] = "l"
+        pt.align['automated'] = "r"
+        pt.align['all'] = "r"
+        pt.align['percent [%]'] = "r"
+        for unique_id in unique_test_id:
+            # print "\t\t%s: %d / %d" % (unique_id, counter_dict_test_id_types[unique_id], counter_dict_test_id_types_all[unique_id])
+            percent_progress = round(100.0 * counter_dict_test_id_types[unique_id] / float(counter_dict_test_id_types_all[unique_id]), 1)
+            str_progress = progress_bar(percent_progress, 75)
+            row = [unique_id,
+                   counter_dict_test_id_types[unique_id],
+                   counter_dict_test_id_types_all[unique_id],
+                   percent_progress,
+                   "[" + str_progress + "]"]
+            pt.add_row(row)
+        print "Test automation coverage:"
+        print pt
+        print
 
 
 def progress_bar(percent_progress, saturation=0):
@@ -602,6 +628,12 @@ if __name__ == '__main__':
                       action="store_true",
                       help='Prints information about all tests and exits')
 
+    parser.add_option('-R', '--test-case-report',
+                      dest='test_case_report',
+                      default=False,
+                      action="store_true",
+                      help='Prints information about all test cases and exits')
+
     parser.add_option('-P', '--only-peripherals',
                       dest='test_only_peripheral',
                       default=False,
@@ -628,6 +660,18 @@ if __name__ == '__main__':
                       default=False,
                       help="Displays supported matrix of MCUs and toolchains")
 
+    parser.add_option("-O", "--only-build",
+                      action="store_true",
+                      dest="only_build_tests",
+                      default=False,
+                      help="Only build tests, skips actual test procedures (flashing etc.)")
+
+    parser.add_option("", "--cpputest",
+                      action="store_true",
+                      dest="use_cpputest_library",
+                      default=False,
+                      help="Use cpputest library to run UT on target devices")
+
     parser.add_option('-v', '--verbose',
                       dest='verbose',
                       default=False,
@@ -641,7 +685,13 @@ if __name__ == '__main__':
 
     # Print summary / information about automation test status
     if opts.test_automation_report:
-        get_result_summary_table()
+        get_avail_tests_summary_table()
+        exit(0)
+
+    # Print summary / information about automation test status
+    if opts.test_case_report:
+        test_case_report_cols = ['id', 'automated', 'description', 'peripherals', 'host_test', 'duration', 'source_dir']
+        get_avail_tests_summary_table(cols=test_case_report_cols, result_summary=False, join_delim='\n')
         exit(0)
 
     # Only prints matrix of supported toolchains
@@ -726,11 +776,29 @@ if __name__ == '__main__':
                         build_lib(lib_id, T, toolchain, options=build_project_options,
                                   verbose=opts.verbose, clean=clean)
 
+                    # TODO: move this 2 below loops to separate function
+                    INC_DIRS = []
+                    for lib_id in libraries:
+                        if LIBRARY_MAP[lib_id]['inc_dirs_ext']:
+                            INC_DIRS.extend(LIBRARY_MAP[lib_id]['inc_dirs_ext'])
+
+                    MACROS = []
+                    for lib_id in libraries:
+                        if LIBRARY_MAP[lib_id]['macros']:
+                            MACROS.extend(LIBRARY_MAP[lib_id]['macros'])
+
                     path = build_project(test.source_dir, join(build_dir, test_id),
                                          T, toolchain, test.dependencies, options=build_project_options,
-                                         clean=clean, verbose=opts.verbose)
+                                         clean=clean, verbose=opts.verbose,
+                                         macros=MACROS,
+                                         inc_dirs=INC_DIRS)
 
                     test_result_cache = join(dirname(path), "test_result.json")
+
+                    if opts.only_build_tests:
+                        # We are skipping testing phase, and suppress summary
+                        opts.suppress_summary = True
+                        continue
 
                     # For an automated test the duration act as a timeout after
                     # which the test gets interrupted
@@ -743,7 +811,6 @@ if __name__ == '__main__':
 
     # Human readable summary
     if not opts.suppress_summary:
-
         # prints well-formed summary with results (SQL table like)
         print generate_test_summary(test_summary)
 
