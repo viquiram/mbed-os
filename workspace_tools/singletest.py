@@ -77,7 +77,6 @@ import pprint
 import re
 from types import ListType
 from prettytable import PrettyTable
-from serial import Serial
 
 from os.path import join, abspath, dirname, exists, basename
 from shutil import copy
@@ -94,6 +93,8 @@ sys.path.insert(0, ROOT)
 # Imports related to mbed build pi
 from workspace_tools.build_api import build_project, build_mbed_libs, build_lib
 from workspace_tools.build_api import mcu_toolchain_matrix
+from workspace_tools.build_api import get_unique_supported_toolchains
+from workspace_tools.build_api import get_target_supported_toolchains
 from workspace_tools.paths import BUILD_DIR
 from workspace_tools.paths import HOST_TESTS
 from workspace_tools.targets import TARGET_MAP
@@ -106,7 +107,6 @@ ROOT = abspath(join(dirname(__file__), ".."))
 sys.path.insert(0, ROOT)
 
 # Imports related to mbed build pi
-from workspace_tools.utils import delete_dir_files, copy_file
 from workspace_tools.settings import MUTs
 
 
@@ -150,49 +150,6 @@ class SingleTestRunner(object):
     def __init__(self):
         pattern = "\\{(" + "|".join(self.TEST_RESULT_MAPPING.keys()) + ")\\}"
         self.re_detect_testcase_result = re.compile(pattern)
-
-    def run_simple_test(self, target_name, port,
-                        duration, verbose=False):
-        """
-        Functions resets target and grabs by timeouted pooling test log
-        via serial port.
-        Function assumes target is already flashed with proper 'test' binary.
-        """
-        output = ""
-        # Prepare serial for receiving data from target
-        baud = 9600
-        serial = Serial(port, timeout=1)
-        serial.setBaudrate(baud)
-        flush_serial(serial)
-        # Resetting target and pooling
-        reset(target_name, serial, verbose=verbose)
-        start_serial_timeour = time()
-        try:
-            while (time() - start_serial_timeour) < duration:
-                test_output = serial.read(512)
-                output += test_output
-                flush_serial(serial)
-                if '{end}' in output:
-                    break
-        except KeyboardInterrupt, _:
-            print "CTRL+C break"
-        flush_serial(serial)
-        serial.close()
-
-        # Handle verbose mode
-        if verbose:
-            print "Test::Output::Start"
-            print output
-            print "Test::Output::Finish"
-
-        # Parse test 'output' data
-        result = self.TEST_RESULT_UNDEF
-        for line in output.splitlines():
-            search_result = self.re_detect_testcase_result.search(line)
-            if search_result and len(search_result.groups()):
-                result = self.TEST_RESULT_MAPPING[search_result.groups(0)[0]]
-                break
-        return result
 
     def file_copy_method_selector(self, image_path, disk, copy_method):
         """ Copy file depending on method you want to use """
@@ -259,9 +216,6 @@ class SingleTestRunner(object):
             return (test_result, target_name, toolchain_name,
                     test_id, test_description, round(elapsed_time, 2), duration)
 
-        #if not target_by_mcu.is_disk_virtual:
-        #    delete_dir_files(disk)
-
         # Program MUT with proper image file
         if not disk.endswith('/') and not disk.endswith('\\'):
             disk += '/'
@@ -327,12 +281,6 @@ class SingleTestRunner(object):
         return result
 
 
-def flush_serial(serial):
-    """ Flushing serial in/out. """
-    serial.flushInput()
-    serial.flushOutput()
-
-
 def is_peripherals_available(target_mcu_name, peripherals=None):
     """ Checks if specified target should run specific peripheral test case."""
     if peripherals is not None:
@@ -386,12 +334,102 @@ def get_json_data_from_file(json_spec_filename, verbose=False):
                 result = json.load(data_file)
             except ValueError as json_error_msg:
                 result = None
-                print "Error: %s" % (json_error_msg)
+                print "Error in '%s' file: %s" % (json_spec_filename, json_error_msg)
     except IOError as fileopen_error_msg:
         print "Error: %s" % (fileopen_error_msg)
     if verbose and result:
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(result)
+    return result
+
+
+def print_muts_configuration_from_json(json_data, join_delim=", "):
+    """ Prints MUTs configuration passed to test script for verboseness. """
+    muts_info_cols = []
+    # We need to check all unique properties for each defined MUT
+    for k in json_data:
+        mut_info = json_data[k]
+        for property in mut_info:
+            if property not in muts_info_cols:
+                muts_info_cols.append(property)
+
+    # Prepare pretty table object to display all MUTs
+    pt_cols = ["index"] + muts_info_cols
+    pt = PrettyTable(pt_cols)
+    for col in pt_cols:
+        pt.align[col] = "l"
+
+    # Add rows to pretty print object
+    for k in json_data:
+        row = [k]
+        mut_info = json_data[k]
+        for col in muts_info_cols:
+            cell_val = mut_info[col] if col in mut_info else None
+            if type(cell_val) == ListType:
+                cell_val = join_delim.join(cell_val)
+            row.append(cell_val)
+        pt.add_row(row)
+    return pt.get_string()
+
+
+def print_test_configuration_from_json(json_data, join_delim=", "):
+    """ Prints test specification configuration passed to test script for verboseness. """
+    toolchains_info_cols = []
+    # We need to check all toolchains for each device
+    for k in json_data:
+        # k should be 'targets'
+        targets = json_data[k]
+        for target in targets:
+            toolchains = targets[target]
+            for toolchain in toolchains:
+                if toolchain not in toolchains_info_cols:
+                    toolchains_info_cols.append(toolchain)
+
+    # Prepare pretty table object to display test specification
+    pt_cols = ["mcu"] + sorted(toolchains_info_cols)
+    pt = PrettyTable(pt_cols)
+    for col in pt_cols:
+        pt.align[col] = "l"
+
+    # { target : [conflicted toolchains] }
+    toolchain_conflicts = {}
+    for k in json_data:
+        # k should be 'targets'
+        targets = json_data[k]
+        for target in targets:
+            target_supported_toolchains = get_target_supported_toolchains(target)
+            if not target_supported_toolchains:
+                target_supported_toolchains = []
+            target_name = target if target in TARGET_MAP else "%s*"% target
+            row = [target_name]
+            toolchains = targets[target]
+            for toolchain in toolchains_info_cols:
+                # Check for conflicts
+                conflict = False
+                if toolchain in toolchains:
+                    if toolchain not in target_supported_toolchains:
+                        conflict = True
+                        if target not in toolchain_conflicts:
+                            toolchain_conflicts[target] = []
+                        toolchain_conflicts[target].append(toolchain)
+                # Add marker inside table about target usage / conflict
+                cell_val = 'Yes' if toolchain in toolchains else '-'
+                if conflict:
+                    cell_val += '*'
+                row.append(cell_val)
+            pt.add_row(row)
+
+    # generate result string
+    result = pt.get_string()    # Test specification table
+    if toolchain_conflicts:     # Print conflicts if the exist
+        result += "\n"
+        result += "Toolchain conflicts:\n"
+        for target in toolchain_conflicts:
+            if target not in TARGET_MAP:
+                result += "\t* Target %s unknown\n"% (target)
+            conflict_target_list = ", ".join(toolchain_conflicts[target])
+            sufix = 's' if len(toolchain_conflicts[target]) > 1 else ''
+            result += "\t* Target %s does not support %s toolchain%s\n"% (target, conflict_target_list, sufix)
     return result
 
 
@@ -666,11 +704,11 @@ if __name__ == '__main__':
                       default=False,
                       help="Only build tests, skips actual test procedures (flashing etc.)")
 
-    parser.add_option("", "--cpputest",
-                      action="store_true",
-                      dest="use_cpputest_library",
+    parser.add_option('', '--config',
+                      dest='verbose_test_configuration_only',
                       default=False,
-                      help="Use cpputest library to run UT on target devices")
+                      action="store_true",
+                      help='Displays full test specification and MUTs configration and exits')
 
     parser.add_option('-v', '--verbose',
                       dest='verbose',
@@ -702,17 +740,33 @@ if __name__ == '__main__':
     # Open file with test specification
     # test_spec_filename tells script which targets and their toolchain(s)
     # should be covered by the test scenario
-    test_spec = get_json_data_from_file(opts.test_spec_filename, opts.verbose) if opts.test_spec_filename else None
+    test_spec = get_json_data_from_file(opts.test_spec_filename) if opts.test_spec_filename else None
     if test_spec is None:
         parser.print_help()
         exit(-1)
 
     # Get extra MUTs if applicable
     if opts.muts_spec_filename:
-        MUTs = get_json_data_from_file(opts.muts_spec_filename, opts.verbose)
+        MUTs = get_json_data_from_file(opts.muts_spec_filename)
+
     if MUTs is None:
         parser.print_help()
         exit(-1)
+
+    # Only prints read MUTs configuration
+    if MUTs and opts.verbose_test_configuration_only:
+        print "MUTs configuration in %s:"% opts.muts_spec_filename
+        print print_muts_configuration_from_json(MUTs)
+        print
+        print "Test specification in %s:"% opts.test_spec_filename
+        print print_test_configuration_from_json(test_spec)
+        exit(0)
+
+    # Verbose test specification and MUTs configuration
+    if MUTs and opts.verbose:
+        print print_muts_configuration_from_json(MUTs)
+    if test_spec and opts.verbose:
+        print print_test_configuration_from_json(test_spec)
 
     # Magic happens here... ;)
     start = time()
@@ -731,7 +785,11 @@ if __name__ == '__main__':
             # Let's build our test
             T = TARGET_MAP[target]
             build_mbed_libs_options = ["analyze"] if opts.goanna_for_mbed_sdk else None
-            build_mbed_libs(T, toolchain, options=build_mbed_libs_options)
+            build_mbed_libs_result = build_mbed_libs(T, toolchain, options=build_mbed_libs_options)
+            if not build_mbed_libs_result:
+                print 'Skipped tests for %s target. Toolchain %s is not yet supported for this target' % (T.name, toolchain)
+                continue
+
             build_dir = join(BUILD_DIR, "test", target, toolchain)
 
             for test_id, test in TEST_MAP.iteritems():
@@ -754,7 +812,8 @@ if __name__ == '__main__':
                 if test.automated and test.is_supported(target, toolchain):
                     if not is_peripherals_available(target, test.peripherals):
                         if opts.verbose:
-                            print "TargetTest::%s::TestSkipped(%s)" % (target, ",".join(test.peripherals))
+                            test_peripherals = test.peripherals if test.peripherals else []
+                            print "TargetTest::%s::TestSkipped(%s)" % (target, ",".join(test_peripherals))
                         continue
 
                     test_result = {
@@ -779,12 +838,12 @@ if __name__ == '__main__':
                     # TODO: move this 2 below loops to separate function
                     INC_DIRS = []
                     for lib_id in libraries:
-                        if LIBRARY_MAP[lib_id]['inc_dirs_ext']:
+                        if 'inc_dirs_ext' in LIBRARY_MAP[lib_id] and LIBRARY_MAP[lib_id]['inc_dirs_ext']:
                             INC_DIRS.extend(LIBRARY_MAP[lib_id]['inc_dirs_ext'])
 
                     MACROS = []
                     for lib_id in libraries:
-                        if LIBRARY_MAP[lib_id]['macros']:
+                        if 'macros' in LIBRARY_MAP[lib_id] and LIBRARY_MAP[lib_id]['macros']:
                             MACROS.extend(LIBRARY_MAP[lib_id]['macros'])
 
                     path = build_project(test.source_dir, join(build_dir, test_id),

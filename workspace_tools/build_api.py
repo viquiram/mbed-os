@@ -163,7 +163,7 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
     """ Function returns True is library was built and false if building was skipped """
     # Check toolchain support
     if toolchain_name not in target.supported_toolchains:
-        print '\n%s target is not yet supported by toolchain %s' % (target.name, toolchain_name)
+        print '%s target is not yet supported by toolchain %s' % (target.name, toolchain_name)
         return False
 
     # Toolchain
@@ -239,7 +239,6 @@ def get_unique_supported_toolchains():
 def mcu_toolchain_matrix(verbose_html=False):
     """  Shows target map using prettytable """
     unique_supported_toolchains = get_unique_supported_toolchains()
-
     from prettytable import PrettyTable # Only use it in this function so building works without extra modules
 
     # All tests status table print
@@ -258,6 +257,7 @@ def mcu_toolchain_matrix(verbose_html=False):
             text = "-"
             if default_toolchain == unique_toolchain:
                 text = "Default"
+                perm_counter += 1
             elif unique_toolchain in TARGET_MAP[target].supported_toolchains:
                 text = "Supported"
                 perm_counter += 1
@@ -271,6 +271,11 @@ def mcu_toolchain_matrix(verbose_html=False):
     result += "\n"
     result += "Total permutations: %d"% (perm_counter)
     return result
+
+
+def get_target_supported_toolchains(target):
+    """ Returns target supported toolchains list """
+    return TARGET_MAP[target].supported_toolchains if target in TARGET_MAP else None
 
 
 def static_analysis_scan(target, toolchain_name, CPPCHECK_CMD, CPPCHECK_MSG_FORMAT, options=None, verbose=False, clean=False, macros=None, notify=None):
