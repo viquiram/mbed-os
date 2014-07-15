@@ -70,13 +70,27 @@ File format example: muts_all.json
 
 """
 
+# Check if 'prettytable' module is installed
+try:
+    from prettytable import PrettyTable
+except ImportError, e:
+    print "Error: Can't import 'prettytable' module: %s"% e
+    exit(-1)
+
+# Check if 'serial' module is installed
+try:
+    from serial import Serial
+except ImportError, e:
+    print "Error: Can't import 'serial' module: %s"% e
+    exit(-1)
+
 import sys
 import json
 import optparse
 import pprint
 import re
+import os
 from types import ListType
-from prettytable import PrettyTable
 
 from os.path import join, abspath, dirname, exists, basename
 from shutil import copy
@@ -135,53 +149,110 @@ class ProcessObserver(Thread):
 class SingleTestRunner(object):
     """ Object wrapper for single test run which may involve multiple MUTs."""
 
-    re_detect_testcase_result = None
+    RE_DETECT_TESTCASE_RESULT = None
+
+    # Return codes for test script
     TEST_RESULT_OK = "OK"
     TEST_RESULT_FAIL = "FAIL"
     TEST_RESULT_ERROR = "ERROR"
     TEST_RESULT_UNDEF = "UNDEF"
+    TEST_RESULT_IOERR_COPY = "IOERR_COPY"
+    TEST_RESULT_IOERR_DISK = "IOERR_DISK"
+    TEST_RESULT_IOERR_SERIAL = "IOERR_SERIAL"
+    TEST_RESULT_TIMEOUT = "TIMEOUT"
+
+    GLOBAL_LOOPS_COUNT = 1  # How many times each test should be repeated
+    TEST_LOOPS_LIST = []    # We redefine no.of loops per test_id
+    TEST_LOOPS_DICT = {}    # TEST_LOOPS_LIST in dict format: { test_id : test_loop_count}
 
     # mbed test suite -> SingleTestRunner
     TEST_RESULT_MAPPING = {"success" : TEST_RESULT_OK,
                            "failure" : TEST_RESULT_FAIL,
-                           "error"   : TEST_RESULT_ERROR,
-                           "end"     : TEST_RESULT_UNDEF}
+                           "error" : TEST_RESULT_ERROR,
+                           "ioerr_copy" : TEST_RESULT_IOERR_COPY,
+                           "ioerr_disk" : TEST_RESULT_IOERR_DISK,
+                           "ioerr_serial" : TEST_RESULT_IOERR_SERIAL,
+                           "timeout" : TEST_RESULT_TIMEOUT,
+                           "end" : TEST_RESULT_UNDEF}
 
-    def __init__(self):
+    def __init__(self, _global_loops_count=1, _test_loops_list=""):
         pattern = "\\{(" + "|".join(self.TEST_RESULT_MAPPING.keys()) + ")\\}"
-        self.re_detect_testcase_result = re.compile(pattern)
+        self.RE_DETECT_TESTCASE_RESULT = re.compile(pattern)
+        try:
+            _global_loops_count = int(_global_loops_count)
+        except:
+            _global_loops_count = 1
+        if _global_loops_count < 1:
+            _global_loops_count = 1
+        self.GLOBAL_LOOPS_COUNT = _global_loops_count
+        self.TEST_LOOPS_LIST = _test_loops_list if _test_loops_list else []
+        self.TEST_LOOPS_DICT = self.test_loop_list_to_dict(_test_loops_list)
+
+    def test_loop_list_to_dict(self, test_loops_str):
+        """ Transforms test_id=X,test_id=X,test_id=X into dictionary {test_id : test_id_loops_count} """
+        result = {}
+        if test_loops_str:
+            test_loops = test_loops_str.split(',')
+            for test_loop in test_loops:
+                test_loop_count = test_loop.split('=')
+                if len(test_loop_count) == 2:
+                    _test_id, _test_loops = test_loop_count
+                    try:
+                        _test_loops = int(_test_loops)
+                    except:
+                        continue
+                    result[_test_id] = _test_loops
+        return result
+
+    def get_test_loop_count(self, test_id):
+        """ This function returns no. of loops per test (deducted by test_id_.
+            If test is not in list of redefined loop counts it will use default value. """
+        result = self.GLOBAL_LOOPS_COUNT
+        if test_id in self.TEST_LOOPS_DICT:
+            result = self.TEST_LOOPS_DICT[test_id]
+        return result
 
     def file_copy_method_selector(self, image_path, disk, copy_method):
-        """ Copy file depending on method you want to use """
-        # TODO: Add exception handling for copy procedures (disk can be full). See below.
-        """
-        Traceback (most recent call last):
-          File "mbed\workspace_tools\singletest.py", line 738, in <module>
-            single_test_result = single_test.handle(test_spec, target, toolchain)
-          File "mbed\workspace_tools\singletest.py", line 252, in handle
-            self.file_copy_method_selector(image_path, disk, opts.copy_method)
-          File "mbed\workspace_tools\singletest.py", line 203, in file_copy_method_selector
-            copy(image_path, disk)
-          File "C:\Python27\lib\shutil.py", line 119, in copy
-            copyfile(src, dst)
-          File "C:\Python27\lib\shutil.py", line 84, in copyfile
-            copyfileobj(fsrc, fdst)
-          File "C:\Python27\lib\shutil.py", line 52, in copyfileobj
-            fdst.write(buf)
-        IOError: [Errno 28] No space left on device
-        """
+        """ Copy file depending on method you want to use. Handles exception
+            and return code from shell copy commands. """
+        result = True
+        resutl_msg = ""
         if copy_method == "cp" or  copy_method == "copy" or copy_method == "xcopy":
-            cmd = [copy_method, image_path.encode('ascii', 'ignore'), disk.encode('ascii', 'ignore') +  basename(image_path).encode('ascii', 'ignore')]
-            call(cmd, shell=True)
+            cmd = [copy_method,
+                   image_path.encode('ascii', 'ignore'),
+                   disk.encode('ascii', 'ignore') +  basename(image_path).encode('ascii', 'ignore')]
+            try:
+                ret = call(cmd, shell=True)
+                if ret:
+                    resutl_msg = "Return code: %d. Command: "% ret + " ".join(cmd)
+                    result = False
+            except Exception, e:
+                resutl_msg = e
+                result = False
         else:
+            copy_method = "shutils.copy()"
             # Default python method
-            copy(image_path, disk)
+            try:
+                copy(image_path, disk)
+            except Exception, e:
+                resutl_msg = e
+                result = False
+        return result, resutl_msg, copy_method
 
-    def handle(self, test_spec, target_name, toolchain_name):
-        """
-        Function determines MUT's mbed disk/port and copies binary to
-        target. Test is being invoked afterwards.
-        """
+    def delete_file(file_path):
+        """ Remove file from the system """
+        result = True
+        resutl_msg = ""
+        try:
+            os.remove(file_path)
+        except Exception, e:
+            resutl_msg = e
+            result = False
+        return result, resutl_msg
+
+    def handle(self, test_spec, target_name, toolchain_name, test_loops=1):
+        """ Function determines MUT's mbed disk/port and copies binary to
+            target. Test is being invoked afterwards. """
         data = json.loads(test_spec)
         # Get test information, image and test timeout
         test_id = data['test_id']
@@ -220,26 +291,54 @@ class SingleTestRunner(object):
         if not disk.endswith('/') and not disk.endswith('\\'):
             disk += '/'
 
-        # Choose one method of copy files to mbed virtual drive
-        self.file_copy_method_selector(image_path, disk, opts.copy_method)
+        # Tests can be looped so test results must be stored for the same test
+        test_all_result = []
+        for test_index in range(test_loops):
+            # Choose one method of copy files to mbed virtual drive
+            _copy_res, _err_msg, _copy_method = self.file_copy_method_selector(image_path, disk, opts.copy_method)
 
-        # Copy Extra Files
-        if not target_by_mcu.is_disk_virtual and test.extra_files:
-            for f in test.extra_files:
-                copy(f, disk)
+            # Host test execution
+            start_host_exec_time = time()
 
-        sleep(target_by_mcu.program_cycle_s())
+            if not _copy_res:   # Serial port copy error
+                test_result = "IOERR_COPY"
+                print "Error: Copy method '%s'. %s"% (_copy_method, _err_msg)
+            else:
+                # Copy Extra Files
+                if not target_by_mcu.is_disk_virtual and test.extra_files:
+                    for f in test.extra_files:
+                        copy(f, disk)
 
-        # Host test execution
-        start_host_exec_time = time()
-        test_result = self.run_host_test(test.host_test, disk, port, duration, opts.verbose)
-        elapsed_time = time() - start_host_exec_time
-        print print_test_result(test_result, target_name, toolchain_name,
-                                test_id, test_description, elapsed_time, duration)
-        return (test_result, target_name, toolchain_name,
-                test_id, test_description, round(elapsed_time, 2), duration)
+                sleep(target_by_mcu.program_cycle_s())
+                # Host test execution
+                start_host_exec_time = time()
+                test_result = self.run_host_test(test.host_test, disk, port, duration, opts.verbose)
+                test_all_result.append(test_result)
+
+            elapsed_time = time() - start_host_exec_time
+            print print_test_result(test_result, target_name, toolchain_name,
+                                    test_id, test_description, elapsed_time, duration)
+        return (self.shape_global_test_loop_result(test_all_result), target_name, toolchain_name,
+                test_id, test_description, round(elapsed_time, 2),
+                duration, self.shape_test_loop_ok_result_count(test_all_result))
+
+    def shape_test_loop_ok_result_count(self, test_all_result):
+        """ Reformats list of results to simple string """
+        test_loop_count = len(test_all_result)
+        test_loop_ok_result = test_all_result.count(self.TEST_RESULT_OK)
+        return "%d/%d"% (test_loop_ok_result, test_loop_count)
+
+    def shape_global_test_loop_result(self, test_all_result):
+        """ Reformats list of results to simple string """
+        result = self.TEST_RESULT_FAIL
+        if all(test_all_result[0] == res for res in test_all_result):
+            result = test_all_result[0]
+        return result
 
     def run_host_test(self, name, disk, port, duration, verbose=False, extra_serial=""):
+        """ Function creates new process with host test configured with particular test case.
+            Function also is pooling for serial port activity from process to catch all data
+            printed by test runner and host test during test execution."""
         # print "{%s} port:%s disk:%s"  % (name, port, disk),
         cmd = ["python", "%s.py" % name, '-p', port, '-d', disk, '-t', str(duration), "-e", extra_serial]
         proc = Popen(cmd, stdout=PIPE, cwd=HOST_TESTS)
@@ -272,9 +371,9 @@ class SingleTestRunner(object):
             print "Test::Output::Finish"
 
         # Parse test 'output' data
-        result = self.TEST_RESULT_UNDEF
+        result = self.TEST_RESULT_TIMEOUT
         for line in "".join(output).splitlines():
-            search_result = self.re_detect_testcase_result.search(line)
+            search_result = self.RE_DETECT_TESTCASE_RESULT.search(line)
             if search_result and len(search_result.groups()):
                 result = self.TEST_RESULT_MAPPING[search_result.groups(0)[0]]
                 break
@@ -434,6 +533,9 @@ def print_test_configuration_from_json(json_data, join_delim=", "):
 
 
 def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','):
+    """ Generates table summary with all test cases and additional test cases
+        information using pretty print functionality. Allows test suite user to
+        see test cases. """
     # get all unique test ID prefixes
     unique_test_id = []
     for test in TESTS:
@@ -478,8 +580,8 @@ def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','
         # Update counters
         counter_all += 1
         counter_dict_test_id_types_all[test_id_prefix] += 1
-    print pt
-    print
+    result = pt.get_string()
+    result += "\n\n"
 
     if result_summary:
         # Automation result summary
@@ -492,9 +594,9 @@ def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','
         percent_progress = round(100.0 * counter_automated / float(counter_all), 1)
         str_progress = progress_bar(percent_progress, 75)
         pt.add_row([counter_automated, counter_all, percent_progress, str_progress])
-        print "Automation coverage:"
-        print pt
-        print
+        result += "Automation coverage:\n"
+        result += pt.get_string()
+        result += "\n\n"
 
         # Test automation coverage table print
         test_id_cols = ['id', 'automated', 'all', 'percent [%]', 'progress']
@@ -513,10 +615,10 @@ def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','
                    percent_progress,
                    "[" + str_progress + "]"]
             pt.add_row(row)
-        print "Test automation coverage:"
-        print pt
-        print
-
+        result += "Test automation coverage:\n"
+        result += pt.get_string()
+        result += "\n\n"
+    return result
 
 def progress_bar(percent_progress, saturation=0):
     """ This function creates progress bar with optional simple saturation mark"""
@@ -572,7 +674,6 @@ def generate_test_summary_by_target(test_summary):
             if test[TEST_INDEX] not in result_dict:
                 result_dict[test[TEST_INDEX]] = { }
             result_dict[test[TEST_INDEX]][test[TOOLCHAIN_INDEX]] = test[RESULT_INDEX]
-            pass
 
         pt_cols = ["Target", "Test ID", "Test Description"] + unique_toolchains
         pt = PrettyTable(pt_cols)
@@ -597,7 +698,7 @@ def generate_test_summary(test_summary):
     result = "Test summary:\n"
     # Pretty table package is used to print results
     pt = PrettyTable(["Result", "Target", "Toolchain", "Test ID", "Test Description",
-                      "Elapsed Time (sec)", "Timeout (sec)"])
+                      "Elapsed Time (sec)", "Timeout (sec)", "Loops"])
     pt.align["Result"] = "l" # Left align
     pt.align["Target"] = "l" # Left align
     pt.align["Toolchain"] = "l" # Left align
@@ -605,10 +706,14 @@ def generate_test_summary(test_summary):
     pt.align["Test Description"] = "l" # Left align
     pt.padding_width = 1 # One space between column edges and contents (default)
 
-    result_dict = { single_test.TEST_RESULT_OK : 0,
-                    single_test.TEST_RESULT_FAIL : 0,
-                    single_test.TEST_RESULT_ERROR : 0,
-                    single_test.TEST_RESULT_UNDEF : 0 }
+    result_dict = {single_test.TEST_RESULT_OK : 0,
+                   single_test.TEST_RESULT_FAIL : 0,
+                   single_test.TEST_RESULT_ERROR : 0,
+                   single_test.TEST_RESULT_UNDEF : 0,
+                   single_test.TEST_RESULT_IOERR_COPY : 0,
+                   single_test.TEST_RESULT_IOERR_DISK : 0,
+                   single_test.TEST_RESULT_IOERR_SERIAL : 0,
+                   single_test.TEST_RESULT_TIMEOUT : 0 }
 
     for test in test_summary:
         if test[0] in result_dict:
@@ -710,6 +815,24 @@ if __name__ == '__main__':
                       action="store_true",
                       help='Displays full test specification and MUTs configration and exits')
 
+    parser.add_option('', '--loops',
+                      dest='test_loops_list',
+                      help='Set no. of loops per test. Format: TEST_1=1,TEST_2=2,TEST_3=3')
+
+    parser.add_option('', '--global-loops',
+                      dest='test_global_loops_value',
+                      help='Set global number of test loops per test. Default value is set 1')
+
+    parser.add_option('', '--firmware-name',
+                      dest='firmware_global_name',
+                      help='Set global name for all produced projects. E.g. you can call all test binaries firmware.bin')
+
+    parser.add_option('', '--verbose-skipped',
+                      dest='verbose_skipped_tests',
+                      default=False,
+                      action="store_true",
+                      help='Prints some extra information about skipped tests')
+
     parser.add_option('-v', '--verbose',
                       dest='verbose',
                       default=False,
@@ -723,13 +846,13 @@ if __name__ == '__main__':
 
     # Print summary / information about automation test status
     if opts.test_automation_report:
-        get_avail_tests_summary_table()
+        print get_avail_tests_summary_table()
         exit(0)
 
     # Print summary / information about automation test status
     if opts.test_case_report:
         test_case_report_cols = ['id', 'automated', 'description', 'peripherals', 'host_test', 'duration', 'source_dir']
-        get_avail_tests_summary_table(cols=test_case_report_cols, result_summary=False, join_delim='\n')
+        print get_avail_tests_summary_table(cols=test_case_report_cols, result_summary=False, join_delim='\n')
         exit(0)
 
     # Only prints matrix of supported toolchains
@@ -770,7 +893,7 @@ if __name__ == '__main__':
 
     # Magic happens here... ;)
     start = time()
-    single_test = SingleTestRunner()
+    single_test = SingleTestRunner(_global_loops_count=opts.test_global_loops_value, _test_loops_list=opts.test_loops_list)
 
     clean = test_spec.get('clean', False)
     test_ids = test_spec.get('test_ids', [])
@@ -783,6 +906,10 @@ if __name__ == '__main__':
         for toolchain in toolchains:
             # print '=== %s::%s ===' % (target, toolchain)
             # Let's build our test
+            if target not in TARGET_MAP:
+                print 'Skipped tests for %s target. Target platform not found' % (target)
+                continue
+
             T = TARGET_MAP[target]
             build_mbed_libs_options = ["analyze"] if opts.goanna_for_mbed_sdk else None
             build_mbed_libs_result = build_mbed_libs(T, toolchain, options=build_mbed_libs_options)
@@ -800,22 +927,23 @@ if __name__ == '__main__':
                     continue
 
                 if opts.test_only_peripheral and not test.peripherals:
-                    if opts.verbose:
+                    if opts.verbose_skipped_tests:
                         print "TargetTest::%s::NotPeripheralTestSkipped()" % (target)
                     continue
 
                 if opts.test_only_common and test.peripherals:
-                    if opts.verbose:
+                    if opts.verbose_skipped_tests:
                         print "TargetTest::%s::PeripheralTestSkipped()" % (target)
                     continue
 
                 if test.automated and test.is_supported(target, toolchain):
                     if not is_peripherals_available(target, test.peripherals):
-                        if opts.verbose:
+                        if opts.verbose_skipped_tests:
                             test_peripherals = test.peripherals if test.peripherals else []
                             print "TargetTest::%s::TestSkipped(%s)" % (target, ",".join(test_peripherals))
                         continue
 
+                    # This is basic structure storing test results
                     test_result = {
                         'target': target,
                         'toolchain': toolchain,
@@ -846,9 +974,13 @@ if __name__ == '__main__':
                         if 'macros' in LIBRARY_MAP[lib_id] and LIBRARY_MAP[lib_id]['macros']:
                             MACROS.extend(LIBRARY_MAP[lib_id]['macros'])
 
+                    project_name = opts.firmware_global_name if opts.firmware_global_name else None
                     path = build_project(test.source_dir, join(build_dir, test_id),
-                                         T, toolchain, test.dependencies, options=build_project_options,
-                                         clean=clean, verbose=opts.verbose,
+                                         T, toolchain, test.dependencies,
+                                         options=build_project_options,
+                                         clean=clean,
+                                         verbose=opts.verbose,
+                                         name=project_name,
                                          macros=MACROS,
                                          inc_dirs=INC_DIRS)
 
@@ -862,7 +994,8 @@ if __name__ == '__main__':
                     # For an automated test the duration act as a timeout after
                     # which the test gets interrupted
                     test_spec = shape_test_request(target, path, test_id, test.duration)
-                    single_test_result = single_test.handle(test_spec, target, toolchain)
+                    test_loops = single_test.get_test_loop_count(test_id)
+                    single_test_result = single_test.handle(test_spec, target, toolchain, test_loops=test_loops)
                     test_summary.append(single_test_result)
                     # print test_spec, target, toolchain
 
