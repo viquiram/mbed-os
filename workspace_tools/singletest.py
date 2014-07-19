@@ -91,6 +91,7 @@ import pprint
 import re
 import os
 from types import ListType
+import random
 
 from os.path import join, abspath, dirname, exists, basename
 from shutil import copy
@@ -300,8 +301,9 @@ class SingleTestRunner(object):
             # Host test execution
             start_host_exec_time = time()
 
+            single_test_result = self.TEST_RESULT_UNDEF # singe test run result
             if not _copy_res:   # Serial port copy error
-                test_result = "IOERR_COPY"
+                single_test_result = "IOERR_COPY"
                 print "Error: Copy method '%s'. %s"% (_copy_method, _err_msg)
             else:
                 # Copy Extra Files
@@ -312,11 +314,15 @@ class SingleTestRunner(object):
                 sleep(target_by_mcu.program_cycle_s())
                 # Host test execution
                 start_host_exec_time = time()
-                test_result = self.run_host_test(test.host_test, disk, port, duration, opts.verbose)
-                test_all_result.append(test_result)
+
+                host_test_verbose = opts.verbose_test_result_only or opts.verbose
+                single_test_result = self.run_host_test(test.host_test, disk, port, duration, host_test_verbose)
+
+            # Store test result
+            test_all_result.append(single_test_result)
 
             elapsed_time = time() - start_host_exec_time
-            print print_test_result(test_result, target_name, toolchain_name,
+            print print_test_result(single_test_result, target_name, toolchain_name,
                                     test_id, test_description, elapsed_time, duration)
         return (self.shape_global_test_loop_result(test_all_result), target_name, toolchain_name,
                 test_id, test_description, round(elapsed_time, 2),
@@ -827,11 +833,23 @@ if __name__ == '__main__':
                       dest='firmware_global_name',
                       help='Set global name for all produced projects. E.g. you can call all test binaries firmware.bin')
 
+    parser.add_option('-u', '--shuffle-tests',
+                      dest='shuffle_test_order',
+                      default=False,
+                      action="store_true",
+                      help='Shuffles test execution order')
+
     parser.add_option('', '--verbose-skipped',
                       dest='verbose_skipped_tests',
                       default=False,
                       action="store_true",
                       help='Prints some extra information about skipped tests')
+
+    parser.add_option('-V', '--verbose-test-result',
+                      dest='verbose_test_result_only',
+                      default=False,
+                      action="store_true",
+                      help='Prints test serial output')
 
     parser.add_option('-v', '--verbose',
                       dest='verbose',
@@ -919,7 +937,13 @@ if __name__ == '__main__':
 
             build_dir = join(BUILD_DIR, "test", target, toolchain)
 
-            for test_id, test in TEST_MAP.iteritems():
+            # Enumerate through all tests
+            test_map_keys = TEST_MAP.keys()
+            if opts.shuffle_test_order:
+                random.shuffle(test_map_keys)
+
+            for test_id in test_map_keys:
+                test = TEST_MAP[test_id]
                 if opts.test_by_names and test_id not in opts.test_by_names.split(','):
                     continue
 

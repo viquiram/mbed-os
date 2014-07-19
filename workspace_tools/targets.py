@@ -385,7 +385,7 @@ class LPC11U37_501(Target):
         Target.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX']
-        self.supported_toolchains = ["GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
         self.default_toolchain = "uARM"
 
 
@@ -555,6 +555,9 @@ class ARM_MPS2(Target):
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
+class ARCH_GPRS(LPC11U37_501):
+    def __init__(self):
+        LPC11U37_501.__init__(self)
 
 class EFM32GG_STK3700(Target):
 #    ONLINE_TOOLCHAIN = "uARM"
@@ -628,6 +631,7 @@ TARGETS = [
     LPCCAPPUCCINO(),
     HRM1017(),
     ARM_MPS2(),
+    ARCH_GPRS(),
     EFM32GG_STK3700(),
     EFM32ZG_STK3200()
 ]
