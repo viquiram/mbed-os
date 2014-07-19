@@ -535,6 +535,11 @@ class ARCH_PRO(Target):
         self.supported_form_factors = ["ARDUINO"]
 
 
+class ARCH_GPRS(LPC11U37_501):
+    def __init__(self):
+        LPC11U37_501.__init__(self)
+
+
 class LPCCAPPUCCINO(LPC11U37_501):
     def __init__(self):
         LPC11U37_501.__init__(self)
@@ -555,9 +560,6 @@ class ARM_MPS2(Target):
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
-class ARCH_GPRS(LPC11U37_501):
-    def __init__(self):
-        LPC11U37_501.__init__(self)
 
 class EFM32GG_STK3700(Target):
 #    ONLINE_TOOLCHAIN = "uARM"
@@ -585,6 +587,14 @@ class EFM32ZG_STK3200(Target):
         self.macros = ['EFM32ZG222F32']
 
         self.supported_toolchains = ["GCC_ARM"]
+        
+        
+class RBLAB_NRF51822(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'NRF51822']
+        self.macros = ['TARGET_NRF51822']
+        
 
 # Get a single instance for each target
 TARGETS = [
@@ -628,10 +638,12 @@ TARGETS = [
     XADOW_M0(),
     ARCH_BLE(),
     ARCH_PRO(),
+    ARCH_GPRS(),
     LPCCAPPUCCINO(),
     HRM1017(),
     ARM_MPS2(),
     ARCH_GPRS(),
+    RBBLAB_NRF51822(),
     EFM32GG_STK3700(),
     EFM32ZG_STK3200()
 ]
