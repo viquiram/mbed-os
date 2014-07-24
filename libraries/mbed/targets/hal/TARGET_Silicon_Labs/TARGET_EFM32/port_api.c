@@ -27,7 +27,7 @@
 
 PinName port_pin(PortName port, int pin_n)
 {
-    return (PinName)(pin_n | port << 4); // Encode pin and port number in one uint32
+    return (PinName) (pin_n | port << 4); // Encode pin and port number in one uint32
 }
 
 void port_init(port_t *obj, PortName port, int mask, PinDirection dir)
@@ -45,7 +45,8 @@ void port_init(port_t *obj, PortName port, int mask, PinDirection dir)
 void port_mode(port_t *obj, PinMode mode)
 {
     /* Set mode for pins given by mask */
-    for (uint32_t pin = 0; pin < PORT_NUM_PINS; pin++) {
+    uint32_t pin;
+    for (pin = 0; pin < PORT_NUM_PINS; pin++) {
         if (obj->mask & (1 << pin)) {
             pin_mode(port_pin(obj->port, pin), mode);
         }

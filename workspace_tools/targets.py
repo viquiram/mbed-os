@@ -560,43 +560,15 @@ class ARM_MPS2(Target):
         self.macros = ['CMSDK_CM4']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
-
-
-class EFM32GG_STK3700(Target):
-#    ONLINE_TOOLCHAIN = "uARM"
-    def __init__(self):
-        Target.__init__(self)
-
-        self.core = "Cortex-M3"
-
-        self.extra_labels = ['Silicon_Labs', 'EFM32']
-
-        self.macros = ['EFM32GG990F1024']
-
-        self.supported_toolchains = ["GCC_ARM"]
-
-
-class EFM32ZG_STK3200(Target):
-#    ONLINE_TOOLCHAIN = "uARM"
-    def __init__(self):
-        Target.__init__(self)
-
-        self.core = "Cortex-M0+"
-
-        self.extra_labels = ['Silicon_Labs', 'EFM32']
-
-        self.macros = ['EFM32ZG222F32']
-
-        self.supported_toolchains = ["GCC_ARM"]
         
         
 class RBLAB_NRF51822(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'NRF51822']
-        self.macros = ['TARGET_NRF51822']
-        
+        self.macros = ['TARGET_NRF51822']        
 
+        
 class GHI_MBUINO(LPC11U24):
     def __init__(self):
         LPC11U24.__init__(self)
@@ -605,6 +577,7 @@ class GHI_MBUINO(LPC11U24):
         self.macros = ['TARGET_LPC11U24']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
         self.default_toolchain = "uARM"
+        
         
 class MTS_GAMBIT(Target):
     def __init__(self):
@@ -616,6 +589,62 @@ class MTS_GAMBIT(Target):
         self.is_disk_virtual = True
         self.default_toolchain = "ARM"
 
+
+class EFM32_G8XX_STK(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M3"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32G890F128']
+        self.supported_toolchains = ["GCC_ARM"]
+
+
+class EFM32GG_STK3700(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M3"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32GG990F1024']
+        self.supported_toolchains = ["GCC_ARM", "ARM"]
+
+
+class EFM32LG_STK3600(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M3"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32LG990F256']
+        self.supported_toolchains = ["GCC_ARM", "ARM"]
+
+
+class EFM32TG_STK3300(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M3"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32TG840F32']
+        self.supported_toolchains = ["GCC_ARM"]
+
+
+class EFM32WG_STK3800(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32WG990F256']
+        self.supported_toolchains = ["GCC_ARM", "ARM"]
+
+
+class EFM32ZG_STK3200(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32ZG222F32']
+        self.supported_toolchains = ["GCC_ARM", "ARM"]
+
+        
+        
 # Get a single instance for each target
 TARGETS = [
     LPC2368(),
@@ -664,13 +693,14 @@ TARGETS = [
     ARM_MPS2(),
     ARCH_GPRS(),
     RBLAB_NRF51822(),
-<<<<<<< HEAD
-    EFM32GG_STK3700(),
-    EFM32ZG_STK3200()
-=======
     GHI_MBUINO(),
     MTS_GAMBIT(),
->>>>>>> 7a5896cba254ab45829b43f6cef5563706ebba2b
+    EFM32_G8XX_STK(),
+    EFM32GG_STK3700(),
+    EFM32LG_STK3600(),
+    EFM32TG_STK3300(),
+    EFM32WG_STK3800(),
+    EFM32ZG_STK3200(),
 ]
 
 # Map each target name to its unique instance
