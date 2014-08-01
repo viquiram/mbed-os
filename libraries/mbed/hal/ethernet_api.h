@@ -53,6 +53,19 @@ int ethernet_link(void);
 // force link settings
 void ethernet_set_link(int speed, int duplex);
 
+// send ethernet write buffer, returning the packet size sent
+int ethernet_transmission(unsigned char * pkt, unsigned int length);
+
+// recieve from ethernet buffer, returning packet size, or 0 if no packet
+int ethernet_reception(unsigned int *recvbuf, unsigned int *index);
+
+// get the ethernet address
+int ethernet_mac_address(char *mac);
+
+unsigned int ethernet_check_ready(void);
+
+unsigned int ethernet_intf(void);
+
 #ifdef __cplusplus
 }
 #endif

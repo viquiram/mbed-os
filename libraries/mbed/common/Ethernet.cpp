@@ -68,6 +68,34 @@ void Ethernet::set_link(Mode mode) {
     ethernet_set_link(speed, duplex);
 }
 
+int Ethernet::Ethernet_init() {
+    return ethernet_init();
+}
+
+int Ethernet::transmission(unsigned char * pkt, unsigned int length) {
+    return ethernet_transmission(pkt,length);
+}
+
+int Ethernet::reception(unsigned int *recvbuf, unsigned int *index) {
+    return ethernet_reception((unsigned int *)recvbuf, index);
+}
+
+int Ethernet::mac_address(char *mac) {
+    return ethernet_mac_address(mac);
+}
+
+unsigned int Ethernet::Ethernet_check_ready(void)
+{
+	return ethernet_check_ready();
+}
+
+unsigned int Ethernet :: Ethernet_intf (void)
+{
+	return ethernet_intf();
+}
+
+
+
 } // namespace mbed
 
 #endif

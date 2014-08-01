@@ -40,6 +40,8 @@ int  i2c_write        (i2c_t *obj, int address, const char *data, int length, in
 void i2c_reset        (i2c_t *obj);
 int  i2c_byte_read    (i2c_t *obj, int last);
 int  i2c_byte_write   (i2c_t *obj, int data);
+int mps2_i2c_ts_init			(void);
+void mps2_i2c_aaci_init		(void);
 
 #if DEVICE_I2CSLAVE
 void i2c_slave_mode   (i2c_t *obj, int enable_slave);

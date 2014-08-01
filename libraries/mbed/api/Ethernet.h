@@ -161,6 +161,35 @@ public:
      *  @param mode the speed and duplex mode to set the link to:
      */
     void set_link(Mode mode);
+		
+		 /** Send an outgoing ethernet packet.
+     *
+     *  After filling in the data in an ethernet packet it must be send.
+     *  Send will provide a new packet to write to.
+     *
+     *  @returns
+     *    0 if the sending was failed,
+     *    or the size of the packet successfully sent.
+     */
+    int transmission(unsigned char * pkt, unsigned int length);
+
+    /** Recevies an arrived ethernet packet.
+     *
+     *  Receiving an ethernet packet will drop the last received ethernet packet
+     *  and make a new ethernet packet ready to read.
+     *  If no ethernet packet is arrived it will return 0.
+     *
+     *  @returns
+     *    0 if no ethernet packet is arrived,
+     *    or the size of the arrived packet.
+     */
+    int reception(unsigned int *recvbuf, unsigned int *index);
+    int Ethernet_init();
+    int mac_address(char *mac);
+
+	unsigned int Ethernet_check_ready(void);
+	virtual unsigned int Ethernet_intf (void);
+
 };
 
 } // namespace mbed

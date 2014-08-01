@@ -49,6 +49,9 @@
 #include "Ethernet.h"
 #include "CAN.h"
 #include "RawSerial.h"
+#include "CLCD.h"
+#include "TSC.h"
+#include "AACI.h"
 
 // mbed Internal components
 #include "Timer.h"
