@@ -27,46 +27,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************
  */
-#include "mbed_assert.h"
-#include "gpio_api.h"
-#include "pinmap.h"
-#include "error.h"
+#ifndef MBED_DEVICE_H
+#define MBED_DEVICE_H
 
-extern uint32_t Set_GPIO_Clock(uint32_t port_idx);
+#define DEVICE_PORTIN           1
+#define DEVICE_PORTOUT          1
+#define DEVICE_PORTINOUT        1
 
-uint32_t gpio_set(PinName pin) {
-    MBED_ASSERT(pin != (PinName)NC);
+#define DEVICE_INTERRUPTIN      1
 
-    pin_function(pin, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
-    return (uint32_t)(1 << ((uint32_t)pin & 0xF)); // Return the pin mask
-}
+#define DEVICE_ANALOGIN         1
+#define DEVICE_ANALOGOUT        1 
 
-void gpio_init(gpio_t *obj, PinName pin) {
-    obj->pin = pin;
-    if (pin == (PinName)NC)
-        return;
-    uint32_t port_index = STM_PORT(pin);
-  
-    // Enable GPIO clock
-    uint32_t gpio_add = Set_GPIO_Clock(port_index);
-    GPIO_TypeDef *gpio = (GPIO_TypeDef *)gpio_add;
-    
-    // Fill GPIO object structure for future use
-    obj->mask    = gpio_set(pin);
-    obj->reg_in  = &gpio->IDR;
-    obj->reg_set = &gpio->BSRRL;
-    obj->reg_clr = &gpio->BSRRH;
-}
+#define DEVICE_SERIAL           1
 
-void gpio_mode(gpio_t *obj, PinMode mode) {
-    pin_mode(obj->pin, mode);
-}
+#define DEVICE_I2C              1
+#define DEVICE_I2CSLAVE         1
 
-void gpio_dir(gpio_t *obj, PinDirection direction) {
-    MBED_ASSERT(obj->pin != (PinName)NC);
-    if (direction == PIN_OUTPUT) {
-        pin_function(obj->pin, STM_PIN_DATA(STM_MODE_OUTPUT_PP, GPIO_NOPULL, 0));
-    } else { // PIN_INPUT
-        pin_function(obj->pin, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
-    }
-}
+#define DEVICE_SPI              1
+#define DEVICE_SPISLAVE         1
+
+#define DEVICE_RTC              1
+
+#define DEVICE_PWMOUT           1
+
+#define DEVICE_SLEEP            1
+
+//=======================================
+
+#define DEVICE_SEMIHOST         0
+#define DEVICE_LOCALFILESYSTEM  0
+#define DEVICE_ID_LENGTH       24
+
+#define DEVICE_DEBUG_AWARENESS  0
+
+#define DEVICE_STDIO_MESSAGES   1
+
+#define DEVICE_ERROR_RED        0
+
+#include "objects.h"
+
+#endif

@@ -248,7 +248,7 @@ class STM32F407(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4F"
-        self.extra_labels = ['STM', 'STM32F4XX']
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F4XX']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
 
 
@@ -515,6 +515,13 @@ class DISCO_F407VG(Target):
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "uARM"
 
+class ARCH_MAX(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F407', 'STM32F407VG']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.default_toolchain = "uARM"
 
 class DISCO_F303VC(Target):
     def __init__(self):
@@ -589,8 +596,7 @@ class RBLAB_NRF51822(NRF51822):
         self.extra_labels = ['NORDIC', 'MCU_NRF51822']
         self.macros = ['TARGET_NRF51822']
 
-        
-class GHI_MBUINO(LPC11U24):
+class OC_MBUINO(LPC11U24):
     def __init__(self):
         LPC11U24.__init__(self)
         self.core = "Cortex-M0"
@@ -712,9 +718,8 @@ TARGETS = [
     LPCCAPPUCCINO(),
     HRM1017(),
     ARM_MPS2(),
-    ARCH_GPRS(),
     RBLAB_NRF51822(),
-    GHI_MBUINO(),
+    OC_MBUINO(),
     MTS_GAMBIT(),
     EFM32_G8XX_STK(),
     EFM32GG_STK3700(),
@@ -722,6 +727,7 @@ TARGETS = [
     EFM32TG_STK3300(),
     EFM32WG_STK3800(),
     EFM32ZG_STK3200(),
+    ARCH_MAX(),
 ]
 
 # Map each target name to its unique instance
