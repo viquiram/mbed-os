@@ -557,6 +557,7 @@ class ARM_MPS2(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4F"
+        self.extra_labels = ['ARM_SSG', 'MPS2']
         self.macros = ['CMSDK_CM4']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
