@@ -15,9 +15,11 @@
  */
 #include "analogout_api.h"
 
+#if DEVICE_ANALOGOUT
+
 #include "cmsis.h"
 #include "pinmap.h"
-#include "error.h"
+#include "mbed_error.h"
 #include "PeripheralPins.h"
 
 #define RANGE_12BIT     0xFFF
@@ -76,3 +78,5 @@ uint16_t analogout_read_u16(dac_t *obj) {
     uint32_t value = dac_read(obj); // 12-bit
     return (value << 4) | ((value >> 8) & 0x003F);
 }
+
+#endif

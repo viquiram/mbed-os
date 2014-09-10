@@ -17,9 +17,12 @@
 #include "mbed_assert.h"
 
 #include "spi_api.h"
+
+#if DEVICE_SPI
+
 #include "cmsis.h"
 #include "pinmap.h"
-#include "error.h"
+#include "mbed_error.h"
 #include "fsl_clock_manager.h"
 #include "fsl_dspi_hal.h"
 #include "PeripheralPins.h"
@@ -130,6 +133,7 @@ int spi_slave_receive(spi_t *obj) {
 }
 
 int spi_slave_read(spi_t *obj) {
+    dspi_hal_clear_status_flag(obj->instance, kDspiRxFifoDrainRequest);
     return dspi_hal_read_data(obj->instance);
 }
 
@@ -137,3 +141,5 @@ void spi_slave_write(spi_t *obj, int value) {
     while (!spi_writeable(obj));
     dspi_hal_write_data_slave_mode(obj->instance, (uint32_t)value);
 }
+
+#endif

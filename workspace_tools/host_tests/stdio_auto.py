@@ -22,16 +22,33 @@ from time import time
 from sys import stdout
 
 class StdioTest(DefaultTest):
-    PATTERN_INT_VALUE = "^Your value was: (-?\d+)"
+    PATTERN_INT_VALUE = "Your value was: (-?\d+)"
     re_detect_int_value = re.compile(PATTERN_INT_VALUE)
 
     def run(self):
         test_result = True
 
+        # Let's wait for Mbed to print its readiness, usually "{{start}}"
+        if self.mbed.serial_timeout(None) is None:
+            self.print_result("ioerr_serial")
+            return
+
+        c = self.mbed.serial_read(len('{{start}}'))
+        if c is None:
+            self.print_result("ioerr_serial")
+            return
+        print c
+        stdout.flush()
+
+        if self.mbed.serial_timeout(1) is None:
+            self.print_result("ioerr_serial")
+            return
+
         for i in range(1, 5):
-            random_integer = random.randint(-10000, 10000)
+            random_integer = random.randint(-99999, 99999)
             print "Generated number: " + str(random_integer)
-            self.mbed.serial.write(str(random_integer) + "\n")
+            stdout.flush()
+            self.mbed.serial_write(str(random_integer) + "\n")
             serial_stdio_msg = ""
 
             ip_msg_timeout = self.mbed.options.timeout
@@ -53,7 +70,7 @@ class StdioTest(DefaultTest):
                     stdout.flush()
                     break
             else:
-                print "Error: No IP and port information sent from server"
+                print "Error: No data from MUT sent"
                 self.print_result('error')
                 exit(-2)
 
@@ -61,7 +78,6 @@ class StdioTest(DefaultTest):
             self.print_result('success')
         else:
             self.print_result('failure')
-        stdout.flush()
 
 if __name__ == '__main__':
     StdioTest().run()

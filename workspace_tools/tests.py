@@ -156,7 +156,7 @@ TESTS = [
     {
         "id": "MBED_A12", "description": "SD File System",
         "source_dir": join(TEST_DIR, "mbed", "sd"),
-        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, FS_LIBRARY],
         "automated": True,
         "duration": 15,
         "peripherals": ["SD"]
@@ -244,7 +244,7 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "peripherals": ["24LC256"],
         "automated": True,
-        "duration": 15,
+        "duration": 10,
     },
     {
         "id": "MBED_BLINKY", "description": "Blinky",
@@ -287,6 +287,33 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES]
     },
 
+    # performance related tests
+    {
+        "id": "PERF_1", "description": "SD Stdio R/W Speed",
+        "source_dir": join(TEST_DIR, "mbed", "sd_perf_stdio"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, FS_LIBRARY],
+        "automated": True,
+        "duration": 15,
+        "peripherals": ["SD"]
+    },
+    {
+        "id": "PERF_2", "description": "SD FileHandle R/W Speed",
+        "source_dir": join(TEST_DIR, "mbed", "sd_perf_fhandle"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, FS_LIBRARY],
+        "automated": True,
+        "duration": 15,
+        "peripherals": ["SD"]
+    },
+    {
+        "id": "PERF_3", "description": "SD FatFS R/W Speed",
+        "source_dir": join(TEST_DIR, "mbed", "sd_perf_fatfs"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, FS_LIBRARY],
+        "automated": True,
+        "duration": 15,
+        "peripherals": ["SD"]
+    },
+
+
     # Not automated MBED tests
     {
         "id": "MBED_1", "description": "I2C SRF08",
@@ -297,7 +324,7 @@ TESTS = [
     {
         "id": "MBED_2", "description": "stdio",
         "source_dir": join(TEST_DIR, "mbed", "stdio"),
-        "dependencies": [MBED_LIBRARIES],
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "duration": 20,
         "automated": True,
         "host_test": "stdio_auto"
@@ -400,7 +427,7 @@ TESTS = [
     {
         "id": "MBED_19", "description": "SD FS Directory",
         "source_dir": join(TEST_DIR, "mbed", "dir_sd"),
-        "dependencies": [MBED_LIBRARIES, SD_FS, FAT_FS],
+        "dependencies": [MBED_LIBRARIES, FS_LIBRARY],
         "peripherals": ["SD"]
     },
     {
@@ -482,6 +509,13 @@ TESTS = [
         "id": "MBED_32", "description": "Pin toggling",
         "source_dir": join(TEST_DIR, "mbed", "pin_toggling"),
         "dependencies": [MBED_LIBRARIES],
+    },
+    {
+        "id": "MBED_33", "description": "C string operations",
+        "source_dir": join(TEST_DIR, "mbed", "cstring"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "duration": 10,
+        "automated": False,
     },
 
     # CMSIS RTOS tests
@@ -596,7 +630,7 @@ TESTS = [
     {
         "id": "RTOS_9", "description": "SD File write-read",
         "source_dir": join(TEST_DIR, "rtos", "mbed", "file"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, FS_LIBRARY],
         "automated": True,
         "peripherals": ["SD"],
         "mcu": ["LPC1768", "LPC11U24", "LPC812", "KL25Z", "KL05Z", "K64F", "KL46Z"],
@@ -693,7 +727,7 @@ TESTS = [
     {
         "id": "NET_13", "description": "TCP client echo loop",
         "source_dir": join(TEST_DIR, "net", "echo", "tcp_client_loop"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
         "automated": True,
         "duration": 15,
         "host_test": "tcpecho_client_auto",
@@ -822,7 +856,7 @@ TESTS = [
     {
         "id": "EXAMPLE_2", "description": "FS + RTOS",
         "source_dir": join(TEST_DIR, "mbed", "fs"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, SD_FS, FAT_FS],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, TEST_MBED_LIB, FS_LIBRARY],
     },
 
     # CPPUTEST Library provides Unit testing Framework

@@ -5,7 +5,6 @@ Copyright (c) 2011-2013 ARM Limited
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 
@@ -16,25 +15,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import re
 import tempfile
-from os.path import join, exists, basename
-from shutil import rmtree
+
 from types import ListType
+from shutil import rmtree
+from os.path import join, exists, basename
 
 from workspace_tools.utils import mkdir, run_cmd, run_cmd_ext
-from workspace_tools.toolchains import TOOLCHAIN_CLASSES
 from workspace_tools.paths import MBED_TARGETS_PATH, MBED_LIBRARIES, MBED_API, MBED_HAL, MBED_COMMON
-from workspace_tools.libraries import Library
 from workspace_tools.targets import TARGET_NAMES, TARGET_MAP
+from workspace_tools.libraries import Library
+from workspace_tools.toolchains import TOOLCHAIN_CLASSES
 
 
 def build_project(src_path, build_path, target, toolchain_name,
         libraries_paths=None, options=None, linker_script=None,
-        clean=False, notify=None, verbose=False, name=None, macros=None, inc_dirs=None):
+        clean=False, notify=None, verbose=False, name=None, macros=None, inc_dirs=None, jobs=1):
     """ This function builds project. Project can be for example one test / UT """
     # Toolchain instance
     toolchain = TOOLCHAIN_CLASSES[toolchain_name](target, options, notify, macros)
     toolchain.VERBOSE = verbose
+    toolchain.jobs = jobs
     toolchain.build_all = clean
     src_paths = [src_path] if type(src_path) != ListType else src_path
 
@@ -89,7 +91,7 @@ def build_project(src_path, build_path, target, toolchain_name,
 
 def build_library(src_paths, build_path, target, toolchain_name,
          dependencies_paths=None, options=None, name=None, clean=False,
-         notify=None, verbose=False, macros=None, inc_dirs=None):
+         notify=None, verbose=False, macros=None, inc_dirs=None, jobs=1):
     """ src_path: the path of the source directory
     build_path: the path of the build directory
     target: ['LPC1768', 'LPC11U24', 'LPC2368']
@@ -109,6 +111,7 @@ def build_library(src_paths, build_path, target, toolchain_name,
     # Toolchain instance
     toolchain = TOOLCHAIN_CLASSES[toolchain_name](target, options, macros=macros, notify=notify)
     toolchain.VERBOSE = verbose
+    toolchain.jobs = jobs
     toolchain.build_all = clean
 
     # The first path will give the name to the library
@@ -149,7 +152,7 @@ def build_library(src_paths, build_path, target, toolchain_name,
     toolchain.build_library(objects, bin_path, name)
 
 
-def build_lib(lib_id, target, toolchain, options=None, verbose=False, clean=False, macros=None, notify=None):
+def build_lib(lib_id, target, toolchain, options=None, verbose=False, clean=False, macros=None, notify=None, jobs=1):
     lib = Library(lib_id)
     if lib.is_supported(target, toolchain):
         # We need to combine macros from parameter list with macros from library definition
@@ -159,22 +162,25 @@ def build_lib(lib_id, target, toolchain, options=None, verbose=False, clean=Fals
 
         build_library(lib.source_dir, lib.build_dir, target, toolchain,
                       lib.dependencies, options,
-                      verbose=verbose, clean=clean, macros=MACROS, notify=notify, inc_dirs=lib.inc_dirs)
+                      verbose=verbose, clean=clean, macros=MACROS, notify=notify, inc_dirs=lib.inc_dirs, jobs=jobs)
     else:
-        print '\n\nLibrary "%s" is not yet supported on target %s with toolchain %s' % (lib_id, target.name, toolchain)
+        print 'Library "%s" is not yet supported on target %s with toolchain %s' % (lib_id, target.name, toolchain)
 
 
 # We do have unique legacy conventions about how we build and package the mbed library
-def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=False, macros=None, notify=None):
+def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=False, macros=None, notify=None, jobs=1):
     """ Function returns True is library was built and false if building was skipped """
     # Check toolchain support
     if toolchain_name not in target.supported_toolchains:
+        supported_toolchains_text = ", ".join(target.supported_toolchains)
         print '%s target is not yet supported by toolchain %s' % (target.name, toolchain_name)
+        print '%s target supports %s toolchain%s' % (target.name, supported_toolchains_text, 's' if len(target.supported_toolchains) > 1 else '')
         return False
 
     # Toolchain
     toolchain = TOOLCHAIN_CLASSES[toolchain_name](target, options, macros=macros, notify=notify)
     toolchain.VERBOSE = verbose
+    toolchain.jobs = jobs
     toolchain.build_all = clean
 
     # Source and Build Paths
@@ -232,6 +238,7 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
         toolchain.copy_files(o, BUILD_TOOLCHAIN)
     return True
 
+
 def get_unique_supported_toolchains():
     """ Get list of all unique toolchains supported by targets """
     unique_supported_toolchains = []
@@ -242,7 +249,7 @@ def get_unique_supported_toolchains():
     return unique_supported_toolchains
 
 
-def mcu_toolchain_matrix(verbose_html=False):
+def mcu_toolchain_matrix(verbose_html=False, platform_filter=None):
     """  Shows target map using prettytable """
     unique_supported_toolchains = get_unique_supported_toolchains()
     from prettytable import PrettyTable # Only use it in this function so building works without extra modules
@@ -256,7 +263,14 @@ def mcu_toolchain_matrix(verbose_html=False):
     pt.align["Platform"] = "l"
 
     perm_counter = 0
+    target_counter = 0
     for target in sorted(TARGET_NAMES):
+        if platform_filter is not None:
+            # FIlter out platforms using regex
+            if re.search(platform_filter, target) is None:
+                continue
+        target_counter += 1
+
         row = [target]  # First column is platform name
         default_toolchain = TARGET_MAP[target].default_toolchain
         for unique_toolchain in unique_supported_toolchains:
@@ -275,7 +289,7 @@ def mcu_toolchain_matrix(verbose_html=False):
     result += "*Default - default on-line compiler\n"
     result += "*Supported - supported off-line compiler\n"
     result += "\n"
-    result += "Total platforms: %d\n"% (len(TARGET_NAMES))
+    result += "Total platforms: %d\n"% (target_counter)
     result += "Total permutations: %d"% (perm_counter)
     return result
 
@@ -285,10 +299,11 @@ def get_target_supported_toolchains(target):
     return TARGET_MAP[target].supported_toolchains if target in TARGET_MAP else None
 
 
-def static_analysis_scan(target, toolchain_name, CPPCHECK_CMD, CPPCHECK_MSG_FORMAT, options=None, verbose=False, clean=False, macros=None, notify=None):
+def static_analysis_scan(target, toolchain_name, CPPCHECK_CMD, CPPCHECK_MSG_FORMAT, options=None, verbose=False, clean=False, macros=None, notify=None, jobs=1):
     # Toolchain
     toolchain = TOOLCHAIN_CLASSES[toolchain_name](target, options, macros=macros, notify=notify)
     toolchain.VERBOSE = verbose
+    toolchain.jobs = jobs
     toolchain.build_all = clean
 
     # Source and Build Paths
@@ -397,19 +412,19 @@ def static_analysis_scan(target, toolchain_name, CPPCHECK_CMD, CPPCHECK_MSG_FORM
 
 
 def static_analysis_scan_lib(lib_id, target, toolchain, cppcheck_cmd, cppcheck_msg_format,
-                             options=None, verbose=False, clean=False, macros=None, notify=None):
+                             options=None, verbose=False, clean=False, macros=None, notify=None, jobs=1):
     lib = Library(lib_id)
     if lib.is_supported(target, toolchain):
         static_analysis_scan_library(lib.source_dir, lib.build_dir, target, toolchain, cppcheck_cmd, cppcheck_msg_format,
                       lib.dependencies, options,
-                      verbose=verbose, clean=clean, macros=macros, notify=notify)
+                      verbose=verbose, clean=clean, macros=macros, notify=notify, jobs=jobs)
     else:
         print 'Library "%s" is not yet supported on target %s with toolchain %s' % (lib_id, target.name, toolchain)
 
 
 def static_analysis_scan_library(src_paths, build_path, target, toolchain_name, cppcheck_cmd, cppcheck_msg_format,
          dependencies_paths=None, options=None, name=None, clean=False,
-         notify=None, verbose=False, macros=None):
+         notify=None, verbose=False, macros=None, jobs=1):
     """ Function scans library (or just some set of sources/headers) for staticly detectable defects """
     if type(src_paths) != ListType:
         src_paths = [src_paths]
@@ -421,6 +436,7 @@ def static_analysis_scan_library(src_paths, build_path, target, toolchain_name, 
     # Toolchain instance
     toolchain = TOOLCHAIN_CLASSES[toolchain_name](target, options, macros=macros, notify=notify)
     toolchain.VERBOSE = verbose
+    toolchain.jobs = jobs
 
     # The first path will give the name to the library
     name = basename(src_paths[0])
@@ -489,4 +505,5 @@ def print_build_results(result_list, build_name):
     if result_list:
         result += build_name + "\n"
         result += "\n".join(["  * %s" % f for f in result_list])
+        result += "\n"
     return result

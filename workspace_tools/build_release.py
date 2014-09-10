@@ -38,7 +38,7 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('LPC1114',      ('uARM','GCC_ARM')),
     ('LPC11U35_401', ('ARM', 'uARM','GCC_ARM','GCC_CR')),
     ('LPC11U35_501', ('ARM', 'uARM','GCC_ARM','GCC_CR')),
-    ('LPC1549',      ('uARM','GCC_CR')),
+    ('LPC1549',      ('uARM','GCC_ARM','GCC_CR')),
     ('XADOW_M0',     ('ARM', 'uARM','GCC_ARM','GCC_CR')),
     ('ARCH_GPRS',    ('ARM', 'uARM', 'GCC_ARM', 'GCC_CR')),
 
@@ -58,12 +58,15 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('NUCLEO_L053R8', ('ARM', 'uARM')),
     ('NUCLEO_L152RE', ('ARM', 'uARM')),
 
-    ('NRF51822',     ('ARM', )),
-    ('HRM1017',      ('ARM', )),
-    ('ARCH_BLE',     ('ARM', )),
-    ('RBLAB_NRF51822', ('ARM', )),
+    {'ARCH_MAX', ('ARM', 'GCC_ARM')),
+
+    ('NRF51822',     ('ARM', 'GCC_ARM')),
+    ('HRM1017',      ('ARM', 'GCC_ARM')),
+    ('ARCH_BLE',     ('ARM', 'GCC_ARM')),
+    ('RBLAB_NRF51822', ('ARM', 'GCC_ARM')),
 
     ('LPC11U68',     ('uARM','GCC_ARM','GCC_CR')),
+    ('OC_MBUINO',     ('ARM', 'uARM', 'GCC_ARM')),
 )
 
 
@@ -71,6 +74,8 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-o', '--official', dest="official_only", default=False, action="store_true",
                       help="Build using only the official toolchain for each target")
+    parser.add_option("-j", "--jobs", type="int", dest="jobs",
+                      default=1, help="Number of concurrent jobs (default 1). Use 0 for auto based on host machine's number of CPUs")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
                       default=False, help="Verbose diagnostic output")
     options, args = parser.parse_args()
@@ -85,7 +90,7 @@ if __name__ == '__main__':
         for toolchain in toolchains:
             id = "%s::%s" % (target_name, toolchain)
             try:
-                build_mbed_libs(TARGET_MAP[target_name], toolchain, verbose=options.verbose)
+                build_mbed_libs(TARGET_MAP[target_name], toolchain, verbose=options.verbose, jobs=options.jobs)
                 successes.append(id)
             except Exception, e:
                 failures.append(id)
