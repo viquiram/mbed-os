@@ -710,8 +710,7 @@ class MTS_GAMBIT(Target):
         self.is_disk_virtual = True
         self.default_toolchain = "ARM"
 
-<<<<<<< HEAD
-
+        
 class EFM32_G8XX_STK(Target):
     def __init__(self):
         Target.__init__(self)
@@ -766,8 +765,6 @@ class EFM32ZG_STK3200(Target):
         self.supported_toolchains = ["GCC_ARM", "ARM"]
 
         
-        
-=======
 class DISCO_F429ZI(Target):
     def __init__(self):
         Target.__init__(self)
@@ -776,7 +773,7 @@ class DISCO_F429ZI(Target):
         self.supported_toolchains = ["GCC_ARM"]
         self.default_toolchain = "GCC_ARM"
 
->>>>>>> dd973760c17d8a426faa44eaed5cc5247a1d5787
+
 # Get a single instance for each target
 TARGETS = [
     LPC2368(),
