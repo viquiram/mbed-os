@@ -30,6 +30,7 @@ class Uvision4(Exporter):
         'EFM32ZG_STK3200',
         'KL05Z',
         'KL25Z',
+        'KL43Z',
         'KL46Z',
         'K64F',
         'K22F',
