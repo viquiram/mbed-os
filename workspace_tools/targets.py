@@ -213,7 +213,7 @@ class LPC824(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC82X']
-        self.supported_toolchains = ["uARM"]
+        self.supported_toolchains = ["uARM", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
@@ -378,7 +378,7 @@ class NUCLEO_F401RE(Target):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F401RE']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = "0720"
@@ -411,7 +411,7 @@ class NUCLEO_L152RE(Target):
         Target.__init__(self)
         self.core = "Cortex-M3"
         self.extra_labels = ['STM', 'STM32L1', 'STM32L152RE']
-        self.supported_toolchains = ["ARM", "uARM"]
+        self.supported_toolchains = ["ARM", "uARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = "0710"
@@ -604,6 +604,14 @@ class NRF51_DK_OTA(Target):
         self.macros = ['TARGET_NRF51822', 'TARGET_NRF51_DK', 'TARGET_OTA_ENABLED']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.is_disk_virtual = True
+
+        
+class NRF51_DONGLE(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K']
+        self.macros = ['TARGET_NRF51822']
+        self.supported_form_factors = ["ARDUINO"]
 
 
 class LPC1549(LPCTarget):
@@ -835,6 +843,7 @@ TARGETS = [
     LPC11U35_501(),
     NRF51822(),
     NRF51822_OTA(),
+    NRF51_DONGLE(),
     UBLOX_C027(),
     LPC1549(),
     LPC11U68(),
