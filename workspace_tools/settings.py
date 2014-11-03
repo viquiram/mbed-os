@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 from os.path import join, abspath, dirname
 import logging
 
@@ -62,14 +63,14 @@ GCC_CS_PATH = "C:/Program Files (x86)/CodeSourcery/Sourcery_CodeBench_Lite_for_A
 GCC_CR_PATH = "C:/code_red/RedSuite_4.2.0_349/redsuite/Tools/bin"
 
 # IAR
-IAR_PATH = "C:/Program Files (x86)/IAR Systems/Embedded Workbench 6.0/arm"
+IAR_PATH = "C:/Program Files (x86)/IAR Systems/Embedded Workbench 7.0/arm"
 
 # GCC Code Warrior
 CW_GCC_PATH  = "C:/Freescale/CW MCU v10.3/Cross_Tools/arm-none-eabi-gcc-4_6_2/bin"
 CW_EWL_PATH = "C:/Freescale/CW MCU v10.3/MCU/ARM_GCC_Support/ewl/lib"
 
-# Goanna static analyzer
-GOANNA_PATH = "c:/Program Files (x86)/RedLizards/Goanna Central 3.1.4/bin"
+# Goanna static analyser. Please overload it in private_settings.py
+GOANNA_PATH = "c:/Program Files (x86)/RedLizards/Goanna Central 3.2.3/bin"
 
 # cppcheck path (command) and output message format
 CPPCHECK_CMD = ["cppcheck", "--enable=all"]

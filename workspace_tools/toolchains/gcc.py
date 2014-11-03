@@ -20,6 +20,7 @@ from os.path import join, basename, splitext
 from workspace_tools.toolchains import mbedToolchain
 from workspace_tools.settings import GCC_ARM_PATH, GCC_CR_PATH, GCC_CS_PATH, CW_EWL_PATH, CW_GCC_PATH
 from workspace_tools.settings import GOANNA_PATH
+from workspace_tools.hooks import hook_tool
 
 class GCC(mbedToolchain):
     LINKER_EXT = '.ld'
@@ -53,7 +54,7 @@ class GCC(mbedToolchain):
             "-Wno-unused-parameter", "-Wno-missing-field-initializers",
             "-fmessage-length=0", "-fno-exceptions", "-fno-builtin",
             "-ffunction-sections", "-fdata-sections",
-            "-MMD", "-fno-delete-null-pointer-checks",
+            "-MMD", "-fno-delete-null-pointer-checks", "-fomit-frame-pointer"
             ] + self.cpu
 
         if "save-asm" in self.options:
@@ -82,7 +83,7 @@ class GCC(mbedToolchain):
         self.elf2bin = join(tool_path, "arm-none-eabi-objcopy")
 
     def assemble(self, source, object, includes):
-        self.default_cmd(self.hook.get_cmdline_assembler(self.asm + ['-D%s' % s for s in self.get_symbols() + self.macros] + ["-I%s" % i for i in includes] + ["-o", object, source]))
+        return [self.hook.get_cmdline_assembler(self.asm + ['-D%s' % s for s in self.get_symbols() + self.macros] + ["-I%s" % i for i in includes] + ["-o", object, source])]
 
     def parse_dependencies(self, dep_path):
         dependencies = []
@@ -163,6 +164,7 @@ class GCC(mbedToolchain):
         self.default_cmd(self.hook.get_cmdline_linker(self.ld + ["-T%s" % mem_map, "-o", output] +
             objects + ["-L%s" % L for L in lib_dirs] + libs))
 
+    @hook_tool
     def binary(self, resources, elf, bin):
         self.default_cmd(self.hook.get_cmdline_binary([self.elf2bin, "-O", "binary", elf, bin]))
 
@@ -174,7 +176,7 @@ class GCC_ARM(GCC):
         # Use latest gcc nanolib
         self.ld.append("--specs=nano.specs")
         if target.name in ["LPC1768", "LPC4088", "LPC4330", "UBLOX_C027", "LPC2368"]:
-            self.ld.extend(["-u", "_printf_float", "-u", "_scanf_float"])
+            self.ld.extend(["-u _printf_float", "-u _scanf_float"])
 
         self.sys_libs.append("nosys")
 
@@ -189,6 +191,10 @@ class GCC_CR(GCC):
         self.cc += additional_compiler_flags
         self.cppc += additional_compiler_flags
 
+        # Use latest gcc nanolib
+        self.ld.append("--specs=nano.specs")
+        if target.name in ["LPC1768", "LPC4088", "LPC4330", "UBLOX_C027", "LPC2368"]:
+            self.ld.extend(["-u _printf_float", "-u _scanf_float"])
         self.ld += ["-nostdlib"]
 
 
@@ -227,11 +233,11 @@ class GCC_CW_EWL(GCC_CW):
         self.sys_libs = []
         self.CIRCULAR_DEPENDENCIES = False
         self.ld = [join(CW_GCC_PATH, "arm-none-eabi-g++"),
-            "-Xlinker", "--gc-sections",
+            "-Xlinker --gc-sections",
             "-L%s" % join(CW_EWL_PATH, "lib", GCC_CW.ARCH_LIB[target.core]),
             "-n", "-specs=ewl_c++.specs", "-mfloat-abi=soft",
-            "-Xlinker", "--undefined=__pformatter_", "-Xlinker", "--defsym=__pformatter=__pformatter_",
-            "-Xlinker", "--undefined=__sformatter", "-Xlinker", "--defsym=__sformatter=__sformatter",
+            "-Xlinker --undefined=__pformatter_", "-Xlinker --defsym=__pformatter=__pformatter_",
+            "-Xlinker --undefined=__sformatter", "-Xlinker --defsym=__sformatter=__sformatter",
         ] + self.cpu
 
 

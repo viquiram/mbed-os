@@ -16,22 +16,31 @@ limitations under the License.
 """
 
 from host_test import DefaultTest
-from sys import stdout
+
 
 class HelloTest(DefaultTest):
-    HELLO_WORLD = "Hello World\n"
+    HELLO_WORLD = "Hello World"
 
-    def run(self):
-        c = self.mbed.serial_read(len(self.HELLO_WORLD))
+    def test(self):
+        c = self.mbed.serial_readline()
         if c is None:
-            self.print_result("ioerr_serial")
-            return
-        stdout.write(c)
-        if c == self.HELLO_WORLD: # Hello World received
-            self.print_result('success')
+           return self.RESULT_IO_SERIAL
+        self.notify(c.strip())
+
+        c = self.mbed.serial_readline()
+        if c is None:
+           return self.RESULT_IO_SERIAL
+        self.notify("Read %d bytes:"% len(c))
+        self.notify(c.strip())
+
+        result = True
+        # Because we can have targetID here let's try to decode
+        if len(c) < len(self.HELLO_WORLD):
+            result = False
         else:
-            self.print_result('failure')
-        stdout.flush()
+            result = self.HELLO_WORLD in c
+        return self.RESULT_SUCCESS if result else self.RESULT_FAILURE
+
 
 if __name__ == '__main__':
     HelloTest().run()

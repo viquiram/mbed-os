@@ -1,8 +1,8 @@
 ;******************** (C) COPYRIGHT 2014 STMicroelectronics ********************
 ;* File Name          : startup_stm32f334x8.s
 ;* Author             : MCD Application Team
-;* Version            : V2.0.1
-;* Date               : 18-June-2014
+;* Version            : V2.1.0
+;* Date               : 12-Sept-2014
 ;* Description        : STM32F334x4/x6/x8 devices vector table for MDK-ARM_MICRO toolchain.
 ;*                      This module performs:
 ;*                      - Set the initial SP
@@ -58,7 +58,7 @@ __initial_sp    EQU     0x20003000 ; Top of RAM
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x00000000
+Heap_Size       EQU     0x00000400
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
                 EXPORT  __heap_base
@@ -66,7 +66,7 @@ Heap_Size       EQU     0x00000000
                 
 __heap_base
 Heap_Mem        SPACE   Heap_Size
-__heap_limit
+__heap_limit    EQU (__initial_sp - Stack_Size)
 
                 PRESERVE8
                 THUMB
