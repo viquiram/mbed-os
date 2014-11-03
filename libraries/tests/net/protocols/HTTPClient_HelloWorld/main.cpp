@@ -3,7 +3,10 @@
 #include "EthernetInterface.h"
 #include "HTTPClient.h"
 
-#define BUFFER_SIZE 512
+
+namespace {
+    const int BUFFER_SIZE = 512;
+}
 
 int main()
 {
@@ -16,7 +19,7 @@ int main()
     //GET data
     {
         bool result = true;
-        const char *url_hello_txt = "http://mbed.org/media/uploads/donatien/hello.txt";
+        const char *url_hello_txt = "http://developer.mbed.org/media/uploads/donatien/hello.txt";
         printf("HTTP_GET: Trying to fetch page '%s'...\r\n", url_hello_txt);
         HTTPResult ret = http.get(url_hello_txt, http_request_buffer, BUFFER_SIZE);
         if (ret == HTTP_OK) {
@@ -27,6 +30,7 @@ int main()
         }
 
         if (result == false) {
+            eth.disconnect();
             notify_completion(false);
             exit(ret);
         }
@@ -51,6 +55,7 @@ int main()
         }
 
         if (result == false) {
+            eth.disconnect();
             notify_completion(false);
             exit(ret);
         }

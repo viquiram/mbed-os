@@ -21,6 +21,7 @@ import os
 import re
 import sys
 import json
+import uuid
 import pprint
 import random
 import optparse
@@ -31,10 +32,9 @@ from prettytable import PrettyTable
 
 from time import sleep, time
 from Queue import Queue, Empty
-from shutil import copy
 from os.path import join, exists, basename
 from threading import Thread
-from subprocess import Popen, PIPE, call
+from subprocess import Popen, PIPE
 
 # Imports related to mbed build api
 from workspace_tools.tests import TESTS
@@ -45,11 +45,14 @@ from workspace_tools.utils import ToolException
 from workspace_tools.utils import construct_enum
 from workspace_tools.targets import TARGET_MAP
 from workspace_tools.test_db import BaseDBAccess
-from workspace_tools.settings import EACOMMANDER_CMD
 from workspace_tools.build_api import build_project, build_mbed_libs, build_lib
 from workspace_tools.build_api import get_target_supported_toolchains
 from workspace_tools.libraries import LIBRARIES, LIBRARY_MAP
 from workspace_tools.toolchains import TOOLCHAIN_BIN_PATH
+from workspace_tools.test_exporters import ReportExporter, ResultExporterType
+
+
+import workspace_tools.host_tests.host_tests_plugins as host_tests_plugins
 
 
 class ProcessObserver(Thread):
@@ -84,8 +87,9 @@ class SingleTestExecutor(threading.Thread):
     def run(self):
         start = time()
         # Execute tests depending on options and filter applied
-        test_summary, shuffle_seed = self.single_test.execute()
+        test_summary, shuffle_seed, test_summary_ext, test_suite_properties_ext = self.single_test.execute()
         elapsed_time = time() - start
+
         # Human readable summary
         if not self.single_test.opts_suppress_summary:
             # prints well-formed summary with results (SQL table like)
@@ -129,14 +133,18 @@ class SingleTestRunner(object):
                            "ioerr_serial" : TEST_RESULT_IOERR_SERIAL,
                            "timeout" : TEST_RESULT_TIMEOUT,
                            "no_image" : TEST_RESULT_NO_IMAGE,
-                           "end" : TEST_RESULT_UNDEF}
+                           "end" : TEST_RESULT_UNDEF
+    }
 
     def __init__(self,
                  _global_loops_count=1,
                  _test_loops_list=None,
                  _muts={},
+                 _clean=False,
                  _opts_db_url=None,
                  _opts_log_file_name=None,
+                 _opts_report_html_file_name=None,
+                 _opts_report_junit_file_name=None,
                  _test_spec={},
                  _opts_goanna_for_mbed_sdk=None,
                  _opts_goanna_for_tests=None,
@@ -182,6 +190,8 @@ class SingleTestRunner(object):
         # Settings passed e.g. from command line
         self.opts_db_url = _opts_db_url
         self.opts_log_file_name = _opts_log_file_name
+        self.opts_report_html_file_name = _opts_report_html_file_name
+        self.opts_report_junit_file_name = _opts_report_junit_file_name
         self.opts_goanna_for_mbed_sdk = _opts_goanna_for_mbed_sdk
         self.opts_goanna_for_tests = _opts_goanna_for_tests
         self.opts_shuffle_test_order = _opts_shuffle_test_order
@@ -201,11 +211,12 @@ class SingleTestRunner(object):
         self.opts_jobs = _opts_jobs if _opts_jobs is not None else 1
         self.opts_waterfall_test = _opts_waterfall_test
         self.opts_extend_test_timeout = _opts_extend_test_timeout
+        self.opts_clean = _clean
 
         # File / screen logger initialization
         self.logger = CLITestLogger(file_name=self.opts_log_file_name)  # Default test logger
 
-        # database related initializations
+        # Database related initializations
         self.db_logger = factory_db_logger(self.opts_db_url)
         self.db_logger_build_id = None # Build ID (database index of build_id table)
         # Let's connect to database to set up credentials and confirm database is ready
@@ -242,7 +253,8 @@ class SingleTestRunner(object):
                   "mut_reset_type" :  str(self.opts_mut_reset_type),
                   "jobs" :  str(self.opts_jobs),
                   "extend_test_timeout" :  str(self.opts_extend_test_timeout),
-                  "_dummy" : ''}
+                  "_dummy" : ''
+        }
         return result
 
     def shuffle_random_func(self):
@@ -262,35 +274,60 @@ class SingleTestRunner(object):
         clean = self.test_spec.get('clean', False)
         test_ids = self.test_spec.get('test_ids', [])
 
+        # This will store target / toolchain specific properties
+        test_suite_properties_ext = {}  # target : toolchain
+
         # Here we store test results
         test_summary = []
+        # Here we store test results in extended data structure
+        test_summary_ext = {}
+
         # Generate seed for shuffle if seed is not provided in
         self.shuffle_random_seed = round(random.random(), self.SHUFFLE_SEED_ROUND)
         if self.opts_shuffle_test_seed is not None and self.is_shuffle_seed_float():
             self.shuffle_random_seed = round(float(self.opts_shuffle_test_seed), self.SHUFFLE_SEED_ROUND)
 
         for target, toolchains in self.test_spec['targets'].iteritems():
+            test_suite_properties_ext[target] = {}
             for toolchain in toolchains:
+                # Test suite properties returned to external tools like CI
+                test_suite_properties = {}
+                test_suite_properties['jobs'] = self.opts_jobs
+                test_suite_properties['clean'] = clean
+                test_suite_properties['target'] = target
+                test_suite_properties['test_ids'] = ', '.join(test_ids)
+                test_suite_properties['toolchain'] = toolchain
+                test_suite_properties['shuffle_random_seed'] = self.shuffle_random_seed
+
                 # print '=== %s::%s ===' % (target, toolchain)
                 # Let's build our test
                 if target not in TARGET_MAP:
-                    print self.logger.log_line(self.logger.LogType.NOTIF, 'Skipped tests for %s target. Target platform not found' % (target))
+                    print self.logger.log_line(self.logger.LogType.NOTIF, 'Skipped tests for %s target. Target platform not found'% (target))
                     continue
 
                 T = TARGET_MAP[target]
                 build_mbed_libs_options = ["analyze"] if self.opts_goanna_for_mbed_sdk else None
-                clean_mbed_libs_options = True if self.opts_goanna_for_mbed_sdk or clean else None
+                clean_mbed_libs_options = True if self.opts_goanna_for_mbed_sdk or clean or self.opts_clean else None
 
-                build_mbed_libs_result = build_mbed_libs(T,
-                                                         toolchain,
-                                                         options=build_mbed_libs_options,
-                                                         clean=clean_mbed_libs_options,
-                                                         jobs=self.opts_jobs)
-                if not build_mbed_libs_result:
-                    print self.logger.log_line(self.logger.LogType.NOTIF, 'Skipped tests for %s target. Toolchain %s is not yet supported for this target' % (T.name, toolchain))
-                    continue
+                try:
+                    build_mbed_libs_result = build_mbed_libs(T,
+                                                             toolchain,
+                                                             options=build_mbed_libs_options,
+                                                             clean=clean_mbed_libs_options,
+                                                             jobs=self.opts_jobs)
+
+                    if not build_mbed_libs_result:
+                        print self.logger.log_line(self.logger.LogType.NOTIF, 'Skipped tests for %s target. Toolchain %s is not yet supported for this target'% (T.name, toolchain))
+                        continue
+                except ToolException:
+                    print self.logger.log_line(self.logger.LogType.ERROR, 'There were errors while building MBED libs for %s using %s'% (target, toolchain))
+                    return test_summary, self.shuffle_random_seed, test_summary_ext, test_suite_properties_ext
 
                 build_dir = join(BUILD_DIR, "test", target, toolchain)
+
+                test_suite_properties['build_mbed_libs_result'] = build_mbed_libs_result
+                test_suite_properties['build_dir'] = build_dir
+                test_suite_properties['skipped'] = []
 
                 # Enumerate through all tests and shuffle test order if requested
                 test_map_keys = sorted(TEST_MAP.keys())
@@ -308,7 +345,7 @@ class SingleTestRunner(object):
                     if self.db_logger.is_connected():
                         # Update MUTs and Test Specification in database
                         self.db_logger.update_build_id_info(self.db_logger_build_id, _muts=self.muts, _test_spec=self.test_spec)
-                        # Update Etra information in database (some options passed to test suite)
+                        # Update Extra information in database (some options passed to test suite)
                         self.db_logger.update_build_id_info(self.db_logger_build_id, _extra=json.dumps(self.dump_options()))
                         self.db_logger.disconnect();
 
@@ -323,11 +360,13 @@ class SingleTestRunner(object):
                     if self.opts_test_only_peripheral and not test.peripherals:
                         if self.opts_verbose_skipped_tests:
                             print self.logger.log_line(self.logger.LogType.INFO, 'Common test skipped for target %s'% (target))
+                        test_suite_properties['skipped'].append(test_id)
                         continue
 
                     if self.opts_test_only_common and test.peripherals:
                         if self.opts_verbose_skipped_tests:
                             print self.logger.log_line(self.logger.LogType.INFO, 'Peripheral test skipped for target %s'% (target))
+                        test_suite_properties['skipped'].append(test_id)
                         continue
 
                     if test.automated and test.is_supported(target, toolchain):
@@ -335,10 +374,11 @@ class SingleTestRunner(object):
                             if self.opts_verbose_skipped_tests:
                                 test_peripherals = test.peripherals if test.peripherals else []
                                 print self.logger.log_line(self.logger.LogType.INFO, 'Peripheral %s test skipped for target %s'% (",".join(test_peripherals), target))
+                            test_suite_properties['skipped'].append(test_id)
                             continue
 
                         build_project_options = ["analyze"] if self.opts_goanna_for_tests else None
-                        clean_project_options = True if self.opts_goanna_for_tests or clean else None
+                        clean_project_options = True if self.opts_goanna_for_tests or clean or self.opts_clean else None
 
                         # Detect which lib should be added to test
                         # Some libs have to compiled like RTOS or ETH
@@ -348,13 +388,19 @@ class SingleTestRunner(object):
                                 libraries.append(lib['id'])
                         # Build libs for test
                         for lib_id in libraries:
-                            build_lib(lib_id,
-                                      T,
-                                      toolchain,
-                                      options=build_project_options,
-                                      verbose=self.opts_verbose,
-                                      clean=clean_mbed_libs_options,
-                                      jobs=self.opts_jobs)
+                            try:
+                                build_lib(lib_id,
+                                          T,
+                                          toolchain,
+                                          options=build_project_options,
+                                          verbose=self.opts_verbose,
+                                          clean=clean_mbed_libs_options,
+                                          jobs=self.opts_jobs)
+                            except ToolException:
+                                print self.logger.log_line(self.logger.LogType.ERROR, 'There were errors while building library %s'% (lib_id))
+                                return test_summary, self.shuffle_random_seed, test_summary_ext, test_suite_properties_ext
+
+                        test_suite_properties['test.libs.%s.%s.%s'% (target, toolchain, test_id)] = ', '.join(libraries)
 
                         # TODO: move this 2 below loops to separate function
                         INC_DIRS = []
@@ -366,6 +412,10 @@ class SingleTestRunner(object):
                         for lib_id in libraries:
                             if 'macros' in LIBRARY_MAP[lib_id] and LIBRARY_MAP[lib_id]['macros']:
                                 MACROS.extend(LIBRARY_MAP[lib_id]['macros'])
+                        MACROS.append('TEST_SUITE_TARGET_NAME="%s"'% target)
+                        MACROS.append('TEST_SUITE_TEST_ID="%s"'% test_id)
+                        test_uuid = uuid.uuid4()
+                        MACROS.append('TEST_SUITE_UUID="%s"'% str(test_uuid))
 
                         project_name = self.opts_firmware_global_name if self.opts_firmware_global_name else None
                         try:
@@ -382,7 +432,8 @@ class SingleTestRunner(object):
                                                  inc_dirs=INC_DIRS,
                                                  jobs=self.opts_jobs)
                         except ToolException:
-                            return test_summary, self.shuffle_random_seed
+                            print self.logger.log_line(self.logger.LogType.ERROR, 'There were errors while building project %s'% (project_name))
+                            return test_summary, self.shuffle_random_seed, test_summary_ext, test_suite_properties_ext
                         if self.opts_only_build_tests:
                             # With this option we are skipping testing phase
                             continue
@@ -396,10 +447,28 @@ class SingleTestRunner(object):
                         # which the test gets interrupted
                         test_spec = self.shape_test_request(target, path, test_id, test_duration)
                         test_loops = self.get_test_loop_count(test_id)
+
+                        test_suite_properties['test.duration.%s.%s.%s'% (target, toolchain, test_id)] = test_duration
+                        test_suite_properties['test.loops.%s.%s.%s'% (target, toolchain, test_id)] = test_loops
+                        test_suite_properties['test.path.%s.%s.%s'% (target, toolchain, test_id)] = path
+
                         # read MUTs, test specification and perform tests
-                        single_test_result = self.handle(test_spec, target, toolchain, test_loops=test_loops)
+                        single_test_result, detailed_test_results = self.handle(test_spec, target, toolchain, test_loops=test_loops)
+
+                        # Append test results to global test summary
                         if single_test_result is not None:
                             test_summary.append(single_test_result)
+
+                        # Prepare extended test results data structure (it can be used to generate detailed test report)
+                        if toolchain not in test_summary_ext:
+                            test_summary_ext[toolchain] = {}  # test_summary_ext : toolchain
+                        if target not in test_summary_ext[toolchain]:
+                            test_summary_ext[toolchain][target] = {}    # test_summary_ext : toolchain : target
+                        if target not in test_summary_ext[toolchain][target]:
+                            test_summary_ext[toolchain][target][test_id] = detailed_test_results    # test_summary_ext : toolchain : target : test_it
+
+                test_suite_properties['skipped'] = ', '.join(test_suite_properties['skipped'])
+                test_suite_properties_ext[target][toolchain] = test_suite_properties
 
         if self.db_logger:
             self.db_logger.reconnect();
@@ -407,7 +476,7 @@ class SingleTestRunner(object):
                 self.db_logger.update_build_id_info(self.db_logger_build_id, _status_fk=self.db_logger.BUILD_ID_STATUS_COMPLETED)
                 self.db_logger.disconnect();
 
-        return test_summary, self.shuffle_random_seed
+        return test_summary, self.shuffle_random_seed, test_summary_ext, test_suite_properties_ext
 
     def generate_test_summary_by_target(self, test_summary, shuffle_seed=None):
         """ Prints well-formed summary with results (SQL table like)
@@ -481,7 +550,7 @@ class SingleTestRunner(object):
                        self.TEST_RESULT_IOERR_SERIAL : 0,
                        self.TEST_RESULT_NO_IMAGE : 0,
                        self.TEST_RESULT_TIMEOUT : 0
-                       }
+        }
 
         for test in test_summary:
             if test[0] in result_dict:
@@ -523,105 +592,28 @@ class SingleTestRunner(object):
             result = self.TEST_LOOPS_DICT[test_id]
         return result
 
-    def file_store_firefox(self, file_path, dest_disk):
-        try:
-            from selenium import webdriver
-        except ImportError, e:
-            print "Error: firefox copy method requires selenium library. %s"% e
-            exit(-1)
-        profile = webdriver.FirefoxProfile()
-        profile.set_preference('browser.download.folderList', 2) # custom location
-        profile.set_preference('browser.download.manager.showWhenStarting', False)
-        profile.set_preference('browser.download.dir', dest_disk)
-        profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/octet-stream')
-        # Launch browser with profile and get file
-        browser = webdriver.Firefox(profile)
-        browser.get(file_path)
-        browser.close()
-
     def image_copy_method_selector(self, target_name, image_path, disk, copy_method,
-                                  images_config=None, image_dest=None):
+                                  images_config=None, image_dest=None, verbose=False):
         """ Function copied image file and fiddles with image configuration files in needed.
             This function will select proper image configuration (modify image config file
             if needed) after image is copied.
         """
         image_dest = image_dest if image_dest is not None else ''
-        _copy_res, _err_msg, _copy_method = self.file_copy_method_selector(image_path, disk, self.opts_copy_method, image_dest=image_dest)
-
-        if images_config is not None:
-            # For different targets additional configuration file has to be changed
-            # Here we select target and proper function to handle configuration change
-            if target_name == 'ARM_MPS2':
-                images_cfg_path = images_config
-                image0file_path = os.path.join(disk, image_dest, basename(image_path))
-                mps2_set_board_image_file(disk, images_cfg_path, image0file_path)
-
+        _copy_res, _err_msg, _copy_method = self.file_copy_method_selector(image_path, disk, copy_method, image_dest=image_dest, verbose=verbose)
         return _copy_res, _err_msg, _copy_method
 
-    def file_copy_method_selector(self, image_path, disk, copy_method, image_dest=''):
+    def file_copy_method_selector(self, image_path, disk, copy_method, image_dest='', verbose=False):
         """ Copy file depending on method you want to use. Handles exception
             and return code from shell copy commands.
         """
-        result = True
-        resutl_msg = ""
-        if copy_method == 'cp' or  copy_method == 'copy' or copy_method == 'xcopy':
-            source_path = image_path.encode('ascii', 'ignore')
-            destination_path = os.path.join(disk.encode('ascii', 'ignore'), image_dest, basename(image_path).encode('ascii', 'ignore'))
-            cmd = [copy_method, source_path, destination_path]
-            try:
-                ret = call(cmd, shell=True)
-                if ret:
-                    resutl_msg = "Return code: %d. Command: "% ret + " ".join(cmd)
-                    result = False
-            except Exception, e:
-                resutl_msg = e
-                result = False
-        elif copy_method == 'firefox':
-            try:
-                source_path = image_path.encode('ascii', 'ignore')
-                destination_path = os.path.join(disk.encode('ascii', 'ignore'), image_dest)
-                self.file_store_firefox(source_path, destination_path)
-            except Exception, e:
-                resutl_msg = e
-                result = False
-        if copy_method == 'eACommander':
-            # For this copy method 'disk' will be 'serialno' for eACommander command line parameters
-            # Note: Commands are executed in the order they are specified on the command line
-            cmd = [EACOMMANDER_CMD,
-                   '--serialno', disk.rstrip('/\\'),
-                   '--flash', image_path.encode('ascii', 'ignore'),
-                   '--resettype', '2', '--reset']
-            try:
-                ret = call(cmd, shell=True)
-                if ret:
-                    resutl_msg = "Return code: %d. Command: "% ret + " ".join(cmd)
-                    result = False
-            except Exception, e:
-                resutl_msg = e
-                result = False
-        elif copy_method == 'eACommander-usb':
-            # For this copy method 'disk' will be 'usb address' for eACommander command line parameters
-            # Note: Commands are executed in the order they are specified on the command line
-            cmd = [EACOMMANDER_CMD,
-                   '--usb', disk.rstrip('/\\'),
-                   '--flash', image_path.encode('ascii', 'ignore')]
-            try:
-                ret = call(cmd, shell=True)
-                if ret:
-                    resutl_msg = "Return code: %d. Command: "% ret + " ".join(cmd)
-                    result = False
-            except Exception, e:
-                resutl_msg = e
-                result = False
+        result = False
+        resutl_msg = '' # TODO: pass result_msg from plugin to test suite
+        if copy_method is not None:
+            # image_path - Where is binary with target's firmware
+            result = host_tests_plugins.call_plugin('CopyMethod', copy_method, image_path=image_path, destination_disk=disk)
         else:
-            copy_method = "shutils.copy()"
-            # Default python method
-            try:
-                copy(image_path, disk)
-            except Exception, e:
-                resutl_msg = e
-                result = False
-
+            copy_method = 'default'
+            result = host_tests_plugins.call_plugin('CopyMethod', copy_method, image_path=image_path, destination_disk=disk)
         return result, resutl_msg, copy_method
 
     def delete_file(self, file_path):
@@ -659,8 +651,12 @@ class SingleTestRunner(object):
             print "Error: No Mbed available: MUT[%s]" % data['mcu']
             return None
 
-        disk = mut['disk']
-        port = mut['port']
+        disk = mut.get('disk')
+        port = mut.get('port')
+
+        if disk is None or port is None:
+            return None
+
         target_by_mcu = TARGET_MAP[mut['mcu']]
         # Some extra stuff can be declared in MUTs structure
         reset_type = mut.get('reset_type')  # reboot.txt, reset.txt, shutdown.txt
@@ -668,62 +664,77 @@ class SingleTestRunner(object):
         image_dest = mut.get('image_dest')  # Image file destination DISK + IMAGE_DEST + BINARY_NAME
         images_config = mut.get('images_config')    # Available images selection via config file
         mobo_config = mut.get('mobo_config')        # Available board configuration selection e.g. core selection etc.
+        copy_method = mut.get('copy_method')        # Available board configuration selection e.g. core selection etc.
 
-        # Program
         # When the build and test system were separate, this was relative to a
         # base network folder base path: join(NETWORK_BASE_PATH, )
         image_path = image
-        if not exists(image_path):
-            print self.logger.log_line(self.logger.LogType.ERROR, 'Image file does not exist: %s' % image_path)
-            elapsed_time = 0
-            test_result = self.TEST_RESULT_NO_IMAGE
-            return (test_result, target_name, toolchain_name,
-                    test_id, test_description, round(elapsed_time, 2),
-                    duration, self.shape_test_loop_ok_result_count([]))
-
-        # Program MUT with proper image file
-        if not disk.endswith('/') and not disk.endswith('\\'):
-            disk += '/'
 
         if self.db_logger:
             self.db_logger.reconnect()
 
+        selected_copy_method = self.opts_copy_method if copy_method is None else copy_method
+
         # Tests can be looped so test results must be stored for the same test
         test_all_result = []
+        # Test results for one test ran few times
+        detailed_test_results = {}  # { Loop_number: { results ... } }
+
         for test_index in range(test_loops):
-            # Choose one method of copy files to mbed virtual drive
-            #_copy_res, _err_msg, _copy_method = self.file_copy_method_selector(image_path, disk, self.opts_copy_method, image_dest=image_dest)
-
-            _copy_res, _err_msg, _copy_method = self.image_copy_method_selector(target_name, image_path, disk, self.opts_copy_method,
-                                                                                images_config, image_dest)
-
             # Host test execution
             start_host_exec_time = time()
 
             single_test_result = self.TEST_RESULT_UNDEF # singe test run result
-            if not _copy_res:   # Serial port copy error
-                single_test_result = self.TEST_RESULT_IOERR_COPY
-                print self.logger.log_line(self.logger.LogType.ERROR, "Copy method '%s' failed. Reason: %s"% (_copy_method, _err_msg))
+            _copy_method = selected_copy_method
+
+            if not exists(image_path):
+                single_test_result = self.TEST_RESULT_NO_IMAGE
+                elapsed_time = 0
+                single_test_output = self.logger.log_line(self.logger.LogType.ERROR, 'Image file does not exist: %s'% image_path)
+                print single_test_output
             else:
-                # Copy Extra Files
-                if not target_by_mcu.is_disk_virtual and test.extra_files:
-                    for f in test.extra_files:
-                        copy(f, disk)
+                # Choose one method of copy files to mbed MSD drive
+                _copy_res, _err_msg, _copy_method = self.image_copy_method_selector(target_name, image_path, disk, selected_copy_method,
+                                                                                    images_config, image_dest)
 
-                sleep(target_by_mcu.program_cycle_s())
-                # Host test execution
-                start_host_exec_time = time()
+                if not _copy_res:   # copy error to mbed MSD
+                    single_test_result = self.TEST_RESULT_IOERR_COPY
+                    single_test_output = self.logger.log_line(self.logger.LogType.ERROR, "Copy method '%s' failed. Reason: %s"% (_copy_method, _err_msg))
+                    print single_test_output
+                else:
+                    # Copy Extra Files
+                    if not target_by_mcu.is_disk_virtual and test.extra_files:
+                        for f in test.extra_files:
+                            copy(f, disk)
 
-                host_test_verbose = self.opts_verbose_test_result_only or self.opts_verbose
-                host_test_reset = self.opts_mut_reset_type if reset_type is None else reset_type
-                single_test_result, single_test_output = self.run_host_test(test.host_test, disk, port, duration,
-                                                                            verbose=host_test_verbose,
-                                                                            reset=host_test_reset,
-                                                                            reset_tout=reset_tout)
+                    sleep(target_by_mcu.program_cycle_s())
+                    # Host test execution
+                    start_host_exec_time = time()
+
+                    host_test_verbose = self.opts_verbose_test_result_only or self.opts_verbose
+                    host_test_reset = self.opts_mut_reset_type if reset_type is None else reset_type
+                    single_test_result, single_test_output = self.run_host_test(test.host_test, disk, port, duration,
+                                                                                micro=target_name,
+                                                                                verbose=host_test_verbose,
+                                                                                reset=host_test_reset,
+                                                                                reset_tout=reset_tout)
 
             # Store test result
             test_all_result.append(single_test_result)
             elapsed_time = time() - start_host_exec_time
+
+            detailed_test_results[test_index] = {
+                'single_test_result' : single_test_result,
+                'single_test_output' : single_test_output,
+                'target_name' : target_name,
+                'toolchain_name' : toolchain_name,
+                'test_id' : test_id,
+                'test_description' : test_description,
+                'elapsed_time' : round(elapsed_time, 2),
+                'duration' : duration,
+                'copy_method' : _copy_method,
+            }
+
             print self.print_test_result(single_test_result, target_name, toolchain_name,
                                          test_id, test_description, elapsed_time, duration)
 
@@ -750,7 +761,7 @@ class SingleTestRunner(object):
 
         return (self.shape_global_test_loop_result(test_all_result), target_name, toolchain_name,
                 test_id, test_description, round(elapsed_time, 2),
-                duration, self.shape_test_loop_ok_result_count(test_all_result))
+                duration, self.shape_test_loop_ok_result_count(test_all_result)), detailed_test_results
 
     def print_test_result(self, test_result, target_name, toolchain_name,
                           test_id, test_description, elapsed_time, duration):
@@ -782,15 +793,45 @@ class SingleTestRunner(object):
             result = test_all_result[0]
         return result
 
-    def run_host_test(self, name, disk, port, duration, reset=None, reset_tout=None, verbose=False, extra_serial=None):
+    def run_host_test(self, name, disk, port, duration, micro=None, reset=None, reset_tout=None, verbose=False, extra_serial=None):
         """ Function creates new process with host test configured with particular test case.
             Function also is pooling for serial port activity from process to catch all data
             printed by test runner and host test during test execution
         """
+
+        def get_char_from_queue(obs):
+            """ Get character from queue safe way
+            """
+            try:
+                c = obs.queue.get(block=True, timeout=0.5)
+            except Empty, _:
+                c = None
+            return c
+
+        def filter_queue_char(c):
+            """ Filters out non ASCII characters from serial port
+            """
+            if ord(c) not in range(128):
+                c = ' '
+            return c
+
+        def get_test_result(output):
+            """ Parse test 'output' data
+            """
+            result = self.TEST_RESULT_TIMEOUT
+            for line in "".join(output).splitlines():
+                search_result = self.RE_DETECT_TESTCASE_RESULT.search(line)
+                if search_result and len(search_result.groups()):
+                    result = self.TEST_RESULT_MAPPING[search_result.groups(0)[0]]
+                    break
+            return result
+
         # print "{%s} port:%s disk:%s"  % (name, port, disk),
         cmd = ["python", "%s.py" % name, '-p', port, '-d', disk, '-t', str(duration)]
 
         # Add extra parameters to host_test
+        if micro is not None:
+            cmd += ["-m", micro]
         if extra_serial is not None:
             cmd += ["-e", extra_serial]
         if reset is not None:
@@ -808,15 +849,13 @@ class SingleTestRunner(object):
         line = ''
         output = []
         while (time() - start_time) < duration:
-            try:
-                c = obs.queue.get(block=True, timeout=0.5)
-            except Empty, _:
-                c = None
+            c = get_char_from_queue(obs)
 
             if c:
-                output.append(c)
                 if verbose:
                     sys.stdout.write(c)
+                c = filter_queue_char(c)
+                output.append(c)
                 # Give the mbed under test a way to communicate the end of the test
                 if c in ['\n', '\r']:
                     if '{end}' in line:
@@ -825,28 +864,20 @@ class SingleTestRunner(object):
                 else:
                     line += c
 
-        try:
-            c = obs.queue.get(block=True, timeout=0.5)
-        except Empty, _:
-            c = None
+        c = get_char_from_queue(obs)
 
         if c:
-            output.append(c)
             if verbose:
                 sys.stdout.write(c)
+            c = filter_queue_char(c)
+            output.append(c)
 
         if verbose:
             print "Test::Output::Finish"
         # Stop test process
         obs.stop()
 
-        # Parse test 'output' data
-        result = self.TEST_RESULT_TIMEOUT
-        for line in "".join(output).splitlines():
-            search_result = self.RE_DETECT_TESTCASE_RESULT.search(line)
-            if search_result and len(search_result.groups()):
-                result = self.TEST_RESULT_MAPPING[search_result.groups(0)[0]]
-                break
+        result = get_test_result(output)
         return result, "".join(output)
 
     def is_peripherals_available(self, target_mcu_name, peripherals=None):
@@ -1076,7 +1107,7 @@ def print_test_configuration_from_json(json_data, join_delim=", "):
     return result
 
 
-def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','):
+def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=',',platform_filter=None):
     """ Generates table summary with all test cases and additional test cases
         information using pretty print functionality. Allows test suite user to
         see test cases
@@ -1092,7 +1123,12 @@ def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','
     counter_dict_test_id_types = dict((t, 0) for t in unique_test_id)
     counter_dict_test_id_types_all = dict((t, 0) for t in unique_test_id)
 
-    test_properties = ['id', 'automated', 'description', 'peripherals', 'host_test', 'duration'] if cols is None else cols
+    test_properties = ['id',
+                       'automated',
+                       'description',
+                       'peripherals',
+                       'host_test',
+                       'duration'] if cols is None else cols
 
     # All tests status table print
     pt = PrettyTable(test_properties)
@@ -1104,7 +1140,11 @@ def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','
     counter_automated = 0
     pt.padding_width = 1 # One space between column edges and contents (default)
 
-    for test_id in TEST_MAP:
+    for test_id in sorted(TEST_MAP.keys()):
+        if platform_filter is not None:
+            # FIlter out platforms using regex
+            if re.search(platform_filter, test_id) is None:
+                continue
         row = []
         test = TEST_MAP[test_id]
         split = test_id.split('_')[:-1]
@@ -1128,7 +1168,7 @@ def get_avail_tests_summary_table(cols=None, result_summary=True, join_delim=','
     result = pt.get_string()
     result += "\n\n"
 
-    if result_summary:
+    if result_summary and not platform_filter:
         # Automation result summary
         test_id_cols = ['automated', 'all', 'percent [%]', 'progress']
         pt = PrettyTable(test_id_cols)
@@ -1183,8 +1223,9 @@ def singletest_in_cli_mode(single_test):
     """
     start = time()
     # Execute tests depending on options and filter applied
-    test_summary, shuffle_seed = single_test.execute()
+    test_summary, shuffle_seed, test_summary_ext, test_suite_properties_ext = single_test.execute()
     elapsed_time = time() - start
+
     # Human readable summary
     if not single_test.opts_suppress_summary:
         # prints well-formed summary with results (SQL table like)
@@ -1195,65 +1236,15 @@ def singletest_in_cli_mode(single_test):
         print single_test.generate_test_summary_by_target(test_summary, shuffle_seed)
     print "Completed in %.2f sec"% (elapsed_time)
 
-
-def mps2_set_board_image_file(disk, images_cfg_path, image0file_path, image_name='images.txt'):
-    """ This function will alter image cfg file.
-        Main goal of this function is to change number of images to 1, comment all
-        existing image entries and append at the end of file new entry with test path.
-        @return True when all steps succeed.
-    """
-    MBED_SDK_TEST_STAMP = 'test suite entry'
-    image_path = os.path.join(disk, images_cfg_path, image_name)
-    new_file_lines = [] # New configuration file lines (entries)
-
-    # Check each line of the image configuration file
-    try:
-        with open(image_path, 'r') as file:
-            for line in file:
-                if re.search('^TOTALIMAGES', line):
-                    # Check number of total images, should be 1
-                    new_file_lines.append(re.sub('^TOTALIMAGES:[\t ]*[\d]+', 'TOTALIMAGES: 1', line))
-                    pass
-
-                elif re.search('; - %s[\n\r]*$'% MBED_SDK_TEST_STAMP, line):
-                    # Look for test suite entries and remove them
-                    pass    # Omit all test suite entries
-
-                elif re.search('^IMAGE[\d]+FILE', line):
-                    # Check all image entries and mark the ';'
-                    new_file_lines.append(';' + line)   # Comment non test suite lines
-                else:
-                    # Append line to new file
-                    new_file_lines.append(line)
-    except IOError as e:
-        return False
-
-    # Add new image entry with proper commented stamp
-    new_file_lines.append('IMAGE0FILE: %s    ; - %s\r\n'% (image0file_path, MBED_SDK_TEST_STAMP))
-
-    # Write all lines to file
-    try:
-        with open(image_path, 'w') as file:
-            for line in new_file_lines:
-                file.write(line),
-    except IOError as e:
-        return False
-
-    return True
-
-
-def mps2_select_core(disk, mobo_config_name=""):
-    """ Function selects actual core
-    """
-    # TODO: implement core selection
-    pass
-
-
-def mps2_switch_usb_auto_mounting_after_restart(disk, usb_config_name=""):
-    """ Function alters configuration to allow USB MSD to be mounted after restarts
-    """
-    # TODO: implement USB MSD restart detection
-    pass
+    # Store extra reports in files
+    if single_test.opts_report_html_file_name:
+        # Export results in form of HTML report to separate file
+        report_exporter = ReportExporter(ResultExporterType.HTML)
+        report_exporter.report_to_file(test_summary_ext, single_test.opts_report_html_file_name, test_suite_properties=test_suite_properties_ext)
+    if single_test.opts_report_junit_file_name:
+        # Export results in form of HTML report to separate file
+        report_exporter = ReportExporter(ResultExporterType.JUNIT)
+        report_exporter.report_to_file(test_summary_ext, single_test.opts_report_junit_file_name, test_suite_properties=test_suite_properties_ext)
 
 
 class TestLogger():
@@ -1277,14 +1268,15 @@ class TestLogger():
         self.LogToFileAttr = construct_enum(CREATE=1,    # Create or overwrite existing log file
                                             APPEND=2)    # Append to existing log file
 
-    def log_line(self, LogType, log_line):
+    def log_line(self, LogType, log_line, timestamp=True, line_delim='\n'):
         """ Log one line of text
         """
         log_timestamp = time()
         log_entry = {'log_type' : LogType,
                      'log_timestamp' : log_timestamp,
                      'log_line' : log_line,
-                     '_future' : None}
+                     '_future' : None
+        }
         # Store log in memory
         if self.store_log:
             self.log.append(log_entry)
@@ -1316,8 +1308,8 @@ class CLITestLogger(TestLogger):
         log_line_str = self.log_print(log_entry, timestamp)
         if self.log_file_name is not None:
             try:
-                with open(self.log_file_name, 'a') as file:
-                    file.write(log_line_str + line_delim)
+                with open(self.log_file_name, 'a') as f:
+                    f.write(log_line_str + line_delim)
             except IOError:
                 pass
         return log_line_str
@@ -1380,6 +1372,43 @@ def get_default_test_options_parser():
                       type="int",
                       help="Define number of compilation jobs. Default value is 1")
 
+    parser.add_option('', '--clean',
+                      dest='clean',
+                      metavar=False,
+                      action="store_true",
+                      help='Clean the build directory')
+
+    parser.add_option('-P', '--only-peripherals',
+                      dest='test_only_peripheral',
+                      default=False,
+                      action="store_true",
+                      help='Test only peripheral declared for MUT and skip common tests')
+
+    parser.add_option('-C', '--only-commons',
+                      dest='test_only_common',
+                      default=False,
+                      action="store_true",
+                      help='Test only board internals. Skip perpherials tests and perform common tests.')
+
+    parser.add_option('-n', '--test-by-names',
+                      dest='test_by_names',
+                      help='Runs only test enumerated it this switch')
+
+    copy_methods = host_tests_plugins.get_plugin_caps('CopyMethod')
+    copy_methods_str = "Plugin support: " + ', '.join(copy_methods)
+
+    parser.add_option('-c', '--copy-method',
+                      dest='copy_method',
+                      help="Select binary copy (flash) method. Default is Python's shutil.copy() method. %s"% copy_methods_str)
+
+    reset_methods = host_tests_plugins.get_plugin_caps('ResetMethod')
+    reset_methods_str = "Plugin support: " + ', '.join(reset_methods)
+
+    parser.add_option('-r', '--reset-type',
+                      dest='mut_reset_type',
+                      default=None,
+                      help='Extra reset method used to reset MUT by host test script. %s'% reset_methods_str)
+
     parser.add_option('-g', '--goanna-for-tests',
                       dest='goanna_for_tests',
                       metavar=False,
@@ -1404,7 +1433,7 @@ def get_default_test_options_parser():
                       action="store_true",
                       help='Displays wellformatted table with test x toolchain test result per target')
 
-    parser.add_option('-r', '--test-automation-report',
+    parser.add_option('-A', '--test-automation-report',
                       dest='test_automation_report',
                       default=False,
                       action="store_true",
@@ -1415,26 +1444,6 @@ def get_default_test_options_parser():
                       default=False,
                       action="store_true",
                       help='Prints information about all test cases and exits')
-
-    parser.add_option('-P', '--only-peripherals',
-                      dest='test_only_peripheral',
-                      default=False,
-                      action="store_true",
-                      help='Test only peripheral declared for MUT and skip common tests')
-
-    parser.add_option('-C', '--only-commons',
-                      dest='test_only_common',
-                      default=False,
-                      action="store_true",
-                      help='Test only board internals. Skip perpherials tests and perform common tests.')
-
-    parser.add_option('-c', '--copy-method',
-                      dest='copy_method',
-                      help="You can choose which copy method you want to use put bin in mbed. You can choose from 'cp', 'copy', 'xcopy'. Default is python shutils.copy method.")
-
-    parser.add_option('-n', '--test-by-names',
-                      dest='test_by_names',
-                      help='Runs only test enumerated it this switch')
 
     parser.add_option("-S", "--supported-toolchains",
                       action="store_true",
@@ -1483,11 +1492,6 @@ def get_default_test_options_parser():
                       default=None,
                       help='Shuffle seed (If you want to reproduce your shuffle order please use seed provided in test summary)')
 
-    parser.add_option('', '--reset-type',
-                      dest='mut_reset_type',
-                      default=None,
-                      help='Extra reset method used to reset MUT by host test script')
-
     parser.add_option('-f', '--filter',
                       dest='general_filter_regex',
                       default=None,
@@ -1499,13 +1503,21 @@ def get_default_test_options_parser():
                       type="int",
                       help='You can increase global timeout for each test by specifying additional test timeout in seconds')
 
-    parser.add_option('', '--db',
-                      dest='db_url',
-                      help='This specifies what database test suite uses to store its state. To pass DB connection info use database connection string. Example: \'mysql://username:password@127.0.0.1/db_name\'')
+    #parser.add_option('', '--db',
+    #                  dest='db_url',
+    #                  help='This specifies what database test suite uses to store its state. To pass DB connection info use database connection string. Example: \'mysql://username:password@127.0.0.1/db_name\'')
 
     parser.add_option('-l', '--log',
                       dest='log_file_name',
                       help='Log events to external file (note not all console entries may be visible in log file)')
+
+    parser.add_option('', '--report-html',
+                      dest='report_html_file_name',
+                      help='You can log test suite results in form of HTML report')
+
+    parser.add_option('', '--report-junit',
+                      dest='report_junit_file_name',
+                      help='You can log test suite results in form of JUnit compliant XML report')
 
     parser.add_option('', '--verbose-skipped',
                       dest='verbose_skipped_tests',
