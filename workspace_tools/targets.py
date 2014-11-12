@@ -724,6 +724,7 @@ class WALLBOT_BLE(NRF51822):
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
 
+        
 ### ARM ###
 
 class ARM_MPS2(Target):
@@ -733,6 +734,9 @@ class ARM_MPS2(Target):
         self.macros = ['CMSDK_CM4']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
+
+        
+### Renesas ###
 
 class RZ_A1H(Target):
     def __init__(self):
@@ -796,6 +800,8 @@ class EFM32ZG_STK3200(Target):
         
 
 
+        
+        
 # Get a single instance for each target
 TARGETS = [
 
@@ -870,9 +876,12 @@ TARGETS = [
     RBLAB_BLENANO(),# nRF51822
     XADOW_M0(),     # nRF51822
     WALLBOT_BLE(),  # nRF51822
-    
+
     ### ARM ###
     ARM_MPS2(),
+    
+    ### Renesas ###
+    RZ_A1H(),
     
     ### Silicon_Labs ###
     EFM32_G8XX_STK(),
