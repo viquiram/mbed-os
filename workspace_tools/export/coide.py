@@ -33,6 +33,7 @@ class CoIDE(Exporter):
         'NUCLEO_F411RE',
         'DISCO_F429ZI',
         'DISCO_F334C8',
+        'DISCO_F303VC',
         'MTS_MDOT_F405RG',
     ]
 
@@ -78,7 +79,7 @@ class CoIDE(Exporter):
             'library_paths': self.resources.lib_dirs,
             'object_files': self.resources.objects,
             'libraries': libraries,
-            'symbols': self.toolchain.get_symbols()
+            'symbols': self.get_symbols()
         }
         target = self.target.lower()
 
