@@ -84,14 +84,14 @@ class LPC11C24(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11XX_11CXX', 'LPC11CXX']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
 
 class LPC1114(LPCTarget):
     def __init__(self):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11XX_11CXX', 'LPC11XX']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR", "IAR"]
         self.default_toolchain = "uARM"
 
 class LPC11U24(LPCTarget):
@@ -99,7 +99,7 @@ class LPC11U24(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX', 'LPC11U24_401']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
         self.detect_code = "1040"
 
@@ -109,7 +109,7 @@ class OC_MBUINO(LPC11U24):
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX']
         self.macros = ['TARGET_LPC11U24']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
 
 class LPC11U24_301(LPCTarget):
@@ -117,14 +117,14 @@ class LPC11U24_301(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
 
 class LPC11U35_401(LPCTarget):
     def __init__(self):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR", "IAR"]
         self.default_toolchain = "uARM"
 
 class LPC11U35_501(LPCTarget):
@@ -132,7 +132,7 @@ class LPC11U35_501(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX', 'MCU_LPC11U35_501']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR" , "IAR"]
         self.default_toolchain = "uARM"
 
 class LPC11U37_501(LPCTarget):
@@ -140,7 +140,7 @@ class LPC11U37_501(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR", "IAR"]
         self.default_toolchain = "uARM"
 
 class LPCCAPPUCCINO(LPC11U37_501):
@@ -152,7 +152,7 @@ class ARCH_GPRS(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX', 'LPC11U37_501']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
 
@@ -161,7 +161,7 @@ class LPC11U68(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC11U6X']
-        self.supported_toolchains = ["uARM", "GCC_CR", "GCC_ARM"]
+        self.supported_toolchains = ["uARM", "GCC_CR", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.detect_code = "1168"
@@ -178,7 +178,7 @@ class LPC1549(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M3"
         self.extra_labels = ['NXP', 'LPC15XX']
-        self.supported_toolchains = ["uARM", "GCC_CR", "GCC_ARM"]
+        self.supported_toolchains = ["uARM", "GCC_CR", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.detect_code = "1549"
@@ -221,7 +221,7 @@ class LPC810(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC81X']
-        self.supported_toolchains = ["uARM"]
+        self.supported_toolchains = ["uARM", "IAR"]
         self.default_toolchain = "uARM"
         self.is_disk_virtual = True
 
@@ -230,7 +230,7 @@ class LPC812(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC81X']
-        self.supported_toolchains = ["uARM"]
+        self.supported_toolchains = ["uARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
@@ -260,7 +260,7 @@ class LPC4088(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['NXP', 'LPC408X']
-        self.supported_toolchains = ["ARM", "GCC_CR", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "GCC_CR", "GCC_ARM", "IAR"]
         self.is_disk_virtual = True
 
     def init_hooks(self, hook, toolchain_name):
@@ -456,7 +456,7 @@ class NUCLEO_F302R8(Target):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F3', 'STM32F302R8']
-        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = "0705"
@@ -506,7 +506,7 @@ class NUCLEO_L152RE(Target):
         Target.__init__(self)
         self.core = "Cortex-M3"
         self.extra_labels = ['STM', 'STM32L1', 'STM32L152RE']
-        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = "0710"
@@ -620,6 +620,7 @@ class NRF51822(Target):
         }
     ]
     OUTPUT_EXT = '.hex'
+    MERGE_SOFT_DEVICE = True
 
     def __init__(self):
         Target.__init__(self)
@@ -656,20 +657,21 @@ class NRF51822(Target):
         binh = IntelHex()
         binh.loadbin(binf, offset=softdeviceAndOffsetEntry['offset'])
 
-        sdh = IntelHex(hexf)
-        sdh.merge(binh)
+        if t_self.target.MERGE_SOFT_DEVICE is True:
+            sdh = IntelHex(hexf)
+            binh.merge(sdh)
 
         with open(binf.replace(".bin", ".hex"), "w") as f:
-            sdh.tofile(f, format='hex')
+            binh.tofile(f, format='hex')
 
-class NRF51822_OTA(Target):
+class NRF51822_OTA(NRF51822):
     def __init__(self):
-        Target.__init__(self)
+        NRF51822.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ["NORDIC", "NRF51822_MKIT", "MCU_NRF51822", "MCU_NORDIC_16K", "NRF51822"]
         self.macros = ['TARGET_NRF51822', 'TARGET_OTA_ENABLED']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
-        self.is_disk_virtual = True
+        self.MERGE_SOFT_DEVICE = False
 
 class NRF51_DK(NRF51822):
     def __init__(self):
@@ -678,21 +680,20 @@ class NRF51_DK(NRF51822):
         self.macros = ['TARGET_NRF51822']
         self.supported_form_factors = ["ARDUINO"]
 
-class NRF51_DK_OTA(Target):
+class NRF51_DK_OTA(NRF51822):
     def __init__(self):
-        Target.__init__(self)
+        NRF51822.__init__(self)
         self.core = "Cortex-M0"
-        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K', "NRF51_DK"]
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K', 'NRF51_DK']
         self.macros = ['TARGET_NRF51822', 'TARGET_NRF51_DK', 'TARGET_OTA_ENABLED']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
-        self.is_disk_virtual = True
+        self.MERGE_SOFT_DEVICE = False
 
 class NRF51_DONGLE(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K']
         self.macros = ['TARGET_NRF51822']
-        self.supported_form_factors = ["ARDUINO"]
 
 class ARCH_BLE(NRF51822):
     def __init__(self):
@@ -725,7 +726,7 @@ class XADOW_M0(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['NXP', 'LPC11UXX', 'MCU_LPC11U35_501']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR", "IAR"]
         self.default_toolchain = "uARM"
 
 class WALLBOT_BLE(NRF51822):
