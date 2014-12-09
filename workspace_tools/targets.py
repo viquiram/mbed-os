@@ -386,6 +386,7 @@ class K22F(Target):
         self.supported_toolchains = ["ARM", "GCC_ARM", "IAR"]
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
+        self.detect_code = ["0201"]
 
 class K64F(Target):
     def __init__(self):
@@ -462,6 +463,16 @@ class NUCLEO_F302R8(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0705"]
 
+class NUCLEO_F303RE(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F3', 'STM32F303RE']
+        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        self.detect_code = ["0706"]
+        
 class NUCLEO_F334R8(Target):
     def __init__(self):
         Target.__init__(self)
@@ -812,6 +823,9 @@ class EFM32ZG_STK3200(Target):
         
 
 
+    def program_cycle_s(self):
+        return 2
+
 
 
 # Get a single instance for each target
@@ -860,6 +874,7 @@ TARGETS = [
     NUCLEO_F091RC(),
     NUCLEO_F103RB(),
     NUCLEO_F302R8(),
+    NUCLEO_F303RE(),
     NUCLEO_F334R8(),
     NUCLEO_F401RE(),
     NUCLEO_F411RE(),

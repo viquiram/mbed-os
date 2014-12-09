@@ -20,6 +20,8 @@
 
 
 #include "riic_iodefine.h"
+#include "RZ_A1_Init.h"
+#include "MBRZA1H.h"
 
 volatile struct st_riic *RIIC[] = RIIC_ADDRESS_LIST;
 
@@ -70,8 +72,10 @@ static void i2c_reg_reset(i2c_t *obj) {
     REG(MR1.UINT8[0])  =  0x08;  // P_phi /8  9bit (including Ack)
     REG(SER.UINT8[0])  =  0x00;  // no slave addr enabled
 
-    // set default frequency at 100k
-    i2c_frequency(obj, 100000);
+    // set frequency
+    REG(MR1.UINT8[0]) |=  obj->pclk_bit;
+    REG(BRL.UINT32)    =  obj->width;
+    REG(BRH.UINT32)    =  obj->width;
 
     REG(MR2.UINT8[0])  =  0x07;
     REG(MR3.UINT8[0])  =  0x00;
@@ -127,6 +131,9 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl) {
 
     // enable power
     i2c_power_enable(obj);
+
+    // set default frequency at 100k
+    i2c_frequency(obj, 100000);
 
     // full reset
     i2c_reg_reset(obj);
@@ -198,13 +205,62 @@ static inline int i2c_do_read(i2c_t *obj, int last) {
 }
 
 void i2c_frequency(i2c_t *obj, int hz) {
-    uint32_t PCLK = 6666666;
+    int freq;
+    int oldfreq = 0;
+    int newfreq = 0;
+    uint32_t pclk;
+    uint32_t pclk_base;
+    uint32_t tmp_width;
+    uint32_t width = 0;
+    uint8_t count;
+    uint8_t pclk_bit = 0;
 
-    uint32_t pulse = PCLK / (hz * 2);
+    /* set PCLK */
+    if (false == RZ_A1_IsClockMode0()) {
+        pclk_base = (uint32_t)CM1_RENESAS_RZ_A1_P0_CLK;
+    } else {
+        pclk_base = (uint32_t)CM0_RENESAS_RZ_A1_P0_CLK;
+    }
 
-    // I2C Rate
-    REG(BRL.UINT32) = pulse;
-    REG(BRH.UINT32) = pulse;
+    /* Min 10kHz, Max 400kHz */
+    if (hz < 10000) {
+        freq = 10000;
+    } else if (hz > 400000) {
+        freq = 400000;
+    } else {
+        freq = hz;
+    }
+
+    for (count = 0; count < 7; count++) {
+        // IIC phi = P0 phi / rate
+        pclk = pclk_base / (2 << count);
+        // In case of "CLE = 1, NFE = 1, CKS != 000( IIC phi < P0 phi ), nf = 1"
+        // freq = 1 / {[( BRH + 2 + 1 ) + ( BRL + 2 + 1 )] / pclk }
+        // BRH is regarded as same value with BRL
+        // 2( BRH + 3 ) / pclk  = 1 / freq
+        tmp_width = ((pclk / freq) / 2) - 3;
+        // Carry in a decimal point
+        tmp_width += 1;
+        if ((tmp_width >= 0x00000001) && (tmp_width <= 0x0000001F)) {
+            // Calculate theoretical value, and Choose max value of them
+            newfreq = pclk / (tmp_width + 3) / 2;
+            if (newfreq >= oldfreq) {
+                oldfreq  = newfreq;
+                width    = tmp_width;
+                pclk_bit = (uint8_t)(0x10 * (count + 1));
+            }
+        }
+    }
+
+    if (width != 0) {
+        // I2C Rate
+        obj->pclk_bit = pclk_bit;  // P_phi / xx
+        obj->width    = (width | 0x000000E0);
+    } else {
+        // Default 
+        obj->pclk_bit = 0x00;      // P_phi / 1
+        obj->width    = 0x000000FF;
+    }
 }
 
 int i2c_read(i2c_t *obj, int address, char *data, int length, int stop) {

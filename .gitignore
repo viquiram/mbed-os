@@ -70,3 +70,9 @@ debug.log
 # PyCharm
 *.idea
 
+# Cscope
+cscope.*
+
+# vim swap files
+*.swp
+
