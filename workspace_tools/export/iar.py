@@ -43,8 +43,9 @@ class IAREmbeddedWorkbench(Exporter):
         'NUCLEO_F030R8',
         'NUCLEO_F072RB',
         'NUCLEO_F091RC',
-        'NUCLEO_F103RB',        
+        'NUCLEO_F103RB',
         'NUCLEO_F302R8',
+        'NUCLEO_F303RE',
         'NUCLEO_F334R8',
         'NUCLEO_F401RE',
         'NUCLEO_F411RE',
@@ -52,6 +53,7 @@ class IAREmbeddedWorkbench(Exporter):
         'NUCLEO_L152RE',
         'STM32F407',
         'MTS_MDOT_F405RG',
+        'MTS_MDOT_F411RE',
     ]
 
     def generate(self):

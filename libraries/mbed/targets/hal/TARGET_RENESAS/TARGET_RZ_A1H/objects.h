@@ -30,6 +30,8 @@ extern "C" {
 struct i2c_s {
     uint32_t i2c;
     uint32_t dummy;
+    uint8_t  pclk_bit;
+    uint32_t width;
 };
 
 struct spi_s {
@@ -56,9 +58,8 @@ struct serial_s {
 };
 
 struct pwmout_s {
-    __IO uint16_t *MR;
-    __IO uint16_t *CY;
-    uint16_t flag;
+    uint32_t ch;
+    int32_t  period;
     PWMName pwm;
 };
 

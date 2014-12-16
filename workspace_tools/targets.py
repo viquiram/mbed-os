@@ -136,6 +136,14 @@ class LPC11U35_501(LPCTarget):
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR" , "IAR"]
         self.default_toolchain = "uARM"
 
+class LPC11U35_Y5_MBUG(LPCTarget):
+    def __init__(self):
+        LPCTarget.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['NXP', 'LPC11UXX', 'MCU_LPC11U35_501']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR" , "IAR"]
+        self.default_toolchain = "uARM"
+
 class LPC11U37_501(LPCTarget):
     def __init__(self):
         LPCTarget.__init__(self)
@@ -386,6 +394,7 @@ class K22F(Target):
         self.supported_toolchains = ["ARM", "GCC_ARM", "IAR"]
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
+        self.detect_code = ["0201"]
 
 class K64F(Target):
     def __init__(self):
@@ -462,6 +471,16 @@ class NUCLEO_F302R8(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0705"]
 
+class NUCLEO_F303RE(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F3', 'STM32F303RE']
+        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        self.detect_code = ["0706"]
+        
 class NUCLEO_F334R8(Target):
     def __init__(self):
         Target.__init__(self)
@@ -600,6 +619,15 @@ class MTS_MDOT_F405RG(Target):
         self.is_disk_virtual = True
         self.default_toolchain = "ARM"
 
+class MTS_MDOT_F411RE(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F411RE']
+        self.macros = ['HSE_VALUE=26000000', 'OS_CLOCK=96000000', 'USE_PLL_HSE_EXTC=0']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
+        self.default_toolchain = "uARM"
+
 
 ### Nordic ###
 
@@ -722,6 +750,12 @@ class RBLAB_BLENANO(NRF51822):
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
 
+class NRF51822_Y5_MBUG(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
+        self.macros = ['TARGET_NRF51822']
+
 class XADOW_M0(LPCTarget):
     def __init__(self):
         LPCTarget.__init__(self)
@@ -812,6 +846,9 @@ class EFM32ZG_STK3200(Target):
         
 
 
+    def program_cycle_s(self):
+        return 2
+
 
 
 # Get a single instance for each target
@@ -824,6 +861,7 @@ TARGETS = [
     LPC11U24_301(),
     LPC11U35_401(),
     LPC11U35_501(),
+    LPC11U35_Y5_MBUG(),
     LPC11U37_501(),
     LPCCAPPUCCINO(),# LPC11U37_501
     ARCH_GPRS(),    # LPC11U37_501
@@ -860,6 +898,7 @@ TARGETS = [
     NUCLEO_F091RC(),
     NUCLEO_F103RB(),
     NUCLEO_F302R8(),
+    NUCLEO_F303RE(),
     NUCLEO_F334R8(),
     NUCLEO_F401RE(),
     NUCLEO_F411RE(),
@@ -876,6 +915,7 @@ TARGETS = [
     DISCO_F429ZI(),
     DISCO_L053C8(),
     MTS_MDOT_F405RG(),
+    MTS_MDOT_F411RE(),
 
     ### Nordic ###
     NRF51822(),
@@ -887,6 +927,7 @@ TARGETS = [
     HRM1017(),      # nRF51822
     RBLAB_NRF51822(),# nRF51822
     RBLAB_BLENANO(),# nRF51822
+	NRF51822_Y5_MBUG(),#nRF51822
     XADOW_M0(),     # nRF51822
     WALLBOT_BLE(),  # nRF51822
 

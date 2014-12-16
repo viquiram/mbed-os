@@ -27,6 +27,7 @@ class CoIDE(Exporter):
         'KL05Z',
         'LPC1768',
         'ARCH_PRO',
+        'UBLOX_C027',
         'DISCO_F407VG',
         'NUCLEO_L152RE',
         'NUCLEO_F030R8',
@@ -39,6 +40,7 @@ class CoIDE(Exporter):
         'DISCO_F334C8',
         'DISCO_F303VC',
         'MTS_MDOT_F405RG',
+        'MTS_MDOT_F411RE',
     ]
 
     # seems like CoIDE currently supports only one type
