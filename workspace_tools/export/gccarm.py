@@ -57,7 +57,10 @@ class GccArm(Exporter):
         'ARCH_MAX',
         'DISCO_F429ZI',
         'NUCLEO_F030R8',
+        'NUCLEO_F070RB',
         'NUCLEO_F072RB',
+        'NUCLEO_F091RC',
+        'NUCLEO_F103RB',
         'NUCLEO_F302R8',
         'NUCLEO_F334R8',
         'DISCO_L053C8',
@@ -68,6 +71,8 @@ class GccArm(Exporter):
         'NUCLEO_L152RE',
         'NRF51_DK',
         'NRF51_DONGLE',
+        'BLE_SMURFS',
+        'DISCO_F401VC',
     ]
 
     DOT_IN_RELATIVE_PATH = True

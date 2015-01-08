@@ -250,7 +250,7 @@ class LPC824(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC82X']
-        self.supported_toolchains = ["uARM", "GCC_ARM"]
+        self.supported_toolchains = ["uARM", "GCC_ARM","GCC_CR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
@@ -431,6 +431,16 @@ class NUCLEO_F030R8(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0725"]
 
+class NUCLEO_F070RB(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['STM', 'STM32F0', 'STM32F070RB']
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        self.detect_code = ["0755"]
+
 class NUCLEO_F072RB(Target):
     def __init__(self):
         Target.__init__(self)
@@ -446,7 +456,7 @@ class NUCLEO_F091RC(Target):
         Target.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['STM', 'STM32F0', 'STM32F091RC']
-        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0731"]
@@ -480,7 +490,7 @@ class NUCLEO_F303RE(Target):
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0706"]
-        
+
 class NUCLEO_F334R8(Target):
     def __init__(self):
         Target.__init__(self)
@@ -598,7 +608,7 @@ class DISCO_F429ZI(Target):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F429', 'STM32F429ZI']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["GCC_ARM", "IAR"]
         self.default_toolchain = "GCC_ARM"
 
 class DISCO_L053C8(Target):
@@ -627,6 +637,23 @@ class MTS_MDOT_F411RE(Target):
         self.macros = ['HSE_VALUE=26000000', 'OS_CLOCK=96000000', 'USE_PLL_HSE_EXTC=0']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
+
+class MTS_DRAGONFLY_F411RE(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F411RE']
+        self.macros = ['HSE_VALUE=26000000']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
+        self.default_toolchain = "ARM"
+
+class DISCO_F401VC(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F401', 'STM32F401VC']
+        self.supported_toolchains = ["GCC_ARM"]
+        self.default_toolchain = "GCC_ARM"
 
 
 ### Nordic ###
@@ -730,6 +757,19 @@ class ARCH_BLE(NRF51822):
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
         self.supported_form_factors = ["ARDUINO"]
+
+class BLE_SMURFS(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
+        self.macros = ['TARGET_NRF51822']
+
+class BLE_SMURFS_OTA(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
+        self.macros = ['TARGET_NRF51822', 'TARGET_BLE_SMURFS', 'TARGET_OTA_ENABLED']
+        self.MERGE_SOFT_DEVICE = False
 
 class HRM1017(NRF51822):
     def __init__(self):
@@ -861,6 +901,7 @@ TARGETS = [
     LPC11U24_301(),
     LPC11U35_401(),
     LPC11U35_501(),
+    XADOW_M0(),     # LPC11U35_501
     LPC11U35_Y5_MBUG(),
     LPC11U37_501(),
     LPCCAPPUCCINO(),# LPC11U37_501
@@ -894,6 +935,7 @@ TARGETS = [
 
     ### STMicro ###
     NUCLEO_F030R8(),
+    NUCLEO_F070RB(),
     NUCLEO_F072RB(),
     NUCLEO_F091RC(),
     NUCLEO_F103RB(),
@@ -916,6 +958,8 @@ TARGETS = [
     DISCO_L053C8(),
     MTS_MDOT_F405RG(),
     MTS_MDOT_F411RE(),
+    MTS_DRAGONFLY_F411RE(),
+    DISCO_F401VC(),
 
     ### Nordic ###
     NRF51822(),
@@ -924,11 +968,12 @@ TARGETS = [
     NRF51_DK_OTA(), # nRF51822
     NRF51_DONGLE(),
     ARCH_BLE(),     # nRF51822
+    BLE_SMURFS(),
+    BLE_SMURFS_OTA(),
     HRM1017(),      # nRF51822
     RBLAB_NRF51822(),# nRF51822
     RBLAB_BLENANO(),# nRF51822
-	NRF51822_Y5_MBUG(),#nRF51822
-    XADOW_M0(),     # nRF51822
+    NRF51822_Y5_MBUG(),#nRF51822
     WALLBOT_BLE(),  # nRF51822
 
     ### ARM ###
