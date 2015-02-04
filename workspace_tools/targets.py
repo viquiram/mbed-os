@@ -65,6 +65,32 @@ class Target:
         pass
 
 
+### MCU Support ###
+
+class CM4_UARM(LPCTarget):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4"
+        self.supported_toolchains = ["uARM"]
+        
+class CM4_ARM(LPCTarget):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4"
+        self.supported_toolchains = ["ARM"]
+
+class CM4F_UARM(LPCTarget):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.supported_toolchains = ["uARM"]
+        
+class CM4F_ARM(LPCTarget):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.supported_toolchains = ["ARM"]
+
 ### NXP ###
 
 # This class implements the post-link patching step needed by LPC targets
@@ -943,6 +969,12 @@ class EFM32ZG_STK3200(Target):
 
 # Get a single instance for each target
 TARGETS = [
+
+    ### MCU Support ###
+    CM4_UARM(),
+    CM4_ARM(),
+    CM4F_UARM(),
+    CM4F_ARM(),
 
     ### NXP ###
     LPC11C24(),
