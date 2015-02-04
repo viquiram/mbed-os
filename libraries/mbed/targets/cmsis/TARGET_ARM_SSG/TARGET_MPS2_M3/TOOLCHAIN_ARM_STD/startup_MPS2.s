@@ -6,6 +6,7 @@
 ; * @date     15. November 2013
 ; *
 ; * @note
+; * Copyright (C) 2014 ARM Limited. All rights reserved.
 ; *
 ; ******************************************************************************/
 ;/* Copyright (c) 2011 - 2013 ARM LIMITED
@@ -43,7 +44,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00000400
+Stack_Size      EQU     0x00004000
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -54,7 +55,7 @@ __initial_sp
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x00000C00
+Heap_Size       EQU     0x00001000
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
@@ -106,7 +107,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     UARTOVF_Handler           ; UART 0,1,2 Overflow Handler
                 DCD     ETHERNET_Handler          ; Ethernet Overflow Handler
                 DCD     I2S_Handler               ; I2S Handler
-                DCD     DMA_Handler               ; DMA handler
+                DCD     TSC_Handler               ; Touch Screen handler
                 DCD     PORT0_0_Handler           ; GPIO Port 0 pin 0 Handler
                 DCD     PORT0_1_Handler           ; GPIO Port 0 pin 1 Handler
                 DCD     PORT0_2_Handler           ; GPIO Port 0 pin 2 Handler
@@ -203,7 +204,7 @@ Default_Handler PROC
                 EXPORT UARTOVF_Handler            [WEAK]
                 EXPORT ETHERNET_Handler           [WEAK]
                 EXPORT I2S_Handler                [WEAK]
-                EXPORT DMA_Handler                [WEAK]
+                EXPORT TSC_Handler                [WEAK]
                 EXPORT PORT0_0_Handler            [WEAK]
                 EXPORT PORT0_1_Handler            [WEAK]
                 EXPORT PORT0_2_Handler            [WEAK]
@@ -236,7 +237,7 @@ SPI_Handler
 UARTOVF_Handler
 ETHERNET_Handler
 I2S_Handler
-DMA_Handler
+TSC_Handler
 PORT0_0_Handler
 PORT0_1_Handler
 PORT0_2_Handler

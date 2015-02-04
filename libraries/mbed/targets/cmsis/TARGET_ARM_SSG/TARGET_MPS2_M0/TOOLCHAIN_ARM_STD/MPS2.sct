@@ -1,3 +1,6 @@
+; *************************************************************
+; *** Scatter-Loading Description File                      ***
+; *************************************************************
 
  LR_IROM1 0x00000000 0x00400000  {    ; load region size_region
    ER_IROM1 +0  {  ; load address = execution address

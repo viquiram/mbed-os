@@ -1,4 +1,4 @@
-/* mbed Microcontroller Library - cmsis_nvic for LCP1768
+/* mbed Microcontroller Library - cmsis_nvic for MPS2
  * Copyright (c) 2009-2011 ARM Limited. All rights reserved.
  *
  * CMSIS-style functionality to support dynamic vectors

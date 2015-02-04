@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "pinmap.h"
-#include "error.h"
+#include "mbed_error.h"
 
 
 void pin_function(PinName pin, int function) {

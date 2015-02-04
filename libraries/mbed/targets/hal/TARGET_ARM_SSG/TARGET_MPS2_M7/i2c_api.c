@@ -16,8 +16,8 @@
 #include "i2c_api.h"
 #include "cmsis.h"
 #include "pinmap.h"
-#include "error.h"
-#include "TSC_I2C_MPS2.h"
+#include "mbed_error.h"
+//#include "TSC_I2C_MPS2.h"
 //#include "TSC_I2C_MPS2.c"
 //#include "AAIC_I2C_MPS2.h"
 //#include "AAIC_I2C_MPS2.c"
@@ -68,6 +68,7 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl) {
 }
 
 inline int i2c_start(i2c_t *obj) {
+/*
     int status = 0;
         // Start bit
     switch ((int)obj->i2c) {
@@ -80,13 +81,14 @@ inline int i2c_start(i2c_t *obj) {
         case I2C_1: mps2_i2c_aaci_init(); break;    // Read and check the I2C chip ID and revision
 		}
 
-    return status;
+    return status;*/
+    return 0;
 }
 
 inline int i2c_stop(i2c_t *obj) {
     //int timeout = 0;
     // Stop bit
-		switch ((int)obj->i2c) {
+/*		switch ((int)obj->i2c) {
 			case I2C_0: i2c_delay(TSC_TSU);
 									MPS2_TS_I2C->CONTROLC = SDA;
 									i2c_delay(TSC_TSU);
@@ -97,7 +99,7 @@ inline int i2c_stop(i2c_t *obj) {
 									break;
         case I2C_1: mps2_i2c_aaci_init(); break;    // Read and check the I2C chip ID and revision
 		}
-
+*/
 		return 0;
 }
 
@@ -129,7 +131,7 @@ void i2c_frequency(i2c_t *obj, int hz) {
 // check for that
 
 int i2c_read(i2c_t *obj, int address, char *data, int length, int stop) {
-	int loop,din,isr;
+/*	int loop,din,isr;
 	
 	// Read interrupt status
     	isr = TSC_I2C_read(0x0B, TSC_I2C_ADDR, 1);
@@ -152,7 +154,7 @@ int i2c_read(i2c_t *obj, int address, char *data, int length, int stop) {
 			din = TSC_I2C_read(0xD7, TSC_I2C_ADDR, 4);
 		}
 
-
+*/
 /*	int count, status;
     
     status = i2c_start(obj);
@@ -194,7 +196,8 @@ int i2c_read(i2c_t *obj, int address, char *data, int length, int stop) {
         i2c_stop(obj);
     }*/
     
-    return din;
+    //return din;
+	return 0;
 }
 
 int i2c_write(i2c_t *obj, int address, const char *data, int length, int stop) {
@@ -330,7 +333,7 @@ void i2c_slave_address(i2c_t *obj, int idx, uint32_t address, uint32_t mask) {
         *((uint32_t *) addr) = mask & 0xFE;
     }*/
 }
-
+/*
 int mps2_i2c_ts_init()
 {
 		unsigned int din, err;
@@ -407,7 +410,7 @@ int mps2_i2c_ts_init()
 	
 void mps2_i2c_aaci_init()
 {
-/*	unsigned char din;
+	unsigned char din;
   din = AAIC_I2C_read(AAIC_I2C_CRID, AAIC_I2C_ADDR);
 
   // Initialise the AACI I2C interface (see DS680F2 page 38)
@@ -434,7 +437,8 @@ void mps2_i2c_aaci_init()
   AAIC_I2C_write(AAIC_I2C_INPUTBSEL, 0x00, AAIC_I2C_ADDR);
 
   // Audio setup complete
-  wait_ms(10);*/
+  wait_ms(10);
 
 
-}
+}*/
+

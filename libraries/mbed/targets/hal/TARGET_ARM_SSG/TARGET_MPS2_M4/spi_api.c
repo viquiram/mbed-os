@@ -19,7 +19,7 @@
 #include "spi_def.h"
 #include "cmsis.h"
 #include "pinmap.h"
-#include "error.h"
+#include "mbed_error.h"
 #include "wait_api.h"
 
 static const PinMap PinMap_SPI_SCLK[] = {
