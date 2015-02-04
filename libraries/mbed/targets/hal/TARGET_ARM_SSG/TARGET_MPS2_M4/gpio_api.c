@@ -27,9 +27,10 @@ uint32_t gpio_set(PinName pin) {
 // this links the board control bits for each pin 
 // with the object created for the pin
 void gpio_init(gpio_t *obj, PinName pin) {
-    if(pin == NC) return;
-    int pin_value = 0;
-    obj->pin = pin;
+		if(pin == NC){ return;}
+		else {
+		int pin_value = 0;
+		obj->pin = pin;
 		if(pin <=15){
 			pin_value = pin;
 		}else if (pin >= 16 && pin <= 31){
@@ -52,30 +53,30 @@ void gpio_init(gpio_t *obj, PinName pin) {
 			pin_value = pin-307;
 		}
 		
-    obj->mask = 0x1 << pin_value;
-    obj->pin_number = pin;
-    if(pin <=15) {
+		obj->mask = 0x1 << pin_value;
+		obj->pin_number = pin;
+		if(pin <=15) {
 			//CMSDK_GPIO_TypeDef *port_reg = (CMSDK_GPIO_TypeDef *) (((int)pin) & ~0xF); //+ pin_number);
 			obj->reg_data = &CMSDK_GPIO0->DATAOUT ;
-//   	 obj->reg_clr = &port_reg->DATAOUT;
+//			obj->reg_clr = &port_reg->DATAOUT;
 			obj->reg_in  = 		&CMSDK_GPIO0->DATA ;
 			obj->reg_dir = 		&CMSDK_GPIO0->OUTENABLESET ;
 			obj->reg_dirclr = &CMSDK_GPIO0->OUTENABLECLR ;
 		} else if (pin >= 16 && pin <= 31){
 			obj->reg_data = &CMSDK_GPIO1->DATAOUT ;
-//   	 obj->reg_clr = &port_reg->DATAOUT;
+//			obj->reg_clr = &port_reg->DATAOUT;
 			obj->reg_in  = 		&CMSDK_GPIO1->DATA ;
 			obj->reg_dir = 		&CMSDK_GPIO1->OUTENABLESET ;
 			obj->reg_dirclr = &CMSDK_GPIO1->OUTENABLECLR ;
 		} else if (pin >= 32 && pin <= 47){
 			obj->reg_data = &CMSDK_GPIO2->DATAOUT;
-//   	 obj->reg_clr = &port_reg->DATAOUT;
+//			obj->reg_clr = &port_reg->DATAOUT;
 			obj->reg_in  = 		&CMSDK_GPIO2->DATA;
 			obj->reg_dir = 		&CMSDK_GPIO2->OUTENABLESET ;
 			obj->reg_dirclr = &CMSDK_GPIO2->OUTENABLECLR ;
 		}	else if (pin >= 48 && pin <= 51){
 			obj->reg_data = &CMSDK_GPIO3->DATAOUT;
-//   	 obj->reg_clr = &port_reg->DATAOUT;
+//			obj->reg_clr = &port_reg->DATAOUT;
 			obj->reg_in  = 		&CMSDK_GPIO3->DATA;
 			obj->reg_dir = 		&CMSDK_GPIO3->OUTENABLESET ;
 			obj->reg_dirclr = &CMSDK_GPIO3->OUTENABLECLR ;
@@ -90,19 +91,19 @@ void gpio_init(gpio_t *obj, PinName pin) {
 		}else if (pin == 303 || pin == 307){
 			obj->reg_data = &MPS2_FPGAIO->MISC; //mcc switches
 		}
-			
+	}
 }
 
 void gpio_mode(gpio_t *obj, PinMode mode) {
-    pin_mode(obj->pin, mode);
+		pin_mode(obj->pin, mode);
 }
 
 void gpio_dir(gpio_t *obj, PinDirection direction) {
-    if((obj->pin >= 100 && obj->pin <= 109)
+		if((obj->pin >= 100 && obj->pin <= 109)
 				||(obj->pin >= 200 && obj->pin <= 207))
 			{return;}
 		switch (direction) {
-        case PIN_INPUT : *obj->reg_dirclr = obj->mask;  break;
-        case PIN_OUTPUT: *obj->reg_dir |= obj->mask; break;
-    }
+				case PIN_INPUT : *obj->reg_dirclr = obj->mask;  break;
+				case PIN_OUTPUT: *obj->reg_dir |= obj->mask; break;
+		}
 }

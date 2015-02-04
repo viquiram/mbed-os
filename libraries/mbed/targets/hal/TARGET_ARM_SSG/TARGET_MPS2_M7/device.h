@@ -34,11 +34,11 @@
 #define DEVICE_SPI              1
 #define DEVICE_SPISLAVE         1
 
-#define DEVICE_CLCD							1
+#define DEVICE_CLCD             1
 
-#define DEVICE_TSC							1
+#define DEVICE_TSC              1
 
-#define DEVICE_AACI							1
+#define DEVICE_AACI             1
 
 #define DEVICE_CAN              0
 

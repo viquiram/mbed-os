@@ -19,7 +19,7 @@
 #include "cmsis.h"
 #include "mbed_interface.h"
 #include "toolchain.h"
-#include "error.h"
+#include "mbed_error.h"
 #include "ETH_MPS2.h"
 #include "wait_api.h"
 

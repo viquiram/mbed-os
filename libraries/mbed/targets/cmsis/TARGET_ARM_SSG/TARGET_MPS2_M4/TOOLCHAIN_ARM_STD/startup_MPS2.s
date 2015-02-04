@@ -1,30 +1,67 @@
-;/*****************************************************************************
-; * @file:    startup_LPC17xx.s
-; * @purpose: CMSIS Cortex-M3 Core Device Startup File 
-; *           for the NXP LPC17xx Device Series 
-; * @version: V1.02, modified for mbed
-; * @date:    27. July 2009, modified 3rd Aug 2009
-; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
+;/**************************************************************************//**
+; * @file     startup_CMSDK_CM4.s
+; * @brief    CMSIS Core Device Startup File for
+; *           CMSDK_CM4 Device
+; * @version  V3.03
+; * @date     04. February 2015
 ; *
-; * Copyright (C) 2009 ARM Limited. All rights reserved.
-; * ARM Limited (ARM) is supplying this software for use with Cortex-M3 
-; * processor based microcontrollers.  This file can be freely distributed 
-; * within development tools that are supporting such ARM based processors. 
+; * @note
+; * Copyright (C) 2015 ARM Limited. All rights reserved.
 ; *
-; * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
-; * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
-; * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
-; * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
-; * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
-; *
-; *****************************************************************************/
+; ******************************************************************************/
+;/* Copyright (c) 2011 - 2015 ARM LIMITED
+;
+;   All rights reserved.
+;   Redistribution and use in source and binary forms, with or without
+;   modification, are permitted provided that the following conditions are met:
+;   - Redistributions of source code must retain the above copyright
+;     notice, this list of conditions and the following disclaimer.
+;   - Redistributions in binary form must reproduce the above copyright
+;     notice, this list of conditions and the following disclaimer in the
+;     documentation and/or other materials provided with the distribution.
+;   - Neither the name of ARM nor the names of its contributors may be used
+;     to endorse or promote products derived from this software without
+;     specific prior written permission.
+;   *
+;   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+;   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+;   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+;   ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+;   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+;   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+;   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+;   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+;   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+;   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+;   POSSIBILITY OF SUCH DAMAGE.
+;   ---------------------------------------------------------------------------*/
+;/*
+;//-------- <<< Use Configuration Wizard in Context Menu >>> ------------------
+;*/
 
 
 ; <h> Stack Configuration
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-__initial_sp	EQU		0x20400000
+Stack_Size      EQU     0x00004000
+
+                AREA    STACK, NOINIT, READWRITE, ALIGN=3
+Stack_Mem       SPACE   Stack_Size
+__initial_sp
+
+
+; <h> Heap Configuration
+;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+; </h>
+
+Heap_Size       EQU     0x00001000
+
+                AREA    HEAP, NOINIT, READWRITE, ALIGN=3
+__heap_base
+Heap_Mem        SPACE   Heap_Size
+__heap_limit
+
 
                 PRESERVE8
                 THUMB
@@ -33,6 +70,9 @@ __initial_sp	EQU		0x20400000
 ; Vector Table Mapped to Address 0 at Reset
 
                 AREA    RESET, DATA, READONLY
+                EXPORT  __Vectors
+                EXPORT  __Vectors_End
+                EXPORT  __Vectors_Size
 
 __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     Reset_Handler             ; Reset Handler
@@ -52,38 +92,41 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     SysTick_Handler           ; SysTick Handler
 
                 ; External Interrupts
-                DCD     WDT_IRQHandler            ;  0:  Watchdog Timer
-                DCD     RTC_IRQHandler            ;  1:  Real Time Clock
-                DCD     TIM0_IRQHandler           ;  2:  Timer0 / Timer1
-                DCD     TIM2_IRQHandler           ;  3:  Timer2 / Timer3
-                DCD     MCIA_IRQHandler           ;  4:  MCIa
-                DCD     MCIB_IRQHandler           ;  5:  MCIb
-                DCD     UART0_IRQHandler          ;  6:  UART0 - DUT FPGA
-                DCD     UART1_IRQHandler          ;  7:  UART1 - DUT FPGA
-                DCD     UART2_IRQHandler          ;  8:  UART2 - DUT FPGA
-                DCD     UART4_IRQHandler          ;  9:  UART4 - not connected
-                DCD     AACI_IRQHandler           ; 10: AACI / AC97
-                DCD     CLCD_IRQHandler           ; 11: CLCD Combined Interrupt
-                DCD     ENET_IRQHandler           ; 12: Ethernet
-                DCD     USBDC_IRQHandler          ; 13: USB Device
-                DCD     USBHC_IRQHandler          ; 14: USB Host Controller
-                DCD     CHLCD_IRQHandler          ; 15: Character LCD
-                DCD     FLEXRAY_IRQHandler        ; 16: Flexray
-                DCD     CAN_IRQHandler            ; 17: CAN
-                DCD     LIN_IRQHandler            ; 18: LIN
-                DCD     I2C_IRQHandler            ; 19: I2C ADC/DAC
-                DCD     0                         ; 20: Reserved
-                DCD     0                         ; 21: Reserved
-                DCD     0                         ; 22: Reserved
-                DCD     0                         ; 23: Reserved
-                DCD     0                         ; 24: Reserved
-                DCD     0                         ; 25: Reserved
-                DCD     0                         ; 26: Reserved
-                DCD     0                         ; 27: Reserved
-                DCD     CPU_CLCD_IRQHandler       ; 28: Reserved - CPU FPGA CLCD
-                DCD     0                         ; 29: Reserved - CPU FPGA
-                DCD     UART3_IRQHandler          ; 30: UART3    - CPU FPGA
-                DCD     SPI_IRQHandler            ; 31: SPI Touchscreen - CPU FPGA
+                DCD     UARTRX0_Handler           ; UART 0 RX Handler
+                DCD     UARTTX0_Handler           ; UART 0 TX Handler
+                DCD     UARTRX1_Handler           ; UART 1 RX Handler
+                DCD     UARTTX1_Handler           ; UART 1 TX Handler
+                DCD     UARTRX2_Handler           ; UART 2 RX Handler
+                DCD     UARTTX2_Handler           ; UART 2 TX Handler
+                DCD     PORT0_COMB_Handler        ; GPIO Port 0 Combined Handler
+                DCD     PORT1_COMB_Handler        ; GPIO Port 1 Combined Handler
+                DCD     TIMER0_Handler            ; TIMER 0 handler
+                DCD     TIMER1_Handler            ; TIMER 1 handler
+                DCD     DUALTIMER_HANDLER         ; Dual timer handler
+                DCD     SPI_Handler               ; SPI exceptions Handler
+                DCD     UARTOVF_Handler           ; UART 0,1,2 Overflow Handler
+                DCD     ETHERNET_Handler          ; Ethernet Overflow Handler
+                DCD     I2S_Handler               ; I2S Handler
+                DCD     TSC_Handler               ; Touch Screen handler
+                DCD     PORT0_0_Handler           ; GPIO Port 0 pin 0 Handler
+                DCD     PORT0_1_Handler           ; GPIO Port 0 pin 1 Handler
+                DCD     PORT0_2_Handler           ; GPIO Port 0 pin 2 Handler
+                DCD     PORT0_3_Handler           ; GPIO Port 0 pin 3 Handler
+                DCD     PORT0_4_Handler           ; GPIO Port 0 pin 4 Handler
+                DCD     PORT0_5_Handler           ; GPIO Port 0 pin 5 Handler
+                DCD     PORT0_6_Handler           ; GPIO Port 0 pin 6 Handler
+                DCD     PORT0_7_Handler           ; GPIO Port 0 pin 7 Handler
+                DCD     PORT0_8_Handler           ; GPIO Port 0 pin 8 Handler
+                DCD     PORT0_9_Handler           ; GPIO Port 0 pin 9 Handler
+                DCD     PORT0_10_Handler          ; GPIO Port 0 pin 10 Handler
+                DCD     PORT0_11_Handler          ; GPIO Port 0 pin 11 Handler
+                DCD     PORT0_12_Handler          ; GPIO Port 0 pin 12 Handler
+                DCD     PORT0_13_Handler          ; GPIO Port 0 pin 13 Handler
+                DCD     PORT0_14_Handler          ; GPIO Port 0 pin 14 Handler
+                DCD     PORT0_15_Handler          ; GPIO Port 0 pin 15 Handler
+__Vectors_End
+
+__Vectors_Size  EQU     __Vectors_End - __Vectors
 
                 AREA    |.text|, CODE, READONLY
 
@@ -146,56 +189,103 @@ SysTick_Handler PROC
                 ENDP
 
 Default_Handler PROC
+                EXPORT UARTRX0_Handler            [WEAK]
+                EXPORT UARTTX0_Handler            [WEAK]
+                EXPORT UARTRX1_Handler            [WEAK]
+                EXPORT UARTTX1_Handler            [WEAK]
+                EXPORT UARTRX2_Handler            [WEAK]
+                EXPORT UARTTX2_Handler            [WEAK]
+                EXPORT PORT0_COMB_Handler         [WEAK]
+                EXPORT PORT1_COMB_Handler         [WEAK]
+                EXPORT TIMER0_Handler             [WEAK]
+                EXPORT TIMER1_Handler             [WEAK]
+                EXPORT DUALTIMER_HANDLER          [WEAK]
+                EXPORT SPI_Handler                [WEAK]
+                EXPORT UARTOVF_Handler            [WEAK]
+                EXPORT ETHERNET_Handler           [WEAK]
+                EXPORT I2S_Handler                [WEAK]
+                EXPORT TSC_Handler                [WEAK]
+                EXPORT PORT0_0_Handler            [WEAK]
+                EXPORT PORT0_1_Handler            [WEAK]
+                EXPORT PORT0_2_Handler            [WEAK]
+                EXPORT PORT0_3_Handler            [WEAK]
+                EXPORT PORT0_4_Handler            [WEAK]
+                EXPORT PORT0_5_Handler            [WEAK]
+                EXPORT PORT0_6_Handler            [WEAK]
+                EXPORT PORT0_7_Handler            [WEAK]
+                EXPORT PORT0_8_Handler            [WEAK]
+                EXPORT PORT0_9_Handler            [WEAK]
+                EXPORT PORT0_10_Handler           [WEAK]
+                EXPORT PORT0_11_Handler           [WEAK]
+                EXPORT PORT0_12_Handler           [WEAK]
+                EXPORT PORT0_13_Handler           [WEAK]
+                EXPORT PORT0_14_Handler           [WEAK]
+                EXPORT PORT0_15_Handler           [WEAK]
 
-                EXPORT  WDT_IRQHandler            [WEAK]
-                EXPORT  RTC_IRQHandler            [WEAK]
-                EXPORT  TIM0_IRQHandler           [WEAK]
-                EXPORT  TIM2_IRQHandler           [WEAK]
-                EXPORT  MCIA_IRQHandler           [WEAK]
-                EXPORT  MCIB_IRQHandler           [WEAK]
-                EXPORT  UART0_IRQHandler          [WEAK]
-                EXPORT  UART1_IRQHandler          [WEAK]
-                EXPORT  UART2_IRQHandler          [WEAK]
-                EXPORT  UART3_IRQHandler          [WEAK]
-                EXPORT  UART4_IRQHandler          [WEAK]
-                EXPORT  AACI_IRQHandler           [WEAK]
-                EXPORT  CLCD_IRQHandler           [WEAK]
-                EXPORT  ENET_IRQHandler           [WEAK]
-                EXPORT  USBDC_IRQHandler          [WEAK]
-                EXPORT  USBHC_IRQHandler          [WEAK]
-                EXPORT  CHLCD_IRQHandler          [WEAK]
-                EXPORT  FLEXRAY_IRQHandler        [WEAK]
-                EXPORT  CAN_IRQHandler            [WEAK]
-                EXPORT  LIN_IRQHandler            [WEAK]
-                EXPORT  I2C_IRQHandler            [WEAK]
-                EXPORT  CPU_CLCD_IRQHandler       [WEAK]
-                EXPORT  SPI_IRQHandler            [WEAK]
-
-WDT_IRQHandler
-RTC_IRQHandler
-TIM0_IRQHandler
-TIM2_IRQHandler
-MCIA_IRQHandler
-MCIB_IRQHandler
-UART0_IRQHandler
-UART1_IRQHandler
-UART2_IRQHandler
-UART3_IRQHandler
-UART4_IRQHandler
-AACI_IRQHandler
-CLCD_IRQHandler
-ENET_IRQHandler
-USBDC_IRQHandler
-USBHC_IRQHandler
-CHLCD_IRQHandler
-FLEXRAY_IRQHandler
-CAN_IRQHandler
-LIN_IRQHandler
-I2C_IRQHandler
-CPU_CLCD_IRQHandler
-SPI_IRQHandler
+UARTRX0_Handler
+UARTTX0_Handler
+UARTRX1_Handler
+UARTTX1_Handler
+UARTRX2_Handler
+UARTTX2_Handler
+PORT0_COMB_Handler
+PORT1_COMB_Handler
+TIMER0_Handler
+TIMER1_Handler
+DUALTIMER_HANDLER
+SPI_Handler
+UARTOVF_Handler
+ETHERNET_Handler
+I2S_Handler
+TSC_Handler
+PORT0_0_Handler
+PORT0_1_Handler
+PORT0_2_Handler
+PORT0_3_Handler
+PORT0_4_Handler
+PORT0_5_Handler
+PORT0_6_Handler
+PORT0_7_Handler
+PORT0_8_Handler
+PORT0_9_Handler
+PORT0_10_Handler
+PORT0_11_Handler
+PORT0_12_Handler
+PORT0_13_Handler
+PORT0_14_Handler
+PORT0_15_Handler
                 B       .
 
                 ENDP
-					
-				END
+
+
+                ALIGN
+
+
+; User Initial Stack & Heap
+
+                IF      :DEF:__MICROLIB
+
+                EXPORT  __initial_sp
+                EXPORT  __heap_base
+                EXPORT  __heap_limit
+
+                ELSE
+
+                IMPORT  __use_two_region_memory
+                EXPORT  __user_initial_stackheap
+
+__user_initial_stackheap PROC
+                LDR     R0, =  Heap_Mem
+                LDR     R1, =(Stack_Mem + Stack_Size)
+                LDR     R2, = (Heap_Mem +  Heap_Size)
+                LDR     R3, = Stack_Mem
+                BX      LR
+                ENDP
+
+                ALIGN
+
+                ENDIF
+
+
+                END

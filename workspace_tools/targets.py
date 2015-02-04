@@ -22,7 +22,8 @@ CORE_LABELS = {
     "Cortex-M3" : "M3",
     "Cortex-M4" : "M4",
     "Cortex-M4F" : "M4"
-}
+} #need to add   "Cortex-M7" : "M7"
+
 
 import os
 import shutil
@@ -721,12 +722,52 @@ class LPCCAPPUCCINO(LPC11U37_501):
         LPC11U37_501.__init__(self)
 
 
-class ARM_MPS2(Target):
+class ARM_MPS2_M0(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['ARM_SSG', 'MPS2_M0']
+        self.macros = ['CMSDK_CM0']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.default_toolchain = "ARM"
+
+
+class ARM_MPS2_M0P(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['ARM_SSG', 'MPS2_M0P']
+        self.macros = ['CMSDK_CM0plus']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.default_toolchain = "ARM"
+
+
+class ARM_MPS2_M3(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M3"
+        self.extra_labels = ['ARM_SSG', 'MPS2_M3']
+        self.macros = ['CMSDK_CM3']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.default_toolchain = "ARM"
+
+
+class ARM_MPS2_M4(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4F"
-        self.extra_labels = ['ARM_SSG', 'MPS2']
+        self.extra_labels = ['ARM_SSG', 'MPS2_M4']
         self.macros = ['CMSDK_CM4']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.default_toolchain = "ARM"
+
+
+class ARM_MPS2_M7(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4"
+        self.extra_labels = ['ARM_SSG', 'MPS2_M7']
+        self.macros = ['CMSDK_CM7']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
@@ -821,7 +862,11 @@ TARGETS = [
     ARCH_GPRS(),
     LPCCAPPUCCINO(),
     HRM1017(),
-    ARM_MPS2(),
+    ARM_MPS2_M0(),
+    ARM_MPS2_M0P(),
+    ARM_MPS2_M3(),
+    ARM_MPS2_M4(),
+    ARM_MPS2_M7(),
     RBLAB_NRF51822(),
     RBLAB_BLENANO(),
     OC_MBUINO(),

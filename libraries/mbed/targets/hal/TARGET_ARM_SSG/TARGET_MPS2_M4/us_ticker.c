@@ -40,13 +40,15 @@ void us_ticker_init(void) {
 }
 
 uint32_t us_ticker_read() {
-    if (!us_ticker_inited)
-        us_ticker_init();
-    int return_value = (US_TICKER_TIMER->TimerLoad - US_TICKER_TIMER->TimerValue)/25;
+    if (!us_ticker_inited){
+        us_ticker_init();}
+		
+    int return_value = 0;
+		return_value = ((US_TICKER_TIMER->TimerLoad - US_TICKER_TIMER->TimerValue)/25);
     return return_value;
 }
 
-void us_ticker_set_interrupt(unsigned int timestamp) {
+void us_ticker_set_interrupt(timestamp_t timestamp) {
     int delta = (int)(timestamp - us_ticker_read());
     if (delta <= 0) {
         // This event was in the past:
