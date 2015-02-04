@@ -72,24 +72,28 @@ class CM4_UARM(Target):
         Target.__init__(self)
         self.core = "Cortex-M4"
         self.supported_toolchains = ["uARM"]
+        self.default_toolchain = "uARM"
         
 class CM4_ARM(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4"
         self.supported_toolchains = ["ARM"]
+        self.default_toolchain = "ARM"
 
 class CM4F_UARM(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.supported_toolchains = ["uARM"]
+        self.default_toolchain = "uARM"
         
 class CM4F_ARM(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.supported_toolchains = ["ARM"]
+        self.default_toolchain = "ARM"
 
 ### NXP ###
 
