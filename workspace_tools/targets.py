@@ -721,6 +721,15 @@ class DISCO_F401VC(Target):
         self.supported_toolchains = ["GCC_ARM"]
         self.default_toolchain = "GCC_ARM"
 
+class UBLOX_C029(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F439', 'STM32F439ZI']
+        self.macros = ['HSE_VALUE=24000000', 'HSE_STARTUP_TIMEOUT=5000']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO"]
 
 ### Nordic ###
 
@@ -748,7 +757,7 @@ class NRF51822(Target):
         Target.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ["NORDIC", "NRF51822_MKIT", "MCU_NRF51822", "MCU_NORDIC_16K"]
-        self.supported_toolchains = ["ARM", "GCC_ARM"]
+        self.supported_toolchains = ["ARM", "GCC_ARM", "IAR"]
         self.is_disk_virtual = True
         self.detect_code = ["1070"]
 
@@ -756,7 +765,7 @@ class NRF51822(Target):
         return 6
 
     def init_hooks(self, hook, toolchain_name):
-        if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM']:
+        if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM', 'IAR']:
             hook.hook_add_binary("post", self.binary_hook)
 
     @staticmethod
@@ -1049,7 +1058,8 @@ TARGETS = [
     MTS_MDOT_F411RE(),
     MTS_DRAGONFLY_F411RE(),
     DISCO_F401VC(),
-
+    UBLOX_C029(),   # STM32F439
+	
     ### Nordic ###
     NRF51822(),
     NRF51822_OTA(), # nRF51822
