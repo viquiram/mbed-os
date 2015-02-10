@@ -875,55 +875,69 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
 
 
 ### ARM ###
-
-class ARM_MPS2_M0(Target):
+class ARM_MPS2_Target(Target):
     def __init__(self):
         Target.__init__(self)
+        Target.OUTPUT_EXT = '.axf'
+
+    def init_hooks(self, hook, toolchain_name):
+        hook.hook_add_binary("replace", self.output_axf)
+
+    @staticmethod
+    def output_axf(t_self, resources, elf, bin):
+        axf = elf.replace('.elf', t_self.target.OUTPUT_EXT)
+        shutil.copy(elf, axf)
+        t_self.debug("Passing ELF file %s" % axf)
+
+
+class ARM_MPS2_M0(ARM_MPS2_Target):
+    def __init__(self):
+        ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ['ARM_SSG', 'MPS2_M0']
         self.macros = ['CMSDK_CM0']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
-class ARM_MPS2_M0P(Target):
+class ARM_MPS2_M0P(ARM_MPS2_Target):
     def __init__(self):
-        Target.__init__(self)
+        ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['ARM_SSG', 'MPS2_M0P']
         self.macros = ['CMSDK_CM0plus']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
-class ARM_MPS2_M1(Target):
+class ARM_MPS2_M1(ARM_MPS2_Target):
     def __init__(self):
-        Target.__init__(self)
+        ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M1"
         self.extra_labels = ['ARM_SSG', 'MPS2_M1']
         self.macros = ['CMSDK_CM1']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
-class ARM_MPS2_M3(Target):
+class ARM_MPS2_M3(ARM_MPS2_Target):
     def __init__(self):
-        Target.__init__(self)
+        ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M3"
         self.extra_labels = ['ARM_SSG', 'MPS2_M3']
         self.macros = ['CMSDK_CM3']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
-class ARM_MPS2_M4(Target):
+class ARM_MPS2_M4(ARM_MPS2_Target):
     def __init__(self):
-        Target.__init__(self)
+        ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['ARM_SSG', 'MPS2_M4']
         self.macros = ['CMSDK_CM4']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
 
-class ARM_MPS2_M7(Target):
+class ARM_MPS2_M7(ARM_MPS2_Target):
     def __init__(self):
-        Target.__init__(self)
+        ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M7F"
         self.extra_labels = ['ARM_SSG', 'MPS2_M7']
         self.macros = ['CMSDK_CM7']
