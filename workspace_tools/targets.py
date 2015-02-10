@@ -399,7 +399,7 @@ class K20D50M(Target):
         self.supported_toolchains = ["GCC_ARM", "ARM", "IAR"]
         self.is_disk_virtual = True
         self.detect_code = ["0230"]
-        
+
 class TEENSY3_1(Target):
     def __init__(self):
         Target.__init__(self)
@@ -414,13 +414,13 @@ class TEENSY3_1(Target):
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM']:
             hook.hook_add_binary("post", self.binary_hook)
-            
+
     @staticmethod
     def binary_hook(t_self, resources, elf, binf):
         from intelhex import IntelHex
         binh = IntelHex()
         binh.loadbin(binf, offset = 0)
-        
+
         with open(binf.replace(".bin", ".hex"), "w") as f:
             binh.tofile(f, format='hex')
 
@@ -704,6 +704,7 @@ class UBLOX_C029(Target):
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
 
+
 ### Nordic ###
 
 class NRF51822(Target):
@@ -806,17 +807,17 @@ class ARCH_BLE(NRF51822):
         self.macros = ['TARGET_NRF51822']
         self.supported_form_factors = ["ARDUINO"]
 
-class BLE_SMURFS(NRF51822):
+class SEEED_TINY_BLE(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
 
-class BLE_SMURFS_OTA(NRF51822):
+class SEEED_TINY_BLE_OTA(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
-        self.macros = ['TARGET_NRF51822', 'TARGET_BLE_SMURFS', 'TARGET_OTA_ENABLED']
+        self.macros = ['TARGET_NRF51822', 'TARGET_SEEED_TINY_BLE', 'TARGET_OTA_ENABLED']
         self.MERGE_SOFT_DEVICE = False
 
 class HRM1017(NRF51822):
@@ -857,7 +858,7 @@ class WALLBOT_BLE(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
-		
+
 class DELTA_DFCM_NNN40(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
@@ -872,18 +873,9 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'DELTA_DFCM_NNN40']
         self.MERGE_SOFT_DEVICE = False
 
-    
-class OC_MBUINO(LPC11U24):
-    def __init__(self):
-        LPC11U24.__init__(self)
-        self.core = "Cortex-M0"
-        self.extra_labels = ['NXP', 'LPC11UXX']
-        self.macros = ['TARGET_LPC11U24']
-        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
-        self.default_toolchain = "uARM"
 
-        
 ### ARM ###
+
 class ARM_MPS2_M0(Target):
     def __init__(self):
         Target.__init__(self)
@@ -1012,20 +1004,6 @@ TARGETS = [
     DISCO_F051R8(),
     DISCO_F100RB(),
     DISCO_F303VC(),
-    DISCO_F407VG(),
-    XADOW_M0(),
-    ARCH_BLE(),
-    NRF51_DK(),
-    NRF51_DK_OTA(),
-    ARCH_PRO(),
-    ARCH_GPRS(),
-    LPCCAPPUCCINO(),
-    HRM1017(),
-    RBLAB_NRF51822(),
-    RBLAB_BLENANO(),
-    OC_MBUINO(),
-    MTS_GAMBIT(),
-    ARCH_MAX(),
     DISCO_F334C8(),
     DISCO_F407VG(), # STM32F407
     ARCH_MAX(),     # STM32F407
@@ -1044,19 +1022,20 @@ TARGETS = [
     NRF51_DK_OTA(), # nRF51822
     NRF51_DONGLE(),
     ARCH_BLE(),     # nRF51822
-    BLE_SMURFS(),
-    BLE_SMURFS_OTA(),
+    SEEED_TINY_BLE(),
+    SEEED_TINY_BLE_OTA(),
     HRM1017(),      # nRF51822
     RBLAB_NRF51822(),# nRF51822
     RBLAB_BLENANO(),# nRF51822
     NRF51822_Y5_MBUG(),#nRF51822
     WALLBOT_BLE(),  # nRF51822
-    DELTA_DFCM_NNN40(),	# nRF51822
-    DELTA_DFCM_NNN40_OTA(),	# nRF51822
+    DELTA_DFCM_NNN40(), # nRF51822
+    DELTA_DFCM_NNN40_OTA(), # nRF51822
 
     ### ARM ###
     ARM_MPS2_M0(),
     ARM_MPS2_M0P(),
+    ARM_MPS2_M1(),
     ARM_MPS2_M3(),
     ARM_MPS2_M4(),
     ARM_MPS2_M7(),
@@ -1074,7 +1053,7 @@ for t in TARGETS:
 TARGET_NAMES = TARGET_MAP.keys()
 
 # Some targets with different name have the same exporters
-EXPORT_MAP = { "LPC4088_DM" : "LPC4088"}
+EXPORT_MAP = { }
 
 # Detection APIs
 def get_target_detect_codes():
