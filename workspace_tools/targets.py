@@ -409,7 +409,7 @@ class TEENSY3_1(Target):
         self.is_disk_virtual = True
         self.detect_code = ["0230"]
 
-        OUTPUT_EXT = '.hex'
+        OUTPUT_EXT = 'hex'
 
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM']:
@@ -724,7 +724,7 @@ class NRF51822(Target):
             'offset' : 0x14000
         }
     ]
-    OUTPUT_EXT = '.hex'
+    OUTPUT_EXT = 'hex'
     MERGE_SOFT_DEVICE = True
 
     def __init__(self):
@@ -878,16 +878,15 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
 class ARM_MPS2_Target(Target):
     def __init__(self):
         Target.__init__(self)
-        Target.OUTPUT_EXT = '.axf'
+        Target.OUTPUT_EXT = 'axf'
 
     def init_hooks(self, hook, toolchain_name):
         hook.hook_add_binary("replace", self.output_axf)
 
     @staticmethod
     def output_axf(t_self, resources, elf, bin):
-        axf = elf.replace('.elf', t_self.target.OUTPUT_EXT)
-        shutil.copy(elf, axf)
-        t_self.debug("Passing ELF file %s" % axf)
+        shutil.copy(elf, bin)
+        t_self.debug("Passing ELF file %s" % bin)
 
 
 class ARM_MPS2_M0(ARM_MPS2_Target):
