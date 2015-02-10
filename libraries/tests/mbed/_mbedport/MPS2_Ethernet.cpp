@@ -13,47 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Ethernet.h"
-
-#if DEVICE_ETHERNET
+#include "MPS2_Ethernet.h"
 
 #include "ethernet_api.h"
 
-namespace mbed {
-
-Ethernet::Ethernet() {
+MPS2_Ethernet::MPS2_Ethernet() {
     ethernet_init();
 }
 
-Ethernet::~Ethernet() {
+MPS2_Ethernet::~MPS2_Ethernet() {
     ethernet_free();
 }
 
-int Ethernet::write(const char *data, int size) {
+int MPS2_Ethernet::write(const char *data, int size) {
     return ethernet_write(data, size);
 }
 
-int Ethernet::send() {
+int MPS2_Ethernet::send() {
     return ethernet_send();
 }
 
-int Ethernet::receive() {
+int MPS2_Ethernet::receive() {
     return ethernet_receive();
 }
 
-int Ethernet::read(char *data, int size) {
+int MPS2_Ethernet::read(char *data, int size) {
     return ethernet_read(data, size);
 }
 
-void Ethernet::address(char *mac) {
+void MPS2_Ethernet::address(char *mac) {
     return ethernet_address(mac);
 }
 
-int Ethernet::link() {
+int MPS2_Ethernet::link() {
     return ethernet_link();
 }
 
-void Ethernet::set_link(Mode mode) {
+void MPS2_Ethernet::set_link(Mode mode) {
     int speed = -1;
     int duplex = 0;
 
@@ -68,7 +64,28 @@ void Ethernet::set_link(Mode mode) {
     ethernet_set_link(speed, duplex);
 }
 
+int MPS2_Ethernet::MPS2_Ethernet_init() {
+    return ethernet_init();
+}
 
-} // namespace mbed
+int MPS2_Ethernet::MPS2_transmission(unsigned char * pkt, unsigned int length) {
+    return ethernet_transmission(pkt,length);
+}
 
-#endif
+int MPS2_Ethernet::MPS2_reception(unsigned int *recvbuf, unsigned int *index) {
+    return ethernet_reception((unsigned int *)recvbuf, index);
+}
+
+int MPS2_Ethernet::MPS2_mac_address(char *mac) {
+    return ethernet_mac_address(mac);
+}
+
+unsigned int MPS2_Ethernet::MPS2_Ethernet_check_ready(void)
+{
+	return ethernet_check_ready();
+}
+
+unsigned int MPS2_Ethernet :: MPS2_Ethernet_intf (void)
+{
+	return ethernet_intf();
+}
