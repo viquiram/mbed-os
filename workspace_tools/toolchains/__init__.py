@@ -199,11 +199,14 @@ class mbedToolchain:
     VERBOSE = True
 
     CORTEX_SYMBOLS = {
-        "Cortex-M3" : ["__CORTEX_M3", "ARM_MATH_CM3"],
         "Cortex-M0" : ["__CORTEX_M0", "ARM_MATH_CM0"],
         "Cortex-M0+": ["__CORTEX_M0PLUS", "ARM_MATH_CM0PLUS"],
+        "Cortex-M1" : ["__CORTEX_M3", "ARM_MATH_CM1"],
+        "Cortex-M3" : ["__CORTEX_M3", "ARM_MATH_CM3"],
         "Cortex-M4" : ["__CORTEX_M4", "ARM_MATH_CM4"],
         "Cortex-M4F" : ["__CORTEX_M4", "ARM_MATH_CM4", "__FPU_PRESENT=1"],
+        "Cortex-M7" : ["__CORTEX_M7", "ARM_MATH_CM7"],
+        "Cortex-M7F" : ["__CORTEX_M7", "ARM_MATH_CM7", "__FPU_PRESENT=1"],
         "Cortex-A9" : ["__CORTEX_A9", "ARM_MATH_CA9", "__FPU_PRESENT", "__CMSIS_RTOS", "__EVAL", "__MBED_CMSIS_RTOS_CA9"],
     }
 
@@ -630,6 +633,8 @@ class mbedToolchain:
 
     def link_program(self, r, tmp_path, name):
         ext = 'bin'
+        if hasattr(self.target, 'OUTPUT_EXT'):
+            ext = self.target.OUTPUT_EXT
 
         if hasattr(self.target, 'OUTPUT_NAMING'):
             self.var("binary_naming", self.target.OUTPUT_NAMING)
@@ -638,7 +643,6 @@ class mbedToolchain:
                 ext = ext[0:3]
 
         filename = name+'.'+ext
-
         elf = join(tmp_path, name + '.elf')
         bin = join(tmp_path, filename)
 
@@ -653,9 +657,6 @@ class mbedToolchain:
 
         self.var("compile_succeded", True)
         self.var("binary", filename)
-
-        if hasattr(self.target, 'OUTPUT_EXT'):
-            bin = bin.replace('.bin', self.target.OUTPUT_EXT)
 
         return bin
 
