@@ -908,7 +908,7 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
 class ARM_MPS2_Target(Target):
     def __init__(self):
         Target.__init__(self)
-        Target.OUTPUT_EXT = 'axf'
+        self.OUTPUT_EXT = 'axf'
 
     def init_hooks(self, hook, toolchain_name):
         hook.hook_add_binary("replace", self.output_axf)
