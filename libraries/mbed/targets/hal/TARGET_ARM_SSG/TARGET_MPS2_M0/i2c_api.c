@@ -17,7 +17,8 @@
 #include "cmsis.h"
 #include "pinmap.h"
 #include "mbed_error.h"
-//#include "TSC_I2C_MPS2.h"
+#include "MPS2_RESOURCE_PACK.h"
+#include "mps2_i2c_api.h"
 //#include "TSC_I2C_MPS2.c"
 //#include "AAIC_I2C_MPS2.h"
 //#include "AAIC_I2C_MPS2.c"
@@ -335,5 +336,5 @@ void i2c_slave_address(i2c_t *obj, int idx, uint32_t address, uint32_t mask) {
 }
 
 
-}*/
+
 
