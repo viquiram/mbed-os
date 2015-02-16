@@ -34,7 +34,7 @@ void Serial_Initialize (void) {
   CMSDK_GPIO1->ALTFUNCSET |= ((1ul <<  0) |          /* configure GPIO pin    */
 	                            (1ul <<  1) );
 
-  CMSDK_UART0->BAUDDIV = SystemCoreClock / 115200;
+  CMSDK_UART0->BAUDDIV = SystemCoreClock / 9600;
   CMSDK_UART0->CTRL    = ((1ul <<  0) |              /* TX enable */
                           (1ul <<  1) );             /* RX enable */
 
@@ -58,7 +58,7 @@ int Serial_PutChar (int c) {
 #if   defined __DBG_ITM
     ITM_SendChar(c);
 #else
-  while ( (CMSDK_UART0->STATE & (1ul << 0))); /* Wait if Transmit Holding register is full */
+  while ((CMSDK_UART0->STATE & 1)); /* Wait if Transmit Holding register is full */
   CMSDK_UART0->DATA = c;
 #endif
   return (c);
@@ -74,7 +74,7 @@ int Serial_GetChar (void) {
   while (ITM_CheckChar() != 1) __NOP();
   return (ITM_ReceiveChar());
 #else
-  while (!(CMSDK_UART0->STATE & (1ul << 1))); /* Wait if Receive Holding register is empty */
+  while ((CMSDK_UART0->STATE & 2)==0); /* Wait if Receive Holding register is empty */
   return (CMSDK_UART0->DATA);
 #endif
 }

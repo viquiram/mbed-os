@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include "ethernet_api.h"
+#include "mps2_ethernet_api.h"
 #include "cmsis.h"
 #include "mbed_interface.h"
 #include "toolchain.h"
@@ -61,7 +62,7 @@
     } while(0)
 #endif
 
-int smsc9220_check_id(void)
+/*int smsc9220_check_id(void)
 {
     int error;
     unsigned int id;
@@ -192,7 +193,7 @@ static void smsc9220_print_phy_registers()
     apDebug("\n");
     return;
 }
-
+*/
 /*----------------------------------------------------------------------------
   Ethernet Device initialize
  *----------------------------------------------------------------------------*/
@@ -342,7 +343,7 @@ void ethernet_set_link(int speed, int duplex)
 	smsc9220_establish_link();
 }
 
-int ethernet_transmission(unsigned char * pkt, unsigned int length)
+/*int ethernet_transmission(unsigned char * pkt, unsigned int length)
 {
 	smsc9220_xmit_packet(pkt, length);
 	return 0;
@@ -372,3 +373,5 @@ unsigned int ethernet_intf()
 	return txfifo_inf;
 
 }
+*/
+

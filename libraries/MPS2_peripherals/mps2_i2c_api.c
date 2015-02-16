@@ -32,7 +32,7 @@
 #define TRUE    1
 
 
-static const PinMap PinMap_I2C_SDA[] = {
+/*static const PinMap PinMap_I2C_SDA[] = {
     {TSC_SDA, I2C_0, 0},
     {AUD_SDA, I2C_1, 0},
 //    {SDA3, I2C_2, 0},
@@ -45,7 +45,7 @@ static const PinMap PinMap_I2C_SCL[] = {
  //   {SCL3, I2C_2, 0},
     {NC   , NC,    0}
 };
-
+*/
 
 int mps2_i2c_ts_init()
 {

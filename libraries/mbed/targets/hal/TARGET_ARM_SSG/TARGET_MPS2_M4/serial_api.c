@@ -15,6 +15,7 @@
  */
 // math.h required for floating point operations for baud rate calculation
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "i2c_api.h"
+#include "mps2_i2c_api.h"
 #include "cmsis.h"
 #include "pinmap.h"
 #include "mbed_error.h"
@@ -22,7 +23,7 @@
 //#include "AAIC_I2C_MPS2.h"
 //#include "AAIC_I2C_MPS2.c"
 #include "wait_api.h"
-//#include "fpga.c"
+#include "fpga.h"
 //#include "tsc_api.h"
 
 // Types

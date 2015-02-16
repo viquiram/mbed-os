@@ -566,10 +566,10 @@ __IO  uint32_t  E2P_DATA;              //   EEPROM Data (offset 0xB4)
 /*                     General Function Definitions                           */
 /******************************************************************************/
 
-extern void i2c_delay(unsigned int tick);
+/*extern void i2c_delay(unsigned int tick);
 extern void Sleepms(unsigned int msec);
 extern void Sleepus(unsigned int usec);
-
+*/
 /******************************************************************************/
 /*                     General MACRO Definitions                              */
 /******************************************************************************/

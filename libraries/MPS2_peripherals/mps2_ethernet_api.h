@@ -41,6 +41,13 @@ unsigned int ethernet_check_ready(void);
 
 unsigned int ethernet_intf(void);
 
+int smsc9220_check_id(void);
+
+int smsc9220_check_macaddress(void);
+
+void smsc9220_print_mac_registers(void);
+void smsc9220_print_phy_registers(void);
+
 #ifdef __cplusplus
 }
 #endif

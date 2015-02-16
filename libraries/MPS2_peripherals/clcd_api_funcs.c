@@ -338,11 +338,11 @@ void apCLCD_init(clcd_t *obj)
     clcd_wr_reg(obj,0x09, (169 & 0xFF));//239 & 0xFF));
 		clcd_wr_cmd(obj,0x22);
 
-		clcd_start(obj);
+/*		clcd_start(obj);
     for(int loop = 0; loop < (275*98); loop++)
     	clcd_fw(obj,introData[loop]);
     clcd_end(obj);
-
+*/
 }
 
 /*// CLCD test
