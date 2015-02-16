@@ -1,5 +1,5 @@
 #include "mbed.h"
-#include "MPS2_RESOURCE_PACK.h"
+
 DigitalOut myled1(LED1);
 DigitalOut myled2(LED2);
 DigitalOut myled3(LED3);
@@ -46,6 +46,6 @@ int main() {
             myled8 = 0;
             wait(0.2);
             pc.printf("hello world");
-            
+
     }
 }
