@@ -937,7 +937,7 @@ class ARM_MPS2_M0(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M0"
-        self.extra_labels = ['ARM_SSG', 'MPS2_M0']
+        self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M0']
         self.macros = ['CMSDK_CM0']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
@@ -946,7 +946,7 @@ class ARM_MPS2_M0P(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M0+"
-        self.extra_labels = ['ARM_SSG', 'MPS2_M0P']
+        self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M0P']
         self.macros = ['CMSDK_CM0plus']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
@@ -955,7 +955,7 @@ class ARM_MPS2_M1(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M1"
-        self.extra_labels = ['ARM_SSG', 'MPS2_M1']
+        self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M1']
         self.macros = ['CMSDK_CM1']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
@@ -964,7 +964,7 @@ class ARM_MPS2_M3(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M3"
-        self.extra_labels = ['ARM_SSG', 'MPS2_M3']
+        self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M3']
         self.macros = ['CMSDK_CM3']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
@@ -973,7 +973,7 @@ class ARM_MPS2_M4(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M4F"
-        self.extra_labels = ['ARM_SSG', 'MPS2_M4']
+        self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M4']
         self.macros = ['CMSDK_CM4']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
@@ -982,7 +982,7 @@ class ARM_MPS2_M7(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
         self.core = "Cortex-M7F"
-        self.extra_labels = ['ARM_SSG', 'MPS2_M7']
+        self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M7']
         self.macros = ['CMSDK_CM7']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.default_toolchain = "ARM"
