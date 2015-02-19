@@ -445,7 +445,7 @@ class K20D50M(Target):
         self.detect_code = ["0230"]
 
 class TEENSY3_1(Target):
-    OUTPUT_EXT = '.hex'
+    OUTPUT_EXT = 'hex'
     
     def __init__(self):
         Target.__init__(self)
