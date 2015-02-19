@@ -217,7 +217,7 @@ class LPC11U68(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC11U6X']
-        self.supported_toolchains = ["uARM", "GCC_CR", "GCC_ARM", "IAR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_CR", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.detect_code = ["1168"]
@@ -445,6 +445,8 @@ class K20D50M(Target):
         self.detect_code = ["0230"]
 
 class TEENSY3_1(Target):
+    OUTPUT_EXT = '.hex'
+    
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4"
@@ -453,7 +455,10 @@ class TEENSY3_1(Target):
         self.is_disk_virtual = True
         self.detect_code = ["0230"]
 
+<<<<<<< HEAD
         OUTPUT_EXT = 'hex'
+=======
+>>>>>>> 014b0f1ca6e5db9bf613d1c091cd3974ab161915
 
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM']:
@@ -645,6 +650,9 @@ class ARCH_MAX(Target):
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F407', 'STM32F407VG']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        
+    def program_cycle_s(self):
+        return 2
 
 class DISCO_F051R8(Target):
     def __init__(self):
