@@ -455,11 +455,6 @@ class TEENSY3_1(Target):
         self.is_disk_virtual = True
         self.detect_code = ["0230"]
 
-<<<<<<< HEAD
-        OUTPUT_EXT = 'hex'
-=======
->>>>>>> 014b0f1ca6e5db9bf613d1c091cd3974ab161915
-
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM']:
             hook.hook_add_binary("post", self.binary_hook)
