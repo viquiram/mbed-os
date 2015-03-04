@@ -27,7 +27,8 @@ class IAREmbeddedWorkbench(Exporter):
         'LPC11U24',
         'LPC11U35_401',
         'LPC11U35_501',
-        'LPCCAPPUCCINO',
+        #Removed LPCCAPPUCCINO linker file and startup file missing
+        #'LPCCAPPUCCINO',
         'LPC1114',
         'LPC1549',
         'LPC812',
@@ -53,11 +54,17 @@ class IAREmbeddedWorkbench(Exporter):
         'NUCLEO_F411RE',
         'NUCLEO_L053R8',
         'NUCLEO_L152RE',
-        'STM32F407',
+        #'STM32F407', Fails to build same for GCC
         'MTS_MDOT_F405RG',
         'MTS_MDOT_F411RE',
         'MTS_DRAGONFLY_F411RE',
         'NRF51822',
+        'NRF51_DK',
+        'NRF51_DONGLE',
+        'DELTA_DFCM_NNN40',
+        'SEEED_TINY_BLE',
+        'HRM1017',
+        'ARCH_BLE',
     ]
 
     def generate(self):
@@ -66,7 +73,9 @@ class IAREmbeddedWorkbench(Exporter):
         sources += self.resources.c_sources
         sources += self.resources.cpp_sources
         sources += self.resources.s_sources
-
+        # binaries = ""
+        # if resources.bin_files is not None:
+          # binaries = resources.bin_files
         ctx = {
             'name': self.program_name,
             'include_paths': self.resources.inc_dirs,
@@ -75,6 +84,8 @@ class IAREmbeddedWorkbench(Exporter):
             'libraries': self.resources.libraries,
             'symbols': self.get_symbols(),
             'source_files': sources,
+            'binary_files': self.resources.bin_files,
         }
         self.gen_file('iar_%s.ewp.tmpl' % self.target.lower(), ctx, '%s.ewp' % self.program_name)
         self.gen_file('iar.eww.tmpl', ctx, '%s.eww' % self.program_name)
+        self.gen_file('iar_%s.ewd.tmpl' % self.target.lower(), ctx, '%s.ewd' % self.program_name)
