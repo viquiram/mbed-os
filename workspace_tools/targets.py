@@ -1063,15 +1063,17 @@ class RZ_A1H(Target):
         self.default_toolchain = "ARM"
         
 
-### Silicon_Labs ###
 
+### Silicon Labs ###
 class EFM32_G8XX_STK(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M3"
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32G890F128']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
+
 
 class EFM32GG_STK3700(Target):
     def __init__(self):
@@ -1079,7 +1081,9 @@ class EFM32GG_STK3700(Target):
         self.core = "Cortex-M3"
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32GG990F1024']
-        self.supported_toolchains = ["GCC_ARM", "ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
+
 
 class EFM32LG_STK3600(Target):
     def __init__(self):
@@ -1087,7 +1091,9 @@ class EFM32LG_STK3600(Target):
         self.core = "Cortex-M3"
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32LG990F256']
-        self.supported_toolchains = ["GCC_ARM", "ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
+
 
 class EFM32TG_STK3300(Target):
     def __init__(self):
@@ -1095,7 +1101,9 @@ class EFM32TG_STK3300(Target):
         self.core = "Cortex-M3"
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32TG840F32']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["GCC_ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
+
 
 class EFM32WG_STK3800(Target):
     def __init__(self):
@@ -1103,7 +1111,9 @@ class EFM32WG_STK3800(Target):
         self.core = "Cortex-M4F"
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32WG990F256']
-        self.supported_toolchains = ["GCC_ARM", "ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
+
 
 class EFM32ZG_STK3200(Target):
     def __init__(self):
@@ -1111,13 +1121,17 @@ class EFM32ZG_STK3200(Target):
         self.core = "Cortex-M0+"
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32ZG222F32']
-        self.supported_toolchains = ["GCC_ARM", "ARM"]
-        
+        self.supported_toolchains = ["GCC_ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
 
-
-    def program_cycle_s(self):
-        return 2
-
+class EFM32HG_STK3400(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32HG322F64']
+        self.supported_toolchains = ["GCC_ARM", "uARM"]
+        self.default_toolchain = "GCC_ARM"
 
 
 # Get a single instance for each target
