@@ -80,14 +80,11 @@ class GccArm(Exporter):
         'DISCO_F401VC',
         'DELTA_DFCM_NNN40',
         'RZ_A1H',
-<<<<<<< HEAD
-=======
         'EFM32WG_STK3800',
         'EFM32LG_STK3600',
         'EFM32GG_STK3700',
         'EFM32ZG_STK3200',
         'EFM32HG_STK3400',
->>>>>>> edb5b2fa6c6ec7f02354b5681580139e80855afc
     ]
 
     DOT_IN_RELATIVE_PATH = True
