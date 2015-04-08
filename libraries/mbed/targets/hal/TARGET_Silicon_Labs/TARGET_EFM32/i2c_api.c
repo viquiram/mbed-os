@@ -31,7 +31,7 @@
 /* RXUF is only likely to occur with this SW if using a debugger peeking into */
 /* RXDATA register. Thus, we ignore those types of fault. */
 #define I2C_IF_ERRORS    (I2C_IF_BUSERR | I2C_IF_ARBLOST)
-#define I2C_TIMEOUT 300000
+#define I2C_TIMEOUT 100000
 
 /* Prototypes */
 static void setup_oscillators(I2C_TypeDef *i2c);
@@ -70,11 +70,11 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl)
 
     setup_oscillators(obj->i2c);
 
-    pin_mode(sda, WiredAndPullUp);
-    pin_mode(scl, WiredAndPullUp);
-
     /* Enable pins at correct location */
     obj->i2c->ROUTE = I2C_ROUTE_SDAPEN | I2C_ROUTE_SCLPEN | (obj->loc << _I2C_ROUTE_LOCATION_SHIFT);
+
+    pin_mode(sda, WiredAndPullUp);
+    pin_mode(scl, WiredAndPullUp);
 
     /* Initializing the I2C */
     /* Using default settings */
@@ -82,6 +82,12 @@ void i2c_init(i2c_t *obj, PinName sda, PinName scl)
     I2C_Init(obj->i2c, &i2cInit);
 
     I2C_Enable(obj->i2c, 1);
+
+    /* Enable General Call Address Mode. That is; we respond to the general address (0x0) */
+    obj->i2c->CTRL |= _I2C_CTRL_GCAMEN_MASK; 
+
+    /* We are assuming that there is only one master. So disable automatic arbitration */
+    obj->i2c->CTRL |= _I2C_CTRL_ARBDIS_MASK; 
 
     i2c_frequency(obj, 100000); //Set to 100kHz by default
 
@@ -187,12 +193,11 @@ int i2c_byte_read(i2c_t *obj, int last)
 {
     int timeout = I2C_TIMEOUT;
     /* Wait for data */
-    while (!(obj->i2c->IF & I2C_IF_RXDATAV) && timeout--);
+    while (!(obj->i2c->STATUS & I2C_STATUS_RXDATAV) && timeout--);
 
     if (timeout <= 0) {
         return 0; //TODO Is this the correct way to handle this?
     }
-
     char data = obj->i2c->RXDATA;
 
     if (last) {
@@ -247,26 +252,73 @@ int block_and_wait_for_ack(I2C_TypeDef *i2c)
 #endif
 
 #if DEVICE_I2CSLAVE
+
+#define NoData          0
+#define ReadAddressed   1
+#define WriteGeneral    2
+#define WriteAddressed  3
+
+
 void i2c_slave_mode(i2c_t *obj, int enable_slave)
 {
+    if(enable_slave){
+        obj->i2c->CTRL |= _I2C_CTRL_SLAVE_MASK;
+        obj->i2c->CTRL |= _I2C_CTRL_AUTOACK_MASK; //Slave implementation assumes auto acking
+    }else{
+        obj->i2c->CTRL &= ~_I2C_CTRL_SLAVE_MASK;
+        obj->i2c->CTRL &= ~_I2C_CTRL_AUTOACK_MASK; //Master implementation ACKs manually
+    }
 }
 
 int i2c_slave_receive(i2c_t *obj)
 {
-    return 0;
+
+    if(obj->i2c->IF & I2C_IF_ADDR){
+        obj->i2c->IFC = I2C_IF_ADDR; //Clear interrupt
+        /*0x00 is the address for general write. 
+         The address the master wrote is in RXDATA now
+         and reading it also frees the buffer for the next 
+         write which can then be acked. */
+        if(obj->i2c->RXDATA == 0x00){
+            return WriteGeneral; //Read the address;
+        }
+
+        if(obj->i2c->STATE & I2C_STATE_TRANSMITTER){
+            return ReadAddressed;
+        }else{
+            return WriteAddressed;
+        }
+    }
+
+    return NoData;
+
 }
 
 int i2c_slave_read(i2c_t *obj, char *data, int length)
 {
-    return 0;
+    int count;
+    for (count = 0; count < length; count++) {
+        data[count] = i2c_byte_read(obj, 0);
+    }
+    
+
+    return count;
+
 }
 
 int i2c_slave_write(i2c_t *obj, const char *data, int length)
 {
-    return 0;
+    int count;
+    for (count = 0; count < length; count++) {
+        i2c_byte_write(obj, data[count]);
+    }
+
+    return count;
 }
 
 void i2c_slave_address(i2c_t *obj, int idx, uint32_t address, uint32_t mask)
 {
+    obj->i2c->SADDR = address;
+    obj->i2c->SADDRMASK = 0xFE;//mask;
 }
 #endif
