@@ -138,7 +138,8 @@ TESTS = [
         "peripherals": ["analog_loop"],
         "mcu": ["LPC1768", "LPC2368", "KL25Z", "K64F", "K22F", "LPC4088", "LPC1549",
                 "NUCLEO_F072RB", "NUCLEO_F091RC", "NUCLEO_F302R8", "NUCLEO_F303RE",
-                "NUCLEO_F334R8", "NUCLEO_L053R8", "NUCLEO_L073RZ", "NUCLEO_L152RE"]
+                "NUCLEO_F334R8", "NUCLEO_L053R8", "NUCLEO_L073RZ", "NUCLEO_L152RE",
+                "NUCLEO_F411RE","DISCO_F407VG","ARCH_MAX"]
     },
     {
         "id": "MBED_A9", "description": "Serial Echo at 115200",
@@ -368,7 +369,7 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "sleep"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "duration": 30,
-        "mcu": ["LPC1768", "LPC11U24", "LPC4088","LPC4088_DM","NRF51822"]
+        "mcu": ["LPC1768", "LPC11U24", "LPC4088","LPC4088_DM","NRF51822", "LPC11U68"]
     },
     {
         "id": "MBED_5", "description": "PWM",
