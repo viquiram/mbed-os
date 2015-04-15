@@ -1150,7 +1150,7 @@ class EFM32_G8XX_STK(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32G890F128']
         self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 
 class EFM32GG_STK3700(Target):
@@ -1160,7 +1160,7 @@ class EFM32GG_STK3700(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32GG990F1024']
         self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 
 class EFM32LG_STK3600(Target):
@@ -1170,7 +1170,7 @@ class EFM32LG_STK3600(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32LG990F256']
         self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 
 class EFM32TG_STK3300(Target):
@@ -1180,7 +1180,7 @@ class EFM32TG_STK3300(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32TG840F32']
         self.supported_toolchains = ["GCC_ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 
 class EFM32WG_STK3800(Target):
@@ -1190,7 +1190,7 @@ class EFM32WG_STK3800(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32WG990F256']
         self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 
 class EFM32ZG_STK3200(Target):
@@ -1200,7 +1200,7 @@ class EFM32ZG_STK3200(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32ZG222F32']
         self.supported_toolchains = ["GCC_ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 class EFM32HG_STK3400(Target):
     def __init__(self):
@@ -1209,7 +1209,7 @@ class EFM32HG_STK3400(Target):
         self.extra_labels = ['Silicon_Labs', 'EFM32']
         self.macros = ['EFM32HG322F64']
         self.supported_toolchains = ["GCC_ARM", "uARM"]
-        self.default_toolchain = "GCC_ARM"
+        self.default_toolchain = "ARM"
 
 ### Maxim Integrated ###
 
