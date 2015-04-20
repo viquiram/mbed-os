@@ -1353,6 +1353,7 @@ TARGETS = [
     EFM32TG_STK3300(),
     EFM32WG_STK3800(),
     EFM32ZG_STK3200(),
+    EFM32HG_STK3400(),
 
     ### Maxim Integrated ###
     MAXWSNENV(),
