@@ -44,6 +44,8 @@ typedef enum {
     LED0 = PC10,
     LED1 = PC11,
     LED2 = LED0,
+    LED3 = LED0,
+    LED4 = LED1,
 
     /* Push Buttons */
     SW0 = PC8,
@@ -54,8 +56,9 @@ typedef enum {
     /* Serial */
     SERIAL_TX   = PD7,
     SERIAL_RX   = PD6,
-    USBTX       = PD7,
-    USBRX       = PD6,
+    USBTX       = PD4,
+    USBRX       = PD5,
+    EFM_BC_EN   = PA9,
 
     /* Not connected */
     NC = (int) 0xFFFFFFFF
