@@ -1,7 +1,7 @@
-/* @file startup_efm32g.S
- * @brief startup file for Silicon Labs EFM32G devices.
+/* @file startup_efm32hg.S
+ * @brief startup file for Silicon Labs EFM32HG devices.
  *        For use with GCC for ARM Embedded Processors
- * @version 3.20.6
+ * @version 3.20.12
  * Date: 08 Feb 2012
  *
  * Copyright (c) 2012, ARM Limited
@@ -30,7 +30,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
     .syntax unified
-    .arch armv7-m
+    .arch armv6-m
+
 
     .section .stack
     .align 3
@@ -52,7 +53,7 @@ __StackTop:
 #ifdef __HEAP_SIZE
     .equ    Heap_Size, __HEAP_SIZE
 #else
-    .equ    Heap_Size, 0xC00
+    .equ    Heap_Size, 0x0
 #endif
     .globl    __HeapBase
     .globl    __HeapLimit
@@ -72,15 +73,15 @@ __isr_vector:
     .long    Reset_Handler         /* Reset Handler */
     .long    NMI_Handler           /* NMI Handler */
     .long    HardFault_Handler     /* Hard Fault Handler */
-    .long    MemManage_Handler     /* MPU Fault Handler */
-    .long    BusFault_Handler      /* Bus Fault Handler */
-    .long    UsageFault_Handler    /* Usage Fault Handler */
+    .long    Default_Handler       /* Reserved */
+    .long    Default_Handler       /* Reserved */
+    .long    Default_Handler       /* Reserved */
     .long    Default_Handler       /* Reserved */
     .long    Default_Handler       /* Reserved */
     .long    Default_Handler       /* Reserved */
     .long    Default_Handler       /* Reserved */
     .long    SVC_Handler           /* SVCall Handler */
-    .long    DebugMon_Handler      /* Debug Monitor Handler */
+    .long    Default_Handler       /* Reserved */
     .long    Default_Handler       /* Reserved */
     .long    PendSV_Handler        /* PendSV Handler */
     .long    SysTick_Handler       /* SysTick Handler */
@@ -89,33 +90,24 @@ __isr_vector:
     .long    DMA_IRQHandler    /* 0 - DMA */
     .long    GPIO_EVEN_IRQHandler    /* 1 - GPIO_EVEN */
     .long    TIMER0_IRQHandler    /* 2 - TIMER0 */
-    .long    USART0_RX_IRQHandler    /* 3 - USART0_RX */
-    .long    USART0_TX_IRQHandler    /* 4 - USART0_TX */
-    .long    ACMP0_IRQHandler    /* 5 - ACMP0 */
-    .long    ADC0_IRQHandler    /* 6 - ADC0 */
-    .long    DAC0_IRQHandler    /* 7 - DAC0 */
-    .long    I2C0_IRQHandler    /* 8 - I2C0 */
-    .long    GPIO_ODD_IRQHandler    /* 9 - GPIO_ODD */
-    .long    TIMER1_IRQHandler    /* 10 - TIMER1 */
-    .long    TIMER2_IRQHandler    /* 11 - TIMER2 */
-    .long    USART1_RX_IRQHandler    /* 12 - USART1_RX */
-    .long    USART1_TX_IRQHandler    /* 13 - USART1_TX */
-    .long    USART2_RX_IRQHandler    /* 14 - USART2_RX */
-    .long    USART2_TX_IRQHandler    /* 15 - USART2_TX */
-    .long    UART0_RX_IRQHandler    /* 16 - UART0_RX */
-    .long    UART0_TX_IRQHandler    /* 17 - UART0_TX */
-    .long    LEUART0_IRQHandler    /* 18 - LEUART0 */
-    .long    LEUART1_IRQHandler    /* 19 - LEUART1 */
-    .long    LETIMER0_IRQHandler    /* 20 - LETIMER0 */
-    .long    PCNT0_IRQHandler    /* 21 - PCNT0 */
-    .long    PCNT1_IRQHandler    /* 22 - PCNT1 */
-    .long    PCNT2_IRQHandler    /* 23 - PCNT2 */
-    .long    RTC_IRQHandler    /* 24 - RTC */
-    .long    CMU_IRQHandler    /* 25 - CMU */
-    .long    VCMP_IRQHandler    /* 26 - VCMP */
-    .long    LCD_IRQHandler    /* 27 - LCD */
-    .long    MSC_IRQHandler    /* 28 - MSC */
-    .long    AES_IRQHandler    /* 29 - AES */
+    .long    ACMP0_IRQHandler    /* 3 - ACMP0 */
+    .long    ADC0_IRQHandler    /* 4 - ADC0 */
+    .long    I2C0_IRQHandler    /* 5 - I2C0 */
+    .long    GPIO_ODD_IRQHandler    /* 6 - GPIO_ODD */
+    .long    TIMER1_IRQHandler    /* 7 - TIMER1 */
+    .long    USART1_RX_IRQHandler    /* 8 - USART1_RX */
+    .long    USART1_TX_IRQHandler    /* 9 - USART1_TX */
+    .long    LEUART0_IRQHandler    /* 10 - LEUART0 */
+    .long    PCNT0_IRQHandler    /* 11 - PCNT0 */
+    .long    RTC_IRQHandler    /* 12 - RTC */
+    .long    CMU_IRQHandler    /* 13 - CMU */
+    .long    VCMP_IRQHandler    /* 14 - VCMP */
+    .long    MSC_IRQHandler    /* 15 - MSC */
+    .long    AES_IRQHandler    /* 16 - AES */
+    .long    USART0_RX_IRQHandler    /* 17 - USART0_RX */
+    .long    USART0_TX_IRQHandler    /* 18 - USART0_TX */
+    .long    USB_IRQHandler    /* 19 - USB */
+    .long    TIMER2_IRQHandler    /* 20 - TIMER2 */
 
 
     .size    __isr_vector, . - __isr_vector
@@ -172,44 +164,31 @@ Reset_Handler:
 
     def_irq_handler    NMI_Handler
     def_irq_handler    HardFault_Handler
-    def_irq_handler    MemManage_Handler
-    def_irq_handler    BusFault_Handler
-    def_irq_handler    UsageFault_Handler
     def_irq_handler    SVC_Handler
-    def_irq_handler    DebugMon_Handler
     def_irq_handler    PendSV_Handler
     def_irq_handler    SysTick_Handler
 
     def_irq_handler    DMA_IRQHandler
     def_irq_handler    GPIO_EVEN_IRQHandler
     def_irq_handler    TIMER0_IRQHandler
-    def_irq_handler    USART0_RX_IRQHandler
-    def_irq_handler    USART0_TX_IRQHandler
     def_irq_handler    ACMP0_IRQHandler
     def_irq_handler    ADC0_IRQHandler
-    def_irq_handler    DAC0_IRQHandler
     def_irq_handler    I2C0_IRQHandler
     def_irq_handler    GPIO_ODD_IRQHandler
     def_irq_handler    TIMER1_IRQHandler
-    def_irq_handler    TIMER2_IRQHandler
     def_irq_handler    USART1_RX_IRQHandler
     def_irq_handler    USART1_TX_IRQHandler
-    def_irq_handler    USART2_RX_IRQHandler
-    def_irq_handler    USART2_TX_IRQHandler
-    def_irq_handler    UART0_RX_IRQHandler
-    def_irq_handler    UART0_TX_IRQHandler
     def_irq_handler    LEUART0_IRQHandler
-    def_irq_handler    LEUART1_IRQHandler
-    def_irq_handler    LETIMER0_IRQHandler
     def_irq_handler    PCNT0_IRQHandler
-    def_irq_handler    PCNT1_IRQHandler
-    def_irq_handler    PCNT2_IRQHandler
     def_irq_handler    RTC_IRQHandler
     def_irq_handler    CMU_IRQHandler
     def_irq_handler    VCMP_IRQHandler
-    def_irq_handler    LCD_IRQHandler
     def_irq_handler    MSC_IRQHandler
     def_irq_handler    AES_IRQHandler
+    def_irq_handler    USART0_RX_IRQHandler
+    def_irq_handler    USART0_TX_IRQHandler
+    def_irq_handler    USB_IRQHandler
+    def_irq_handler    TIMER2_IRQHandler
 
 
     .end
