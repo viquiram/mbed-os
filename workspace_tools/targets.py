@@ -69,8 +69,19 @@ class Target:
 
     def init_hooks(self, hook, toolchain_name):
         pass
+##WIZnet
 
-
+class WIZwiki_W7500(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['WIZNET', 'W7500x', 'WIZwiki_W7500']
+        self.supported_toolchains = ["uARM", "ARM"]
+        self.default_toolchain = "ARM"
+        self.supported_form_factors = ["ARDUINO"]
+        
+        
+        
 ### MCU Support ###
 
 class CM4_UARM(Target):
@@ -283,6 +294,13 @@ class LPC2368(LPCTarget):
         self.core = "ARM7TDMI-S"
         self.extra_labels = ['NXP', 'LPC23XX']
         self.supported_toolchains = ["ARM", "GCC_ARM", "GCC_CR"]
+
+class LPC2460(LPCTarget):
+    def __init__(self):
+        LPCTarget.__init__(self)
+        self.core = "ARM7TDMI-S"
+        self.extra_labels = ['NXP', 'LPC2460']
+        self.supported_toolchains = ["GCC_ARM"]
 
 class LPC810(LPCTarget):
     def __init__(self):
@@ -616,6 +634,15 @@ class NUCLEO_F411RE(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0740"]
 
+class NUCLEO_F446RE(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F446RE']
+        self.supported_toolchains = ["GCC_ARM"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        
 class NUCLEO_L053R8(Target):
     def __init__(self):
         Target.__init__(self)
@@ -857,7 +884,6 @@ class NZ32ST1L(Target):
         self.default_toolchain = "uARM"
 
 
-
 ### Nordic ###
 
 class NRF51822(Target):
@@ -1091,6 +1117,8 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'DELTA_DFCM_NNN40']
         self.MERGE_SOFT_DEVICE = False
         self.macros += self.common_macros
+
+
 ### ARM ###
 class ARM_MPS2_Target(Target):
     def __init__(self):
@@ -1256,6 +1284,9 @@ TARGETS = [
     CM4F_UARM(),
     CM4F_ARM(),
 
+    ### WIZnet ###
+    WIZwiki_W7500(),
+    
     ### NXP ###
     LPC11C24(),
     LPC11U24(),
@@ -1279,6 +1310,7 @@ TARGETS = [
     UBLOX_C027(),   # LPC1768
     XBED_LPC1768(), # LPC1768
     LPC2368(),
+    LPC2460(),
     LPC810(),
     LPC812(),
     LPC824(),
@@ -1312,6 +1344,7 @@ TARGETS = [
     NUCLEO_F334R8(),
     NUCLEO_F401RE(),
     NUCLEO_F411RE(),
+    NUCLEO_F446RE(),
     NUCLEO_L053R8(),
     NUCLEO_L073RZ(),
     NUCLEO_L152RE(),
