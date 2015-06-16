@@ -69,18 +69,7 @@ class Target:
 
     def init_hooks(self, hook, toolchain_name):
         pass
-##WIZnet
-
-class WIZWIKI_W7500(Target):
-    def __init__(self):
-        Target.__init__(self)
-        self.core = "Cortex-M0"
-        self.extra_labels = ['WIZNET', 'W7500x', 'WIZwiki_W7500']
-        self.supported_toolchains = ["uARM", "ARM"]
-        self.default_toolchain = "ARM"
-        self.supported_form_factors = ["ARDUINO"]
-        
-        
+                
         
 ### MCU Support ###
 
@@ -111,7 +100,8 @@ class CM4F_ARM(Target):
         self.core = "Cortex-M4F"
         self.supported_toolchains = ["ARM"]
         self.default_toolchain = "ARM"
-
+        
+        
 ### NXP ###
 
 # This class implements the post-link patching step needed by LPC targets
@@ -175,11 +165,13 @@ class LPC11U34_421(LPCTarget):
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
         self.default_toolchain = "uARM"
 
-class APPNEARME_MICRONFCBOARD(LPC11U34_421):
+class MICRONFCBOARD(LPC11U34_421):
     def __init__(self):
         LPC11U34_421.__init__(self)
-        self.macros = ['LPC11U34_421']
-        self.is_disk_virtual = True
+        self.macros = ['LPC11U34_421', 'APPNEARME_MICRONFCBOARD']
+        self.extra_labels = ['NXP', 'LPC11UXX', 'APPNEARME_MICRONFCBOARD']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
+        self.default_toolchain = "uARM"
 
 class LPC11U35_401(LPCTarget):
     def __init__(self):
@@ -484,6 +476,7 @@ class TEENSY3_1(Target):
         self.supported_toolchains = ["GCC_ARM", "ARM"]
         self.is_disk_virtual = True
         self.detect_code = ["0230"]
+
 
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['ARM_STD', 'ARM_MICRO', 'GCC_ARM']:
@@ -875,13 +868,16 @@ class UBLOX_C029(Target):
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
 
-class NZ32ST1L(Target):
+class NZ32SC151(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M3"
         self.extra_labels = ['STM', 'STM32L1', 'STM32L151RC']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM"]
         self.default_toolchain = "uARM"
+    # After flashing device, how long to delay until we assume program is running
+    def program_cycle_s(self):
+        return 1.5
 
 
 ### Nordic ###
@@ -1120,6 +1116,7 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
 
 
 ### ARM ###
+
 class ARM_MPS2_Target(Target):
     def __init__(self):
         Target.__init__(self)
@@ -1202,7 +1199,10 @@ class RZ_A1H(Target):
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.supported_form_factors = ["ARDUINO"]
         self.default_toolchain = "ARM"
-        
+
+    def program_cycle_s(self):
+        return 2
+
 
 ### Maxim Integrated ###
 
@@ -1224,7 +1224,7 @@ class MAX32600MBED(Target):
         self.supported_toolchains = ["GCC_ARM", "IAR", "ARM"]
         self.default_toolchain = "ARM"
 
-        
+
 ### Silicon Labs ###
 
 class EFM32GG_STK3700(Target):
@@ -1275,25 +1275,29 @@ class EFM32HG_STK3400(Target):
         self.supported_toolchains = ["GCC_ARM", "uARM"]
         self.default_toolchain = "uARM"
 
+
+##WIZnet
+
+class WIZWIKI_W7500(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['WIZNET', 'W7500x', 'WIZwiki_W7500']
+        self.supported_toolchains = ["uARM", "ARM"]
+        self.default_toolchain = "ARM"
+        self.supported_form_factors = ["ARDUINO"]
+
+
 # Get a single instance for each target
 TARGETS = [
 
-    ### MCU Support ###
-    CM4_UARM(),
-    CM4_ARM(),
-    CM4F_UARM(),
-    CM4F_ARM(),
-
-    ### WIZnet ###
-    WIZWIKI_W7500(),
-    
     ### NXP ###
     LPC11C24(),
     LPC11U24(),
     OC_MBUINO(),    # LPC11U24
     LPC11U24_301(),
     LPC11U34_421(),
-    APPNEARME_MICRONFCBOARD(), #LPC11U34_421
+    MICRONFCBOARD(), # LPC11U34_421
     LPC11U35_401(),
     LPC11U35_501(),
     XADOW_M0(),     # LPC11U35_501
@@ -1364,7 +1368,7 @@ TARGETS = [
     MTS_DRAGONFLY_F411RE(),
     DISCO_F401VC(),
     UBLOX_C029(),   # STM32F439
-    NZ32ST1L(),     # STM32L151
+    NZ32SC151(),     # STM32L151
 
     ### Nordic ###
     NRF51822(),
@@ -1408,6 +1412,10 @@ TARGETS = [
     EFM32WG_STK3800(),
     EFM32ZG_STK3200(),
     EFM32HG_STK3400(),
+
+    ### WIZnet ###
+    WIZWIKI_W7500(),
+
 ]
 
 # Map each target name to its unique instance
