@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     core_cmSimd.h
  * @brief    CMSIS Cortex-M SIMD Header File
- * @version  V3.21
- * @date     29. November 2013
+ * @version  V4.10
+ * @date     18. March 2015
  *
  * @note
  *
@@ -35,12 +35,16 @@
    ---------------------------------------------------------------------------*/
 
 
-#ifdef __cplusplus
- extern "C" {
+#if defined ( __ICCARM__ )
+ #pragma system_include  /* treat file as system include file for MISRA check */
 #endif
 
 #ifndef __CORE_CMSIMD_H
 #define __CORE_CMSIMD_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 
 /*******************************************************************************
@@ -56,8 +60,6 @@
 
 #if   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
 /* ARM armcc specific functions */
-
-/*------ CM SIMD Intrinsics ------------------------------------------------------*/
 #define __SADD8                           __sadd8
 #define __QADD8                           __qadd8
 #define __SHADD8                          __shadd8
@@ -127,34 +129,9 @@
 #define __SMMLA(ARG1,ARG2,ARG3)          ( (int32_t)((((int64_t)(ARG1) * (ARG2)) + \
                                                       ((int64_t)(ARG3) << 32)      ) >> 32))
 
-/*-- End CM SIMD Intrinsics ------------------------------------------------------*/
-
-
-
-#elif defined ( __ICCARM__ ) /*------------------ ICC Compiler -------------------*/
-/* IAR iccarm specific functions */
-
-/*------ CM SIMD Intrinsics ------------------------------------------------------*/
-#include <cmsis_iar.h>
-
-/*-- End CM SIMD Intrinsics ------------------------------------------------------*/
-
-
-
-#elif defined ( __TMS470__ ) /*---------------- TI CCS Compiler ------------------*/
-/* TI CCS specific functions */
-
-/*------ CM SIMD Intrinsics ------------------------------------------------------*/
-#include <cmsis_ccs.h>
-
-/*-- End CM SIMD Intrinsics ------------------------------------------------------*/
-
-
 
 #elif defined ( __GNUC__ ) /*------------------ GNU Compiler ---------------------*/
 /* GNU gcc specific functions */
-
-/*------ CM SIMD Intrinsics ------------------------------------------------------*/
 __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SADD8(uint32_t op1, uint32_t op2)
 {
   uint32_t result;
@@ -688,27 +665,33 @@ __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __SMMLA (int32_t op1
  return(result);
 }
 
-/*-- End CM SIMD Intrinsics ------------------------------------------------------*/
 
+#elif defined ( __ICCARM__ ) /*------------------ ICC Compiler -------------------*/
+/* IAR iccarm specific functions */
+#include <cmsis_iar.h>
+
+
+#elif defined ( __TMS470__ ) /*---------------- TI CCS Compiler ------------------*/
+/* TI CCS specific functions */
+#include <cmsis_ccs.h>
 
 
 #elif defined ( __TASKING__ ) /*------------------ TASKING Compiler --------------*/
 /* TASKING carm specific functions */
-
-
-/*------ CM SIMD Intrinsics ------------------------------------------------------*/
 /* not yet supported */
 
-/*-- End CM SIMD Intrinsics ------------------------------------------------------*/
 
+#elif defined ( __CSMC__ ) /*------------------ COSMIC Compiler -------------------*/
+/* Cosmic specific functions */
+#include <cmsis_csm.h>
 
 #endif
 
 /*@} end of group CMSIS_SIMD_intrinsics */
 
 
-#endif /* __CORE_CM7Pelican_SIMD_H */
-
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* __CORE_CMSIMD_H */
