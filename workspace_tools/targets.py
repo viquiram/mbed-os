@@ -1299,7 +1299,12 @@ class WIZWIKI_W7500(Target):
 
 # Get a single instance for each target
 TARGETS = [
-
+    ### MCU Support ###
+    CM4_UARM(),
+    CM4_ARM(),
+    CM4F_UARM(),
+    CM4F_ARM(),
+    
     ### NXP ###
     LPC11C24(),
     LPC11U24(),
@@ -1427,6 +1432,7 @@ TARGETS = [
     WIZWIKI_W7500(),
 
 ]
+
 
 # Map each target name to its unique instance
 TARGET_MAP = {}
