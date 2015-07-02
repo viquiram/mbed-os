@@ -1123,6 +1123,13 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
         self.MERGE_SOFT_DEVICE = False
         self.macros += self.common_macros
 
+class NRF51822_MICROBIT(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
+        self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
+
 
 ### ARM ###
 
@@ -1404,6 +1411,7 @@ TARGETS = [
     WALLBOT_BLE(),  # nRF51822
     DELTA_DFCM_NNN40(), # nRF51822
     DELTA_DFCM_NNN40_OTA(), # nRF51822
+    NRF51822_MICROBIT(), # nRF51822
 
     ### ARM ###
     ARM_MPS2_M0(),
