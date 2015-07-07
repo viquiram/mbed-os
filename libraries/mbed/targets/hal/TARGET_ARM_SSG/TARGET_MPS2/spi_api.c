@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,25 +24,25 @@
 
 static const PinMap PinMap_SPI_SCLK[] = {
     {SCLK_SPI , SPI_0, 0},
-//    {CLCD_SCLK , SPI_1, 0},
+    {CLCD_SCLK , SPI_1, 0},
     {NC   , NC   , 0}
 };
 
 static const PinMap PinMap_SPI_MOSI[] = {
     {MOSI_SPI, SPI_0, 0},
-//    {CLCD_MOSI, SPI_1, 0},
+    {CLCD_MOSI, SPI_1, 0},
     {NC   , NC   , 0}
 };
 
 static const PinMap PinMap_SPI_MISO[] = {
     {MISO_SPI, SPI_0, 0},
-//    {CLCD_MISO, SPI_1, 0},
+    {CLCD_MISO, SPI_1, 0},
     {NC   , NC   , 0}
 };
 
 static const PinMap PinMap_SPI_SSEL[] = {
     {SSEL_SPI, SPI_0, 0},
-//    {CLCD_SSEL, SPI_1, 0},
+    {CLCD_SSEL, SPI_1, 0},
     {NC   , NC   , 0}
 };
 
@@ -63,20 +63,33 @@ void spi_init(spi_t *obj, PinName mosi, PinName miso, PinName sclk, PinName ssel
     }
     
     // enable power and clocking
-//    switch ((int)obj->spi) {
-//        case SPI_0: 
-					
-					obj->spi->CR1   	= 0;
-					obj->spi->DMACR 	= 0;
-					obj->spi->CR0   	= SSP_CR0_SCR_DFLT | SSP_CR0_FRF_MOT | SSP_CR0_DSS_8;
-					obj->spi->CPSR  	= SSP_CPSR_DFLT; 
-					obj->spi->IMSC  	= 0x8; 
-				  obj->spi->CR1   	= SSP_CR1_SSE_Msk;
-					obj->spi->ICR   	= 0x3;  
-//        case SPI_1:
-//					clcd_init(obj);					
-				
-//    }
+    switch ((int)obj->spi) {
+        case (int)SPI_0: 
+			obj->spi->CR1   	= 0;
+			obj->spi->CR0   	= SSP_CR0_SCR_DFLT | SSP_CR0_FRF_MOT | SSP_CR0_DSS_8;
+			obj->spi->CPSR  	= SSP_CPSR_DFLT; 
+			obj->spi->IMSC  	= 0x8; 
+			obj->spi->DMACR 	= 0;
+			obj->spi->CR1   	= SSP_CR1_SSE_Msk;
+			obj->spi->ICR   	= 0x3;  
+			break;
+      case (int)SPI_1:
+					  /* Configure SSP used for LCD                                               */
+			obj->spi->CR1   =   0;                 /* Synchronous serial port disable  */
+			obj->spi->DMACR =   0;                 /* Disable FIFO DMA                 */
+			obj->spi->IMSC  =   0;                 /* Mask all FIFO/IRQ interrupts     */
+			obj->spi->ICR   = ((1ul <<  0) |       /* Clear SSPRORINTR interrupt       */
+								(1ul <<  1) );      /* Clear SSPRTINTR interrupt        */
+          	obj->spi->CR0   = ((7ul <<  0) |       /* 8 bit data size                  */
+								(0ul <<  4) |       /* Motorola frame format            */
+								(0ul <<  6) |       /* CPOL = 0                         */
+								(0ul <<  7) |       /* CPHA = 0                         */
+								(1ul <<  8) );      /* Set serial clock rate            */
+			obj->spi->CPSR  =  (2ul <<  0);        /* set SSP clk to 6MHz (6.6MHz max) */
+			obj->spi->CR1   = ((1ul <<  1) |       /* Synchronous serial port enable   */
+								(0ul <<  2) );      /* Device configured as master      */
+			break;
+    }
     
     // set default format and frequency
     if (ssel == NC) {
@@ -135,22 +148,10 @@ void spi_format(spi_t *obj, int bits, int mode, int slave) {
 
 void spi_frequency(spi_t *obj, int hz) {
     ssp_disable(obj);
-    
-//    // setup the spi clock diveder to /1
-//    switch ((int)obj->spi) {
-//        case SPI_0:
-//            LPC_SC->PCLKSEL1 &= ~(3 << 10);
-//            LPC_SC->PCLKSEL1 |=  (1 << 10);
-//            break;
-//        case SPI_1:
-//            LPC_SC->PCLKSEL0 &= ~(3 << 20);
-//            LPC_SC->PCLKSEL0 |=  (1 << 20);
-//            break;
-//    }
-    
+   
     uint32_t PCLK = SystemCoreClock;
     
-    int prescaler;
+	    int prescaler;
     
     for (prescaler = 2; prescaler <= 254; prescaler += 2) {
         int prescale_hz = PCLK / prescaler;
@@ -186,17 +187,16 @@ static inline int ssp_readable(spi_t *obj) {
 }
 
 static inline int ssp_writeable(spi_t *obj) {
-    return obj->spi->SR & SSP_SR_TNF_Msk;
+    return obj->spi->SR & SSP_SR_BSY_Msk;
 }
 
 static inline void ssp_write(spi_t *obj, int value) {
-    while (!ssp_writeable(obj));
     obj->spi->DR = value;
+    while (ssp_writeable(obj));
 }
-
 static inline int ssp_read(spi_t *obj) {
-    while (!ssp_readable(obj));
-    return obj->spi->DR;
+	int read_DR = obj->spi->DR;
+    return read_DR;
 }
 
 static inline int ssp_busy(spi_t *obj) {
@@ -205,7 +205,8 @@ static inline int ssp_busy(spi_t *obj) {
 
 int spi_master_write(spi_t *obj, int value) {
     ssp_write(obj, value);
-    return ssp_read(obj);
+    while (MPS2_SSP0->SR & SSP_SR_BSY_Msk);  /* Wait for send to finish      */
+    return (ssp_read(obj));
 }
 
 int spi_slave_receive(spi_t *obj) {

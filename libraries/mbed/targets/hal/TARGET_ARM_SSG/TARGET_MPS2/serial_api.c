@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,30 +32,14 @@
 static const PinMap PinMap_UART_TX[] = {
     {USBTX	 , UART_0, 0},
     {UART_TX1, UART_1, 0},
-    {UART_TX2, UART_2, 0},
     {NC      , NC    , 0}
 };
 
 static const PinMap PinMap_UART_RX[] = {
     {USBRX	 , UART_0, 0},
     {UART_RX1, UART_1, 0},
-    {UART_RX2, UART_2, 0},
     {NC , NC      , 0}
 };
-/*
-static const PinMap PinMap_UART_RTS[] = {
-    {P0_0,  UART_0, 0},
-    {P0_2,  UART_1, 0},
-    {P0_10, UART_2, 0},
-    {NC   , NC    , 0}
-};
-
-static const PinMap PinMap_UART_CTS[] = {
-    {P0_0,  UART_0, 0},
-    {P0_2,  UART_1, 0},
-    {P0_10, UART_2, 0},
-    {NC   , NC    , 0}
-};*/
 
 #define UART_NUM    3
 
@@ -86,36 +70,24 @@ void serial_init(serial_t *obj, PinName tx, PinName rx) {
     obj->uart = (CMSDK_UART_TypeDef *)uart;
     //set baud rate and enable Uart in normarl mode (RX and TX enabled)
     switch (uart) {
-        case UART_0: 	CMSDK_UART0->CTRL = 0;         /* Disable UART when changing configuration */
-											//CMSDK_UART0->BAUDDIV = 2604;  // 9600 at 25MHz
+        case UART_0: 	CMSDK_UART0->CTRL = 0;         // Disable UART when changing configuration 
 											CMSDK_UART0->CTRL    = 0x3;  // Normal mode 
 											break;
-        case UART_1: 	CMSDK_UART1->CTRL = 0;         /* Disable UART when changing configuration */
-											//CMSDK_UART1->BAUDDIV = 2604;  // 9600 at 25MHz
+        case UART_1: 	CMSDK_UART1->CTRL = 0;         // Disable UART when changing configuration 
 											CMSDK_UART1->CTRL    = 0x3;  // Normal mode 
-											break;
-        case UART_2: 	CMSDK_UART2->CTRL = 0;         /* Disable UART when changing configuration */
-											//CMSDK_UART2->BAUDDIV = 2604;  // 9600 at 25MHz
-											CMSDK_UART2->CTRL    = 0x3;  // Normal mode 
 											break;
     }
 
     // set default baud rate and format
     serial_baud  (obj, 9600);
-    //serial_format(obj, 8, ParityNone, 1);
     
     // pinout the chosen uart
     pinmap_pinout(tx, PinMap_UART_TX);
     pinmap_pinout(rx, PinMap_UART_RX);
     
-    // set rx/tx pins in PullUp mode
-    //pin_mode(tx, PullUp);
-    //pin_mode(rx, PullUp);
-    
     switch (uart) {
         case UART_0: obj->index = 0; break;
         case UART_1: obj->index = 1; break;
-        case UART_2: obj->index = 2; break;
     }
     uart_data[obj->index].sw_rts.pin = NC;
     uart_data[obj->index].sw_cts.pin = NC;
@@ -150,7 +122,6 @@ void serial_baud(serial_t *obj, int baudrate) {
     switch ((int)obj->uart) {
         case UART_0: CMSDK_UART0->BAUDDIV = baudrate_div; break;
         case UART_1: CMSDK_UART1->BAUDDIV = baudrate_div; break;
-        case UART_2: CMSDK_UART2->BAUDDIV = baudrate_div; break;
         default: error("serial_baud"); break;
     }
 	} else {
@@ -166,7 +137,6 @@ void serial_format(serial_t *obj, int data_bits, SerialParity parity, int stop_b
  * INTERRUPTS HANDLING
  ******************************************************************************/
 static inline void uart_irq(uint32_t intstatus, uint32_t index, CMSDK_UART_TypeDef *puart) {
-    // [Chapter 14] LPC17xx UART0/2/3: UARTn Interrupt Handling
     SerialIrq irq_type;
     switch (intstatus) {
         case 1: irq_type = TxIrq; break;
@@ -185,8 +155,7 @@ static inline void uart_irq(uint32_t intstatus, uint32_t index, CMSDK_UART_TypeD
 }
 
 void uart0_irq() {uart_irq(CMSDK_UART0->INTSTATUS & 0x3, 0, (CMSDK_UART_TypeDef*)CMSDK_UART0);}
-void uart1_irq() {uart_irq(CMSDK_UART0->INTSTATUS & 0x3, 1, (CMSDK_UART_TypeDef*)CMSDK_UART1);}
-void uart2_irq() {uart_irq(CMSDK_UART0->INTSTATUS & 0x3, 2, (CMSDK_UART_TypeDef*)CMSDK_UART2);}
+void uart1_irq() {uart_irq(CMSDK_UART1->INTSTATUS & 0x3, 1, (CMSDK_UART_TypeDef*)CMSDK_UART1);}
 
 void serial_irq_handler(serial_t *obj, uart_irq_handler handler, uint32_t id) {
     irq_handler = handler;
@@ -197,10 +166,8 @@ static void serial_irq_set_internal(serial_t *obj, SerialIrq irq, uint32_t enabl
     IRQn_Type irq_n = (IRQn_Type)0;
     uint32_t vector = 0;
     switch ((int)obj->uart) {
-			case UART_0: irq_n=((irq>> 2) ? UARTRX0_IRQn : UARTTX0_IRQn); vector = (uint32_t)&uart0_irq; break;
-      case UART_1: irq_n=((irq>> 2) ? UARTRX1_IRQn : UARTTX1_IRQn); vector = (uint32_t)&uart1_irq; break;
-      case UART_2: irq_n=((irq>> 2) ? UARTRX2_IRQn : UARTTX2_IRQn); vector = (uint32_t)&uart2_irq; break;
-        //case UART_3: irq_n=UART3_IRQn; vector = (uint32_t)&uart3_irq; break;
+		case UART_0: irq_n=((irq>> 2) ? UARTRX0_IRQn : UARTTX0_IRQn); vector = (uint32_t)&uart0_irq; break;
+		case UART_1: irq_n=((irq>> 2) ? UARTRX1_IRQn : UARTTX1_IRQn); vector = (uint32_t)&uart1_irq; break;
     }
     
     if (enable) {
@@ -222,11 +189,6 @@ void serial_irq_set(serial_t *obj, SerialIrq irq, uint32_t enable) {
         uart_data[obj->index].rx_irq_set_api = enable;
     serial_irq_set_internal(obj, irq, enable);
 }
-
-/*static void serial_flow_irq_set(serial_t *obj, uint32_t enable) {
-    uart_data[obj->index].rx_irq_set_flow = enable;
-    serial_irq_set_internal(obj, RxIrq, enable);
-}*/
 
 /******************************************************************************
  * READ/WRITE

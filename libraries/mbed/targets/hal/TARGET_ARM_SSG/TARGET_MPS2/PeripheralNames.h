@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,12 @@ extern "C" {
 
 typedef enum {
     UART_0 = (int)CMSDK_UART0_BASE,
-    UART_1 = (int)CMSDK_UART1_BASE,
-    UART_2 = (int)CMSDK_UART2_BASE,
+    UART_1 = (int)CMSDK_UART1_BASE
 } UARTName;
 
 typedef enum {
     I2C_0 = (int)MPS2_TS_I2C,
-    I2C_1 = (int)MPS2_AAIC_I2C,
-   // I2C_2 = (int)MPS2_TS_I2C
+    I2C_1 = (int)MPS2_AAIC_I2C
 		
 } I2CName;
 

@@ -164,9 +164,9 @@ PendSV_Handler  PROC
                 B       .
                 ENDP
 SysTick_Handler PROC
-               EXPORT  SysTick_Handler            [WEAK]
-               B       .
-               ENDP
+                EXPORT  SysTick_Handler           [WEAK]
+                B       .
+                ENDP
 
 Default_Handler PROC
                 EXPORT UARTRX0_Handler            [WEAK]

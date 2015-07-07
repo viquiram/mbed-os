@@ -1,18 +1,34 @@
-/*
- * Copyright:
- * ----------------------------------------------------------------
- * This confidential and proprietary software may be used only as
- * authorised by a licensing agreement from ARM Limited
- *   (C) COPYRIGHT 2014 ARM Limited
- *       ALL RIGHTS RESERVED
- * The entire notice above must be reproduced on all authorised
- * copies and copies may only be made to the extent permitted
- * by a licensing agreement from ARM Limited.
- * ----------------------------------------------------------------
- * File:     eth_mps2.c
- * Release:  Version 1.0
- * ----------------------------------------------------------------
- */
+/* MPS2 Peripheral Library
+*
+* Copyright (c) 2006-2015 ARM Limited
+* All rights reserved.
+* 
+* Redistribution and use in source and binary forms, with or without 
+* modification, are permitted provided that the following conditions are met:
+* 
+* 1. Redistributions of source code must retain the above copyright notice, 
+* this list of conditions and the following disclaimer.
+* 
+* 2. Redistributions in binary form must reproduce the above copyright notice, 
+* this list of conditions and the following disclaimer in the documentation 
+* and/or other materials provided with the distribution.
+* 
+* 3. Neither the name of the copyright holder nor the names of its contributors 
+* may be used to endorse or promote products derived from this software without 
+* specific prior written permission.
+* 
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+* POSSIBILITY OF SUCH DAMAGE. 
+*/
 
 /*
  * Code implementation file for the LAN Ethernet interface.
@@ -21,6 +37,7 @@
 #include <stdio.h>
 
 #include "ETH_MPS2.h"
+#include "fpga.h"
 
 // SMSC9220 low-level operations
 unsigned int smsc9220_mac_regread(unsigned char regoffset, unsigned int *data)
@@ -46,13 +63,11 @@ unsigned int smsc9220_mac_regread(unsigned char regoffset, unsigned int *data)
         } while(timedout && (SMSC9220->MAC_CSR_CMD & ((unsigned int)1 << 31)));
 
         if(!timedout) {
-            printf("Error: SMSC9220 MAC CSR read operation timed out.\n");
             error = 1;
         }
         else
             *data = SMSC9220->MAC_CSR_DATA;
     } else {
-        printf("Warning: SMSC9220 MAC CSR is busy. No data read.\n");
         *data = 0;
     }
     return error;
@@ -82,7 +97,6 @@ unsigned int smsc9220_mac_regwrite(unsigned char regoffset, unsigned int data)
         } while(timedout && (SMSC9220->MAC_CSR_CMD & ((unsigned int)1 << 31)));
 
         if(!timedout) {
-            printf("Error: SMSC9220 MAC CSR write operation timed out.\n");
             error = 1;
         }
     } else {
@@ -118,14 +132,12 @@ unsigned int smsc9220_phy_regread(unsigned char regoffset, unsigned short *data)
         } while(timedout && (val & ((unsigned int)1 << 0)));
 
         if(!timedout) {
-            printf("Error: SMSC9220 MAC MII read operation timed out.\n");
             error = 1;
         }
         else
             smsc9220_mac_regread(SMSC9220_MAC_MII_DATA, (unsigned int *)data);
 
     } else {
-        printf("Warning: SMSC9220 MAC MII is busy. No data read.\n");
         *data = 0;
     }
     return error;
@@ -160,7 +172,6 @@ unsigned int smsc9220_phy_regwrite(unsigned char regoffset, unsigned short data)
         } while(timedout && (phycmd & (1 << 0)));
 
         if(!timedout) {
-            printf("Error: SMSC9220 MAC MII write operation timed out.\n");
             error = 1;
         }
 
@@ -238,7 +249,6 @@ unsigned int smsc9220_check_phy(void)
 
     smsc9220_phy_regread(SMSC9220_PHY_ID1,&phyid1);
     smsc9220_phy_regread(SMSC9220_PHY_ID2,&phyid2);
-    printf("PHY ID1: %#08x, PHY ID2: %#08x\n\n",phyid1, phyid2);
     return ((phyid1 == 0xFFFF && phyid2 == 0xFFFF) ||
             (phyid1 == 0x0 && phyid2 == 0x0));
 }
@@ -250,14 +260,12 @@ unsigned int smsc9220_reset_phy(void)
 
     error = 0;
     if(smsc9220_phy_regread(SMSC9220_PHY_BCONTROL, &read)) {
-        printf("Error: PHY BCONTROL read failed.\n");
         error = 1;
         return error;
     }
 
     read |= (1 << 15);
     if(smsc9220_phy_regwrite(SMSC9220_PHY_BCONTROL, read)) {
-        printf("Error: PHY BCONTROL write failed.\n");
         error = 1;
         return error;
     }
@@ -272,12 +280,10 @@ void smsc9220_advertise_cap(void)
 
 
     smsc9220_phy_regread(SMSC9220_PHY_ANEG_ADV, &aneg_adv);
-    printf("advertise_cap: PHY_ANEG_ADV before write: %#08x\n",aneg_adv);
     aneg_adv |= 0xDE0;
 
     smsc9220_phy_regwrite(SMSC9220_PHY_ANEG_ADV, aneg_adv);
     smsc9220_phy_regread(SMSC9220_PHY_ANEG_ADV, &aneg_adv);
-    printf("advertise_cap: PHY_ANEG_ADV: after write: %#08x\n",aneg_adv);
     return;
 }
 
@@ -286,11 +292,9 @@ void smsc9220_establish_link(void)
     unsigned short bcr;
 
     smsc9220_phy_regread(SMSC9220_PHY_BCONTROL, &bcr);
-    printf("establish link: PHY_BCONTROL before write: %#08x\n",bcr);
     bcr |= (1 << 12) | (1 << 9);
     smsc9220_phy_regwrite(SMSC9220_PHY_BCONTROL, bcr);
     smsc9220_phy_regread(SMSC9220_PHY_BCONTROL, &bcr);
-    printf("establish link: PHY_BCONTROL after write: %#08x\n", bcr);
 
     {
         unsigned int hw_cfg;
@@ -365,17 +369,12 @@ unsigned int smsc9220_recv_packet(unsigned int *recvbuf, unsigned int *index)
     unsigned int pktsize;
     unsigned int dwords_to_read;
 
-    printf("recv_packet start: recvbuf: %#08x index: %d\n",
-            (unsigned int)recvbuf,*index);
-
     rxfifo_inf = SMSC9220->RX_FIFO_INF;
-    printf("%d bytes of data available in rx fifo.\n",rxfifo_inf & 0xFFFF);
 
     if(rxfifo_inf & 0xFFFF) { // If there's data
         rxfifo_stat = SMSC9220->RX_STAT_PORT;
         if(rxfifo_stat != 0) {   // Fetch status of this packet
             pktsize = ((rxfifo_stat >> 16) & 0x3FFF);
-            printf("recv_packet: rxfifo_stat: %#08x, pktsize (bytes): %u\n",rxfifo_stat, pktsize);
             if(rxfifo_stat & (1 << 15)) {
                 printf("Error occured during receiving of packets on the bus.\n");
                 return 1;
@@ -385,29 +384,22 @@ unsigned int smsc9220_recv_packet(unsigned int *recvbuf, unsigned int *index)
                  * a last word is needed for not word aligned packets.
                  */
                 dwords_to_read = (pktsize + 3) >> 2;
-                printf("recv_packet: dwords_to_read: %u\n",dwords_to_read);
                 // PIO copy of data received:
                 while(dwords_to_read > 0) {
                     recvbuf[*index] = SMSC9220->RX_DATA_PORT;
-                    printf("recv_packet: Received word[%d]: %#08x\n",*index,recvbuf[*index]);
                     (*index)++;
                     dwords_to_read--;
                 }
             }
         } else {
-            printf("Error: rx fifo status reads zero where data is available.\n");
             return 1;
         }
     } else {
-        printf("Error: No data available in rx FIFO\n");
         return 1;
     }
 
     rxfifo_stat = SMSC9220->RX_STAT_PORT;
     rxfifo_inf = SMSC9220->RX_FIFO_INF;
-    printf("recv_packet: After second read, rxfifo_stat: %#08x, rxfifo_inf: %#08x\n",
-               rxfifo_stat, rxfifo_inf);
-    printf("recv_packet end: recvbuf: %#08x index: %d\n", (unsigned int)recvbuf,*index);
 
     return 0;
 }
@@ -435,8 +427,6 @@ void smsc9220_xmit_packet(unsigned char * pkt, unsigned int length)
     txcmd_b |= ((length & 0xFFFF) << 16); // [31:16] contains length
     txcmd_b |= length & 0x7FF;          // [10:0] also contains length
 
-    printf("txcmd_a: %#08x\n", txcmd_a);
-    printf("txcmd_b: %#08x\n", txcmd_b);
 
     SMSC9220->TX_DATA_PORT = txcmd_a;
     SMSC9220->TX_DATA_PORT = txcmd_b;
@@ -445,22 +435,17 @@ void smsc9220_xmit_packet(unsigned char * pkt, unsigned int length)
     // PIO Copy to FIFO. Could replace this with DMA.
     while(dwords_to_write > 0) {
          SMSC9220->TX_DATA_PORT = *pktptr;
-         printf("Transmitting word[%d]: %#08x\n",dwritten-dwords_to_write,*pktptr);
          pktptr++;
          dwords_to_write--;
     }
 
     xmit_stat = SMSC9220->TX_STAT_PORT;
-        printf("Finished transfer. TX_STATUS_WORD: %#08x\n",xmit_stat);
     xmit_stat2 = SMSC9220->TX_STAT_PORT;
     xmit_inf = SMSC9220->TX_FIFO_INF;
-        printf("After popping TX_STAT: %#08x, TX_INF: %#08x\n\n",xmit_stat2, xmit_inf);
 
     if(xmit_stat2 != 0 ) {
-            printf("The second read of TX_STAT is non-zero. Retry reading a few more times.\n");
         for(i = 0; i < 6; i++) {
             xmit_stat2 = SMSC9220->TX_STAT_PORT;
-                printf("Retry %d: TX_STAT: %#08x\n",i+1,xmit_stat2);
         }
     }
 }

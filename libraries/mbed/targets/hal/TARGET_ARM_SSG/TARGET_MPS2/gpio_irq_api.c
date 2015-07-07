@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,8 +170,6 @@ int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32
 }
 
 void gpio_irq_free(gpio_irq_t *obj) {
-//		channel_ids[obj->ch] = 0;
-//		LPC_SYSCON->STARTERP0 &= ~(1 << obj->ch);
 }
 
 void gpio_irq_set(gpio_irq_t *obj, gpio_irq_event event, uint32_t enable) {

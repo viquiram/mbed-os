@@ -49,6 +49,7 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('ARCH_GPRS',    ('ARM', 'uARM', 'GCC_ARM', 'GCC_CR', 'IAR')),
     ('LPC4337',      ('ARM',)),
     ('LPC11U37H_401', ('ARM', 'uARM','GCC_ARM','GCC_CR')),
+    ('MICRONFCBOARD', ('ARM', 'uARM','GCC_ARM')),
 
     ('KL05Z',        ('ARM', 'uARM', 'GCC_ARM', 'IAR')),
     ('KL25Z',        ('ARM', 'GCC_ARM', 'IAR')),
@@ -94,6 +95,12 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('LPC11U68',     ('ARM', 'uARM','GCC_ARM','GCC_CR', 'IAR')),
     ('OC_MBUINO',     ('ARM', 'uARM', 'GCC_ARM', 'IAR')),
     
+    ('ARM_MPS2_M0'   ,     ('ARM',)),
+    ('ARM_MPS2_M0P'   ,     ('ARM',)),
+    ('ARM_MPS2_M3'   ,     ('ARM',)),
+    ('ARM_MPS2_M4'   ,     ('ARM',)),
+    ('ARM_MPS2_M7'   ,     ('ARM',)),
+
     ('ARM_MPS2_M0'   ,     ('ARM',)),
     ('ARM_MPS2_M0P'   ,     ('ARM',)),
     ('ARM_MPS2_M3'   ,     ('ARM',)),

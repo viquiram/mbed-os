@@ -1,26 +1,43 @@
-/**************************************************************************//**
- * @file     CMSDK_CM4.h
- * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Header File for
- *           Device CMSDK_CM4
- * @version  V3.01
- * @date     06. March 2012
- *
- * @note
- * Copyright (C) 2010-2012 ARM Limited. All rights reserved.
- *
- * @par
- * ARM Limited (ARM) is supplying this software for use with Cortex-M 
- * processor based microcontrollers.  This file can be freely distributed 
- * within development tools that are supporting such ARM based processors. 
- *
- * @par
- * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- ******************************************************************************/
+/* MPS2 CMSIS Library
+*
+* Copyright (c) 2006-2015 ARM Limited
+* All rights reserved.
+* 
+* Redistribution and use in source and binary forms, with or without 
+* modification, are permitted provided that the following conditions are met:
+* 
+* 1. Redistributions of source code must retain the above copyright notice, 
+* this list of conditions and the following disclaimer.
+* 
+* 2. Redistributions in binary form must reproduce the above copyright notice, 
+* this list of conditions and the following disclaimer in the documentation 
+* and/or other materials provided with the distribution.
+* 
+* 3. Neither the name of the copyright holder nor the names of its contributors 
+* may be used to endorse or promote products derived from this software without 
+* specific prior written permission.
+* 
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+* POSSIBILITY OF SUCH DAMAGE. 
+*******************************************************************************
+* @file     CMSDK_CM4.h
+* @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Header File for
+*           Device CMSDK_CM4
+* @version  V3.01
+* @date     06. March 2012
+*
+* @note     configured for CM7 without FPU
+*
+*******************************************************************************/
 
 
 #ifndef CMSDK_CM4_H
@@ -73,6 +90,8 @@ typedef enum IRQn
   UARTTX1_IRQn                  = 3,       /*!< UART 1 TX Interrupt                              */
   UARTRX2_IRQn                  = 4,       /*!< UART 2 RX Interrupt                              */
   UARTTX2_IRQn                  = 5,       /*!< UART 2 TX Interrupt                              */
+//  UARTRX3_IRQn                  = 6,       /*!< UART 2 RX Interrupt //only used in extended version                             */
+//  UARTTX3_IRQn                  = 7,       /*!< UART 2 TX Interrupt //only used in extended version                             */
   PORT0_ALL_IRQn                = 6,       /*!< Port 1 combined Interrupt                        */
   PORT1_ALL_IRQn                = 7,       /*!< Port 1 combined Interrupt                        */
   TIMER0_IRQn                   = 8,       /*!< TIMER 0 Interrupt                                */
@@ -263,9 +282,9 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t Timer1Load;   // <h> Timer 1 Load </h>
-  __I  uint32_t Timer1Value;  // <h> Timer 1 Counter Current Value <r></h>
-  __IO uint32_t Timer1Control;// <h> Timer 1 Control
+  __IO uint32_t Timer1Load;                  /* Offset: 0x000 (R/W) Timer 1 Load */
+  __I  uint32_t Timer1Value;                 /* Offset: 0x004 (R/ ) Timer 1 Counter Current Value */
+  __IO uint32_t Timer1Control;               /* Offset: 0x008 (R/W) Timer 1 Control */
                               //   <o.7> TimerEn: Timer Enable
                               //   <o.6> TimerMode: Timer Mode
                               //     <0=> Freerunning-mode
@@ -283,14 +302,14 @@ typedef struct
                               //     <0=> Wrapping mode
                               //     <1=> One-shot mode
                               // </h>
-  __O  uint32_t Timer1IntClr; // <h> Timer 1 Interrupt Clear <w></h>
-  __I  uint32_t Timer1RIS;    // <h> Timer 1 Raw Interrupt Status <r></h>
-  __I  uint32_t Timer1MIS;    // <h> Timer 1 Masked Interrupt Status <r></h>
-  __IO uint32_t Timer1BGLoad; // <h> Background Load Register </h>
+  __O  uint32_t Timer1IntClr;                /* Offset: 0x00C ( /W) Timer 1 Interrupt Clear */
+  __I  uint32_t Timer1RIS;                   /* Offset: 0x010 (R/ ) Timer 1 Raw Interrupt Status */
+  __I  uint32_t Timer1MIS;                   /* Offset: 0x014 (R/ ) Timer 1 Masked Interrupt Status */
+  __IO uint32_t Timer1BGLoad;                /* Offset: 0x018 (R/W) Background Load Register */
        uint32_t RESERVED0;
-  __IO uint32_t Timer2Load;   // <h> Timer 2 Load </h>
-  __I  uint32_t Timer2Value;  // <h> Timer 2 Counter Current Value <r></h>
-  __IO uint32_t Timer2Control;// <h> Timer 2 Control
+  __IO uint32_t Timer2Load;                  /* Offset: 0x020 (R/W) Timer 2 Load */
+  __I  uint32_t Timer2Value;                 /* Offset: 0x024 (R/ ) Timer 2 Counter Current Value */
+  __IO uint32_t Timer2Control;               /* Offset: 0x028 (R/W) Timer 2 Control */
                               //   <o.7> TimerEn: Timer Enable
                               //   <o.6> TimerMode: Timer Mode
                               //     <0=> Freerunning-mode
@@ -308,13 +327,13 @@ typedef struct
                               //     <0=> Wrapping mode
                               //     <1=> One-shot mode
                               // </h>
-  __O  uint32_t Timer2IntClr; // <h> Timer 2 Interrupt Clear <w></h>
-  __I  uint32_t Timer2RIS;    // <h> Timer 2 Raw Interrupt Status <r></h>
-  __I  uint32_t Timer2MIS;    // <h> Timer 2 Masked Interrupt Status <r></h>
-  __IO uint32_t Timer2BGLoad; // <h> Background Load Register </h>
+  __O  uint32_t Timer2IntClr;                /* Offset: 0x02C ( /W) Timer 2 Interrupt Clear */
+  __I  uint32_t Timer2RIS;                   /* Offset: 0x030 (R/ ) Timer 2 Raw Interrupt Status */
+  __I  uint32_t Timer2MIS;                   /* Offset: 0x034 (R/ ) Timer 2 Masked Interrupt Status */
+  __IO uint32_t Timer2BGLoad;                /* Offset: 0x038 (R/W) Background Load Register */
        uint32_t RESERVED1[945];
-  __IO uint32_t ITCR;         // <h> Integration Test Control Register </h>
-  __O  uint32_t ITOP;         // <h> Integration Test Output Set Register </h>
+  __IO uint32_t ITCR;                        /* Offset: 0xF00 (R/W) Integration Test Control Register */
+  __O  uint32_t ITOP;                        /* Offset: 0xF04 ( /W) Integration Test Output Set Register */
 } CMSDK_DUALTIMER_BOTH_TypeDef;
 
 #define CMSDK_DUALTIMER1_LOAD_Pos            0                                               /*!< CMSDK_DUALTIMER1 LOAD: LOAD Position */
@@ -391,9 +410,9 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t TimerLoad;    // <h> Timer Load </h>
-  __I  uint32_t TimerValue;   // <h> Timer Counter Current Value <r></h>
-  __IO uint32_t TimerControl; // <h> Timer Control
+  __IO uint32_t TimerLoad;                   /* Offset: 0x000 (R/W) Timer Load */
+  __I  uint32_t TimerValue;                  /* Offset: 0x000 (R/W) Timer Counter Current Value */
+  __IO uint32_t TimerControl;                /* Offset: 0x000 (R/W) Timer Control */
                               //   <o.7> TimerEn: Timer Enable
                               //   <o.6> TimerMode: Timer Mode
                               //     <0=> Freerunning-mode
@@ -411,10 +430,10 @@ typedef struct
                               //     <0=> Wrapping mode
                               //     <1=> One-shot mode
                               // </h>
-  __O  uint32_t TimerIntClr;  // <h> Timer Interrupt Clear <w></h>
-  __I  uint32_t TimerRIS;     // <h> Timer Raw Interrupt Status <r></h>
-  __I  uint32_t TimerMIS;     // <h> Timer Masked Interrupt Status <r></h>
-  __IO uint32_t TimerBGLoad;  // <h> Background Load Register </h>
+  __O  uint32_t TimerIntClr;                 /* Offset: 0x000 (R/W) Timer Interrupt Clear */
+  __I  uint32_t TimerRIS;                    /* Offset: 0x000 (R/W) Timer Raw Interrupt Status */
+  __I  uint32_t TimerMIS;                    /* Offset: 0x000 (R/W) Timer Masked Interrupt Status */
+  __IO uint32_t TimerBGLoad;                 /* Offset: 0x000 (R/W) Background Load Register */
 } CMSDK_DUALTIMER_SINGLE_TypeDef;
 
 #define CMSDK_DUALTIMER_LOAD_Pos             0                                               /*!< CMSDK_DUALTIMER LOAD: LOAD Position */
@@ -462,26 +481,26 @@ typedef struct
 */
 typedef struct
 {
-  __IO   uint32_t  DATA;             /*!< Offset: 0x000 DATA Register (R/W) */
-  __IO   uint32_t  DATAOUT;          /*!< Offset: 0x004 Data Output Latch Register (R/W) */
+  __IO   uint32_t  DATA;                     /* Offset: 0x000 (R/W) DATA Register */
+  __IO   uint32_t  DATAOUT;                  /* Offset: 0x004 (R/W) Data Output Latch Register */
          uint32_t  RESERVED0[2];
-  __IO   uint32_t  OUTENABLESET;     /*!< Offset: 0x010 Output Enable Set Register  (R/W) */
-  __IO   uint32_t  OUTENABLECLR;     /*!< Offset: 0x014 Output Enable Clear Register  (R/W) */
-  __IO   uint32_t  ALTFUNCSET;       /*!< Offset: 0x018 Alternate Function Set Register  (R/W) */
-  __IO   uint32_t  ALTFUNCCLR;       /*!< Offset: 0x01C Alternate Function Clear Register  (R/W) */
-  __IO   uint32_t  INTENSET;         /*!< Offset: 0x020 Interrupt Enable Set Register  (R/W) */
-  __IO   uint32_t  INTENCLR;         /*!< Offset: 0x024 Interrupt Enable Clear Register  (R/W) */
-  __IO   uint32_t  INTTYPESET;       /*!< Offset: 0x028 Interrupt Type Set Register  (R/W) */
-  __IO   uint32_t  INTTYPECLR;       /*!< Offset: 0x02C Interrupt Type Clear Register  (R/W) */
-  __IO   uint32_t  INTPOLSET;        /*!< Offset: 0x030 Interrupt Polarity Set Register  (R/W) */
-  __IO   uint32_t  INTPOLCLR;        /*!< Offset: 0x034 Interrupt Polarity Clear Register  (R/W) */
+  __IO   uint32_t  OUTENABLESET;             /* Offset: 0x010 (R/W) Output Enable Set Register */
+  __IO   uint32_t  OUTENABLECLR;             /* Offset: 0x014 (R/W) Output Enable Clear Register */
+  __IO   uint32_t  ALTFUNCSET;               /* Offset: 0x018 (R/W) Alternate Function Set Register */
+  __IO   uint32_t  ALTFUNCCLR;               /* Offset: 0x01C (R/W) Alternate Function Clear Register */
+  __IO   uint32_t  INTENSET;                 /* Offset: 0x020 (R/W) Interrupt Enable Set Register */
+  __IO   uint32_t  INTENCLR;                 /* Offset: 0x024 (R/W) Interrupt Enable Clear Register */
+  __IO   uint32_t  INTTYPESET;               /* Offset: 0x028 (R/W) Interrupt Type Set Register */
+  __IO   uint32_t  INTTYPECLR;               /* Offset: 0x02C (R/W) Interrupt Type Clear Register */
+  __IO   uint32_t  INTPOLSET;                /* Offset: 0x030 (R/W) Interrupt Polarity Set Register */
+  __IO   uint32_t  INTPOLCLR;                /* Offset: 0x034 (R/W) Interrupt Polarity Clear Register */
   union {
-    __I    uint32_t  INTSTATUS;   /*!< Offset: 0x038 Interrupt Status Register (R/ ) */
-    __O    uint32_t  INTCLEAR;    /*!< Offset: 0x038 Interrupt Clear Register ( /W) */
+    __I    uint32_t  INTSTATUS;              /* Offset: 0x038 (R/ ) Interrupt Status Register */
+    __O    uint32_t  INTCLEAR;               /* Offset: 0x038 ( /W) Interrupt Clear Register */
     };
          uint32_t RESERVED1[241];
-  __IO   uint32_t LB_MASKED[256];  /*!< Offset: 0x400 - 0x7FC Lower byte Masked Access Register (R/W) */
-  __IO   uint32_t UB_MASKED[256];  /*!< Offset: 0x800 - 0xBFC Upper byte Masked Access Register (R/W) */
+  __IO   uint32_t LB_MASKED[256];            /* Offset: 0x400 - 0x7FC Lower byte Masked Access Register (R/W) */
+  __IO   uint32_t UB_MASKED[256];            /* Offset: 0x800 - 0xBFC Upper byte Masked Access Register (R/W) */
 } CMSDK_GPIO_TypeDef;
 
 #define CMSDK_GPIO_DATA_Pos            0                                          /*!< CMSDK_GPIO DATA: DATA Position */
@@ -541,11 +560,11 @@ typedef struct
 */
 typedef struct
 {
-  __IO   uint32_t  REMAP;          /*!< Offset: 0x000 Remap Control Register (R/W) */
-  __IO   uint32_t  PMUCTRL;        /*!< Offset: 0x004 PMU Control Register (R/W) */
-  __IO   uint32_t  RESETOP;        /*!< Offset: 0x008 Reset Option Register  (R/W) */
-  __IO   uint32_t  EMICTRL;        /*!< Offset: 0x00C EMI Control Register  (R/W) */
-  __IO   uint32_t  RSTINFO;        /*!< Offset: 0x010 Reset Information Register (R/W) */
+  __IO   uint32_t  REMAP;                    /* Offset: 0x000 (R/W) Remap Control Register */
+  __IO   uint32_t  PMUCTRL;                  /* Offset: 0x004 (R/W) PMU Control Register */
+  __IO   uint32_t  RESETOP;                  /* Offset: 0x008 (R/W) Reset Option Register */
+  __IO   uint32_t  EMICTRL;                  /* Offset: 0x00C (R/W) EMI Control Register */
+  __IO   uint32_t  RSTINFO;                  /* Offset: 0x010 (R/W) Reset Information Register */
 } CMSDK_SYSCON_TypeDef;
 
 #define CMSDK_SYSCON_REMAP_Pos                 0
@@ -586,24 +605,24 @@ typedef struct
 */
 typedef struct
 {
-  __I    uint32_t  DMA_STATUS;           /*!< Offset: 0x000 DMA status Register (R/W) */
-  __O    uint32_t  DMA_CFG;              /*!< Offset: 0x004 DMA configuration Register ( /W) */
-  __IO   uint32_t  CTRL_BASE_PTR;        /*!< Offset: 0x008 Channel Control Data Base Pointer Register  (R/W) */
-  __I    uint32_t  ALT_CTRL_BASE_PTR;    /*!< Offset: 0x00C Channel Alternate Control Data Base Pointer Register  (R/ ) */
-  __I    uint32_t  DMA_WAITONREQ_STATUS; /*!< Offset: 0x010 Channel Wait On Request Status Register  (R/ ) */
-  __O    uint32_t  CHNL_SW_REQUEST;      /*!< Offset: 0x014 Channel Software Request Register  ( /W) */
-  __IO   uint32_t  CHNL_USEBURST_SET;    /*!< Offset: 0x018 Channel UseBurst Set Register  (R/W) */
-  __O    uint32_t  CHNL_USEBURST_CLR;    /*!< Offset: 0x01C Channel UseBurst Clear Register  ( /W) */
-  __IO   uint32_t  CHNL_REQ_MASK_SET;    /*!< Offset: 0x020 Channel Request Mask Set Register  (R/W) */
-  __O    uint32_t  CHNL_REQ_MASK_CLR;    /*!< Offset: 0x024 Channel Request Mask Clear Register  ( /W) */
-  __IO   uint32_t  CHNL_ENABLE_SET;      /*!< Offset: 0x028 Channel Enable Set Register  (R/W) */
-  __O    uint32_t  CHNL_ENABLE_CLR;      /*!< Offset: 0x02C Channel Enable Clear Register  ( /W) */
-  __IO   uint32_t  CHNL_PRI_ALT_SET;     /*!< Offset: 0x030 Channel Primary-Alterante Set Register  (R/W) */
-  __O    uint32_t  CHNL_PRI_ALT_CLR;     /*!< Offset: 0x034 Channel Primary-Alterante Clear Register  ( /W) */
-  __IO   uint32_t  CHNL_PRIORITY_SET;    /*!< Offset: 0x038 Channel Priority Set Register  (R/W) */
-  __O    uint32_t  CHNL_PRIORITY_CLR;    /*!< Offset: 0x03C Channel Priority Clear Register  ( /W) */
+  __I    uint32_t  DMA_STATUS;               /* Offset: 0x000 (R/W) DMA status Register */
+  __O    uint32_t  DMA_CFG;                  /* Offset: 0x004 ( /W) DMA configuration Register */
+  __IO   uint32_t  CTRL_BASE_PTR;            /* Offset: 0x008 (R/W) Channel Control Data Base Pointer Register */
+  __I    uint32_t  ALT_CTRL_BASE_PTR;        /* Offset: 0x00C (R/ ) Channel Alternate Control Data Base Pointer Register */
+  __I    uint32_t  DMA_WAITONREQ_STATUS;     /* Offset: 0x010 (R/ ) Channel Wait On Request Status Register */
+  __O    uint32_t  CHNL_SW_REQUEST;          /* Offset: 0x014 ( /W) Channel Software Request Register */
+  __IO   uint32_t  CHNL_USEBURST_SET;        /* Offset: 0x018 (R/W) Channel UseBurst Set Register */
+  __O    uint32_t  CHNL_USEBURST_CLR;        /* Offset: 0x01C ( /W) Channel UseBurst Clear Register */
+  __IO   uint32_t  CHNL_REQ_MASK_SET;        /* Offset: 0x020 (R/W) Channel Request Mask Set Register */
+  __O    uint32_t  CHNL_REQ_MASK_CLR;        /* Offset: 0x024 ( /W) Channel Request Mask Clear Register */
+  __IO   uint32_t  CHNL_ENABLE_SET;          /* Offset: 0x028 (R/W) Channel Enable Set Register */
+  __O    uint32_t  CHNL_ENABLE_CLR;          /* Offset: 0x02C ( /W) Channel Enable Clear Register */
+  __IO   uint32_t  CHNL_PRI_ALT_SET;         /* Offset: 0x030 (R/W) Channel Primary-Alterante Set Register */
+  __O    uint32_t  CHNL_PRI_ALT_CLR;         /* Offset: 0x034 ( /W) Channel Primary-Alterante Clear Register */
+  __IO   uint32_t  CHNL_PRIORITY_SET;        /* Offset: 0x038 (R/W) Channel Priority Set Register */
+  __O    uint32_t  CHNL_PRIORITY_CLR;        /* Offset: 0x03C ( /W) Channel Priority Clear Register */
          uint32_t  RESERVED0[3];
-  __IO   uint32_t  ERR_CLR;              /*!< Offset: 0x04C Bus Error Clear Register  (R/W) */
+  __IO   uint32_t  ERR_CLR;                  /* Offset: 0x04C (R/W) Bus Error Clear Register   */
 
 } CMSDK_PL230_TypeDef;
 
@@ -1124,21 +1143,20 @@ typedef struct
 typedef struct
 {
 
-  __IO    uint32_t  LOAD;          // <h> Watchdog Load Register </h>
-  __I     uint32_t  VALUE;         // <h> Watchdog Value Register </h>
-  __IO    uint32_t  CTRL;          // <h> Watchdog Control Register
+  __IO    uint32_t  LOAD;                   /* Offset: 0x000 (R/W) Watchdog Load Register */
+  __I     uint32_t  VALUE;                  /* Offset: 0x004 (R/ ) Watchdog Value Register */
+  __IO    uint32_t  CTRL;                   /* Offset: 0x008 (R/W) Watchdog Control Register */
                                    //   <o.1>    RESEN: Reset enable
                                    //   <o.0>    INTEN: Interrupt enable
                                    // </h>
-  __O     uint32_t  INTCLR;        // <h> Watchdog Clear Interrupt Register </h>
-  __I     uint32_t  RAWINTSTAT;    // <h> Watchdog Raw Interrupt Status Register </h>
-  __I     uint32_t  MASKINTSTAT;   // <h> Watchdog Interrupt Status Register </h>
+  __O     uint32_t  INTCLR;                 /* Offset: 0x00C ( /W) Watchdog Clear Interrupt Register */
+  __I     uint32_t  RAWINTSTAT;             /* Offset: 0x010 (R/ ) Watchdog Raw Interrupt Status Register */
+  __I     uint32_t  MASKINTSTAT;            /* Offset: 0x014 (R/ ) Watchdog Interrupt Status Register */
         uint32_t  RESERVED0[762];
-  __IO    uint32_t  LOCK;          // <h> Watchdog Lock Register </h>
+  __IO    uint32_t  LOCK;                   /* Offset: 0xC00 (R/W) Watchdog Lock Register */
         uint32_t  RESERVED1[191];
-  __IO    uint32_t  ITCR;          // <h> Watchdog Integration Test Control Register </h>
-  __O     uint32_t  ITOP;          // <h> Watchdog Integration Test Output Set Register </h>
-
+  __IO    uint32_t  ITCR;                   /* Offset: 0xF00 (R/W) Watchdog Integration Test Control Register */
+  __O     uint32_t  ITOP;                   /* Offset: 0xF04 ( /W) Watchdog Integration Test Output Set Register */
 }CMSDK_WATCHDOG_TypeDef;
 
 #define CMSDK_Watchdog_LOAD_Pos               0                                              /*!< CMSDK_Watchdog LOAD: LOAD Position */
@@ -1260,6 +1278,7 @@ __IO    uint32_t  MODECTRL;
 #define CMSDK_UART0_BASE        (CMSDK_APB_BASE + 0x4000UL)
 #define CMSDK_UART1_BASE        (CMSDK_APB_BASE + 0x5000UL)
 #define CMSDK_UART2_BASE        (CMSDK_APB_BASE + 0x6000UL)
+//#define CMSDK_UART3_BASE        (CMSDK_APB_BASE + 0x7000UL) //only used in extended version
 #define CMSDK_WATCHDOG_BASE     (CMSDK_APB_BASE + 0x8000UL)
 #define CMSDK_PL230_BASE        (CMSDK_APB_BASE + 0xF000UL)
 
@@ -1282,6 +1301,7 @@ __IO    uint32_t  MODECTRL;
 #define CMSDK_UART0             ((CMSDK_UART_TypeDef   *) CMSDK_UART0_BASE )
 #define CMSDK_UART1             ((CMSDK_UART_TypeDef   *) CMSDK_UART1_BASE )
 #define CMSDK_UART2             ((CMSDK_UART_TypeDef   *) CMSDK_UART2_BASE )
+//#define CMSDK_UART3             ((CMSDK_UART_TypeDef   *) CMSDK_UART2_BASE ) //only used in extended version
 #define CMSDK_TIMER0            ((CMSDK_TIMER_TypeDef  *) CMSDK_TIMER0_BASE )
 #define CMSDK_TIMER1            ((CMSDK_TIMER_TypeDef  *) CMSDK_TIMER1_BASE )
 #define CMSDK_DUALTIMER         ((CMSDK_DUALTIMER_BOTH_TypeDef  *) CMSDK_DUALTIMER_BASE )

@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,6 @@ struct port_s {
     uint32_t mask;
 };
 
-//struct pwmout_s {
-//    PWMName pwm;
-//};
-
 struct serial_s {
     CMSDK_UART_TypeDef *uart;
     int index;
@@ -55,9 +51,9 @@ struct tsc_s {
     MPS2_I2C_TypeDef *tsc;
 };
 
-struct aaci_s {
-    MPS2_I2S_TypeDef *aaci_I2S;
-		MPS2_I2C_TypeDef *aaci_I2C;
+struct audio_s {
+    MPS2_I2S_TypeDef *audio_I2S;
+		MPS2_I2C_TypeDef *audio_I2C;
 };
 
 

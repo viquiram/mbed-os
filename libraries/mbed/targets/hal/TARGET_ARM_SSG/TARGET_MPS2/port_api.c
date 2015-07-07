@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,8 @@ void port_init(port_t *obj, PortName port, int mask, PinDirection dir) {
     obj->port = port;
     obj->mask = mask;
     
-//    CMSDK_GPIO_TypeDef *port_reg = (CMSDK_GPIO_TypeDef *) ((int)port);
     CMSDK_GPIO_TypeDef *port_reg = (CMSDK_GPIO_TypeDef *)(CMSDK_GPIO0_BASE + ((int)port * 0x10));    
 
-    //obj->reg_set = &port_reg->OUTENABLESET;
-    //obj->reg_clr = &port_reg->OUTENABLECLR;
     obj->reg_in  = &port_reg->DATAOUT;
     obj->reg_dir = &port_reg->OUTENABLESET;
     obj->reg_dirclr = &port_reg->OUTENABLECLR;

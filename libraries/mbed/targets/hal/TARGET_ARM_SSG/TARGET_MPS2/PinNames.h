@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,26 +64,26 @@ typedef enum {
 		EXP29 = 29,
 		EXP30 = 30,
 		EXP31 = 31,
-		EXP32 = 32, // NOT CONNECTED
-		EXP33 = 33, // NOT CONNECTED
-		EXP34 = 34, // NOT CONNECTED
-		EXP35 = 35, // NOT CONNECTED
-		EXP36 = 36, // NOT CONNECTED
-		EXP37 = 37, // NOT CONNECTED
-		EXP38 = 38, // NOT CONNECTED
-		EXP39 = 39, // NOT CONNECTED
-		EXP40 = 40, // NOT CONNECTED
-		EXP41 = 41, // NOT CONNECTED
-		EXP42 = 42, // NOT CONNECTED
-		EXP43 = 43, // NOT CONNECTED
-		EXP44 = 44, // NOT CONNECTED
-		EXP45 = 45, // NOT CONNECTED
-		EXP46 = 46, // NOT CONNECTED
-		EXP47 = 47, // NOT CONNECTED
-		EXP48 = 48, // NOT CONNECTED
-		EXP49 = 49, // NOT CONNECTED
-		EXP50 = 50, // NOT CONNECTED
-		EXP51 = 51, // NOT CONNECTED
+		EXP32 = 32, 
+		EXP33 = 33, 
+		EXP34 = 34, 
+		EXP35 = 35, 
+		EXP36 = 36, 
+		EXP37 = 37, 
+		EXP38 = 38, 
+		EXP39 = 39, 
+		EXP40 = 40, 
+		EXP41 = 41, 
+		EXP42 = 42, 
+		EXP43 = 43, 
+		EXP44 = 44, 
+		EXP45 = 45, 
+		EXP46 = 46, 
+		EXP47 = 47, 
+		EXP48 = 48, 
+		EXP49 = 49, 
+		EXP50 = 50, 
+		EXP51 = 51, 
 		
 // Other mbed Pin Names
 
@@ -126,6 +126,11 @@ typedef enum {
 		CLCD_MISO = 305,
 		CLCD_SCLK = 306,
 		CLCD_SSEL = 307,
+    	CLCD_RESET = 308,
+    	CLCD_RS = 309,
+    	CLCD_RD = 310,
+    	CLCD_BL_CTRL = 311,
+		
 		
 		//MPS2 Uart
 		USBTX  = 400,
@@ -140,8 +145,6 @@ typedef enum {
 		TSC_SCL = 501,
 		AUD_SDA = 502,
 		AUD_SCL = 503,
-//		SDA3 = 504,
-//		SCL3 = 505,
 		
 		// Not connected
 		NC = (int)0xFFFFFFFF,

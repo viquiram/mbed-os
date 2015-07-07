@@ -1,13 +1,17 @@
-/*
- * Copyright: 
- * ----------------------------------------------------------------
- * This confidential and proprietary software may be used only as
- * authorised by a licensing agreement from ARM Limited
- *   (C) COPYRIGHT 2013 ARM Limited
- *       ALL RIGHTS RESERVED
- * The entire notice above must be reproduced on all authorised
- * copies and copies may only be made to the extent permitted
- * by a licensing agreement from ARM Limited.
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2015 ARM Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * ----------------------------------------------------------------
  * File:     apspi.h
  * Release:  Version 2.0
@@ -164,24 +168,6 @@
 #define LSPI_WR             (0x00)      // WR bit 0 within start
 #define LSPI_DATA           (0x02)      // RS bit 1 within start byte
 #define LSPI_INDEX          (0x00)      // RS bit 0 within start byte
-
-// GLCD RGB color definitions
-//#define Black               0x0000      //   0,   0,   0
-//#define Navy                0x000F      //   0,   0, 128
-//#define DarkGreen           0x03E0      //   0, 128,   0
-//#define DarkCyan            0x03EF      //   0, 128, 128
-//#define Maroon              0x7800      // 128,   0,   0
-//#define Purple              0x780F      // 128,   0, 128
-//#define Olive               0x7BE0      // 128, 128,   0
-//#define LightGrey           0xC618      // 192, 192, 192
-//#define DarkGrey            0x7BEF      // 128, 128, 128
-//#define Blue                0x001F      //   0,   0, 255
-//#define Green               0x07E0      //   0, 255,   0
-//#define Cyan                0x07FF      //   0, 255, 255
-//#define Red                 0xF800      // 255,   0,   0
-//#define Magenta             0xF81F      // 255,   0, 255
-//#define Yellow              0xFFE0      // 255, 255, 0
-//#define White               0xFFFF      // 255, 255, 255
 
 // Screen size
 #define LCD_WIDTH           320         // Screen Width (in pixels)
