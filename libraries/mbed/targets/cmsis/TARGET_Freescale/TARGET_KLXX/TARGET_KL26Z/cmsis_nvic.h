@@ -1,6 +1,7 @@
-/* mbed Microcontroller Library 
+/* mbed Microcontroller Library
+ * CMSIS-style functionality to support dynamic vectors
  *******************************************************************************
- * Copyright (c) 2015 WIZnet Co.,Ltd. All rights reserved.
+ * Copyright (c) 2011 ARM Limited. All rights reserved.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,48 +28,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************
  */
- 
-#ifndef MBED_DEVICE_H
-#define MBED_DEVICE_H
 
-#define DEVICE_PORTIN           1
-#define DEVICE_PORTOUT          1
-#define DEVICE_PORTINOUT        1
+#ifndef MBED_CMSIS_NVIC_H
+#define MBED_CMSIS_NVIC_H
 
-#define DEVICE_INTERRUPTIN      1
+#define NVIC_NUM_VECTORS      (16 + 32)   // CORE + MCU Peripherals
+#define NVIC_USER_IRQ_OFFSET  16
 
-#define DEVICE_ANALOGIN         1
-#define DEVICE_ANALOGOUT        0 // Not present on this device
+#include "cmsis.h"
 
-#define DEVICE_SERIAL           1
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define DEVICE_I2C              1
-#define DEVICE_I2CSLAVE         0
+void NVIC_SetVector(IRQn_Type IRQn, uint32_t vector);
+uint32_t NVIC_GetVector(IRQn_Type IRQn);
 
-#define DEVICE_SPI              1
-#define DEVICE_SPISLAVE         1
-
-#define DEVICE_RTC              1
-
-#define DEVICE_PWMOUT           1
-
-#define DEVICE_SLEEP            0
-
-#define DEVICE_ETHERNET         0
-
-
-//=======================================
-
-#define DEVICE_SEMIHOST         0
-#define DEVICE_LOCALFILESYSTEM  0
-#define DEVICE_ID_LENGTH       24
-
-#define DEVICE_DEBUG_AWARENESS  0
-
-#define DEVICE_STDIO_MESSAGES   1
-
-#define DEVICE_ERROR_RED        0
-
-#include "objects.h"
+#ifdef __cplusplus
+}
+#endif
 
 #endif
