@@ -1147,7 +1147,24 @@ class NRF51822_MICROBIT(NRF51822):
         self.macros = ['TARGET_NRF51822']
         self.macros += self.common_macros
 
+class NRF51822_MICROBIT_BOOT(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'NRF51822_MICROBIT']
+        self.macros = ['TARGET_NRF51822', 'TARGET_NRF51822_MICROBIT', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
+        self.MERGE_SOFT_DEVICE = True
+        self.MERGE_BOOTLOADER = True
 
+class NRF51822_MICROBIT_OTA(NRF51822):
+    def __init__(self):
+        NRF51822.__init__(self)
+        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'NRF51822_MICROBIT']
+        self.macros = ['TARGET_NRF51822', 'TARGET_NRF51822_MICROBIT', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
+        self.MERGE_SOFT_DEVICE = False
+        
+        
 ### ARM ###
 
 class ARM_MPS2_Target(Target):
