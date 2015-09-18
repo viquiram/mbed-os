@@ -75,4 +75,5 @@ cscope.*
 
 # vim swap files
 *.swp
+*~
 
