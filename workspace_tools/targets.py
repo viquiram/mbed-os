@@ -632,6 +632,17 @@ class NUCLEO_F302R8(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0705"]
 
+class NUCLEO_F303K8(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F3', 'STM32F303K8']
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO"]
+        self.detect_code = ["0775"]
+
+
 class NUCLEO_F303RE(Target):
     def __init__(self):
         Target.__init__(self)
@@ -1108,11 +1119,28 @@ class MCU_NRF51_16K(MCU_NRF51_16K_BASE):
         self.extra_labels += ['MCU_NRF51_16K_S130']
         self.macros += ['TARGET_MCU_NRF51_16K_S130']
 
-class MCU_NRF51_16K_S110(MCU_NRF51_16K_BASE):
+class MCU_NRF51_S110:
+    """ Interface for overwriting the default SoftDevices """
     def __init__(self):
-        MCU_NRF51_16K_BASE.__init__(self)
+        self.EXPECTED_SOFTDEVICES_WITH_OFFSETS = [
+            {
+                'name'   : 's110_nrf51822_8.0.0_softdevice.hex',
+                'boot'   : 's110_nrf51822_8.0.0_bootloader.hex',
+                'offset' : 0x18000
+            },
+            {
+                'name'   : 's110_nrf51822_7.1.0_softdevice.hex',
+                'boot'   : 's110_nrf51822_7.1.0_bootloader.hex',
+                'offset' : 0x16000
+            }
+        ]
         self.extra_labels += ['MCU_NRF51_16K_S110']
         self.macros += ['TARGET_MCU_NRF51_16K_S110']
+
+class MCU_NRF51_16K_S110(MCU_NRF51_16K_BASE, MCU_NRF51_S110):
+    def __init__(self):
+        MCU_NRF51_16K_BASE.__init__(self)
+        MCU_NRF51_S110.__init__(self)
 
 class MCU_NRF51_16K_BOOT(MCU_NRF51_16K_BOOT_BASE):
     def __init__(self):
@@ -1120,11 +1148,10 @@ class MCU_NRF51_16K_BOOT(MCU_NRF51_16K_BOOT_BASE):
         self.extra_labels += ['MCU_NRF51_16K_S130']
         self.macros += ['TARGET_MCU_NRF51_16K_S130']
 
-class MCU_NRF51_16K_BOOT_S110(MCU_NRF51_16K_BOOT_BASE):
+class MCU_NRF51_16K_BOOT_S110(MCU_NRF51_16K_BOOT_BASE, MCU_NRF51_S110):
     def __init__(self):
         MCU_NRF51_16K_BOOT_BASE.__init__(self)
-        self.extra_labels += ['MCU_NRF51_16K_S110']
-        self.macros += ['TARGET_MCU_NRF51_16K_S110']
+        MCU_NRF51_S110.__init__(self)
 
 class MCU_NRF51_16K_OTA(MCU_NRF51_16K_OTA_BASE):
     def __init__(self):
@@ -1132,11 +1159,10 @@ class MCU_NRF51_16K_OTA(MCU_NRF51_16K_OTA_BASE):
         self.extra_labels += ['MCU_NRF51_16K_S130']
         self.macros += ['TARGET_MCU_NRF51_16K_S130']
 
-class MCU_NRF51_16K_OTA_S110(MCU_NRF51_16K_OTA_BASE):
+class MCU_NRF51_16K_OTA_S110(MCU_NRF51_16K_OTA_BASE, MCU_NRF51_S110):
     def __init__(self):
         MCU_NRF51_16K_OTA_BASE.__init__(self)
-        self.extra_labels += ['MCU_NRF51_16K_S110']
-        self.macros += ['TARGET_MCU_NRF51_16K_S110']
+        MCU_NRF51_S110.__init__(self)
 
 
 # 32KB MCU version, e.g. Nordic nRF51-DK, nRF51-Dongle, etc.
@@ -1379,18 +1405,6 @@ class NRF51_DONGLE_OTA(MCU_NRF51_32K_OTA):
 class NRF51_MICROBIT(MCU_NRF51_16K_S110):
     def __init__(self):
         MCU_NRF51_16K_S110.__init__(self)
-        self.EXPECTED_SOFTDEVICES_WITH_OFFSETS = [
-            {
-                'name'   : 's110_nrf51822_8.0.0_softdevice.hex',
-                'boot'   : 's110_nrf51822_8.0.0_bootloader.hex',
-                'offset' : 0x18000
-            },
-            {
-                'name'   : 's110_nrf51822_7.1.0_softdevice.hex',
-                'boot'   : 's110_nrf51822_7.1.0_bootloader.hex',
-                'offset' : 0x16000
-            }
-        ]
         self.macros += ['TARGET_NRF_LFCLK_RC']
 
 class NRF51_MICROBIT_BOOT(MCU_NRF51_16K_BOOT_S110):
@@ -1705,6 +1719,7 @@ TARGETS = [
     NUCLEO_F091RC(),
     NUCLEO_F103RB(),
     NUCLEO_F302R8(),
+    NUCLEO_F303K8(),
     NUCLEO_F303RE(),
     NUCLEO_F334R8(),
     NUCLEO_F401RE(),
