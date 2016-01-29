@@ -107,6 +107,7 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('DELTA_DFCM_NNN40',  ('ARM', 'GCC_ARM')),
     ('NRF51_MICROBIT',      ('ARM',)),
     ('NRF51_MICROBIT_B',      ('ARM',)),
+    ('TY51822R3',     ('ARM', 'GCC_ARM')),
 
     ('LPC11U68',     ('ARM', 'uARM','GCC_ARM','GCC_CR', 'IAR')),
     ('OC_MBUINO',     ('ARM', 'uARM', 'GCC_ARM', 'IAR')),
@@ -183,7 +184,7 @@ if __name__ == '__main__':
         if options.toolchains:
             print "Only building using the following toolchains: %s" % (options.toolchains)
             toolchainSet = set(toolchains)
-            toolchains = toolchainSet and set((options.toolchains).split(','))
+            toolchains = toolchainSet.intersection(set((options.toolchains).split(',')))
 
         for toolchain in toolchains:
             id = "%s::%s" % (target_name, toolchain)

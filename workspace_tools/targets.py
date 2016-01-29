@@ -1528,6 +1528,26 @@ class NRF51_MICROBIT_B_OTA(MCU_NRF51_16K_OTA):
         self.extra_labels += ['NRF51_MICROBIT']
         self.macros += ['TARGET_NRF51_MICROBIT', 'TARGET_NRF_LFCLK_RC']
 
+class TY51822R3(MCU_NRF51_32K):
+    def __init__(self):
+        MCU_NRF51_32K.__init__(self)
+        self.macros += ['TARGET_NRF_32MHZ_XTAL']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+
+class TY51822R3_BOOT(MCU_NRF51_32K_BOOT):
+    def __init__(self):
+        MCU_NRF51_32K_BOOT.__init__(self)
+        self.extra_labels += ['TY51822R3']
+        self.macros += ['TARGET_TY51822R3', 'TARGET_NRF_32MHZ_XTAL']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+
+class TY51822R3_OTA(MCU_NRF51_32K_OTA):
+    def __init__(self):
+        MCU_NRF51_32K_OTA.__init__(self)
+        self.extra_labels += ['NRF51_DK']
+        self.macros += ['TARGET_TY51822R3', 'TARGET_NRF_32MHZ_XTAL']
+        self.supported_toolchains = ["ARM", "GCC_ARM"]
+
         
 ### ARM ###
 
@@ -1688,6 +1708,16 @@ class EFM32HG_STK3400(Target):
         self.macros = ['EFM32HG322F64']
         self.supported_toolchains = ["GCC_ARM", "uARM"]
         self.default_toolchain = "uARM"
+
+class EFM32PG_STK3401(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['Silicon_Labs', 'EFM32']
+        self.macros = ['EFM32PG1B200F256GM48']
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM", "IAR"]
+        self.default_toolchain = "ARM"
+
 
 
 ##WIZnet
@@ -1898,6 +1928,9 @@ TARGETS = [
     NRF51_MICROBIT_B(),     # nRF51_16K - default
     NRF51_MICROBIT_B_BOOT(),# nRF51_16K - default
     NRF51_MICROBIT_B_OTA(), # nRF51_16K - default
+    TY51822R3(),            # nRF51_32K
+    TY51822R3_BOOT(),       # nRF51_32K
+    TY51822R3_OTA(),        # nRF51_32K
 
 
     ### ARM ###
@@ -1923,6 +1956,7 @@ TARGETS = [
     EFM32WG_STK3800(),
     EFM32ZG_STK3200(),
     EFM32HG_STK3400(),
+	EFM32PG_STK3401(),
 
     ### WIZnet ###
     WIZWIKI_W7500(),
