@@ -168,9 +168,6 @@ if __name__ == '__main__':
             ('lpcxpresso', 'LPCCAPPUCCINO'),
             ('lpcxpresso', 'LPC1549'),
             ('lpcxpresso', 'LPC11U68'),
-            # Linux path: /home/emimon01/bin/gcc-cs/bin/
-            # Windows path: "C:/Program Files (x86)/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/"
-            ('codesourcery', 'LPC1768'),
 
             # Linux path: /home/emimon01/bin/gcc-arm/bin/
             # Windows path: C:/arm-none-eabi-gcc-4_7/bin/
@@ -271,6 +268,7 @@ if __name__ == '__main__':
             ('iar', 'MAXWSNENV'),
             ('iar', 'MAX32600MBED'),
             ('iar', 'MOTE_L152RC'),
+            ('iar', 'RZ_A1H'),
 
             # ('sw4stm32', 'DISCO_F051R8'),
             # ('sw4stm32', 'DISCO_F100RB'),
