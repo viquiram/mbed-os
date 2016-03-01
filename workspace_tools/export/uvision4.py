@@ -24,6 +24,8 @@ class Uvision4(Exporter):
     TARGETS = [
         'LPC1768',
         'LPC11U24',
+        'LPC11U35_401',
+        'LPC11U35_501',
         'KL05Z',
         'KL25Z',
         'KL43Z',
@@ -57,6 +59,7 @@ class Uvision4(Exporter):
         'NUCLEO_F410RB',
         'NUCLEO_F411RE',
         'NUCLEO_F446RE',
+        'NUCLEO_F746ZG',
         'NUCLEO_L053R8',
         'NUCLEO_L073RZ',
         'NUCLEO_L152RE',
@@ -102,6 +105,8 @@ class Uvision4(Exporter):
 
     USING_MICROLIB = [
         'LPC11U24',
+        'LPC11U35_401',
+        'LPC11U35_501',
         'LPC1114',
         'LPC11C24',
         'LPC812',
@@ -122,6 +127,7 @@ class Uvision4(Exporter):
         'NUCLEO_F410RB',
         'NUCLEO_F411RE',
         'NUCLEO_F446RE',
+        'NUCLEO_F746ZG',
         'NUCLEO_L053R8',
         'NUCLEO_L073RZ',
         'NUCLEO_L152RE',

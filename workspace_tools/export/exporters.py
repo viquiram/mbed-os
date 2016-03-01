@@ -62,9 +62,9 @@ class Exporter(object):
                         self.resources.objects + self.resources.libraries,
                 },
                 'includes':  { 
-                    'Include Files': self.resources.headers,
+                    'Include Files': self.resources.headers + self.resources.inc_dirs,
                 },
-                'target': [TARGET_MAP[self.target].progen_target],
+                'target': [TARGET_MAP[self.target].progen['target']],
                 'macros': self.get_symbols(),
                 'export_dir': [self.inputDir],
                 'linker_file': [self.resources.linker_script],
