@@ -96,6 +96,7 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('DISCO_L476VG', ('ARM', 'uARM', 'IAR', 'GCC_ARM')),
     ('NUCLEO_L476RG', ('ARM', 'uARM', 'IAR', 'GCC_ARM')),
     ('NUCLEO_F746ZG', ('ARM', 'uARM', 'GCC_ARM', 'IAR')),
+    ('NUCLEO_L031K6', ('ARM', 'uARM', 'GCC_ARM', 'IAR')),
     ('NUCLEO_L073RZ', ('ARM', 'uARM', 'GCC_ARM', 'IAR')),
 
     ('MOTE_L152RC', ('ARM', 'uARM', 'IAR', 'GCC_ARM')),
@@ -112,7 +113,7 @@ OFFICIAL_MBED_LIBRARY_BUILD = (
     ('RBLAB_BLENANO', ('ARM', 'GCC_ARM')),
     ('WALLBOT_BLE',  ('ARM', 'GCC_ARM')),
     ('DELTA_DFCM_NNN40',  ('ARM', 'GCC_ARM')),
-    ('NRF51_MICROBIT',      ('ARM',)),
+    ('NRF51_MICROBIT',      ('ARM','GCC_ARM')),
     ('NRF51_MICROBIT_B',      ('ARM',)),
     ('TY51822R3',     ('ARM', 'GCC_ARM')),
 

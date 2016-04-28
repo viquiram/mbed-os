@@ -1,4 +1,5 @@
 /* mbed Microcontroller Library
+ *******************************************************************************
  * Copyright (c) 2015, STMicroelectronics
  * All rights reserved.
  *
@@ -24,33 +25,47 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************
  */
-#include "cmsis.h"
-#include "us_ticker_api.h"
+#ifndef MBED_DEVICE_H
+#define MBED_DEVICE_H
 
-HAL_StatusTypeDef HAL_Init(void);
+#define DEVICE_PORTIN           1
+#define DEVICE_PORTOUT          1
+#define DEVICE_PORTINOUT        1
 
-// This function is called after RAM initialization and before main.
-void mbed_sdk_init()
-{
-    // Update the SystemCoreClock variable.
-    SystemCoreClockUpdate();
-    // Need to restart HAL driver after the RAM is initialized
-    HAL_Init();
-}
+#define DEVICE_INTERRUPTIN      1
 
+#define DEVICE_ANALOGIN         1
+#define DEVICE_ANALOGOUT        0 // Not present on this device
 
-/**
-  * @brief This function provides accurate delay (in milliseconds) based
-  *        on variable incremented.
-  * @note This function is the modified version of the __weak version contained in
-  *       stm32f7xx_hal.c, using us_ticker
-  * @param Delay: specifies the delay time length, in milliseconds.
-  * @retval None
-*/
-void HAL_Delay(__IO uint32_t Delay)
-{
-    uint32_t start = us_ticker_read();
-    while ((us_ticker_read() - start) < (uint32_t)(Delay * 1000));
-}
+#define DEVICE_SERIAL           1
 
+#define DEVICE_I2C              1
+#define DEVICE_I2CSLAVE         1
+
+#define DEVICE_SPI              1
+#define DEVICE_SPISLAVE         1
+
+#define DEVICE_RTC              1
+#define DEVICE_RTC_LSI          0
+
+#define DEVICE_PWMOUT           1
+
+#define DEVICE_SLEEP            1
+
+//=======================================
+
+#define DEVICE_SEMIHOST         0
+#define DEVICE_LOCALFILESYSTEM  0
+#define DEVICE_ID_LENGTH       24
+
+#define DEVICE_DEBUG_AWARENESS  0
+
+#define DEVICE_STDIO_MESSAGES   1
+
+#define DEVICE_ERROR_RED        0
+
+#include "objects.h"
+
+#endif

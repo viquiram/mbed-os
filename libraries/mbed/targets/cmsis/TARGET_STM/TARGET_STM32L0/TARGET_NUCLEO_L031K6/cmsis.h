@@ -1,5 +1,7 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2015, STMicroelectronics
+ * A generic CMSIS include header
+ *******************************************************************************
+ * Copyright (c) 2014, STMicroelectronics
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,33 +26,13 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************
  */
-#include "cmsis.h"
-#include "us_ticker_api.h"
 
-HAL_StatusTypeDef HAL_Init(void);
+#ifndef MBED_CMSIS_H
+#define MBED_CMSIS_H
 
-// This function is called after RAM initialization and before main.
-void mbed_sdk_init()
-{
-    // Update the SystemCoreClock variable.
-    SystemCoreClockUpdate();
-    // Need to restart HAL driver after the RAM is initialized
-    HAL_Init();
-}
+#include "stm32l0xx.h"
+#include "cmsis_nvic.h"
 
-
-/**
-  * @brief This function provides accurate delay (in milliseconds) based
-  *        on variable incremented.
-  * @note This function is the modified version of the __weak version contained in
-  *       stm32f7xx_hal.c, using us_ticker
-  * @param Delay: specifies the delay time length, in milliseconds.
-  * @retval None
-*/
-void HAL_Delay(__IO uint32_t Delay)
-{
-    uint32_t start = us_ticker_read();
-    while ((us_ticker_read() - start) < (uint32_t)(Delay * 1000));
-}
-
+#endif

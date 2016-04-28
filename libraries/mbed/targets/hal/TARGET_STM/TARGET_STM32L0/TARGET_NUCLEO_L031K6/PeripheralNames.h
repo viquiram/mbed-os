@@ -1,4 +1,5 @@
 /* mbed Microcontroller Library
+ *******************************************************************************
  * Copyright (c) 2015, STMicroelectronics
  * All rights reserved.
  *
@@ -24,33 +25,46 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *******************************************************************************
  */
+#ifndef MBED_PERIPHERALNAMES_H
+#define MBED_PERIPHERALNAMES_H
+
 #include "cmsis.h"
-#include "us_ticker_api.h"
 
-HAL_StatusTypeDef HAL_Init(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// This function is called after RAM initialization and before main.
-void mbed_sdk_init()
-{
-    // Update the SystemCoreClock variable.
-    SystemCoreClockUpdate();
-    // Need to restart HAL driver after the RAM is initialized
-    HAL_Init();
+typedef enum {
+    ADC_1 = (int)ADC1_BASE
+} ADCName;
+
+typedef enum {
+    UART_2   = (int)USART2_BASE,
+    LPUART_1 = (int)LPUART1_BASE
+} UARTName;
+
+#define STDIO_UART_TX  PA_2
+#define STDIO_UART_RX  PA_15
+#define STDIO_UART     UART_2
+
+typedef enum {
+    SPI_1 = (int)SPI1_BASE,
+} SPIName;
+
+typedef enum {
+    I2C_1 = (int)I2C1_BASE,
+} I2CName;
+
+typedef enum {
+    PWM_2  = (int)TIM2_BASE,
+    PWM_21 = (int)TIM21_BASE,
+    PWM_22 = (int)TIM22_BASE
+} PWMName;
+
+#ifdef __cplusplus
 }
+#endif
 
-
-/**
-  * @brief This function provides accurate delay (in milliseconds) based
-  *        on variable incremented.
-  * @note This function is the modified version of the __weak version contained in
-  *       stm32f7xx_hal.c, using us_ticker
-  * @param Delay: specifies the delay time length, in milliseconds.
-  * @retval None
-*/
-void HAL_Delay(__IO uint32_t Delay)
-{
-    uint32_t start = us_ticker_read();
-    while ((us_ticker_read() - start) < (uint32_t)(Delay * 1000));
-}
-
+#endif
