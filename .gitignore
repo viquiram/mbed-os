@@ -53,9 +53,6 @@ nosetests.xml
 output.txt
 uVision Project/
 
-# Vim backup files
-*.swp
-
 # Sublime Text Project Files
 *.sublime*
 

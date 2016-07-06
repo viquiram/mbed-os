@@ -68,7 +68,6 @@ void Ethernet::set_link(Mode mode) {
     ethernet_set_link(speed, duplex);
 }
 
-
 } // namespace mbed
 
 #endif
