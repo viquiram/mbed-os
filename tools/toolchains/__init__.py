@@ -147,7 +147,7 @@ class Resources:
             v = [rel_path(f, base, dot) for f in getattr(self, field)]
             setattr(self, field, v)
 
-        self.features = {k: f.relative_to(base, dot) for k, f in self.features.iteritems()}
+        self.features = {k: f.relative_to(base, dot) for k, f in self.features.iteritems() if f}
 
         if self.linker_script is not None:
             self.linker_script = rel_path(self.linker_script, base, dot)
@@ -160,7 +160,7 @@ class Resources:
             v = [f.replace('\\', '/') for f in getattr(self, field)]
             setattr(self, field, v)
 
-        self.features = {k: f.win_to_unix() for k, f in self.features.iteritems()}
+        self.features = {k: f.win_to_unix() for k, f in self.features.iteritems() if f}
 
         if self.linker_script is not None:
             self.linker_script = self.linker_script.replace('\\', '/')
@@ -223,10 +223,6 @@ class mbedToolchain:
         "Cortex-A9" : ["__CORTEX_A9", "ARM_MATH_CA9", "__FPU_PRESENT", "__CMSIS_RTOS", "__EVAL", "__MBED_CMSIS_RTOS_CA9"],
     }
     
-    CORTEX_FPU_SYMBOLS = {
-        "single" : ["__FPU_PRESENT=1"],
-        "double" : ["__FPU_PRESENT=1"],
-    }
 
     GOANNA_FORMAT = "[Goanna] warning [%FILENAME%:%LINENO%] - [%CHECKNAME%(%SEVERITY%)] %MESSAGE%"
     GOANNA_DIAGNOSTIC_PATTERN = re.compile(r'"\[Goanna\] (?P<severity>warning) \[(?P<file>[^:]+):(?P<line>\d+)\] \- (?P<message>.*)"')
@@ -371,8 +367,6 @@ class mbedToolchain:
             # Cortex CPU symbols
             if self.target.core in mbedToolchain.CORTEX_SYMBOLS:
                 self.symbols.extend(mbedToolchain.CORTEX_SYMBOLS[self.target.core])
-            if self.target.fpu in mbedToolchain.CORTEX_FPU_SYMBOLS:
-                self.symbols.extend(mbedToolchain.CORTEX_FPU_SYMBOLS[self.target.fpu])
 
             # Symbols defined by the on-line build.system
             self.symbols.extend(['MBED_BUILD_TIMESTAMP=%s' % self.timestamp, 'TARGET_LIKE_MBED', '__MBED__=1'])
