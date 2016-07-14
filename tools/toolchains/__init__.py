@@ -596,7 +596,7 @@ class mbedToolchain:
                 files_paths.remove(source)
 
         for source in files_paths:
-            if resources is not None:
+            if resources is not None and resources.file_basepath.has_key(source):
                 relative_path = relpath(source, resources.file_basepath[source])
             elif rel_path is not None:
                 relative_path = relpath(source, rel_path)
