@@ -134,13 +134,13 @@ class Exporter(object):
         # Copy only the file for the required target and toolchain
         lib_builds = []
         # Create the configuration object
-	if isinstance(prj_paths, basestring):
-	    prj_paths = [prj_paths]
+        if isinstance(prj_paths, basestring):
+            prj_paths = [prj_paths]
         config = Config(self.target, prj_paths)
         for src in ['lib', 'src']:
-    	    resources = self.__scan_and_copy(join(prj_paths[0], src), trg_path)
-    	    for path in prj_paths[1:]:
-		resources.add(self.__scan_and_copy(join(path, src), trg_path))
+            resources = self.__scan_and_copy(join(prj_paths[0], src), trg_path)
+            for path in prj_paths[1:]:
+                resources.add(self.__scan_and_copy(join(path, src), trg_path))
 
             lib_builds.extend(resources.lib_builds)
 
