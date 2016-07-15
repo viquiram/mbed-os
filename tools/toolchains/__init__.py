@@ -793,12 +793,8 @@ class mbedToolchain:
         for error_line in _stderr.splitlines():
             self.debug("Output: %s"% error_line)
 
-
         # Check return code
         if _rc != 0:
-            for line in _stderr.splitlines():
-                self.tool_error(line)
-
             if self.is_not_supported_error(_stderr):
                 raise NotSupportedException(_stderr)
             else:
