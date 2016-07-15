@@ -130,9 +130,9 @@ class GCC(mbedToolchain):
                 # back later to a space char)
                 file = file.replace('\\ ', '\a')
                 if file.find(" ") == -1:
-                    dependencies.append(file.replace('\a', ' '))
+                    dependencies.append((self.CHROOT if self.CHROOT else '') + file.replace('\a', ' '))
                 else:
-                    dependencies = dependencies + [f.replace('\a', ' ') for f in file.split(" ")]
+                    dependencies = dependencies + [(self.CHROOT if self.CHROOT else '') + f.replace('\a', ' ') for f in file.split(" ")]
         return dependencies
 
     def is_not_supported_error(self, output):

@@ -90,9 +90,10 @@ class ARM(mbedToolchain):
         for line in open(dep_path).readlines():
             match = ARM.DEP_PATTERN.match(line)
             if match is not None:
-                dependencies.append(match.group('file'))
+                #we need to append chroot, because when the .d files are generated the compiler is chrooted
+                dependencies.append((self.CHROOT if self.CHROOT else '') + match.group('file'))
         return dependencies
-
+        
     def parse_output(self, output):
         for line in output.splitlines():
             match = ARM.DIAGNOSTIC_PATTERN.match(line)

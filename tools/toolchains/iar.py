@@ -106,7 +106,7 @@ class IAR(mbedToolchain):
         self.elf2bin = join(IAR_BIN, "ielftool")
 
     def parse_dependencies(self, dep_path):
-        return [path.strip() for path in open(dep_path).readlines()
+        return [(self.CHROOT if self.CHROOT else '')+path.strip() for path in open(dep_path).readlines()
                 if (path and not path.isspace())]
 
     def parse_output(self, output):
