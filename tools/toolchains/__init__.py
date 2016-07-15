@@ -273,7 +273,7 @@ class mbedToolchain:
         self.ignore_patterns = []
 
         # Pre-mbed 2.0 ignore dirs
-        self.legacy_ignore_dirs = LEGACY_IGNORE_DIRS - set([target.name, LEGACY_TOOLCHAIN_NAMES[self.name]])
+        self.legacy_ignore_dirs = (LEGACY_IGNORE_DIRS | TOOLCHAINS) - set([target.name, LEGACY_TOOLCHAIN_NAMES[self.name]])
 
         # Output notify function
         if notify:
