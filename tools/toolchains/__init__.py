@@ -499,7 +499,7 @@ class mbedToolchain:
             for d in copy(dirs):
                 dir_path = join(root, d)
                 # Add internal repo folders/files. This is needed for exporters
-                if d == '.hg':
+                if d == '.hg' or d == '.git':
                     resources.repo_dirs.append(dir_path)
 
                 if ((d.startswith('.') or d in self.legacy_ignore_dirs) or
