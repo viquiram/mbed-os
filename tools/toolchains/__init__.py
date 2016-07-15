@@ -678,6 +678,8 @@ class mbedToolchain:
         self.to_be_compiled = len(files_to_compile)
         self.compiled = 0
 
+        self.cc_verbose("Macros: "+' '.join(['-D%s' % s for s in self.get_symbols()]))
+
         inc_paths = resources.inc_dirs
         if inc_dirs is not None:
             inc_paths.extend(inc_dirs)
@@ -727,7 +729,7 @@ class mbedToolchain:
             self.compiled += 1
             self.progress("compile", item['source'], build_update=True)
             for res in result['results']:
-                self.debug("Command: %s" % ' '.join(res['command']))
+                self.cc_verbose("Compile: %s" % ' '.join(res['command']), result['source'])
                 self.compile_output([
                     res['code'],
                     res['output'],
@@ -764,7 +766,7 @@ class mbedToolchain:
                         self.compiled += 1
                         self.progress("compile", result['source'], build_update=True)
                         for res in result['results']:
-                            self.debug("Command: %s" % ' '.join(res['command']))
+                            self.cc_verbose("Compile: %s" % ' '.join(res['command']), result['source'])
                             self.compile_output([
                                 res['code'],
                                 res['output'],
@@ -874,7 +876,6 @@ class mbedToolchain:
         if self.need_update(bin, [elf]):
             needed_update = True
             self.progress("elf2bin", name)
-
             self.binary(r, elf, bin)
 
         self.mem_stats(map)
@@ -885,9 +886,7 @@ class mbedToolchain:
         return bin, needed_update
 
     def default_cmd(self, command):
-        self.debug("Command: %s"% ' '.join(command))
         _stdout, _stderr, _rc = run_cmd(command, work_dir=getcwd(), chroot=self.CHROOT)
-
         self.debug("Return: %s"% _rc)
 
         for output_line in _stdout.splitlines():
@@ -919,6 +918,9 @@ class mbedToolchain:
                      'message': message,
                      'target_name': target_name,
                      'toolchain_name': toolchain_name})
+
+    def cc_verbose(self, message, file=""):
+        self.debug(message)
 
     def progress(self, action, file, build_update=False):
         msg = {'type': 'progress', 'action': action, 'file': file}

@@ -199,6 +199,7 @@ class ARM(mbedToolchain):
             cmd = [cmd_linker, '--via', link_files]
 
         # Exec command
+        self.cc_verbose("Link: %s" % ' '.join(cmd))
         self.default_cmd(cmd)
 
     @hook_tool
@@ -220,6 +221,7 @@ class ARM(mbedToolchain):
         cmd = self.hook.get_cmdline_binary(cmd)
 
         # Exec command
+        self.cc_verbose("FromELF: %s" % ' '.join(cmd))
         self.default_cmd(cmd)
 
 

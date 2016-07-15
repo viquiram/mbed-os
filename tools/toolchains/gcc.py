@@ -246,6 +246,7 @@ class GCC(mbedToolchain):
             cmd = [cmd_linker, "@%s" % link_files]
 
         # Exec command
+        self.cc_verbose("Link: %s" % ' '.join(cmd))
         self.default_cmd(cmd)
 
     @hook_tool
@@ -267,6 +268,7 @@ class GCC(mbedToolchain):
         cmd = self.hook.get_cmdline_binary(cmd)
 
         # Exec command
+        self.cc_verbose("FromELF: %s" % ' '.join(cmd))
         self.default_cmd(cmd)
 
 
