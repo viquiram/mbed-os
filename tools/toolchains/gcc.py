@@ -176,7 +176,12 @@ class GCC(mbedToolchain):
         return ['-include', config_header]
 
     def get_compile_options(self, defines, includes):
-        opts = ['-D%s' % d for d in defines] + ['@%s' % self.get_inc_file(includes)]
+        opts = ['-D%s' % d for d in defines]
+        if self.RESPONSE_FILES:
+            opts += ['@%s' % self.get_inc_file(includes)]
+        else:
+            opts += ["-I%s" % i for i in includes]
+
         config_header = self.get_config_header()
         if config_header is not None:
             opts = opts + self.get_config_option(config_header)
@@ -234,25 +239,24 @@ class GCC(mbedToolchain):
         # Call cmdline hook
         cmd = self.hook.get_cmdline_linker(cmd)
 
-        # Split link command to linker executable + response file
-        cmd_linker = cmd[0]
-        link_files = self.get_link_file(cmd[1:])
+        if self.RESPONSE_FILES:
+            # Split link command to linker executable + response file
+            cmd_linker = cmd[0]
+            link_files = self.get_link_file(cmd[1:])
+            cmd = [cmd_linker, "@%s" % link_files]
 
         # Exec command
-        self.default_cmd([cmd_linker, "@%s" % link_files])
+        self.default_cmd(cmd)
 
     @hook_tool
     def archive(self, objects, lib_path):
-        archive_files = join(dirname(lib_path), ".archive_files.txt")
-        with open(archive_files, "wb") as f:
-            o_list = []
-            for o in objects:
-                o_list.append('"%s"' % o)
-            string = " ".join(o_list).replace("\\", "/")
-            f.write(string)
+        if self.RESPONSE_FILES:
+            param = ["@%s" % self.get_arch_files(objects)]
+        else:
+            param = objects
 
         # Exec command
-        self.default_cmd([self.ar, 'rcs', lib_path, "@%s" % archive_files])
+        self.default_cmd([self.ar, 'rcs', lib_path] + param)
 
     @hook_tool
     def binary(self, resources, elf, bin):

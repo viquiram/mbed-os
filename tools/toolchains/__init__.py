@@ -211,6 +211,7 @@ LEGACY_TOOLCHAIN_NAMES = {
 class mbedToolchain:
     VERBOSE = True
     COMPILE_C_AS_CPP = False
+    RESPONSE_FILES = True
 
     CORTEX_SYMBOLS = {
         "Cortex-M0" : ["__CORTEX_M0", "ARM_MATH_CM0", "__CMSIS_RTOS", "__MBED_CMSIS_RTOS_CM"],
@@ -632,20 +633,6 @@ class mbedToolchain:
             mkdir(obj_dir)
         return join(obj_dir, name + '.o')
 
-    def get_link_file(self, cmd):
-        link_file = join(self.build_dir, ".link_files.txt")
-        with open(link_file, "wb") as f:
-            cmd_list = []
-            for c in cmd:
-                if c:
-                    c = c.replace("\\", "/")
-                    if self.CHROOT:
-                        c = c.replace(self.CHROOT, '')
-                    cmd_list.append(('"%s"' % c) if not c.startswith('-') else c)
-            string = " ".join(cmd_list)
-            f.write(string)
-        return link_file
-
     def get_inc_file(self, includes):
         include_file = join(self.build_dir, ".includes_%s.txt" % self.inc_md5)
         if not exists(include_file):
@@ -660,6 +647,30 @@ class mbedToolchain:
                 string = " ".join(cmd_list)
                 f.write(string)
         return include_file
+
+    def get_link_file(self, cmd):
+        link_file = join(self.build_dir, ".link_files.txt")
+        with open(link_file, "wb") as f:
+            cmd_list = []
+            for c in cmd:
+                if c:
+                    c = c.replace("\\", "/")
+                    if self.CHROOT:
+                        c = c.replace(self.CHROOT, '')
+                    cmd_list.append(('"%s"' % c) if not c.startswith('-') else c)
+            string = " ".join(cmd_list)
+            f.write(string)
+        return link_file
+ 
+    def get_arch_file(self, objects):
+        archive_file = join(self.build_dir, ".archive_files.txt")
+        with open(archive_file, "wb") as f:
+            o_list = []
+            for o in objects:
+                o_list.append('"%s"' % o)
+            string = " ".join(o_list).replace("\\", "/")
+            f.write(string)
+        return archive_file
 
     def compile_sources(self, resources, build_path, inc_dirs=None):
         # Web IDE progress bar for project build

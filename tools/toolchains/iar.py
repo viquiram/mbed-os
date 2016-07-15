@@ -143,7 +143,12 @@ class IAR(mbedToolchain):
         return ['--preinclude=' + config_header]
 
     def get_compile_options(self, defines, includes, for_asm=False):
-        opts = ['-D%s' % d for d in defines] + ['-f', self.get_inc_file(includes)]
+        opts = ['-D%s' % d for d in defines]
+        if self.RESPONSE_FILES:
+            opts += ['-f', self.get_inc_file(includes)]
+        else:
+            opts += ["-I%s" % i for i in includes]
+
         config_header = self.get_config_header()
         if for_asm:
             # The assembler doesn't support '--preinclude', so we need to add
@@ -200,27 +205,26 @@ class IAR(mbedToolchain):
         # Call cmdline hook
         cmd = self.hook.get_cmdline_linker(cmd)
 
-        # Split link command to linker executable + response file
-        cmd_linker = cmd[0]
-        link_files = self.get_link_file(cmd[1:])
+        if self.RESPONSE_FILES:
+            # Split link command to linker executable + response file
+            cmd_linker = cmd[0]
+            link_files = self.get_link_file(cmd[1:])
+            cmd = [cmd_linker, '-f', link_files]
 
         # Exec command
-        self.default_cmd([cmd_linker, '-f', link_files])
+        self.default_cmd(cmd)
 
     @hook_tool
     def archive(self, objects, lib_path):
-        archive_files = join(dirname(lib_path), ".archive_files.txt")
-        with open(archive_files, "wb") as f:
-            o_list = []
-            for o in objects:
-                o_list.append('"%s"' % o)                    
-            string = " ".join(o_list).replace("\\", "/")
-            f.write(string)
+        if self.RESPONSE_FILES:
+            param = ['-f', self.get_arch_files(objects)]
+        else:
+            param = objects
 
         if exists(lib_path):
             remove(lib_path)
 
-        self.default_cmd([self.ar, lib_path, '-f', archive_files])
+        self.default_cmd([self.ar, lib_path] + param)
 
     @hook_tool
     def binary(self, resources, elf, bin):
