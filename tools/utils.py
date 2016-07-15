@@ -25,6 +25,27 @@ import json
 from collections import OrderedDict
 import logging
 
+def compile_worker(job):
+    results = []
+    for command in job['commands']:
+        try:
+            _, _stderr, _rc = run_cmd(command, work_dir=job['work_dir'], chroot=job['chroot'])
+        except KeyboardInterrupt as e:
+            raise ToolException
+
+        results.append({
+            'code': _rc,
+            'output': _stderr,
+            'command': command
+        })
+
+    return {
+        'source': job['source'],
+        'object': job['object'],
+        'commands': job['commands'],
+        'results': results
+    }
+
 def cmd(l, check=True, verbose=False, shell=False, cwd=None):
     text = l if shell else ' '.join(l)
     if verbose:

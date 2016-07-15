@@ -28,7 +28,7 @@ from copy import deepcopy
 from tools.config import Config
 
 from multiprocessing import Pool, cpu_count
-from tools.utils import run_cmd, mkdir, rel_path, ToolException, NotSupportedException, split_path
+from tools.utils import run_cmd, mkdir, rel_path, ToolException, NotSupportedException, split_path, compile_worker
 from tools.settings import BUILD_OPTIONS, MBED_ORG_USER
 import tools.hooks as hooks
 from tools.memap import MemapParser
@@ -39,28 +39,6 @@ import fnmatch
 #Disables multiprocessing if set to higher number than the host machine CPUs
 CPU_COUNT_MIN = 1
 CPU_COEF = 1
-
-def compile_worker(job):
-    results = []
-    for command in job['commands']:
-        try:
-            _, _stderr, _rc = run_cmd(command, work_dir=job['work_dir'], chroot=job['chroot'])
-        except KeyboardInterrupt as e:
-            raise ToolException
-
-        results.append({
-            'code': _rc,
-            'output': _stderr,
-            'command': command
-        })
-
-    return {
-        'source': job['source'],
-        'object': job['object'],
-        'commands': job['commands'],
-        'results': results
-    }
-
 
 class Resources:
     def __init__(self, base_path=None):
