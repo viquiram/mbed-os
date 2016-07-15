@@ -875,7 +875,7 @@ class mbedToolchain:
 
     def default_cmd(self, command):
         self.debug("Command: %s"% ' '.join(command))
-        _stdout, _stderr, _rc = run_cmd(command)
+        _stdout, _stderr, _rc = run_cmd(command, work_dir=getcwd(), chroot=self.CHROOT)
 
         self.debug("Return: %s"% _rc)
 
