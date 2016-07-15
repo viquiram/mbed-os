@@ -204,9 +204,6 @@ class mbedToolchain:
         "Cortex-M7FD" : ["__CORTEX_M7", "ARM_MATH_CM7", "__FPU_PRESENT=1", "__CMSIS_RTOS", "__MBED_CMSIS_RTOS_CM"],
         "Cortex-A9" : ["__CORTEX_A9", "ARM_MATH_CA9", "__FPU_PRESENT", "__CMSIS_RTOS", "__EVAL", "__MBED_CMSIS_RTOS_CA9"],
     }
-    
-    GOANNA_FORMAT = "[Goanna] warning [%FILENAME%:%LINENO%] - [%CHECKNAME%(%SEVERITY%)] %MESSAGE%"
-    GOANNA_DIAGNOSTIC_PATTERN = re.compile(r'"\[Goanna\] (?P<severity>warning) \[(?P<file>[^:]+):(?P<line>\d+)\] \- (?P<message>.*)"')
 
     MBED_CONFIG_FILE_NAME="mbed_config.h"
 
@@ -305,7 +302,7 @@ class mbedToolchain:
         elif event['type'] == 'cc':
             event['severity'] = event['severity'].title()
             event['file'] = basename(event['file'])
-            msg = '[%(severity)s] %(file)s@%(line)s: %(message)s' % event
+            msg = '[%(severity)s] %(file)s@%(line)s,%(col)s: %(message)s' % event
 
         elif event['type'] == 'progress':
             if not silent:
@@ -339,12 +336,6 @@ class mbedToolchain:
         """ Little closure for notify functions
         """
         return self.notify_fun(event, self.silent)
-
-    def goanna_parse_line(self, line):
-        if "analyze" in self.options:
-            return self.GOANNA_DIAGNOSTIC_PATTERN.match(line)
-        else:
-            return None
 
     def get_symbols(self):
         if self.symbols is None:
@@ -888,14 +879,10 @@ class mbedToolchain:
             message = "[DEBUG] " + message
             self.notify({'type': 'debug', 'message': message})
 
-    def cc_info(self, severity, file, line, message, target_name=None, toolchain_name=None):
-        self.notify({'type': 'cc',
-                     'severity': severity,
-                     'file': file,
-                     'line': line,
-                     'message': message,
-                     'target_name': target_name,
-                     'toolchain_name': toolchain_name})
+    def cc_info(self, info=None):
+        if info is not None:
+            info['type'] = 'cc'
+            self.notify(info)
 
     def cc_verbose(self, message, file=""):
         self.debug(message)

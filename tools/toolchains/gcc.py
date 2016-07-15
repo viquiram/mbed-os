@@ -18,7 +18,6 @@ import re
 from os.path import join, basename, splitext, dirname, exists
 
 from tools.toolchains import mbedToolchain, TOOLCHAIN_PATHS
-from tools.settings import GOANNA_PATH
 from tools.hooks import hook_tool
 
 class GCC(mbedToolchain):
@@ -27,6 +26,7 @@ class GCC(mbedToolchain):
 
     STD_LIB_NAME = "lib%s.a"
     DIAGNOSTIC_PATTERN = re.compile('((?P<file>[^:]+):(?P<line>\d+):)(\d+:)? (?P<severity>warning|error): (?P<message>.+)')
+    INDEX_PATTERN  = re.compile('(?P<col>\s*)\^')
 
     DEFAULT_FLAGS = {
         'common': ["-c", "-Wall", "-Wextra",
@@ -98,12 +98,8 @@ class GCC(mbedToolchain):
         main_cc = join(tool_path, "arm-none-eabi-gcc")
         main_cppc = join(tool_path, "arm-none-eabi-g++")
         self.asm = [main_cc] + self.flags['asm'] + self.flags["common"]
-        if not "analyze" in self.options:
-            self.cc  = [main_cc]
-            self.cppc =[main_cppc]
-        else:
-            self.cc  = [join(GOANNA_PATH, "goannacc"), "--with-cc=" + main_cc.replace('\\', '/'), "--dialect=gnu", '--output-format="%s"' % self.GOANNA_FORMAT]
-            self.cppc= [join(GOANNA_PATH, "goannac++"), "--with-cxx=" + main_cppc.replace('\\', '/'),  "--dialect=gnu", '--output-format="%s"' % self.GOANNA_FORMAT]
+        self.cc  = [main_cc]
+        self.cppc =[main_cppc]
         self.cc += self.flags['c'] + self.flags['common']
         self.cppc += self.flags['cxx'] + self.flags['common']
 
@@ -140,32 +136,30 @@ class GCC(mbedToolchain):
 
     def parse_output(self, output):
         # The warning/error notification is multiline
-        WHERE, WHAT = 0, 1
-        state, file, message = WHERE, None, None
+        msg = None
         for line in output.splitlines():
-            match = self.goanna_parse_line(line)
-            if match is not None:
-                self.cc_info(
-                    match.group('severity').lower(),
-                    match.group('file'),
-                    match.group('line'),
-                    match.group('message'),
-                    target_name=self.target.name,
-                    toolchain_name=self.name
-                )
-                continue
-
-
             match = GCC.DIAGNOSTIC_PATTERN.match(line)
             if match is not None:
-                self.cc_info(
-                    match.group('severity').lower(),
-                    match.group('file'),
-                    match.group('line'),
-                    match.group('message'),
-                    target_name=self.target.name,
-                    toolchain_name=self.name
-                )
+                if msg is not None:
+                    self.cc_info(msg)
+                msg = {
+                    'severity': match.group('severity').lower(),
+                    'file': match.group('file'),
+                    'line': match.group('line'),
+                    'col': 0,
+                    'message': match.group('message'),
+                    'text': '',
+                    'target_name': self.target.name,
+                    'toolchain_name': self.name
+                }
+            elif msg is not None:
+                match = GCC.INDEX_PATTERN.match(line)
+                if match is not None:
+                    msg['col'] = len(match.group('col'))
+                    self.cc_info(msg)
+                    msg = None
+                else:
+                    msg['text'] += line+"\n"
 
     def get_dep_option(self, object):
         base, _ = splitext(object)

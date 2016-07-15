@@ -18,7 +18,6 @@ import re
 from os.path import join, dirname, splitext, basename, exists
 
 from tools.toolchains import mbedToolchain, TOOLCHAIN_PATHS
-from tools.settings import GOANNA_PATH
 from tools.hooks import hook_tool
 from tools.utils import mkdir
 import copy
@@ -29,6 +28,7 @@ class ARM(mbedToolchain):
 
     STD_LIB_NAME = "%s.ar"
     DIAGNOSTIC_PATTERN  = re.compile('"(?P<file>[^"]+)", line (?P<line>\d+)( \(column (?P<column>\d+)\)|): (?P<severity>Warning|Error): (?P<message>.+)')
+    INDEX_PATTERN  = re.compile('(?P<col>\s*)\^')
     DEP_PATTERN = re.compile('\S+:\s(?P<file>.+)\n')
 
 
@@ -72,12 +72,8 @@ class ARM(mbedToolchain):
             self.flags['c'].append("-O3")
 
         self.asm = [main_cc] + self.flags['common'] + self.flags['asm'] + ["-I \""+ARM_INC+"\""]
-        if not "analyze" in self.options:
-            self.cc = [main_cc] + self.flags['common'] + self.flags['c'] + ["-I \""+ARM_INC+"\""]
-            self.cppc = [main_cc] + self.flags['common'] + self.flags['c'] + self.flags['cxx'] + ["-I \""+ARM_INC+"\""]
-        else:
-            self.cc  = [join(GOANNA_PATH, "goannacc"), "--with-cc=" + main_cc.replace('\\', '/'), "--dialect=armcc", '--output-format="%s"' % self.GOANNA_FORMAT] + self.flags['common'] + self.flags['c'] + ["-I \""+ARM_INC+"\""]
-            self.cppc= [join(GOANNA_PATH, "goannac++"), "--with-cxx=" + main_cc.replace('\\', '/'), "--dialect=armcc", '--output-format="%s"' % self.GOANNA_FORMAT] + self.flags['common'] + self.flags['c'] + self.flags['cxx'] + ["-I \""+ARM_INC+"\""]
+        self.cc = [main_cc] + self.flags['common'] + self.flags['c'] + ["-I \""+ARM_INC+"\""]
+        self.cppc = [main_cc] + self.flags['common'] + self.flags['c'] + self.flags['cxx'] + ["-I \""+ARM_INC+"\""]
 
         self.ld = [join(ARM_BIN, "armlink")]
         self.sys_libs = []
@@ -95,25 +91,33 @@ class ARM(mbedToolchain):
         return dependencies
         
     def parse_output(self, output):
+        msg = None
         for line in output.splitlines():
             match = ARM.DIAGNOSTIC_PATTERN.match(line)
             if match is not None:
-                self.cc_info(
-                    match.group('severity').lower(),
-                    match.group('file'),
-                    match.group('line'),
-                    match.group('message'),
-                    target_name=self.target.name,
-                    toolchain_name=self.name
-                )
-            match = self.goanna_parse_line(line)
-            if match is not None:
-                self.cc_info(
-                    match.group('severity').lower(),
-                    match.group('file'),
-                    match.group('line'),
-                    match.group('message')
-                )
+                if msg is not None:
+                    self.cc_info(msg)
+                msg = {
+                    'severity': match.group('severity').lower(),
+                    'file': match.group('file'),
+                    'line': match.group('line'),
+                    'col': match.group('column') if match.group('column') else 0,
+                    'message': match.group('message'),
+                    'text': '',
+                    'target_name': self.target.name,
+                    'toolchain_name': self.name
+                }
+            elif msg is not None:
+                match = ARM.INDEX_PATTERN.match(line)
+                if match is not None:
+                    msg['col'] = len(match.group('col'))
+                    self.cc_info(msg)
+                    msg = None
+                else:
+                    msg['text'] += line+"\n"
+        
+        if msg is not None:
+            self.cc_info(msg)
 
     def get_dep_option(self, object):
         base, _ = splitext(object)

@@ -19,7 +19,6 @@ from os import remove
 from os.path import join, exists, dirname, splitext, exists
 
 from tools.toolchains import mbedToolchain, TOOLCHAIN_PATHS
-from tools.settings import GOANNA_PATH
 from tools.hooks import hook_tool
 
 class IAR(mbedToolchain):
@@ -28,6 +27,7 @@ class IAR(mbedToolchain):
     STD_LIB_NAME = "%s.a"
 
     DIAGNOSTIC_PATTERN = re.compile('"(?P<file>[^"]+)",(?P<line>[\d]+)\s+(?P<severity>Warning|Error)(?P<message>.+)')
+    INDEX_PATTERN  = re.compile('(?P<col>\s*)\^')
 
     DEFAULT_FLAGS = {
         'common': [
@@ -93,12 +93,8 @@ class IAR(mbedToolchain):
         main_cc = join(IAR_BIN, "iccarm")
 
         self.asm  = [join(IAR_BIN, "iasmarm")] + asm_flags_cmd + self.flags["asm"]
-        if not "analyze" in self.options:
-            self.cc   = [main_cc]
-            self.cppc = [main_cc]
-        else:
-            self.cc   = [join(GOANNA_PATH, "goannacc"), '--with-cc="%s"' % main_cc.replace('\\', '/'), "--dialect=iar-arm", '--output-format="%s"' % self.GOANNA_FORMAT]
-            self.cppc = [join(GOANNA_PATH, "goannac++"), '--with-cxx="%s"' % main_cc.replace('\\', '/'), "--dialect=iar-arm", '--output-format="%s"' % self.GOANNA_FORMAT]
+        self.cc   = [main_cc]
+        self.cppc = [main_cc]
         self.cc += self.flags["common"] + c_flags_cmd + self.flags["c"]
         self.cppc += self.flags["common"] + c_flags_cmd + cxx_flags_cmd + self.flags["cxx"]
         self.ld   = join(IAR_BIN, "ilinkarm")
@@ -110,25 +106,30 @@ class IAR(mbedToolchain):
                 if (path and not path.isspace())]
 
     def parse_output(self, output):
+        msg = None
         for line in output.splitlines():
             match = IAR.DIAGNOSTIC_PATTERN.match(line)
             if match is not None:
-                self.cc_info(
-                    match.group('severity').lower(),
-                    match.group('file'),
-                    match.group('line'),
-                    match.group('message'),
-                    target_name=self.target.name,
-                    toolchain_name=self.name
-                )
-            match = self.goanna_parse_line(line)
-            if match is not None:
-                self.cc_info(
-                    match.group('severity').lower(),
-                    match.group('file'),
-                    match.group('line'),
-                    match.group('message')
-                )
+                if msg is not None:
+                    self.cc_info(msg)
+                msg = {
+                    'severity': match.group('severity').lower(),
+                    'file': match.group('file'),
+                    'line': match.group('line'),
+                    'col': 0,
+                    'message': match.group('message'),
+                    'text': '',
+                    'target_name': self.target.name,
+                    'toolchain_name': self.name
+                }
+            elif msg is not None:
+                match = IAR.INDEX_PATTERN.match(line)
+                if match is not None:
+                    msg['col'] = len(match.group('col'))
+                    self.cc_info(msg)
+                    msg = None
+                else:
+                    msg['text'] += line+"\n"
 
     def get_dep_option(self, object):
         base, _ = splitext(object)
