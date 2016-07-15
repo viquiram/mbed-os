@@ -17,8 +17,7 @@ limitations under the License.
 import re
 from os.path import join, basename, splitext, dirname, exists
 
-from tools.toolchains import mbedToolchain
-from tools.settings import GCC_ARM_PATH, GCC_CR_PATH
+from tools.toolchains import mbedToolchain, TOOLCHAIN_PATHS
 from tools.settings import GOANNA_PATH
 from tools.hooks import hook_tool
 
@@ -276,7 +275,7 @@ class GCC(mbedToolchain):
 
 class GCC_ARM(GCC):
     def __init__(self, target, options=None, notify=None, macros=None, silent=False, extra_verbose=False):
-        GCC.__init__(self, target, options, notify, macros, silent, GCC_ARM_PATH, extra_verbose=extra_verbose)
+        GCC.__init__(self, target, options, notify, macros, silent, TOOLCHAIN_PATHS['GCC_ARM'], extra_verbose=extra_verbose)
 
         # Use latest gcc nanolib
         if "big-build" in self.options:
@@ -309,7 +308,7 @@ class GCC_ARM(GCC):
 
 class GCC_CR(GCC):
     def __init__(self, target, options=None, notify=None, macros=None, silent=False, extra_verbose=False):
-        GCC.__init__(self, target, options, notify, macros, silent, GCC_CR_PATH, extra_verbose=extra_verbose)
+        GCC.__init__(self, target, options, notify, macros, silent, TOOLCHAIN_PATHS['GCC_CR'], extra_verbose=extra_verbose)
 
         additional_compiler_flags = [
             "-D__NEWLIB__", "-D__CODE_RED", "-D__USE_CMSIS", "-DCPP_USE_HEAP",

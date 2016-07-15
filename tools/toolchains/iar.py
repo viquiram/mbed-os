@@ -18,8 +18,7 @@ import re
 from os import remove
 from os.path import join, exists, dirname, splitext, exists
 
-from tools.toolchains import mbedToolchain
-from tools.settings import IAR_PATH
+from tools.toolchains import mbedToolchain, TOOLCHAIN_PATHS
 from tools.settings import GOANNA_PATH
 from tools.hooks import hook_tool
 
@@ -66,12 +65,12 @@ class IAR(mbedToolchain):
         if target.core == "Cortex-M4F":
           c_flags_cmd = [
               "--cpu", "Cortex-M4F",
-              "--thumb", "--dlib_config", join(IAR_PATH, "inc", "c", "DLib_Config_Full.h")
+              "--thumb", "--dlib_config", join(TOOLCHAIN_PATHS['IAR'], "inc", "c", "DLib_Config_Full.h")
           ]
         else:
           c_flags_cmd = [
               "--cpu", cpuchoice,
-              "--thumb", "--dlib_config", join(IAR_PATH, "inc", "c", "DLib_Config_Full.h")
+              "--thumb", "--dlib_config", join(TOOLCHAIN_PATHS['IAR'], "inc", "c", "DLib_Config_Full.h")
           ]
         # custom c++ cmd flags
         cxx_flags_cmd = [
@@ -90,7 +89,7 @@ class IAR(mbedToolchain):
         else:
             c_flags_cmd.append("-Oh")
 
-        IAR_BIN = join(IAR_PATH, "bin")
+        IAR_BIN = join(TOOLCHAIN_PATHS['IAR'], "bin")
         main_cc = join(IAR_BIN, "iccarm")
 
         self.asm  = [join(IAR_BIN, "iasmarm")] + asm_flags_cmd + self.flags["asm"]

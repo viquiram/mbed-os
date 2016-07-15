@@ -17,8 +17,8 @@ limitations under the License.
 import re
 from os.path import join, dirname, splitext, basename, exists
 
-from tools.toolchains import mbedToolchain
-from tools.settings import ARM_PATH, GOANNA_PATH
+from tools.toolchains import mbedToolchain, TOOLCHAIN_PATHS
+from tools.settings import GOANNA_PATH
 from tools.hooks import hook_tool
 from tools.utils import mkdir
 import copy
@@ -56,8 +56,8 @@ class ARM(mbedToolchain):
         else:
             cpu = target.core
 
-        ARM_BIN = join(ARM_PATH, "bin")
-        ARM_INC = join(ARM_PATH, "include")
+        ARM_BIN = join(TOOLCHAIN_PATHS['ARM'], "bin")
+        ARM_INC = join(TOOLCHAIN_PATHS['ARM'], "include")
         
         main_cc = join(ARM_BIN, "armcc")
 
@@ -230,7 +230,7 @@ class ARM_STD(ARM):
         ARM.__init__(self, target, options, notify, macros, silent, extra_verbose=extra_verbose)
 
         # Run-time values
-        self.ld.extend(["--libpath \"%s\"" % join(ARM_PATH, "lib")])
+        self.ld.extend(["--libpath \"%s\"" % join(TOOLCHAIN_PATHS['ARM'], "lib")])
 
 
 class ARM_MICRO(ARM):
@@ -263,13 +263,13 @@ class ARM_MICRO(ARM):
             self.ld   += ["--noscanlib"]
 
             # System Libraries
-            self.sys_libs.extend([join(ARM_PATH, "lib", "microlib", lib+".l") for lib in ["mc_p", "mf_p", "m_ps"]])
+            self.sys_libs.extend([join(TOOLCHAIN_PATHS['ARM'], "lib", "microlib", lib+".l") for lib in ["mc_p", "mf_p", "m_ps"]])
 
             if target.core == "Cortex-M3":
-                self.sys_libs.extend([join(ARM_PATH, "lib", "cpplib", lib+".l") for lib in ["cpp_ws", "cpprt_w"]])
+                self.sys_libs.extend([join(TOOLCHAIN_PATHS['ARM'], "lib", "cpplib", lib+".l") for lib in ["cpp_ws", "cpprt_w"]])
 
             elif target.core in ["Cortex-M0", "Cortex-M0+"]:
-                self.sys_libs.extend([join(ARM_PATH, "lib", "cpplib", lib+".l") for lib in ["cpp_ps", "cpprt_p"]])
+                self.sys_libs.extend([join(TOOLCHAIN_PATHS['ARM'], "lib", "cpplib", lib+".l") for lib in ["cpp_ps", "cpprt_p"]])
         else:
             # Run-time values
-            self.ld.extend(["--libpath \"%s\"" % join(ARM_PATH, "lib")])
+            self.ld.extend(["--libpath \"%s\"" % join(TOOLCHAIN_PATHS['ARM'], "lib")])

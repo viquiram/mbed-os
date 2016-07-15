@@ -954,7 +954,7 @@ from tools.settings import ARM_PATH
 from tools.settings import GCC_ARM_PATH, GCC_CR_PATH
 from tools.settings import IAR_PATH
 
-TOOLCHAIN_BIN_PATH = {
+TOOLCHAIN_PATHS = {
     'ARM': ARM_PATH,
     'uARM': ARM_PATH,
     'GCC_ARM': GCC_ARM_PATH,
