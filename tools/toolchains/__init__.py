@@ -43,7 +43,7 @@ def compile_worker(job):
     results = []
     for command in job['commands']:
         try:
-            _, _stderr, _rc = run_cmd(command, job['work_dir'])
+            _, _stderr, _rc = run_cmd(command, work_dir=job['work_dir'], chroot=job['chroot'])
         except KeyboardInterrupt as e:
             raise ToolException
 
