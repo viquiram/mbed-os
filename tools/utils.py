@@ -66,9 +66,8 @@ def run_cmd(command, work_dir=None, chroot=None, redirect=False):
 
         logging.debug("Running command %s"%' '.join(chroot_cmd))
         command = chroot_cmd
-        work_dir = chroot
+        work_dir = None
 
-    assert is_cmd_valid(command[0])
     try:
         p = Popen(command, stdout=PIPE, stderr=STDOUT if redirect else PIPE, cwd=work_dir)
         _stdout, _stderr = p.communicate()
