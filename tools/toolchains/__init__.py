@@ -422,6 +422,8 @@ class mbedToolchain:
     # object and the parameter *exclude_paths* is used by the directory traversal to
     # exclude certain paths from the traversal.
     def scan_resources(self, path, exclude_paths=None, base_path=None):
+        self.progress("scan", path)
+
         resources = Resources(path)
         if not base_path:
             if isfile(path):
