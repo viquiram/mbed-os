@@ -23,6 +23,7 @@ from os.path import isdir, join, exists, split, relpath, splitext
 from subprocess import Popen, PIPE, STDOUT, call
 import json
 from collections import OrderedDict
+import logging
 
 def cmd(l, check=True, verbose=False, shell=False, cwd=None):
     text = l if shell else ' '.join(l)
