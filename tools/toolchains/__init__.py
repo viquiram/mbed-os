@@ -949,13 +949,14 @@ class mbedToolchain:
     def get_config_macros(self):
         return Config.config_to_macros(self.config_data) if self.config_data else []
 
-from tools.settings import ARM_BIN
+
+from tools.settings import ARM_PATH
 from tools.settings import GCC_ARM_PATH, GCC_CR_PATH
 from tools.settings import IAR_PATH
 
 TOOLCHAIN_BIN_PATH = {
-    'ARM': ARM_BIN,
-    'uARM': ARM_BIN,
+    'ARM': ARM_PATH,
+    'uARM': ARM_PATH,
     'GCC_ARM': GCC_ARM_PATH,
     'GCC_CR': GCC_CR_PATH,
     'IAR': IAR_PATH

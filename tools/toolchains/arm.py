@@ -18,7 +18,7 @@ import re
 from os.path import join, dirname, splitext, basename, exists
 
 from tools.toolchains import mbedToolchain
-from tools.settings import ARM_BIN, ARM_INC, ARM_LIB, MY_ARM_CLIB, ARM_CPPLIB, GOANNA_PATH
+from tools.settings import ARM_PATH, GOANNA_PATH
 from tools.hooks import hook_tool
 from tools.utils import mkdir
 import copy
@@ -35,7 +35,7 @@ class ARM(mbedToolchain):
     DEFAULT_FLAGS = {
         'common': ["-c", "--gnu",
             "-Otime", "--split_sections", "--apcs=interwork",
-            "--brief_diagnostics", "--restrict", "--multibyte_chars", "-I \""+ARM_INC+"\""],
+            "--brief_diagnostics", "--restrict", "--multibyte_chars"],
         'asm': [],
         'c': ["--md", "--no_depend_system_headers", "--c99", "-D__ASSERT_MSG"],
         'cxx': ["--cpp", "--no_rtti", "--no_vla"],
@@ -56,6 +56,9 @@ class ARM(mbedToolchain):
         else:
             cpu = target.core
 
+        ARM_BIN = join(ARM_PATH, "bin")
+        ARM_INC = join(ARM_PATH, "include")
+        
         main_cc = join(ARM_BIN, "armcc")
 
         self.flags['common'] += ["--cpu=%s" % cpu]
@@ -68,13 +71,13 @@ class ARM(mbedToolchain):
         else:
             self.flags['c'].append("-O3")
 
-        self.asm = [main_cc] + self.flags['common'] + self.flags['asm']
+        self.asm = [main_cc] + self.flags['common'] + self.flags['asm'] + ["-I \""+ARM_INC+"\""]
         if not "analyze" in self.options:
-            self.cc = [main_cc] + self.flags['common'] + self.flags['c']
-            self.cppc = [main_cc] + self.flags['common'] + self.flags['c'] + self.flags['cxx']
+            self.cc = [main_cc] + self.flags['common'] + self.flags['c'] + ["-I \""+ARM_INC+"\""]
+            self.cppc = [main_cc] + self.flags['common'] + self.flags['c'] + self.flags['cxx'] + ["-I \""+ARM_INC+"\""]
         else:
-            self.cc  = [join(GOANNA_PATH, "goannacc"), "--with-cc=" + main_cc.replace('\\', '/'), "--dialect=armcc", '--output-format="%s"' % self.GOANNA_FORMAT] + self.flags['common'] + self.flags['c'] 
-            self.cppc= [join(GOANNA_PATH, "goannac++"), "--with-cxx=" + main_cc.replace('\\', '/'), "--dialect=armcc", '--output-format="%s"' % self.GOANNA_FORMAT] + self.flags['common'] + self.flags['c'] + self.flags['cxx']
+            self.cc  = [join(GOANNA_PATH, "goannacc"), "--with-cc=" + main_cc.replace('\\', '/'), "--dialect=armcc", '--output-format="%s"' % self.GOANNA_FORMAT] + self.flags['common'] + self.flags['c'] + ["-I \""+ARM_INC+"\""]
+            self.cppc= [join(GOANNA_PATH, "goannac++"), "--with-cxx=" + main_cc.replace('\\', '/'), "--dialect=armcc", '--output-format="%s"' % self.GOANNA_FORMAT] + self.flags['common'] + self.flags['c'] + self.flags['cxx'] + ["-I \""+ARM_INC+"\""]
 
         self.ld = [join(ARM_BIN, "armlink")]
         self.sys_libs = []
@@ -227,7 +230,7 @@ class ARM_STD(ARM):
         ARM.__init__(self, target, options, notify, macros, silent, extra_verbose=extra_verbose)
 
         # Run-time values
-        self.ld.extend(["--libpath \"%s\"" % ARM_LIB])
+        self.ld.extend(["--libpath \"%s\"" % join(ARM_PATH, "lib")])
 
 
 class ARM_MICRO(ARM):
@@ -260,13 +263,13 @@ class ARM_MICRO(ARM):
             self.ld   += ["--noscanlib"]
 
             # System Libraries
-            self.sys_libs.extend([join(MY_ARM_CLIB, lib+".l") for lib in ["mc_p", "mf_p", "m_ps"]])
+            self.sys_libs.extend([join(ARM_PATH, "lib", "microlib", lib+".l") for lib in ["mc_p", "mf_p", "m_ps"]])
 
             if target.core == "Cortex-M3":
-                self.sys_libs.extend([join(ARM_CPPLIB, lib+".l") for lib in ["cpp_ws", "cpprt_w"]])
+                self.sys_libs.extend([join(ARM_PATH, "lib", "cpplib", lib+".l") for lib in ["cpp_ws", "cpprt_w"]])
 
             elif target.core in ["Cortex-M0", "Cortex-M0+"]:
-                self.sys_libs.extend([join(ARM_CPPLIB, lib+".l") for lib in ["cpp_ps", "cpprt_p"]])
+                self.sys_libs.extend([join(ARM_PATH, "lib", "cpplib", lib+".l") for lib in ["cpp_ps", "cpprt_p"]])
         else:
             # Run-time values
-            self.ld.extend(["--libpath \"%s\"" % ARM_LIB])
+            self.ld.extend(["--libpath \"%s\"" % join(ARM_PATH, "lib")])
