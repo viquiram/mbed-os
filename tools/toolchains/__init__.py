@@ -38,6 +38,7 @@ import fnmatch
 
 #Disables multiprocessing if set to higher number than the host machine CPUs
 CPU_COUNT_MIN = 1
+CPU_COEF = 1
 
 def compile_worker(job):
     results = []
@@ -736,7 +737,7 @@ class mbedToolchain:
         return objects
 
     def compile_queue(self, queue, objects):
-        jobs_count = int(self.jobs if self.jobs else cpu_count())
+        jobs_count = int(self.jobs if self.jobs else cpu_count() * CPU_COEF)
         p = Pool(processes=jobs_count)
 
         results = []
