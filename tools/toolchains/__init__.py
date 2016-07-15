@@ -34,6 +34,7 @@ import tools.hooks as hooks
 from tools.memap import MemapParser
 from hashlib import md5
 import fnmatch
+import logging
 
 
 #Disables multiprocessing if set to higher number than the host machine CPUs
