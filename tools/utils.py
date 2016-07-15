@@ -33,10 +33,22 @@ def cmd(l, check=True, verbose=False, shell=False, cwd=None):
         raise Exception('ERROR %d: "%s"' % (rc, text))
 
 
-def run_cmd(command, wd=None, redirect=False):
+def run_cmd(command, work_dir=None, chroot=None, redirect=False):
+    if chroot:
+        # Conventions managed by the web team for the mbed.org build system
+        chroot_cmd = [
+            '/usr/sbin/chroot', '--userspec=33:33', chroot
+        ]
+        for c in command:
+            chroot_cmd += [c.replace(chroot, '')]
+
+        logging.debug("Running command %s"%' '.join(chroot_cmd))
+        command = chroot_cmd
+        work_dir = chroot
+
     assert is_cmd_valid(command[0])
     try:
-        p = Popen(command, stdout=PIPE, stderr=STDOUT if redirect else PIPE, cwd=wd)
+        p = Popen(command, stdout=PIPE, stderr=STDOUT if redirect else PIPE, cwd=work_dir)
         _stdout, _stderr = p.communicate()
     except OSError as e:
         print "[OS ERROR] Command: "+(' '.join(command))

@@ -198,7 +198,8 @@ class Resources:
 # had the knowledge of a list of these directories to be ignored.
 LEGACY_IGNORE_DIRS = set([
     'LPC11U24', 'LPC1768', 'LPC2368', 'LPC4088', 'LPC812', 'KL25Z',
-    'ARM', 'GCC_ARM', 'GCC_CR', 'IAR', 'uARM'
+    'ARM', 'uARM', 'IAR',
+    'GCC_ARM', 'GCC_CS', 'GCC_CR', 'GCC_CW', 'GCC_CW_EWL', 'GCC_CW_NEWLIB',
 ])
 LEGACY_TOOLCHAIN_NAMES = {
     'ARM_STD':'ARM', 'ARM_MICRO': 'uARM',
@@ -298,6 +299,14 @@ class mbedToolchain:
         # uVisor spepcific rules
         if 'UVISOR' in self.target.features and 'UVISOR_SUPPORTED' in self.target.extra_labels:
             self.target.core = re.sub(r"F$", '', self.target.core)
+            
+        self.stat_cache = {}
+
+        self.init()
+
+    # This allows post __init__() hooks. Do not use
+    def init(self):
+        return True
 
     def get_output(self):
         return self.output
@@ -413,15 +422,20 @@ class mbedToolchain:
         target_mod_time = stat(target).st_mtime
 
         for d in dependencies:
-
             # Some objects are not provided with full path and here we do not have
             # information about the library paths. Safe option: assume an update
-            if not d or not exists(d):
+            if not d:
                 return True
-
-            if stat(d).st_mtime >= target_mod_time:
-                return True
-
+            
+            if self.stat_cache.has_key(d):
+                if self.stat_cache[d] >= target_mod_time:
+                    return True
+            else:
+                if not exists(d): return True
+                
+                self.stat_cache[d] = stat(d).st_mtime
+                if self.stat_cache[d] >= target_mod_time: return True
+        
         return False
 
     def is_ignored(self, file_path):
@@ -587,7 +601,6 @@ class mbedToolchain:
         return resources
 
     def copy_files(self, files_paths, trg_path, resources=None, rel_path=None):
-
         # Handle a single file
         if type(files_paths) != ListType: files_paths = [files_paths]
 
@@ -614,7 +627,9 @@ class mbedToolchain:
         source_dir, name, _ = split_path(source)
         
         obj_dir = join(build_path, relpath(source_dir, base_dir))
-        mkdir(obj_dir)
+        if obj_dir is not self.prev_dir:
+            self.prev_dir = obj_dir
+            mkdir(obj_dir)
         return join(obj_dir, name + '.o')
 
     def get_inc_file(self, includes):
@@ -649,14 +664,12 @@ class mbedToolchain:
 
         objects = []
         queue = []
-        prev_dir = None
+        work_dir = getcwd()
+        self.prev_dir = None
 
         # Sort compile queue for consistency
         files_to_compile.sort()
-        work_dir = getcwd()
-
         for source in files_to_compile:
-            _, name, _ = split_path(source)
             object = self.relative_object_path(build_path, resources.file_basepath[source], source)
 
             # Queue mode (multiprocessing)
@@ -702,15 +715,17 @@ class mbedToolchain:
         results = []
         for i in range(len(queue)):
             results.append(p.apply_async(compile_worker, [queue[i]]))
+        p.close()
 
         itr = 0
-        while True:
+        while len(results):
             itr += 1
             if itr > 180000:
                 p.terminate()
                 p.join()
                 raise ToolException("Compile did not finish in 5 minutes")
 
+            sleep(0.01)
             pending = 0
             for r in results:
                 if r._ready is True:
@@ -734,17 +749,10 @@ class mbedToolchain:
                         raise ToolException(err)
                 else:
                     pending += 1
-                    if pending > jobs_count:
+                    if pending >= jobs_count:
                         break
 
-
-            if len(results) == 0:
-                break
-
-            sleep(0.01)
-
         results = None
-        p.terminate()
         p.join()
 
         return objects
