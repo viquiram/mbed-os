@@ -501,7 +501,6 @@ class mbedToolchain:
                 # Add internal repo folders/files. This is needed for exporters
                 if d == '.hg':
                     resources.repo_dirs.append(dir_path)
-                    resources.repo_files.extend(self.scan_repository(dir_path))
 
                 if ((d.startswith('.') or d in self.legacy_ignore_dirs) or
                     # Ignore targets that do not match the TARGET in extra_labels list
