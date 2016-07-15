@@ -632,6 +632,20 @@ class mbedToolchain:
             mkdir(obj_dir)
         return join(obj_dir, name + '.o')
 
+    def get_link_file(self, cmd):
+        link_file = join(self.build_dir, ".link_files.txt")
+        with open(link_file, "wb") as f:
+            cmd_list = []
+            for c in cmd:
+                if c:
+                    c = c.replace("\\", "/")
+                    if self.CHROOT:
+                        c = c.replace(self.CHROOT, '')
+                    cmd_list.append(('"%s"' % c) if not c.startswith('-') else c)
+            string = " ".join(cmd_list)
+            f.write(string)
+        return link_file
+
     def get_inc_file(self, includes):
         include_file = join(self.build_dir, ".includes_%s.txt" % self.inc_md5)
         if not exists(include_file):
@@ -639,7 +653,10 @@ class mbedToolchain:
                 cmd_list = []
                 for c in includes:
                     if c:
-                        cmd_list.append(('-I%s' % c).replace("\\", "/"))                    
+                        c = c.replace("\\", "/")
+                        if self.CHROOT:
+                            c = c.replace(self.CHROOT, '')
+                        cmd_list.append('-I%s' % c)
                 string = " ".join(cmd_list)
                 f.write(string)
         return include_file

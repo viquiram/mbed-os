@@ -201,15 +201,8 @@ class IAR(mbedToolchain):
         cmd = self.hook.get_cmdline_linker(cmd)
 
         # Split link command to linker executable + response file
-        link_files = join(dirname(output), ".link_files.txt")
-        with open(link_files, "wb") as f:
-            cmd_linker = cmd[0]
-            cmd_list = []
-            for c in cmd[1:]:
-                if c:
-                    cmd_list.append(('"%s"' % c) if not c.startswith('-') else c)                    
-            string = " ".join(cmd_list).replace("\\", "/")
-            f.write(string)
+        cmd_linker = cmd[0]
+        link_files = self.get_link_file(cmd[1:])
 
         # Exec command
         self.default_cmd([cmd_linker, '-f', link_files])
