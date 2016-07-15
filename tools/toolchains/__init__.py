@@ -210,6 +210,7 @@ LEGACY_TOOLCHAIN_NAMES = {
 
 class mbedToolchain:
     VERBOSE = True
+    COMPILE_C_AS_CPP = False
 
     CORTEX_SYMBOLS = {
         "Cortex-M0" : ["__CORTEX_M0", "ARM_MATH_CM0", "__CMSIS_RTOS", "__MBED_CMSIS_RTOS_CM"],
@@ -224,7 +225,6 @@ class mbedToolchain:
         "Cortex-A9" : ["__CORTEX_A9", "ARM_MATH_CA9", "__FPU_PRESENT", "__CMSIS_RTOS", "__EVAL", "__MBED_CMSIS_RTOS_CA9"],
     }
     
-
     GOANNA_FORMAT = "[Goanna] warning [%FILENAME%:%LINENO%] - [%CHECKNAME%(%SEVERITY%)] %MESSAGE%"
     GOANNA_DIAGNOSTIC_PATTERN = re.compile(r'"\[Goanna\] (?P<severity>warning) \[(?P<file>[^:]+):(?P<line>\d+)\] \- (?P<message>.*)"')
 
@@ -784,10 +784,10 @@ class mbedToolchain:
             dep_path = base + '.d'
             deps = self.parse_dependencies(dep_path) if (exists(dep_path)) else []
             if len(deps) == 0 or self.need_update(object, deps):
-                if ext == '.c':
-                    return self.compile_c(source, object, includes)
-                else:
+                if ext == '.cpp' or self.COMPILE_C_AS_CPP:
                     return self.compile_cpp(source, object, includes)
+                else:
+                    return self.compile_c(source, object, includes)
         elif ext == '.s':
             deps = [source]
             if self.need_update(object, deps):
