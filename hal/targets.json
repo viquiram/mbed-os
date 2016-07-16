@@ -1,6 +1,7 @@
 {
     "Target": {
         "core": null,
+        "fpu": "none",
         "default_toolchain": "ARM",
         "supported_toolchains": null,
         "extra_labels": [],
