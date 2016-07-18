@@ -209,7 +209,7 @@ class ARM(mbedToolchain):
     @hook_tool
     def archive(self, objects, lib_path):
         if self.RESPONSE_FILES:
-            param = ['--via', self.get_arch_files(objects)]
+            param = ['--via', self.get_arch_file(objects)]
         else:
             param = objects
 
