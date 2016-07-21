@@ -572,7 +572,7 @@
         "inherits": ["Target"],
         "progen": {"target": "frdm-k64f"},
         "detect_code": ["0240"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES", "STORAGE"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES", "STORAGE"],
         "features": ["IPV4"],
         "release": true
     },
@@ -584,7 +584,7 @@
         "is_disk_virtual": true,
         "macros": ["CPU_MK64FN1M0VMD12", "FSL_RTOS_MBED", "TARGET_K64F"],
         "progen": {"target": "mts-gambit"},
-        "device_has": ["I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"]
+        "device_has": ["I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"]
     },
     "HEXIWEAR": {
         "inherits": ["Target"],
@@ -596,7 +596,7 @@
         "default_toolchain": "ARM",
         "detect_code": ["0214"],
         "progen": {"target": "hexiwear-k64f"},
-        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_build": "standard"
     },
     "NUCLEO_F030R8": {
@@ -688,6 +688,18 @@
         "detect_code": ["0700"],
         "device_has": ["ANALOGIN", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_build": "small",
+        "release": true
+    },
+    "NUCLEO_F207ZG": {
+        "supported_form_factors": ["ARDUINO", "MORPHO"],
+        "core": "Cortex-M3",
+        "default_toolchain": "ARM",
+        "extra_labels": ["STM", "STM32F2", "STM32F207ZG"],
+        "supported_toolchains": ["ARM", "uARM", "IAR", "GCC_ARM"],
+        "inherits": ["Target"],
+        "progen": {"target": "nucleo-f207zg"},
+        "detect_code": ["0835"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release": true
     },
     "NUCLEO_F302R8": {
@@ -986,7 +998,7 @@
         "extra_labels": ["STM", "STM32F4", "STM32F407", "STM32F407VG"],
         "macros": ["LSI_VALUE=32000"],
         "inherits": ["Target"],
-        "progen": {"target": "lpc1768"},
+        "progen": {"target": "arch-max"},
         "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release": true
     },
