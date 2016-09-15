@@ -470,3 +470,7 @@ def argparse_dir_not_parent(other):
         else:
             return not_parent
     return parse_type
+
+def remove_when_present(list, thing):
+    if thing in list:
+        list.remove(thing)

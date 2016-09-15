@@ -20,6 +20,7 @@ from project_generator_definitions.definitions import ProGenDef
 
 from tools.export.exporters import Exporter, ExporterTargetsProperty
 from tools.targets import TARGET_MAP, TARGET_NAMES
+from tools.utils import remove_when_present
 
 # If you wish to add a new target, add it to project_generator_definitions, and then
 # define progen_target name in the target class (`` self.progen_target = 'my_target_name' ``)
@@ -63,7 +64,7 @@ class IAREmbeddedWorkbench(Exporter):
 
         project_data['misc'] = self.flags
         # VLA is enabled via template IccAllowVLA
-        project_data['misc']['c_flags'].remove("--vla")
+        remove_when_present(project_data['misc']['c_flags'], ("--vla"))
         project_data['build_dir'] = os.path.join(project_data['build_dir'], 'iar_arm')
         self.progen_gen_file(project_data)
 
