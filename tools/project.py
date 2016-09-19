@@ -15,7 +15,7 @@ from tools.export import EXPORTERS, mcu_ide_matrix
 from tools.tests import TESTS, TEST_MAP
 from tools.tests import test_known, test_name_known, Test
 from tools.targets import TARGET_NAMES
-from tools.utils import argparse_filestring_type, argparse_many
+from tools.utils import argparse_filestring_type, argparse_many, args_error
 from tools.utils import argparse_force_lowercase_type
 from tools.utils import argparse_force_uppercase_type
 from tools.project_api import export_project
@@ -100,8 +100,7 @@ def main():
     parser.add_argument("-m", "--mcu",
                         metavar="MCU",
                         default='LPC1768',
-                        type=argparse_many(
-                            argparse_force_uppercase_type(targetnames, "MCU")),
+                        type=argparse_force_uppercase_type(targetnames, "MCU"),
                         help="generate project for the given MCU ({})".format(
                             ', '.join(targetnames)))
 
@@ -204,13 +203,22 @@ def main():
         if exists(EXPORT_DIR):
             rmtree(EXPORT_DIR)
 
-    for mcu in options.mcu:
-        zip_proj = not bool(options.source_dir)
+    # Target
+    if not options.mcu:
+        args_error(parser, "argument -m/--mcu is required")
 
+    # Toolchain
+    if not options.ide:
+        args_error(parser, "argument -i is required")
+
+    if (options.program is None) and (not options.source_dir):
+        args_error(parser, "one of -p, -n, or --source is required")
         # Export to selected toolchain
-        export(mcu, options.ide, build=options.build, src=options.source_dir,
-               macros=options.macros, project_id=options.program,
-               clean=options.clean, zip_proj=zip_proj, options=options.opts)
+    zip_proj = not bool(options.source_dir)
+    export(options.mcu, options.ide, build=options.build,
+           src=options.source_dir, macros=options.macros,
+           project_id=options.program, clean=options.clean,
+           zip_proj=zip_proj, options=options.opts)
 
 
 if __name__ == "__main__":

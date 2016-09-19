@@ -76,7 +76,7 @@ class Uvision4(Exporter):
         project_data['misc'] = {}
         # need to make this a string for progen. Only adds preprocessor when "macros" set
         asm_flag_string = '--cpreproc --cpreproc_opts=-D__ASSERT_MSG,' + \
-                          ",".join(self.flags['asm_flags'])
+                          ",".join(list(set(self.flags['asm_flags'])))
         # asm flags only, common are not valid within uvision project, they are armcc specific
         project_data['misc']['asm_flags'] = [asm_flag_string]
         # cxx flags included, as uvision have them all in one tab

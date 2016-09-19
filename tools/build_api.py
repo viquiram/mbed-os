@@ -17,11 +17,10 @@ limitations under the License.
 
 import re
 import tempfile
-
 from types import ListType
 from shutil import rmtree
 from os.path import join, exists, basename, abspath, normpath
-from os import linesep
+from os import linesep, remove
 from time import time
 
 from tools.utils import mkdir, run_cmd, run_cmd_ext, NotSupportedException,\
@@ -277,7 +276,8 @@ def get_mbed_official_release(version):
 def prepare_toolchain(src_paths, target, toolchain_name,
                       macros=None, options=None, clean=False, jobs=1,
                       notify=None, silent=False, verbose=False,
-                      extra_verbose=False, config=None):
+                      extra_verbose=False, config=None,
+                      app_config=None):
     """ Prepares resource related objects - toolchain, target, config
 
     Positional arguments:
@@ -295,6 +295,7 @@ def prepare_toolchain(src_paths, target, toolchain_name,
     verbose - Write the actual tools command lines used if True
     extra_verbose - even more output!
     config - a Config object to use instead of creating one
+    app_config - location of a chosen mbed_app.json file
     """
 
     # We need to remove all paths which are repeated to avoid
@@ -364,7 +365,8 @@ def build_project(src_paths, build_path, target, toolchain_name,
                   clean=False, notify=None, verbose=False, name=None,
                   macros=None, inc_dirs=None, jobs=1, silent=False,
                   report=None, properties=None, project_id=None,
-                  project_description=None, extra_verbose=False, config=None):
+                  project_description=None, extra_verbose=False, config=None,
+                  app_config=None):
     """ Build a project. A project may be a test or a user program.
 
     Positional arguments:
@@ -392,6 +394,7 @@ def build_project(src_paths, build_path, target, toolchain_name,
     project_description - the human-readable version of what this thing does
     extra_verbose - even more output!
     config - a Config object to use instead of creating one
+    app_config - location of a chosen mbed_app.json file
     """
 
     # Convert src_path to a list if needed
@@ -410,7 +413,7 @@ def build_project(src_paths, build_path, target, toolchain_name,
     toolchain = prepare_toolchain(
         src_paths, target, toolchain_name, macros=macros, options=options,
         clean=clean, jobs=jobs, notify=notify, silent=silent, verbose=verbose,
-        extra_verbose=extra_verbose, config=config)
+        extra_verbose=extra_verbose, config=config, app_config=app_config)
 
     # The first path will give the name to the library
     if name is None:
@@ -483,7 +486,8 @@ def build_library(src_paths, build_path, target, toolchain_name,
                   dependencies_paths=None, options=None, name=None, clean=False,
                   archive=True, notify=None, verbose=False, macros=None,
                   inc_dirs=None, jobs=1, silent=False, report=None,
-                  properties=None, extra_verbose=False, project_id=None):
+                  properties=None, extra_verbose=False, project_id=None,
+                  remove_config_header_file=False, app_config=None):
     """ Build a library
 
     Positional arguments:
@@ -509,6 +513,8 @@ def build_library(src_paths, build_path, target, toolchain_name,
     properties - UUUUHHHHH beats me
     extra_verbose - even more output!
     project_id - the name that goes in the report
+    remove_config_header_file - delete config header file when done building
+    app_config - location of a chosen mbed_app.json file
     """
 
     # Convert src_path to a list if needed
@@ -532,7 +538,7 @@ def build_library(src_paths, build_path, target, toolchain_name,
     toolchain = prepare_toolchain(
         src_paths, target, toolchain_name, macros=macros, options=options,
         clean=clean, jobs=jobs, notify=notify, silent=silent, verbose=verbose,
-        extra_verbose=extra_verbose)
+        extra_verbose=extra_verbose, app_config=app_config)
 
     # The first path will give the name to the library
     if name is None:
@@ -576,6 +582,8 @@ def build_library(src_paths, build_path, target, toolchain_name,
         toolchain.copy_files(resources.objects, build_path, resources=resources)
         toolchain.copy_files(resources.libraries, build_path,
                              resources=resources)
+        toolchain.copy_files(resources.json_files, build_path,
+                             resources=resources)
         if resources.linker_script:
             toolchain.copy_files(resources.linker_script, build_path,
                                  resources=resources)
@@ -591,6 +599,11 @@ def build_library(src_paths, build_path, target, toolchain_name,
 
         if archive:
             toolchain.build_library(objects, build_path, name)
+
+        if remove_config_header_file:
+            config_header_path = toolchain.get_config_header()
+            if config_header_path:
+                remove(config_header_path)
 
         if report != None:
             end = time()
